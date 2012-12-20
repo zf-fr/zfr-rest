@@ -1,6 +1,11 @@
-INSTALL.txt
-LICENSE.txt
-README.txt
-demos/
-extras/documentation
+._*
+.~lock.*
+.buildpath
+.DS_Store
+.idea
+.project
+.settings
+Thumbs.db
+tmp/
+vendor
 
