@@ -74,7 +74,7 @@ class HttpExceptionListener implements ListenerAggregateInterface
 
         // We just deal with our Http error codes here !
         if (!$exception instanceof AbstractHttpException || !$response instanceof HttpResponse) {
-            return;
+            return array();
         }
 
         $response->setStatusCode($exception->getStatusCode());

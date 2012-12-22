@@ -16,29 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRest\Http\Exception\Client;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Http\Exception\ClientException;
 
 /**
- * Module
+ * MethodNotAllowedException
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class MethodNotAllowedException extends ClientException
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application  = $e->getTarget();
-        $eventManager = $application->getEventManager();
+    protected $reasonPhrase = 'A request was made using a request method not supported by that resource.';
 
-        // Register a listener to catch Http exceptions
-        $eventManager->attach(new HttpExceptionListener(), null, 100);
+
+    /**
+     * @param string $reasonPhrase
+     */
+    public function __construct($reasonPhrase = '')
+    {
+        parent::__construct(405, $reasonPhrase);
     }
 }
