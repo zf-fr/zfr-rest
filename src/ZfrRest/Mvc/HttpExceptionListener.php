@@ -64,7 +64,8 @@ class HttpExceptionListener implements ListenerAggregateInterface
      * Get the exception and optionally set status code and reason message. Note that according to RFC 2617
      * (http://www.ietf.org/rfc/rfc2617.txt), the 401 response message MUST contain a WWW-Authenticate header
      *
-     * @param MvcEvent $e
+     * @param  MvcEvent $e
+     * @return array
      */
     public function onDispatchError(MvcEvent $e)
     {
@@ -87,5 +88,7 @@ class HttpExceptionListener implements ListenerAggregateInterface
 
             $headers->addHeader($authenticateHeader);
         }
+
+        return array('content' => $exception->getReasonPhrase());
     }
 }

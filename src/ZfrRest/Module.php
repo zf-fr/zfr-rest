@@ -42,6 +42,6 @@ class Module implements BootstrapListenerInterface
         $eventManager = $application->getEventManager();
 
         // Register a listener to catch Http exceptions
-        $eventManager->attach(new HttpExceptionListener());
+        $eventManager->attach(new HttpExceptionListener(), null, 100);
     }
 }
