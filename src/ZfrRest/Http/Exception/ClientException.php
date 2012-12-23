@@ -39,7 +39,7 @@ class ClientException extends AbstractHttpException
      * @param  string   $reasonPhrase
      * @throws InvalidArgumentException If status code is not 4xx
      */
-    public function __construct($statusCode = null, $reasonPhrase = '')
+    public function __construct($statusCode, $reasonPhrase = '')
     {
         // Client errors code are 4xx
         if ($statusCode < 400 || $statusCode > 499) {

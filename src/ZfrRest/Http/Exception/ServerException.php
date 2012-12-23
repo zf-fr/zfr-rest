@@ -39,7 +39,7 @@ class ServerException extends AbstractHttpException
      * @param  string   $reasonPhrase
      * @throws InvalidArgumentException If status code is not 5xx
      */
-    public function __construct($statusCode = null, $reasonPhrase = '')
+    public function __construct($statusCode, $reasonPhrase = '')
     {
         // Server errors code are 5xx
         if ($statusCode < 500 || $statusCode > 599) {
