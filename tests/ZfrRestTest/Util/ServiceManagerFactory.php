@@ -59,8 +59,6 @@ class ServiceManagerFactory
         $moduleManager = $serviceManager->get('ModuleManager');
         $moduleManager->loadModules();
 
-        $serviceManager->get('Application')->bootstrap();
-
         return $serviceManager;
     }
 }

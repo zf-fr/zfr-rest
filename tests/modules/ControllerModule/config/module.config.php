@@ -12,6 +12,28 @@ return array(
                     ),
                 ),
             ),
+
+            'generic-server-exception' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/generic-server-exception',
+                    'defaults' => array(
+                        'controller' => 'ControllerModule\Controller\Exception',
+                        'action'     => 'generic-server-exception',
+                    ),
+                ),
+            ),
+
+            'unauthorized-exception' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/unauthorized-exception',
+                    'defaults' => array(
+                        'controller' => 'ControllerModule\Controller\Exception',
+                        'action'     => 'unauthorized-exception',
+                    ),
+                ),
+            ),
         ),
     ),
 

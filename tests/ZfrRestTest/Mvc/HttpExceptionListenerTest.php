@@ -37,50 +37,32 @@ class HttpExceptionListenerTest extends AbstractHttpControllerTestCase
 
         $this->serviceManager = ServiceManagerFactory::getServiceManager();
 
+        $this->serviceManager->get('Application')->bootstrap();
+
         $this->setApplicationConfig(
             include __DIR__ . '/../../TestConfiguration.php.dist'
         );
-    }
-
-    public function testAssertHttpExceptionListenerIsAlwaysAttached()
-    {
-        /** @var \Zend\EventManager\SharedEventManager $sharedEventManager */
-        /*$sharedEventManager = $this->serviceManager->get('EventManager')->getSharedManager();
-        $listeners          = $sharedEventManager->getListeners('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH_ERROR);
-
-        $listenerFound = false;
-        foreach ($listeners as $listener) {
-            $callbackHandler = $listener->getCallback();
-            $metadata        = $listener->getMetadata();
-
-            $callbackClass    = $callbackHandler[0];
-            $callbackFunction = $callbackHandler[1];
-
-            if ($callbackClass instanceof HttpExceptionListener) {
-                $this->assertEquals(MvcEvent::EVENT_DISPATCH_ERROR, $metadata['event']);
-                $this->assertEquals(100, $metadata['priority']);
-                $this->assertEquals('onDispatchError', $callbackFunction);
-
-                $listenerFound = true;
-            }
-        }
-
-        $this->assertTrue($listenerFound);*/
     }
 
     public function testCorrectlySetStatusCodeIfHttpExceptionIsRaised()
     {
         $this->dispatch('/generic-client-exception');
         $this->assertResponseStatusCode(404);
-        $this->assertEquals('A client error occured.', $this->getResponse()->getReasonPhrase());
-        //$this->assertResponseHeaderContains('Response', 404);
+        $this->assertEquals('A client error occurred', $this->getResponse()->getReasonPhrase());
     }
 
-    /*public function testCorrectlySetReasonPhraseIfHttpExceptionIsRaised()
+    public function testCorrectlySetReasonPhraseIfHttpExceptionIsRaised()
     {
+        $this->dispatch('/generic-server-exception');
+        $this->assertResponseStatusCode(500);
+        $this->assertEquals('A server error occurred', $this->getResponse()->getReasonPhrase());
     }
 
     public function testAssertWWWAuthenticateHeaderIsAutomaticallyAddedWhenAuthenticateExceptionIsRaised()
     {
-    }*/
+        $this->dispatch('/unauthorized-exception');
+        $this->assertResponseStatusCode(401);
+        $this->assertHasResponseHeader('WWWAuthenticate');
+        $this->assertEquals('You are not authorized to access to the requested resource', $this->getResponse()->getReasonPhrase());
+    }
 }

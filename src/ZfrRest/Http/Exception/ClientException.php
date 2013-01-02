@@ -31,7 +31,7 @@ class ClientException extends AbstractHttpException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'A client error occured';
+    protected $reasonPhrase = 'A client error occurred';
 
 
     /**

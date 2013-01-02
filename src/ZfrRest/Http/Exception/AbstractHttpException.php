@@ -37,7 +37,7 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     /**
      * @var string
      */
-    protected $reasonPhrase = 'An error occured';
+    protected $reasonPhrase = 'An error occurred';
 
 
     /**

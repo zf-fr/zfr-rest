@@ -11,4 +11,14 @@ class ExceptionController extends AbstractActionController
     {
         throw new Exception\ClientException(404);
     }
+
+    public function genericServerExceptionAction()
+    {
+        throw new Exception\ServerException(500);
+    }
+
+    public function unauthorizedExceptionAction()
+    {
+        throw new Exception\Client\UnauthorizedException();
+    }
 }
