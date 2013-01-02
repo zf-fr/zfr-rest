@@ -16,4 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-return array();
+namespace ZfrRestTest\Http;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Http\Exception;
+
+class ClientExceptionTest extends TestCase
+{
+    public function testThrowExceptionIfStatusCodeIsNotInRange()
+    {
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for client errors must be between 400 and 499, 500 given'
+        );
+
+        $exception = new Exception\ClientException(500);
+
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for client errors must be between 400 and 499, 399 given'
+        );
+
+        $exception = new Exception\ClientException(399);
+    }
+}

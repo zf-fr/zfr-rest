@@ -20,6 +20,7 @@ namespace ZfrRest;
 
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\Mvc\MvcEvent;
 use ZfrRest\Mvc\HttpExceptionListener;
 
 /**
@@ -35,10 +36,10 @@ class Module implements BootstrapListenerInterface
      */
     public function onBootstrap(EventInterface $e)
     {
-        $application  = $e->getTarget();
-        $eventManager = $application->getEventManager();
+        $application        = $e->getTarget();
+        $sharedEventManager = $application->getEventManager()->getSharedManager();
 
         // Register a listener to catch Http exceptions
-        $eventManager->attach(new HttpExceptionListener(), null, 100);
+        $sharedEventManager->attach('Zend\Stdlib\DispatchableInterface', new HttpExceptionListener(), null);
     }
 }

@@ -16,4 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-return array();
+namespace ZfrRestTest\Http\Client;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Http\Exception\Client;
+
+class UnauthorizedExceptionTest extends TestCase
+{
+    public function testAssertUnauthorizedExceptionContainsBasicChallengeByDefault()
+    {
+        $exception = new Client\UnauthorizedException();
+
+        $this->assertEquals('Basic', $exception->getChallenge());
+    }
+}

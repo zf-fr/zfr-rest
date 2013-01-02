@@ -58,7 +58,9 @@ class ServiceManagerFactory
         /** @var $moduleManager \Zend\ModuleManager\ModuleManager */
         $moduleManager = $serviceManager->get('ModuleManager');
         $moduleManager->loadModules();
-        //$serviceManager->setAllowOverride(true);
+
+        $serviceManager->get('Application')->bootstrap();
+
         return $serviceManager;
     }
 }
