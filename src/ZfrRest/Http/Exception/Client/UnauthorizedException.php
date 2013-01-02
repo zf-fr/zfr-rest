@@ -31,7 +31,7 @@ class UnauthorizedException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'You are not authorized to access to the requested resource.';
+    protected $reasonPhrase = 'You are not authorized to access to the requested resource';
 
     /**
      * @var string

@@ -31,7 +31,7 @@ class ServerException extends AbstractHttpException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'A server error occured.';
+    protected $reasonPhrase = 'A server error occured';
 
 
     /**

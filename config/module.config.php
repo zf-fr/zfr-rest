@@ -16,29 +16,4 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
-
-use ZfrRest\Http\Exception\ClientException;
-
-/**
- * MethodNotAllowedException
- *
- * @license MIT
- * @since   0.0.1
- */
-class MethodNotAllowedException extends ClientException
-{
-    /**
-     * @var string
-     */
-    protected $reasonPhrase = 'A request was made using a request method not supported by that resource';
-
-
-    /**
-     * @param string $reasonPhrase
-     */
-    public function __construct($reasonPhrase = '')
-    {
-        parent::__construct(405, $reasonPhrase);
-    }
-}
+return array();

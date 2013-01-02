@@ -77,6 +77,8 @@ class HttpExceptionListener implements ListenerAggregateInterface
             return array();
         }
 
+        $e->stopPropagation();
+
         $response->setStatusCode($exception->getStatusCode());
         $response->setReasonPhrase($exception->getReasonPhrase());
 
@@ -89,6 +91,6 @@ class HttpExceptionListener implements ListenerAggregateInterface
             $headers->addHeader($authenticateHeader);
         }
 
-        return array('content' => $exception->getReasonPhrase());
+        return $response;
     }
 }

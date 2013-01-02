@@ -25,6 +25,7 @@ if  (
 
 /* @var $loader \Composer\Autoload\ClassLoader */
 $loader->add('ZfrRestTest\\', __DIR__);
+$loader->add('ControllerModule\\', __DIR__ . '/modules');
 
 if (!$config = @include __DIR__ . '/TestConfiguration.php') {
     $config = require __DIR__ . '/TestConfiguration.php.dist';

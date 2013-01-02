@@ -31,7 +31,7 @@ class NotFoundException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The requested resource could not be found but may be available again in the future.';
+    protected $reasonPhrase = 'The requested resource could not be found but may be available again in the future';
 
 
     /**

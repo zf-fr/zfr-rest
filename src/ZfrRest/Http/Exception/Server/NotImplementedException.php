@@ -31,7 +31,7 @@ class NotImplementedException extends ServerException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request.';
+    protected $reasonPhrase = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
 
 
     /**

@@ -31,7 +31,7 @@ class InternalServerErrorException extends ServerException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'An internal server error occured.';
+    protected $reasonPhrase = 'An internal server error occurred';
 
 
     /**

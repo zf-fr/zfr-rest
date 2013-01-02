@@ -31,7 +31,7 @@ class ForbiddenException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The request was a valid request, but the server is refusing to respond to it.';
+    protected $reasonPhrase = 'The request was a valid request, but the server is refusing to respond to it';
 
 
     /**

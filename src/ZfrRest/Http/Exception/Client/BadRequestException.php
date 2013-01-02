@@ -31,7 +31,7 @@ class BadRequestException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The request cannot be fulfilled due to bad syntax.';
+    protected $reasonPhrase = 'The request cannot be fulfilled due to bad syntax';
 
 
     /**
