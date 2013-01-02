@@ -58,7 +58,7 @@ class HttpExceptionListenerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('A server error occurred', $this->getResponse()->getReasonPhrase());
     }
 
-    public function testAssertWWWAuthenticateHeaderIsAutomaticallyAddedWhenAuthenticateExceptionIsRaised()
+    public function testAssertWWWAuthenticateHeaderIsAutomaticallyAddedWhenUnauthorizedExceptionIsRaised()
     {
         $this->dispatch('/unauthorized-exception');
         $this->assertResponseStatusCode(401);
