@@ -20,3 +20,7 @@ script:
   - ./vendor/bin/zfr-rest list
   - cd vendor/zfr/zfr-rest/tests
   - phpunit
+
+notifications:
+  irc: "irc.freenode.org#zftalk.dev"
+  email: false
