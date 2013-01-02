@@ -16,9 +16,7 @@ before_script:
   - rm config/application.config.php && cp ../ZfrRest/.travis/application.config.php config/
 
 script:
-  - ./vendor/bin/zfr-rest help
-  - ./vendor/bin/zfr-rest list
-  - cd vendor/zfr/zfr-rest/tests
+  - cd vendor/zfr/zfr-rest
   - phpunit
 
 notifications:
