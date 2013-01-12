@@ -138,6 +138,15 @@ class SelectModelListener implements ListenerAggregateInterface
         $typeString = $acceptFieldValue->getTypeString();
         $model      = $this->typeToModel[$typeString];
 
+        if (!class_exists($model)) {
+            throw new Exception\DomainException(sprintf(
+                'Expects string model name to be a valid class name; received "%s"',
+                $model
+            ));
+        }
+
+        $model = new $model;
+
         if (!$model instanceof ModelInterface) {
             throw new Exception\DomainException(sprintf(
                 '%s expects a valid implementation of Zend\View\Model\ModelInterface; received "%s"',
@@ -146,6 +155,6 @@ class SelectModelListener implements ListenerAggregateInterface
             ));
         }
 
-        return new $model();
+        return $model;
     }
 }
