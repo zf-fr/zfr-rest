@@ -38,8 +38,7 @@ class Module implements BootstrapListenerInterface
         $application   = $e->getTarget();
         $eventManager  = $application->getEventManager();
 
-        // Register a listener to catch Http exceptions
-        //$sharedManager->attach('Zend\Stdlib\DispatchableInterface', 'dispatch', new SelectModelListener(), -60);
+        // Register a listener to select a ModelInterface according to Accept header
         $eventManager->attach(new SelectModelListener());
     }
 }
