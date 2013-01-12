@@ -16,29 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRest\Http\Exception;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\HttpExceptionListener;
+use InvalidArgumentException;
 
 /**
- * Module
+ * ServerException
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class ServerException extends AbstractHttpException
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application  = $e->getTarget();
-        $eventManager = $application->getEventManager();
+    protected $reasonPhrase = 'A server error occurred';
 
-        // Register a listener to catch Http exceptions
-        $eventManager->attach(new HttpExceptionListener());
+
+    /**
+     * @param  null|int $statusCode
+     * @param  string   $reasonPhrase
+     * @throws InvalidArgumentException If status code is not 5xx
+     */
+    public function __construct($statusCode, $reasonPhrase = '')
+    {
+        // Server errors code are 5xx
+        if ($statusCode < 500 || $statusCode > 599) {
+            throw new InvalidArgumentException(sprintf(
+                'Status code for server errors must be between 500 and 599, %s given',
+                $statusCode
+            ));
+        }
+
+        parent::__construct($statusCode, $reasonPhrase);
     }
 }
