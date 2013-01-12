@@ -84,7 +84,6 @@ class HttpExceptionListener implements ListenerAggregateInterface
         $response->setReasonPhrase($exception->getReasonPhrase());
 
         if ($exception instanceof Client\UnauthorizedException) {
-            /** @var $headers \Zend\Http\Headers */
             $headers            = $response->getHeaders();
             $challenge          = $exception->getChallenge();
             $authenticateHeader = Header\WWWAuthenticate::fromString("WWW-Authenticate: $challenge");
