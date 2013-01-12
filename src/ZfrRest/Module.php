@@ -18,12 +18,28 @@
 
 namespace ZfrRest;
 
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
+
 /**
  * Module
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module
+class Module implements BootstrapListenerInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function onBootstrap(EventInterface $e)
+    {
+        $application   = $e->getTarget();
+        $eventManager  = $application->getEventManager();
+
+        // Register a listener to catch Http exceptions
+        //$sharedManager->attach('Zend\Stdlib\DispatchableInterface', 'dispatch', new SelectModelListener(), -60);
+        $eventManager->attach(new SelectModelListener());
+    }
 }

@@ -16,12 +16,12 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Serializer\Exception;
+namespace ZfrRest\Mvc\Exception;
 
 use DomainException as BaseDomainException;
 
 /**
- * DomainException
+ * Domain Exception
  *
  * @license MIT
  * @since   0.0.1
