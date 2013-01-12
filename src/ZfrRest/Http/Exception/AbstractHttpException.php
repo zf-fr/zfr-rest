@@ -20,6 +20,7 @@ namespace ZfrRest\Http\Exception;
 
 use Exception;
 use Zend\Http\Exception\ExceptionInterface;
+use Zend\Http\Response as HttpResponse;
 
 /**
  * ExceptionInterface
@@ -97,5 +98,16 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     public function getReasonPhrase()
     {
         return $this->reasonPhrase;
+    }
+
+    /**
+     * Prepare the response for the exception
+     *
+     * @return void
+     */
+    public function prepareResponse(HttpResponse $response)
+    {
+        $response->setStatusCode($this->getStatusCode());
+        $response->setReasonPhrase($this->getReasonPhrase());
     }
 }

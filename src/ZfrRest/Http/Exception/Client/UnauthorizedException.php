@@ -19,6 +19,8 @@
 namespace ZfrRest\Http\Exception\Client;
 
 use ZfrRest\Http\Exception\ClientException;
+use Zend\Http\Header;
+use Zend\Http\Response as HttpResponse;
 
 /**
  * UnauthorizedException
@@ -72,5 +74,22 @@ class UnauthorizedException extends ClientException
     public function getChallenge()
     {
         return $this->challenge;
+    }
+
+    /**
+     * According to RFC 2617 (http://www.ietf.org/rfc/rfc2617.txt), the 401 response message MUST
+     * contain a WWW-Authenticate header
+     *
+     * {@inheritDoc}
+     */
+    public function prepareResponse(HttpResponse $response)
+    {
+        parent::prepareResponse($response);
+
+        $headers            = $response->getHeaders();
+        $challenge          = $this->getChallenge();
+        $authenticateHeader = Header\WWWAuthenticate::fromString("WWW-Authenticate: $challenge");
+
+        $headers->addHeader($authenticateHeader);
     }
 }

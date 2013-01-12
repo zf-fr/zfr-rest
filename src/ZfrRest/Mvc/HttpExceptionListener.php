@@ -20,11 +20,9 @@ namespace ZfrRest\Mvc;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Zend\Http\Header;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Http\Exception\AbstractHttpException;
-use ZfrRest\Http\Exception\Client;
 
 /**
  * HttpExceptionListener
@@ -61,11 +59,10 @@ class HttpExceptionListener implements ListenerAggregateInterface
     }
 
     /**
-     * Get the exception and optionally set status code and reason message. Note that according to RFC 2617
-     * (http://www.ietf.org/rfc/rfc2617.txt), the 401 response message MUST contain a WWW-Authenticate header
+     * Get the exception and optionally set status code and reason message
      *
      * @param  MvcEvent $e
-     * @return array
+     * @return void|HttpResponse
      */
     public function onDispatchError(MvcEvent $e)
     {
@@ -80,16 +77,7 @@ class HttpExceptionListener implements ListenerAggregateInterface
 
         $e->stopPropagation();
 
-        $response->setStatusCode($exception->getStatusCode());
-        $response->setReasonPhrase($exception->getReasonPhrase());
-
-        if ($exception instanceof Client\UnauthorizedException) {
-            $headers            = $response->getHeaders();
-            $challenge          = $exception->getChallenge();
-            $authenticateHeader = Header\WWWAuthenticate::fromString("WWW-Authenticate: $challenge");
-
-            $headers->addHeader($authenticateHeader);
-        }
+        $exception->prepareResponse($response);
 
         $e->setResult(array(
             'code'    => $exception->getStatusCode(),
