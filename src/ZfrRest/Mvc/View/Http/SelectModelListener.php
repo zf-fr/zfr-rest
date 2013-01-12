@@ -46,9 +46,10 @@ class SelectModelListener implements ListenerAggregateInterface
      * @var array
      */
     protected $typeToModel = array(
-        'text/html'             => 'Zend\View\Model\ViewModel',
-        'application/xhtml+xml' => 'Zend\View\Model\ViewModel',
-        'application/json'      => 'Zend\View\Model\JsonModel'
+        'text/html'              => 'Zend\View\Model\ViewModel',
+        'application/xhtml+xml'  => 'Zend\View\Model\ViewModel',
+        'application/javascript' => 'Zend\View\Model\JsonModel',
+        'application/json'       => 'Zend\View\Model\JsonModel',
     );
 
 
