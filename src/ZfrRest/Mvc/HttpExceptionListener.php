@@ -69,6 +69,7 @@ class HttpExceptionListener implements ListenerAggregateInterface
      */
     public function onDispatchError(MvcEvent $e)
     {
+        /** @var $response HttpResponse */
         $response  = $e->getResponse();
         $exception = $e->getParam('exception');
 
@@ -91,6 +92,12 @@ class HttpExceptionListener implements ListenerAggregateInterface
             $headers->addHeader($authenticateHeader);
         }
 
+        $e->setResult(array(
+            'code'    => $exception->getStatusCode(),
+            'message' => $exception->getMessage()
+        ));
+
+        // We return a Response object to halt dispatch
         return $response;
     }
 }

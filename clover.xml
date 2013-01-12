@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1357147268">
-  <project timestamp="1357147268">
+<coverage generated="1358021608">
+  <project timestamp="1358021608">
     <package name="ZfrRest\Http\Exception">
       <file name="/Users/michael/Sites/ZfrRest/vendor/zfr/zfr-rest/src/ZfrRest/Http/Exception/AbstractHttpException.php">
         <class name="AbstractHttpException" namespace="ZfrRest\Http\Exception">
@@ -190,7 +190,7 @@
     <package name="ZfrRest\Mvc">
       <file name="/Users/michael/Sites/ZfrRest/vendor/zfr/zfr-rest/src/ZfrRest/Mvc/HttpExceptionListener.php">
         <class name="HttpExceptionListener" namespace="ZfrRest\Mvc">
-          <metrics methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="15" elements="25" coveredelements="17"/>
+          <metrics methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="19" elements="29" coveredelements="21"/>
         </class>
         <line num="46" type="method" name="attach" crap="1" count="3"/>
         <line num="48" type="stmt" count="3"/>
@@ -202,25 +202,29 @@
         <line num="59" type="stmt" count="0"/>
         <line num="60" type="stmt" count="0"/>
         <line num="61" type="stmt" count="0"/>
-        <line num="70" type="method" name="onDispatchError" crap="4.01" count="3"/>
-        <line num="72" type="stmt" count="3"/>
+        <line num="70" type="method" name="onDispatchError" crap="4.00" count="3"/>
         <line num="73" type="stmt" count="3"/>
-        <line num="76" type="stmt" count="3"/>
-        <line num="77" type="stmt" count="0"/>
-        <line num="80" type="stmt" count="3"/>
-        <line num="82" type="stmt" count="3"/>
+        <line num="74" type="stmt" count="3"/>
+        <line num="77" type="stmt" count="3"/>
+        <line num="78" type="stmt" count="0"/>
+        <line num="81" type="stmt" count="3"/>
         <line num="83" type="stmt" count="3"/>
-        <line num="85" type="stmt" count="3"/>
-        <line num="87" type="stmt" count="1"/>
+        <line num="84" type="stmt" count="3"/>
+        <line num="86" type="stmt" count="3"/>
         <line num="88" type="stmt" count="1"/>
         <line num="89" type="stmt" count="1"/>
-        <line num="91" type="stmt" count="1"/>
+        <line num="90" type="stmt" count="1"/>
         <line num="92" type="stmt" count="1"/>
-        <line num="94" type="stmt" count="3"/>
-        <line num="97" type="stmt" count="1"/>
-        <metrics loc="96" ncloc="55" classes="1" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="15" elements="25" coveredelements="16"/>
+        <line num="93" type="stmt" count="1"/>
+        <line num="95" type="stmt" count="3"/>
+        <line num="96" type="stmt" count="3"/>
+        <line num="97" type="stmt" count="3"/>
+        <line num="98" type="stmt" count="3"/>
+        <line num="101" type="stmt" count="3"/>
+        <line num="104" type="stmt" count="1"/>
+        <metrics loc="103" ncloc="59" classes="1" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="19" elements="29" coveredelements="20"/>
       </file>
     </package>
-    <metrics files="15" loc="806" ncloc="331" classes="15" methods="22" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="100" coveredstatements="44" elements="122" coveredelements="52"/>
+    <metrics files="15" loc="813" ncloc="335" classes="15" methods="22" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="104" coveredstatements="48" elements="126" coveredelements="56"/>
   </project>
 </coverage>
