@@ -35,7 +35,7 @@ class NotImplementedException extends ServerException
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
     public function __construct($message = '')
     {
