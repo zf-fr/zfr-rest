@@ -39,4 +39,10 @@ class ClientExceptionTest extends TestCase
 
         $exception = new Exception\ClientException(399);
     }
+
+    public function testAlwaysContainDefaultMessage()
+    {
+        $exception = new Exception\ClientException(401);
+        $this->assertContains('A client error occurred', $exception->getMessage());
+    }
 }

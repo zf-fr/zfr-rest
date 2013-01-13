@@ -16,4 +16,10 @@
  * and is licensed under the MIT license.
  */
 
-return array();
+return array(
+    'view_manager' => array(
+        'strategies' => array(
+            'ViewJsonStrategy'
+        )
+    ),
+);

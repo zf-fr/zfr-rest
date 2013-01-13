@@ -31,15 +31,15 @@ class ClientException extends AbstractHttpException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'A client error occurred';
+    protected $message = 'A client error occurred';
 
 
     /**
      * @param  null|int $statusCode
-     * @param  string   $reasonPhrase
+     * @param  string   $message
      * @throws InvalidArgumentException If status code is not 4xx
      */
-    public function __construct($statusCode, $reasonPhrase = '')
+    public function __construct($statusCode, $message = '')
     {
         // Client errors code are 4xx
         if ($statusCode < 400 || $statusCode > 499) {
@@ -49,6 +49,6 @@ class ClientException extends AbstractHttpException
             ));
         }
 
-        parent::__construct($statusCode, $reasonPhrase);
+        parent::__construct($statusCode, $message);
     }
 }

@@ -31,14 +31,14 @@ class BadRequestException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The request cannot be fulfilled due to bad syntax';
+    protected $message = 'The request cannot be fulfilled due to bad syntax';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(400, $reasonPhrase);
+        parent::__construct(400, $message);
     }
 }

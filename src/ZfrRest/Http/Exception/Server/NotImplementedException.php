@@ -31,14 +31,14 @@ class NotImplementedException extends ServerException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
+    protected $message = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(501, $reasonPhrase);
+        parent::__construct(501, $message);
     }
 }

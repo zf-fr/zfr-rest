@@ -31,15 +31,15 @@ class ServerException extends AbstractHttpException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'A server error occurred';
+    protected $message = 'A server error occurred';
 
 
     /**
      * @param  null|int $statusCode
-     * @param  string   $reasonPhrase
+     * @param  string   $message
      * @throws InvalidArgumentException If status code is not 5xx
      */
-    public function __construct($statusCode, $reasonPhrase = '')
+    public function __construct($statusCode, $message = '')
     {
         // Server errors code are 5xx
         if ($statusCode < 500 || $statusCode > 599) {
@@ -49,6 +49,6 @@ class ServerException extends AbstractHttpException
             ));
         }
 
-        parent::__construct($statusCode, $reasonPhrase);
+        parent::__construct($statusCode, $message);
     }
 }

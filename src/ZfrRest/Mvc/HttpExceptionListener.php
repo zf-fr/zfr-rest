@@ -62,7 +62,7 @@ class HttpExceptionListener implements ListenerAggregateInterface
      * Get the exception and optionally set status code and reason message
      *
      * @param  MvcEvent $e
-     * @return array|HttpResponse
+     * @return void
      */
     public function onDispatchError(MvcEvent $e)
     {
@@ -72,19 +72,14 @@ class HttpExceptionListener implements ListenerAggregateInterface
 
         // We just deal with our Http error codes here !
         if (!$exception instanceof AbstractHttpException || !$response instanceof HttpResponse) {
-            return array();
+            return;
         }
-
-        $e->stopPropagation();
 
         $exception->prepareResponse($response);
 
         $e->setResult(array(
-            'code'    => $exception->getStatusCode(),
-            'message' => $exception->getMessage()
+            'status_code' => $exception->getStatusCode(),
+            'message'     => $exception->getMessage()
         ));
-
-        // We return a Response object to halt dispatch
-        return $response;
     }
 }
