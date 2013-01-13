@@ -16,29 +16,15 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\Mvc\Exception;
 
-use ZfrRest\Http\Exception\ClientException;
+use DomainException as BaseDomainException;
 
 /**
- * ForbiddenException
+ * Domain Exception
  *
  * @license MIT
  * @since   0.0.1
  */
-class ForbiddenException extends ClientException
-{
-    /**
-     * @var string
-     */
-    protected $message = 'The request was a valid request, but the server is refusing to respond to it';
-
-
-    /**
-     * @param string $message
-     */
-    public function __construct($message = '')
-    {
-        parent::__construct(403, $message);
-    }
-}
+class DomainException extends BaseDomainException
+{}

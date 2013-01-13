@@ -19,7 +19,9 @@
 namespace ZfrRest;
 
 use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
 use ZfrRest\Mvc\HttpExceptionListener;
 
 /**
@@ -28,17 +30,25 @@ use ZfrRest\Mvc\HttpExceptionListener;
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class Module implements BootstrapListenerInterface, ConfigProviderInterface
 {
     /**
      * {@inheritDoc}
      */
     public function onBootstrap(EventInterface $e)
     {
-        $application  = $e->getTarget();
-        $eventManager = $application->getEventManager();
+        $application   = $e->getTarget();
+        $eventManager  = $application->getEventManager();
 
-        // Register a listener to catch Http exceptions
         $eventManager->attach(new HttpExceptionListener());
+        $eventManager->attach(new SelectModelListener());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConfig()
+    {
+        return include __DIR__ . '/../../config/module.config.php';
     }
 }

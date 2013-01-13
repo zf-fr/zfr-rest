@@ -33,7 +33,7 @@ class UnauthorizedException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'You are not authorized to access to the requested resource';
+    protected $message = 'You are not authorized to access to the requested resource';
 
     /**
      * @var string
@@ -42,16 +42,16 @@ class UnauthorizedException extends ClientException
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      * @param string $challenge
      */
-    public function __construct($reasonPhrase = '', $challenge = '')
+    public function __construct($message = '', $challenge = '')
     {
         if (!empty($challenge)) {
             $this->setChallenge($challenge);
         }
 
-        parent::__construct(401, $reasonPhrase);
+        parent::__construct(401, $message);
     }
 
     /**

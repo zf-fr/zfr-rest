@@ -31,14 +31,14 @@ class NotFoundException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The requested resource could not be found but may be available again in the future';
+    protected $message = 'The requested resource could not be found but may be available again in the future';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(404, $reasonPhrase);
+        parent::__construct(404, $message);
     }
 }

@@ -31,14 +31,14 @@ class GoneException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The requested resource is no longer available and will not be available again';
+    protected $message = 'The requested resource is no longer available and will not be available again';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(410, $reasonPhrase);
+        parent::__construct(410, $message);
     }
 }
