@@ -38,21 +38,21 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     /**
      * @var string
      */
-    protected $reasonPhrase = 'An error occurred';
+    protected $message = 'An error occurred';
 
 
     /**
      * @param null|int $statusCode
-     * @param string   $reasonPhrase
+     * @param string   $message
      */
-    public function __construct($statusCode = null, $reasonPhrase = '')
+    public function __construct($statusCode = null, $message = '')
     {
         if ($statusCode !== null) {
             $this->setStatusCode($statusCode);
         }
 
-        if (!empty($reasonPhrase)) {
-            $this->setReasonPhrase($reasonPhrase);
+        if ($message !== '') {
+            $this->message = $message;
         }
     }
 
@@ -79,28 +79,6 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     }
 
     /**
-     * Set the reason phrase of the HTTP error
-     *
-     * @param  string $reasonPhrase
-     * @return AbstractHttpException
-     */
-    public function setReasonPhrase($reasonPhrase)
-    {
-        $this->reasonPhrase = $reasonPhrase;
-        return $this;
-    }
-
-    /**
-     * Get the reason phrase of the HTTP error
-     *
-     * @return string
-     */
-    public function getReasonPhrase()
-    {
-        return $this->reasonPhrase;
-    }
-
-    /**
      * Prepare the response for the exception
      *
      * @return void
@@ -108,6 +86,6 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     public function prepareResponse(HttpResponse $response)
     {
         $response->setStatusCode($this->getStatusCode());
-        $response->setReasonPhrase($this->getReasonPhrase());
+        $response->setReasonPhrase($this->getMessage());
     }
 }

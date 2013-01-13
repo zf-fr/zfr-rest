@@ -59,6 +59,8 @@ class SelectModelListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $sharedManager = $events->getSharedManager();
+
+        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'selectErrorModel'), 80);
         $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'selectModel'), -60);
     }
 
@@ -75,6 +77,8 @@ class SelectModelListener implements ListenerAggregateInterface
     }
 
     /**
+     * Select the correct ModelInterface instance by matching the values of the Accept header to a ModelInterface
+     *
      * @param  MvcEvent $e
      * @return void
      */
@@ -101,13 +105,48 @@ class SelectModelListener implements ListenerAggregateInterface
         foreach ($acceptValues as $type) {
             if ($this->hasModel($type)) {
                 $model = $this->getModel($type);
-                $model->setVariables($result);
+
+                if ($result !== null) {
+                    $model->setVariables($result);
+                }
 
                 $e->setResult($model);
 
                 return;
             }
         }
+    }
+
+    /**
+     * When an exception is thrown, this listener proxies to selectModel. If, according to the Accept header,
+     * we get a Zend\View\Model\ViewModel instance, this means we are in "website" context, so we just return
+     * to let the other listeners render the template error.
+     *
+     * Otherwise (if we have a JsonModel or FeedModel or anything else...) we just set the view model and stop
+     * propagation so that the response only contains the error message and status code
+     *
+     * @param  MvcEvent $e
+     * @return void
+     */
+    public function selectErrorModel(MvcEvent $e)
+    {
+        $this->selectModel($e);
+
+        $result = $e->getResult();
+        if (!$result instanceof ModelInterface) {
+            return;
+        }
+
+        $class = get_class($result);
+
+        // If the model is an EXACT instance of ViewModel, it means we want to render it with a template
+        if ($class === 'Zend\View\Model\ViewModel') {
+            return;
+        }
+
+        // Otherwise, we stop propagation and set the view model
+        $e->setViewModel($result);
+        $e->stopPropagation();
     }
 
     /**

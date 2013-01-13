@@ -31,14 +31,14 @@ class MethodNotAllowedException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'A request was made using a request method not supported by that resource';
+    protected $message = 'A request was made using a request method not supported by that resource';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(405, $reasonPhrase);
+        parent::__construct(405, $message);
     }
 }

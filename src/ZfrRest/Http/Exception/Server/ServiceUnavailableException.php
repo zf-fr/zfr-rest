@@ -31,14 +31,14 @@ class ServiceUnavailableException extends ServerException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The server is currently unavailable (because it is overloaded or down for maintenance). Please try again later';
+    protected $message = 'The server is currently unavailable (because it is overloaded or down for maintenance). Please try again later';
 
 
     /**
      * @param string $reasonPhrase
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(503, $reasonPhrase);
+        parent::__construct(503, $message);
     }
 }

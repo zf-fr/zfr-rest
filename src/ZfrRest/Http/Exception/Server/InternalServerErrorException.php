@@ -31,14 +31,14 @@ class InternalServerErrorException extends ServerException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'An internal server error occurred';
+    protected $message = 'An internal server error occurred';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(500, $reasonPhrase);
+        parent::__construct(500, $message);
     }
 }

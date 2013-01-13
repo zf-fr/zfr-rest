@@ -31,14 +31,14 @@ class ForbiddenException extends ClientException
     /**
      * @var string
      */
-    protected $reasonPhrase = 'The request was a valid request, but the server is refusing to respond to it';
+    protected $message = 'The request was a valid request, but the server is refusing to respond to it';
 
 
     /**
-     * @param string $reasonPhrase
+     * @param string $message
      */
-    public function __construct($reasonPhrase = '')
+    public function __construct($message = '')
     {
-        parent::__construct(403, $reasonPhrase);
+        parent::__construct(403, $message);
     }
 }
