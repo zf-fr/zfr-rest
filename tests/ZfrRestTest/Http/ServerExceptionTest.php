@@ -39,4 +39,10 @@ class ServerExceptionTest extends TestCase
 
         $exception = new Exception\ServerException(499);
     }
+
+    public function testAlwaysContainDefaultMessage()
+    {
+        $exception = new Exception\ServerException(501);
+        $this->assertContains('A server error occurred', $exception->getMessage());
+    }
 }
