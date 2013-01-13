@@ -60,7 +60,7 @@ class SelectModelListener implements ListenerAggregateInterface
     {
         $sharedManager = $events->getSharedManager();
 
-        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'selectErrorModel'), 80);
+        $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectErrorModel'), 80);
         $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'selectModel'), -60);
     }
 
@@ -128,7 +128,7 @@ class SelectModelListener implements ListenerAggregateInterface
      * @param  MvcEvent $e
      * @return void
      */
-    public function selectErrorModel(MvcEvent $e)
+    public function injectErrorModel(MvcEvent $e)
     {
         $this->selectModel($e);
 
