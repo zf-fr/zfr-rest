@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\View\Http;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
+use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
@@ -92,13 +93,19 @@ class SelectModelListener implements ListenerAggregateInterface
             return;
         }
 
-        /** @var $headers \Zend\Http\Headers */
-        $headers = $e->getRequest()->getHeaders();
+        $request = $e->getRequest();
+
+        if (!$request instanceof HttpRequest) {
+            return;
+        }
+
+        $headers = $request->getHeaders();
 
         if (!$headers->has('accept')) {
             return;
         }
 
+        /** @var $acceptHeader \Zend\Http\Header\Accept */
         $acceptHeader = $headers->get('accept');
         $acceptValues = $acceptHeader->getPrioritized();
 
