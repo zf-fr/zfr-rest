@@ -16,30 +16,19 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
-
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
-
-/**
- * Module
- *
- * @license MIT
- * @since   0.0.1
- */
-class Module implements BootstrapListenerInterface
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
-
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
-    }
+if  (
+    !($loader = @include __DIR__ . '/../vendor/autoload.php')
+    && !($loader = @include __DIR__ . '/../../../autoload.php')
+) {
+    throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
 }
+
+/* @var $loader \Composer\Autoload\ClassLoader */
+$loader->add('ZfrRestTest\\', __DIR__);
+$loader->add('ControllerModule\\', __DIR__ . '/modules');
+
+if (!$config = @include __DIR__ . '/TestConfiguration.php') {
+    $config = require __DIR__ . '/TestConfiguration.php.dist';
+}
+
+\ZfrRestTest\Util\ServiceManagerFactory::setConfig($config);

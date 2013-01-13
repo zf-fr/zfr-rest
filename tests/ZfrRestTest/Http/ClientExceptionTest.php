@@ -16,30 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRestTest\Http;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Http\Exception;
 
-/**
- * Module
- *
- * @license MIT
- * @since   0.0.1
- */
-class Module implements BootstrapListenerInterface
+class ClientExceptionTest extends TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function onBootstrap(EventInterface $e)
+    public function testThrowExceptionIfStatusCodeIsNotInRange()
     {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for client errors must be between 400 and 499, 500 given'
+        );
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
+        $exception = new Exception\ClientException(500);
+
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for client errors must be between 400 and 499, 399 given'
+        );
+
+        $exception = new Exception\ClientException(399);
     }
 }

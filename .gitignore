@@ -6,6 +6,8 @@
 .project
 .settings
 Thumbs.db
+phpunit.xml
+clover.xml
 tmp/
-vendor
+vendor/
 

@@ -16,30 +16,4 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
-
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
-
-/**
- * Module
- *
- * @license MIT
- * @since   0.0.1
- */
-class Module implements BootstrapListenerInterface
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
-
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
-    }
-}
+return array();

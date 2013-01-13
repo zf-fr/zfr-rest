@@ -16,30 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRest\Http\Exception\Server;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Http\Exception\ServerException;
 
 /**
- * Module
+ * ServiceUnavailableException
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class ServiceUnavailableException extends ServerException
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+    protected $reasonPhrase = 'The server is currently unavailable (because it is overloaded or down for maintenance). Please try again later';
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
+
+    /**
+     * @param string $reasonPhrase
+     */
+    public function __construct($reasonPhrase = '')
+    {
+        parent::__construct(503, $reasonPhrase);
     }
 }

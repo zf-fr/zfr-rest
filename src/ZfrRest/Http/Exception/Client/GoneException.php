@@ -16,30 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRest\Http\Exception\Client;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Http\Exception\ClientException;
 
 /**
- * Module
+ * GoneException
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class GoneException extends ClientException
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+    protected $reasonPhrase = 'The requested resource is no longer available and will not be available again';
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
+
+    /**
+     * @param string $reasonPhrase
+     */
+    public function __construct($reasonPhrase = '')
+    {
+        parent::__construct(410, $reasonPhrase);
     }
 }

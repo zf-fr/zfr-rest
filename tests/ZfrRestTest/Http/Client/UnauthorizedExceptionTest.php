@@ -16,30 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRestTest\Http\Client;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Http\Exception\Client;
 
-/**
- * Module
- *
- * @license MIT
- * @since   0.0.1
- */
-class Module implements BootstrapListenerInterface
+class UnauthorizedExceptionTest extends TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function onBootstrap(EventInterface $e)
+    public function testAssertUnauthorizedExceptionContainsBasicChallengeByDefault()
     {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+        $exception = new Client\UnauthorizedException();
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
+        $this->assertEquals('Basic', $exception->getChallenge());
     }
 }

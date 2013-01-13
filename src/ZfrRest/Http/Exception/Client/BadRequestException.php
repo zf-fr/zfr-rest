@@ -16,30 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest;
+namespace ZfrRest\Http\Exception\Client;
 
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Http\Exception\ClientException;
 
 /**
- * Module
+ * BadRequestException
  *
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface
+class BadRequestException extends ClientException
 {
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function onBootstrap(EventInterface $e)
-    {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+    protected $reasonPhrase = 'The request cannot be fulfilled due to bad syntax';
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new SelectModelListener());
+
+    /**
+     * @param string $reasonPhrase
+     */
+    public function __construct($reasonPhrase = '')
+    {
+        parent::__construct(400, $reasonPhrase);
     }
 }
