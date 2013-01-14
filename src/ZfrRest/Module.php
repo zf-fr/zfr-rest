@@ -23,6 +23,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use ZfrRest\Mvc\View\Http\SelectModelListener;
 use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Mvc\HttpMethodOverrideListener;
 
 /**
  * Module
@@ -41,6 +42,7 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface
         $eventManager  = $application->getEventManager();
 
         $eventManager->attach(new HttpExceptionListener());
+        $eventManager->attach(new HttpMethodOverrideListener());
         $eventManager->attach(new SelectModelListener());
     }
 
