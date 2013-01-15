@@ -22,7 +22,7 @@ use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use ZfrRest\Mime\FormatDecoderAwareInterface;
+
 use ZfrRest\Mvc\View\Http\SelectModelListener;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
@@ -64,20 +64,6 @@ class Module implements
      */
     public function getServiceConfig()
     {
-        return array(
-            'factories' => array(
-                'Symfony\Component\Serializer\Serializer' => 'ZfrRest\Service\SerializerFactory',
-                'ZfrRest\Mime\FormatDecoder'              => 'ZfrRest\Service\FormatDecoderFactory'
-            ),
-
-            'initializers' => array(
-                function($instance, $serviceLocator) {
-                    if ($instance instanceof FormatDecoderAwareInterface) {
-                        $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
-                        $instance->setFormatDecoder($formatDecoder);
-                    }
-                }
-            )
-        );
+        return include __DIR__ . '/../../config/service.config.php';
     }
 }

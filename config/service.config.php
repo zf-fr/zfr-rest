@@ -16,29 +16,24 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mime;
+use ZfrRest\Http\Request\Parser\BodyParser;
 
-/**
- * FormatDecoderAwareInterface. Any class that implements this interface will receive
- * the FormatDecoder that allow to get the format according to a MIME-Type
- *
- * @license MIT
- * @since   0.0.1
- */
-interface FormatDecoderAwareInterface
-{
-    /**
-     * Set the format decoder
-     *
-     * @param  FormatDecoder $formatDecoder
-     * @return FormatDecoderAwareInterface
-     */
-    public function setFormatDecoder(FormatDecoder $formatDecoder);
+return array(
+    'factories' => array(
+        /**
+         * With classes as factories
+         */
+        'Symfony\Component\Serializer\Serializer' => 'ZfrRest\Service\SerializerFactory',
+        'ZfrRest\Mime\FormatDecoder'              => 'ZfrRest\Service\FormatDecoderFactory',
 
-    /**
-     * Get a format decoder
-     *
-     * @return FormatDecoder
-     */
-    public function getFormatDecoder();
-}
+        /**
+         * With closures as factories
+         */
+        'ZfrRest\Http\Parser\Request\BodyParser' => function($serviceLocator) {
+            $decoder       = $serviceLocator->get('Symfony\Component\Serializer\Serializer');
+            $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
+
+            return new BodyParser($decoder, $formatDecoder);
+        }
+    ),
+);

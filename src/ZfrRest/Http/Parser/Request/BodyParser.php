@@ -18,11 +18,11 @@
 
 namespace ZfrRest\Http\Request\Parser;
 
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Zend\Stdlib\MessageInterface;
 use Zend\Http\Request as HttpRequest;
 use ZfrRest\Http\Parser\AbstractParser;
 use ZfrRest\Mime\FormatDecoder;
-use ZfrRest\Mime\FormatDecoderAwareInterface;
 
 /**
  * Parse the body of a request according to the Content-Type header
@@ -30,13 +30,36 @@ use ZfrRest\Mime\FormatDecoderAwareInterface;
  * @license MIT
  * @since   0.0.1
  */
-class BodyParser extends AbstractParser implements FormatDecoderAwareInterface
+class BodyParser extends AbstractParser
 {
     /**
      * @var FormatDecoder
      */
     protected $formatDecoder;
 
+
+    public function __construct(DecoderInterface $decoder, FormatDecoder $formatDecoder)
+    {
+        $this->formatDecoder = $formatDecoder;
+        parent::__construct($decoder);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFormatDecoder(FormatDecoder $formatDecoder)
+    {
+        $this->formatDecoder = $formatDecoder;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFormatDecoder()
+    {
+        return $this->getFormatDecoder();
+    }
 
     /**
      * Parse the body
@@ -61,22 +84,5 @@ class BodyParser extends AbstractParser implements FormatDecoderAwareInterface
         $content = $request->getContent();
 
         return $this->getDecoder()->decode($content, $format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setFormatDecoder(FormatDecoder $formatDecoder)
-    {
-        $this->formatDecoder = $formatDecoder;
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getFormatDecoder()
-    {
-        return $this->getFormatDecoder();
     }
 }
