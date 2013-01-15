@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ClientException;
  * NotFoundException
  *
  * @license MIT
- * @since   0.0.1
  */
 class NotFoundException extends ClientException
 {

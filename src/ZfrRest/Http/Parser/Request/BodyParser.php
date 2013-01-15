@@ -16,28 +16,41 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\Http\Request\Parser;
 
-use ZfrRest\Http\Exception\ClientException;
+use Zend\Http\Request as HttpRequest;
+use Zend\Stdlib\MessageInterface;
+use ZfrRest\Http\Parser\AbstractParser;
 
 /**
- * BadRequestException
+ * Parse the body of a request according to the Content-Type header
  *
  * @license MIT
  */
-class BadRequestException extends ClientException
+class BodyParser extends AbstractParser
 {
     /**
-     * @var string
+     * Parse the body
+     *
+     * @param  MessageInterface $request
+     * @return array|null
      */
-    protected $message = 'The request cannot be fulfilled due to bad syntax';
-
-
-    /**
-     * @param string $message
-     */
-    public function __construct($message = '')
+    public function parse(MessageInterface $request)
     {
-        parent::__construct(400, $message);
+        if (!$request instanceof HttpRequest) {
+            return null;
+        }
+
+        $header = $request->getHeader('Content-Type', null);
+        if ($header === null) {
+            return null;
+        }
+
+        $mimeType = $header->getFieldValue();
+        $content  = $request->getContent();
+
+        $decoder = $this->decoderPluginManager->get($mimeType);
+
+        return $decoder->decode($content, $mimeType);
     }
 }

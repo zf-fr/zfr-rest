@@ -17,9 +17,35 @@
  */
 
 return array(
+    'service_manager' => array(
+        'invokables' => array(
+            'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
+            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener'
+        ),
+
+        'factories' => array(
+            'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Service\BodyParserFactory',
+            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Service\ModuleOptionsFactory',
+            'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Service\SelectModelListenerFactory',
+
+            'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory',
+            'ZfrRest\Serializer\EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
+            'ZfrRest\View\Model\ModelPluginManager'   => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
+        )
+    ),
+
     'view_manager' => array(
         'strategies' => array(
             'ViewJsonStrategy'
         )
     ),
+
+    'zfr_rest' => array(
+        /**
+         * Select which listeners should be registered
+         */
+        'register_http_exception_listener'       => true,
+        'register_select_model_listener'         => true,
+        'register_http_method_override_listener' => false,
+    )
 );

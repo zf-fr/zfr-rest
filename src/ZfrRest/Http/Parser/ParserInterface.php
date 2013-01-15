@@ -16,28 +16,20 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\Http\Parser;
 
-use ZfrRest\Http\Exception\ClientException;
+use Zend\Stdlib\MessageInterface;
 
 /**
- * BadRequestException
+ * ParserInterface
  *
  * @license MIT
  */
-class BadRequestException extends ClientException
+interface ParserInterface
 {
     /**
-     * @var string
+     * @param  MessageInterface $message
+     * @return mixed
      */
-    protected $message = 'The request cannot be fulfilled due to bad syntax';
-
-
-    /**
-     * @param string $message
-     */
-    public function __construct($message = '')
-    {
-        parent::__construct(400, $message);
-    }
+    public function parse(MessageInterface $message);
 }
