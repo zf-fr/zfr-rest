@@ -16,33 +16,40 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'view_manager' => array(
-        'strategies' => array(
-            'ViewJsonStrategy'
-        )
-    ),
+namespace ZfrRest\Http\Parser;
 
-    'zfr_rest' => array(
-        /**
-         * This allow to add new format to MIME-type matches (by default, the FormatDecoder already
-         * contains some common matches like json => application/json...)
-         */
-        'format_decoder' => array(
-            'matches' => array()
-        ),
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
-        /**
-         * Options for the serializers. The encoders map a MIME-Type to a specific encoder, while
-         * the normalize are used to... normalize
-         */
-        'serializer' => array(
-            'encoders' => array(
-                'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-                'xml'  => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
-            ),
+abstract class AbstractParser implements ParserInterface
+{
+    /**
+     * @var DecoderInterface
+     */
+    protected $decoder;
 
-            'normalizers' => array()
-        )
-    )
-);
+
+    /**
+     * @param DecoderInterface $decoder
+     */
+    public function __construct(DecoderInterface $decoder)
+    {
+        $this->decoder = $decoder;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDecoder(DecoderInterface $decoder)
+    {
+        $this->decoder = $decoder;
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDecoder()
+    {
+        return $this->decoder;
+    }
+}

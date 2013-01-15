@@ -16,33 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'view_manager' => array(
-        'strategies' => array(
-            'ViewJsonStrategy'
-        )
-    ),
+namespace ZfrRest\Mime;
 
-    'zfr_rest' => array(
-        /**
-         * This allow to add new format to MIME-type matches (by default, the FormatDecoder already
-         * contains some common matches like json => application/json...)
-         */
-        'format_decoder' => array(
-            'matches' => array()
-        ),
+/**
+ * FormatDecoderAwareInterface. Any class that implements this interface will receive
+ * the FormatDecoder that allow to get the format according to a MIME-Type
+ *
+ * @license MIT
+ * @since   0.0.1
+ */
+interface FormatDecoderAwareInterface
+{
+    /**
+     * Set the format decoder
+     *
+     * @param  FormatDecoder $formatDecoder
+     * @return FormatDecoderAwareInterface
+     */
+    public function setFormatDecoder(FormatDecoder $formatDecoder);
 
-        /**
-         * Options for the serializers. The encoders map a MIME-Type to a specific encoder, while
-         * the normalize are used to... normalize
-         */
-        'serializer' => array(
-            'encoders' => array(
-                'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-                'xml'  => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
-            ),
-
-            'normalizers' => array()
-        )
-    )
-);
+    /**
+     * Get a format decoder
+     *
+     * @return FormatDecoder
+     */
+    public function getFormatDecoder();
+}

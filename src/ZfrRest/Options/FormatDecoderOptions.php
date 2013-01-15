@@ -16,33 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'view_manager' => array(
-        'strategies' => array(
-            'ViewJsonStrategy'
-        )
-    ),
+namespace ZfrRest\Options;
 
-    'zfr_rest' => array(
-        /**
-         * This allow to add new format to MIME-type matches (by default, the FormatDecoder already
-         * contains some common matches like json => application/json...)
-         */
-        'format_decoder' => array(
-            'matches' => array()
-        ),
+use Zend\Stdlib\AbstractOptions;
 
-        /**
-         * Options for the serializers. The encoders map a MIME-Type to a specific encoder, while
-         * the normalize are used to... normalize
-         */
-        'serializer' => array(
-            'encoders' => array(
-                'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-                'xml'  => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
-            ),
+/**
+ * SerializerOptions
+ *
+ * @license MIT
+ * @since   0.0.1
+ */
+class FormatDecoderOptions extends AbstractOptions
+{
+    /**
+     * @var array
+     */
+    protected $matches;
 
-            'normalizers' => array()
-        )
-    )
-);
+
+    /**
+     * @param  array $matches
+     * @return FormatDecoderOptions
+     */
+    public function setMatches(array $matches)
+    {
+        $this->matches = $matches;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMatches()
+    {
+        return $this->matches;
+    }
+}

@@ -21,6 +21,8 @@ namespace ZfrRest;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use ZfrRest\Mime\FormatDecoderAwareInterface;
 use ZfrRest\Mvc\View\Http\SelectModelListener;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
@@ -31,7 +33,10 @@ use ZfrRest\Mvc\HttpMethodOverrideListener;
  * @license MIT
  * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface, ConfigProviderInterface
+class Module implements
+    BootstrapListenerInterface,
+    ConfigProviderInterface,
+    ServiceProviderInterface
 {
     /**
      * {@inheritDoc}
@@ -52,5 +57,27 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface
     public function getConfig()
     {
         return include __DIR__ . '/../../config/module.config.php';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Symfony\Component\Serializer\Serializer' => 'ZfrRest\Service\SerializerFactory',
+                'ZfrRest\Mime\FormatDecoder'              => 'ZfrRest\Service\FormatDecoderFactory'
+            ),
+
+            'initializers' => array(
+                function($instance, $serviceLocator) {
+                    if ($instance instanceof FormatDecoderAwareInterface) {
+                        $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
+                        $instance->setFormatDecoder($formatDecoder);
+                    }
+                }
+            )
+        );
     }
 }
