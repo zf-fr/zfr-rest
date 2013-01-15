@@ -40,7 +40,14 @@ class FormatDecoderOptions extends AbstractOptions
      */
     public function setMatches(array $matches)
     {
+        foreach ($matches as &$match) {
+            if (!is_array($match)) {
+                $match = (array) $match;
+            }
+        }
+
         $this->matches = $matches;
+
         return $this;
     }
 

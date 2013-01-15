@@ -58,7 +58,7 @@ class SerializerOptions extends AbstractOptions
 
             if (!$encoder instanceof EncoderInterface || !$encoder instanceof DecoderInterface) {
                 throw new Exception\InvalidArgumentException(sprintf(
-                    'Encoder must implement both Symfony\Component\Serializer\Encoder\DecoderInterface and
+                    'Encoder must implement Symfony\Component\Serializer\Encoder\EncoderInterface or
                      Symfony\Component\Serializer\Encoder\DecoderInterface, %s given',
                     get_class($encoder)
                 ));
