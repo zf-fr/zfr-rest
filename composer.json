@@ -27,6 +27,7 @@
     "require": {
         "php": ">=5.3.3",
         "doctrine/common": "dev-master",
+        "symfony/serializer": "dev-master",
         "zendframework/zendframework": "2.*"
     },
     "autoload": {
