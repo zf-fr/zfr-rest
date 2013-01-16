@@ -20,16 +20,15 @@ namespace ZfrRest\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mime\FormatDecoder;
-use ZfrRest\Options\FormatDecoderOptions;
+use ZfrRest\Options\ModuleOptions;
 
 /**
- * FormatDecoderFactory
+ * ModuleOptionsFactory
  *
  * @license MIT
  * @since   0.0.1
  */
-class FormatDecoderFactory implements FactoryInterface
+class ModuleOptionsFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -38,24 +37,13 @@ class FormatDecoderFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
         $config = $config['zfr_rest'];
-        $config = isset($config['format_decoder']) ? $config['format_decoder'] : null;
 
         if ($config === null) {
-            throw new Exception\RuntimeException(sprintf(
-                'No options set for the format decoder in %s',
-                __CLASS__
-            ));
+            throw new Exception\RuntimeException('No options set for the module ZfrRest');
         }
 
-        $options = new FormatDecoderOptions($config);
+        $moduleOptions = new ModuleOptions($config);
 
-        $formatDecoder = new FormatDecoder();
-        $matches       = $options->getMatches();
-
-        foreach ($matches as $format => $mimeType) {
-            $formatDecoder->add($format, $mimeType);
-        }
-
-        return $formatDecoder;
+        return $moduleOptions;
     }
 }

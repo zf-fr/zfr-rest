@@ -25,6 +25,13 @@ return array(
 
     'zfr_rest' => array(
         /**
+         * Select which listeners should be registered
+         */
+        'register_http_exception_listener'       => true,
+        'register_select_model_listener'         => true,
+        'register_http_method_override_listener' => false,
+
+        /**
          * This allow to add new format to MIME-type matches (by default, the FormatDecoder already
          * contains some common matches like json => application/json...)
          */
