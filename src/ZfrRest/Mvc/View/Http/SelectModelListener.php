@@ -26,6 +26,7 @@ use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
 use ZfrRest\Mime\FormatDecoder;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\View\Model\ModelPluginManager;
 
 /**
  * SelectModelListener. This listener is used to select the appropriate ModelInterface instance
@@ -40,6 +41,11 @@ class SelectModelListener implements ListenerAggregateInterface
      * @var \Zend\Stdlib\CallbackHandler[]
      */
     protected $listeners = array();
+
+    /**
+     * @var ModelPluginManager
+     */
+    protected $modelPluginManager;
 
     /**
      * @var FormatDecoder
@@ -81,6 +87,32 @@ class SelectModelListener implements ListenerAggregateInterface
     }
 
     /**
+     * Set the model plugin manager
+     *
+     * @param  ModelPluginManager $pluginManager
+     * @return SelectModelListener
+     */
+    public function setModelPluginManager(ModelPluginManager $pluginManager)
+    {
+        $this->modelPluginManager = $pluginManager;
+        return $this;
+    }
+
+    /**
+     * Get the model plugin manager
+     *
+     * @return ModelPluginManager
+     */
+    public function getModelPluginManager()
+    {
+        if ($this->modelPluginManager === null) {
+            $this->modelPluginManager = new ModelPluginManager();
+        }
+
+        return $this->modelPluginManager;
+    }
+
+    /**
      * Select the correct ModelInterface instance by matching the values of the Accept header to a ModelInterface
      *
      * @param  MvcEvent $e
@@ -99,7 +131,7 @@ class SelectModelListener implements ListenerAggregateInterface
         }
 
         $format = $this->getRequestFormat($request);
-        $model  = $this->getModel($format);
+        $model  = $this->getModelPluginManager()->get($format);
 
         if ($result !== null) {
             $model->setVariables($result);
@@ -140,37 +172,6 @@ class SelectModelListener implements ListenerAggregateInterface
         // Otherwise, we stop propagation and set the view model
         $e->setViewModel($result);
         $e->stopPropagation();
-    }
-
-    /**
-     * Get a new instance of a model according a format
-     *
-     * @param  string $format
-     * @throws Exception\DomainException
-     * @return ModelInterface
-     */
-    protected function getModel($format)
-    {
-
-
-        if (!class_exists($model)) {
-            throw new Exception\DomainException(sprintf(
-                'Expects string model name to be a valid class name; received "%s"',
-                $model
-            ));
-        }
-
-        $model = new $model;
-
-        if (!$model instanceof ModelInterface) {
-            throw new Exception\DomainException(sprintf(
-                '%s expects a valid implementation of Zend\View\Model\ModelInterface; received "%s"',
-                __METHOD__,
-                $model
-            ));
-        }
-
-        return $model;
     }
 
     /**

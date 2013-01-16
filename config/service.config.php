@@ -24,17 +24,14 @@ return array(
         /**
          * With classes as factories
          */
-        'Symfony\Component\Serializer\Serializer' => 'ZfrRest\Service\SerializerFactory',
-        'ZfrRest\Mime\FormatDecoder'              => 'ZfrRest\Service\FormatDecoderFactory',
+        'ZfrRest\Mime\FormatDecoder' => 'ZfrRest\Service\FormatDecoderFactory',
 
         /**
          * With closures as factories
          */
         'ZfrRest\Http\Parser\Request\BodyParser' => function($serviceLocator) {
-            $decoder       = $serviceLocator->get('Symfony\Component\Serializer\Serializer');
             $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
-
-            return new BodyParser($decoder, $formatDecoder);
+            return new BodyParser($formatDecoder);
         },
 
         'ZfrRest\Mvc\View\Http\SelectModelListener' => function($serviceLocator) {
