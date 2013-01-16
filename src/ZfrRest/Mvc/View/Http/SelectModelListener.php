@@ -131,7 +131,11 @@ class SelectModelListener implements ListenerAggregateInterface
         }
 
         $format = $this->getRequestFormat($request);
-        $model  = $this->getModelPluginManager()->get($format);
+        if ($format === null) {
+            return;
+        }
+
+        $model = $this->getModelPluginManager()->get($format);
 
         if ($result !== null) {
             $model->setVariables($result);

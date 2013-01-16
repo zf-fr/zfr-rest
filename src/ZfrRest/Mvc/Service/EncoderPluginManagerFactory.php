@@ -16,39 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Serializer;
+namespace ZfrRest\Mvc\Service;
 
-use Zend\ServiceManager\AbstractPluginManager;
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
+use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * EncoderPluginManager
+ * EncoderPluginManagerFactory
  *
  * @license MIT
  * @since   0.0.1
  */
-class EncoderPluginManager extends AbstractPluginManager
+class EncoderPluginManagerFactory extends AbstractPluginManagerFactory
 {
-    /**
-     * @var array
-     */
-    protected $invokableClasses = array(
-        'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-        'xml'  => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
-    );
+    const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\EncoderPluginManager';
 
     /**
      * {@inheritDoc}
      */
-    public function validatePlugin($plugin)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        if (!$plugin instanceof EncoderInterface || !$plugin instanceof DecoderInterface) {
-            throw new Exception\RuntimeException(sprintf(
-                'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\DecoderInterface
-                 or Symfony\Component\Serializer\Encoder\EncoderInterface',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin))
-            ));
-        }
+        $plugins = parent::createService($serviceLocator);
+        return $plugins;
     }
 }
