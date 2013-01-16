@@ -25,7 +25,7 @@ return array(
          * With classes as factories
          */
         'ZfrRest\Mime\FormatDecoder'              => 'ZfrRest\Service\FormatDecoderFactory',
-        
+
         'ZfrRest\Serializer\EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
         'ZfrRest\View\Model\ModelPluginManager'   => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
 
