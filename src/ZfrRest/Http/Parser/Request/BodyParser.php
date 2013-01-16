@@ -18,9 +18,8 @@
 
 namespace ZfrRest\Http\Request\Parser;
 
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
-use Zend\Stdlib\MessageInterface;
 use Zend\Http\Request as HttpRequest;
+use Zend\Stdlib\MessageInterface;
 use ZfrRest\Http\Parser\AbstractParser;
 use ZfrRest\Mime\FormatDecoder;
 
@@ -38,14 +37,21 @@ class BodyParser extends AbstractParser
     protected $formatDecoder;
 
 
-    public function __construct(DecoderInterface $decoder, FormatDecoder $formatDecoder)
+    /**
+     * Constructor
+     *
+     * @param FormatDecoder $formatDecoder
+     */
+    public function __construct(FormatDecoder $formatDecoder)
     {
         $this->formatDecoder = $formatDecoder;
-        parent::__construct($decoder);
     }
 
     /**
-     * {@inheritDoc}
+     * Set the format decoder (used to convert MIME-Type to a format)
+     *
+     * @param  FormatDecoder $formatDecoder
+     * @return BodyParser
      */
     public function setFormatDecoder(FormatDecoder $formatDecoder)
     {
@@ -54,7 +60,9 @@ class BodyParser extends AbstractParser
     }
 
     /**
-     * {@inheritDoc}
+     * Get a format decoder (used to convert MIME-Type to a format)
+     *
+     * @return FormatDecoder
      */
     public function getFormatDecoder()
     {
@@ -80,9 +88,11 @@ class BodyParser extends AbstractParser
 
         $mimeType = $header->getFieldValue();
         $format   = $this->getFormatDecoder()->decode($mimeType);
+        $content  = $request->getContent();
 
-        $content = $request->getContent();
+        $pluginManager = $this->getEncoderPluginManager();
+        $encoder       = $pluginManager->get($format);
 
-        return $this->getDecoder()->decode($content, $format);
+        return $encoder->decode($content, $format);
     }
 }

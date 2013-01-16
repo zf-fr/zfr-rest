@@ -16,20 +16,16 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'view_manager' => array(
-        'strategies' => array(
-            'ViewJsonStrategy'
-        )
-    ),
+namespace ZfrRest\Serializer\Exception;
 
-    'zfr_rest' => array(
-        /**
-         * This allow to add new format to MIME-type matches (by default, the FormatDecoder already
-         * contains some common matches like json => application/json...)
-         */
-        'format_decoder' => array(
-            'matches' => array()
-        )
-    )
-);
+use RuntimeException as BaseRuntimeException;
+
+/**
+ * RuntimeException
+ *
+ * @license MIT
+ * @since   0.0.1
+ */
+class RuntimeException extends BaseRuntimeException
+{
+}

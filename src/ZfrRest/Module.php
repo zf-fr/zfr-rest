@@ -43,12 +43,13 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+        $application    = $e->getTarget();
+        $serviceManager = $application->getServiceManager();
+        $eventManager   = $application->getEventManager();
 
         $eventManager->attach(new HttpExceptionListener());
         $eventManager->attach(new HttpMethodOverrideListener());
-        $eventManager->attach(new SelectModelListener());
+        $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
     }
 
     /**

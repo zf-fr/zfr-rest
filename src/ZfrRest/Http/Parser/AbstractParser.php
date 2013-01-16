@@ -18,38 +18,33 @@
 
 namespace ZfrRest\Http\Parser;
 
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use ZfrRest\Serializer\EncoderPluginManager;
 
 abstract class AbstractParser implements ParserInterface
 {
     /**
-     * @var DecoderInterface
+     * @var EncoderPluginManager
      */
-    protected $decoder;
-
-
-    /**
-     * @param DecoderInterface $decoder
-     */
-    public function __construct(DecoderInterface $decoder)
-    {
-        $this->decoder = $decoder;
-    }
+    protected $encoderPluginManager;
 
     /**
      * {@inheritDoc}
      */
-    public function setDecoder(DecoderInterface $decoder)
+    public function setEncoderPluginManager(EncoderPluginManager $pluginManager)
     {
-        $this->decoder = $decoder;
+        $this->encoderPluginManager = $pluginManager;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getDecoder()
+    public function getEncoderPluginManager()
     {
-        return $this->decoder;
+        if ($this->encoderPluginManager === null) {
+            $this->encoderPluginManager = new EncoderPluginManager();
+        }
+
+        return $this->encoderPluginManager;
     }
 }

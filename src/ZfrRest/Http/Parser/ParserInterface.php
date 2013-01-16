@@ -18,9 +18,8 @@
 
 namespace ZfrRest\Http\Parser;
 
-
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Zend\Stdlib\MessageInterface;
+use ZfrRest\Serializer\EncoderPluginManager;
 
 /**
  * ParserInterface
@@ -31,19 +30,19 @@ use Zend\Stdlib\MessageInterface;
 interface ParserInterface
 {
     /**
-     * Set a decoder
+     * Set the encoder plugin manager
      *
-     * @param  DecoderInterface $decoder
+     * @param  EncoderPluginManager $pluginManager
      * @return ParserInterface
      */
-    public function setDecoder(DecoderInterface $decoder);
+    public function setEncoderPluginManager(EncoderPluginManager $pluginManager);
 
     /**
-     * Get a decoder
+     * Get the encoder plugin manager
      *
-     * @return DecoderInterface
+     * @return EncoderPluginManager
      */
-    public function getDecoder();
+    public function getEncoderPluginManager();
 
     /**
      * @param  MessageInterface $message

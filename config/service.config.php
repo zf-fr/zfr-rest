@@ -17,6 +17,7 @@
  */
 
 use ZfrRest\Http\Request\Parser\BodyParser;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
 
 return array(
     'factories' => array(
@@ -34,6 +35,11 @@ return array(
             $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
 
             return new BodyParser($decoder, $formatDecoder);
+        },
+
+        'ZfrRest\Mvc\View\Http\SelectModelListener' => function($serviceLocator) {
+            $formatDecoder = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
+            return new SelectModelListener($formatDecoder);
         }
     ),
 );
