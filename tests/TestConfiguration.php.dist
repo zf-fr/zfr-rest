@@ -18,14 +18,12 @@
 return array(
     'modules' => array(
         'ZfrRest',
-        'ControllerModule'
     ),
     'module_listener_options' => array(
         'config_glob_paths' => array(
             __DIR__ . '/testing.config.php',
         ),
         'module_paths' => array(
-            'modules' => __DIR__ . '/modules'
         ),
     ),
 );

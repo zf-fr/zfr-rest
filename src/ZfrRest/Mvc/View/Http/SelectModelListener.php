@@ -194,8 +194,11 @@ class SelectModelListener implements ListenerAggregateInterface
 
         $acceptValues = $acceptHeader->getPrioritized();
 
-        foreach ($acceptValues as $mimeType) {
-            $format = $this->formatDecoder->decode($mimeType);
+        /** @var $fieldValue \Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart */
+        foreach ($acceptValues as $fieldValue) {
+            $mimeType = $fieldValue->getTypeString();
+            $format   = $this->formatDecoder->decode($mimeType);
+
             if ($format !== null) {
                 return $format;
             }

@@ -18,15 +18,25 @@
 
 namespace ZfrRestTest\Mvc\View\Http;
 
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
-use ZfrRestTest\Util\ServiceManagerFactory;
+use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Http\Header\Accept as AcceptHeader;
+use Zend\Http\Request as HttpRequest;
+use Zend\View\Model\JsonModel;
+use Zend\Mvc\MvcEvent;
+use ZfrRest\Mime\FormatDecoder;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
 
-class SelectModelListenerTest extends AbstractHttpControllerTestCase
+class SelectModelListenerTest extends TestCase
 {
     /**
-     * @var \Zend\ServiceManager\ServiceManager
+     * @var SelectModelListener
      */
-    protected $serviceManager;
+    protected $selectModelListener;
+
+    /**
+     * @var MvcEvent
+     */
+    protected $event;
 
     /**
      * Set up
@@ -35,32 +45,93 @@ class SelectModelListenerTest extends AbstractHttpControllerTestCase
     {
         parent::setUp();
 
-        $this->serviceManager = ServiceManagerFactory::getServiceManager();
+        $this->selectModelListener = new SelectModelListener(new FormatDecoder());
 
-        $this->serviceManager->get('Application')->bootstrap();
+        // Init the MvcEvent object
+        $request = new HttpRequest();
 
-        $this->setApplicationConfig(
-            include __DIR__ . '/../../../../TestConfiguration.php.dist'
+        $this->event = new MvcEvent();
+        $this->event->setRequest($request);
+    }
+
+    public function typeProvider()
+    {
+        return array(
+            array('text/html', 'Zend\View\Model\ViewModel'),
+            array('application/xhtml+xml', 'Zend\View\Model\ViewModel'),
+            array('application/json', 'Zend\View\Model\JsonModel'),
+            array('application/javascript', 'Zend\View\Model\JsonModel'),
         );
     }
 
-    public function testCanChooseAppropriateModelFromAcceptHeader()
+    /**
+     * @dataProvider typeProvider
+     */
+    public function testCanChooseAppropriateModelFromAcceptHeader($mimeType, $modelClass)
     {
+        $accept = new AcceptHeader();
+        $accept->addMediaType($mimeType);
 
+        $request = $this->event->getRequest();
+        $request->getHeaders()->clearHeaders()->addHeader($accept);
+
+        $this->selectModelListener->selectModel($this->event);
+
+        $this->assertInstanceOf($modelClass, $this->event->getResult());
     }
 
     public function testCanForceModelBySendingItFromController()
     {
+        // Explicitely set the type to text/html...
+        $accept = new AcceptHeader();
+        $accept->addMediaType('text/html');
 
+        $request = $this->event->getRequest();
+        $request->getHeaders()->clearHeaders()->addHeader($accept);
+
+        // ... but explicitely simulate a JsonModel return value from Controller
+        $this->event->setResult(new JsonModel());
+
+        $this->selectModelListener->selectModel($this->event);
+
+        $this->assertInstanceOf('Zend\View\Model\JsonModel', $this->event->getResult());
     }
 
-    public function testCanChooseAppropriateErrorModelFromAcceptHeader()
+    /**
+     * @dataProvider typeProvider
+     */
+    public function testCanChooseAppropriateErrorModelFromAcceptHeader($mimeType, $modelClass)
     {
+        $accept = new AcceptHeader();
+        $accept->addMediaType($mimeType);
 
+        $request = $this->event->getRequest();
+        $request->getHeaders()->clearHeaders()->addHeader($accept);
+
+        $this->selectModelListener->injectErrorModel($this->event);
+
+        $this->assertInstanceOf($modelClass, $this->event->getResult());
     }
 
-    public function testAlwaysStopEventPropagationOnErrorIfFormatIsNotHtml()
+    /**
+     * @dataProvider typeProvider
+     */
+    public function testAlwaysStopEventPropagationOnErrorIfFormatIsNotHtml($mimeType, $modelClass)
     {
+        $accept = new AcceptHeader();
+        $accept->addMediaType($mimeType);
 
+        $request = $this->event->getRequest();
+        $request->getHeaders()->clearHeaders()->addHeader($accept);
+
+        $this->selectModelListener->injectErrorModel($this->event);
+
+        $formatDecoder = new FormatDecoder();
+        if ($formatDecoder->decode($mimeType) === 'html') {
+            $this->assertFalse($this->event->propagationIsStopped());
+        } else {
+            $this->assertInstanceOf($modelClass, $this->event->getViewModel());
+            $this->assertTrue($this->event->propagationIsStopped());
+        }
     }
 }
