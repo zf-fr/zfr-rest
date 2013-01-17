@@ -41,9 +41,9 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
-        $application    = $e->getTarget();
-        $serviceManager = $application->getServiceManager();
-        $eventManager   = $application->getEventManager();
+        $application     = $e->getTarget();
+        $serviceManager  = $application->getServiceManager();
+        $eventManager    = $application->getEventManager();
 
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');

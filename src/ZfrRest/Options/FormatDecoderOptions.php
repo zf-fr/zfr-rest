@@ -21,7 +21,7 @@ namespace ZfrRest\Options;
 use Zend\Stdlib\AbstractOptions;
 
 /**
- * SerializerOptions
+ * FormatDecoderOptions
  *
  * @license MIT
  * @since   0.0.1
