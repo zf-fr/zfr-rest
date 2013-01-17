@@ -81,6 +81,7 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     /**
      * Prepare the response for the exception
      *
+     * @param  HttpResponse $response
      * @return void
      */
     public function prepareResponse(HttpResponse $response)
