@@ -20,19 +20,18 @@ namespace ZfrRest\Mvc\View\Http;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\View\Model\ModelPluginManager;
 
 /**
  * SelectModelListener. This listener is used to select the appropriate ModelInterface instance
  * according to the Accept header
  *
  * @license MIT
- * @since   0.0.1
  */
 class SelectModelListener implements ListenerAggregateInterface
 {
@@ -42,17 +41,20 @@ class SelectModelListener implements ListenerAggregateInterface
     protected $listeners = array();
 
     /**
-     * Map a type to a specific instance of ModelInterface
-     *
-     * @var array
+     * @var ModelPluginManager
      */
-    protected $typeToModel = array(
-        'text/html'              => 'Zend\View\Model\ViewModel',
-        'application/xhtml+xml'  => 'Zend\View\Model\ViewModel',
-        'application/javascript' => 'Zend\View\Model\JsonModel',
-        'application/json'       => 'Zend\View\Model\JsonModel',
-    );
+    protected $modelPluginManager;
 
+
+    /**
+     * Constructor
+     *
+     * @param ModelPluginManager $modelPluginManager
+     */
+    public function __construct(ModelPluginManager $modelPluginManager)
+    {
+        $this->modelPluginManager = $modelPluginManager;
+    }
 
     /**
      * {@inheritDoc}
@@ -86,42 +88,23 @@ class SelectModelListener implements ListenerAggregateInterface
     public function selectModel(MvcEvent $e)
     {
         $result = $e->getResult();
-
-        // If the result is already casted to a specific ModelInterface OR if this is a response, we
-        // directly return
         if ($result instanceof ModelInterface || $result instanceof ResponseInterface) {
             return;
         }
 
         $request = $e->getRequest();
-
         if (!$request instanceof HttpRequest) {
             return;
         }
 
-        $headers = $request->getHeaders();
+        $contentType = $this->getContentType($request);
+        $model       = $this->modelPluginManager->create($contentType);
 
-        if (!$headers->has('accept')) {
-            return;
+        if ($result !== null) {
+            $model->setVariables($result);
         }
 
-        /** @var $acceptHeader \Zend\Http\Header\Accept */
-        $acceptHeader = $headers->get('accept');
-        $acceptValues = $acceptHeader->getPrioritized();
-
-        foreach ($acceptValues as $type) {
-            if ($this->hasModel($type)) {
-                $model = $this->getModel($type);
-
-                if ($result !== null) {
-                    $model->setVariables($result);
-                }
-
-                $e->setResult($model);
-
-                return;
-            }
-        }
+        $e->setResult($model);
     }
 
     /**
@@ -144,10 +127,9 @@ class SelectModelListener implements ListenerAggregateInterface
             return;
         }
 
-        $class = get_class($result);
-
-        // If the model is an EXACT instance of ViewModel, it means we want to render it with a template
-        if ($class === 'Zend\View\Model\ViewModel') {
+        // If it's an exact instance of Zend\View\Model\ViewModel we return as we want to let the other
+        // listeners to inject layout
+        if (get_class($result) === 'Zend\View\Model\ViewModel') {
             return;
         }
 
@@ -157,50 +139,22 @@ class SelectModelListener implements ListenerAggregateInterface
     }
 
     /**
-     * Return true if there is a specific model mapped to the type in the Accept header
+     * Get the content type with higher priority in the request
      *
-     * @param  AcceptFieldValuePart $acceptFieldValue
-     * @return bool
+     * @param  HttpRequest $request
+     * @return string|null
      */
-    protected function hasModel(AcceptFieldValuePart $acceptFieldValue)
+    protected function getContentType(HttpRequest $request)
     {
-        $typeString = $acceptFieldValue->getTypeString();
-
-        if (isset($this->typeToModel[$typeString])) {
-            return true;
+        /** @var $acceptHeader \Zend\Http\Header\Accept */
+        $acceptHeader = $request->getHeader('Accept', null);
+        if ($acceptHeader === null) {
+            return null;
         }
 
-        return false;
-    }
+        $acceptValues = $acceptHeader->getPrioritized();
+        $acceptValue  = reset($acceptValues);
 
-    /**
-     * Get a new instance of a model that match the type in the Accept header
-     *
-     * @param  AcceptFieldValuePart $acceptFieldValue
-     * @return ModelInterface
-     */
-    protected function getModel(AcceptFieldValuePart $acceptFieldValue)
-    {
-        $typeString = $acceptFieldValue->getTypeString();
-        $model      = $this->typeToModel[$typeString];
-
-        if (!class_exists($model)) {
-            throw new Exception\DomainException(sprintf(
-                'Expects string model name to be a valid class name; received "%s"',
-                $model
-            ));
-        }
-
-        $model = new $model;
-
-        if (!$model instanceof ModelInterface) {
-            throw new Exception\DomainException(sprintf(
-                '%s expects a valid implementation of Zend\View\Model\ModelInterface; received "%s"',
-                __METHOD__,
-                $model
-            ));
-        }
-
-        return $model;
+        return $acceptValue->getTypeString();
     }
 }

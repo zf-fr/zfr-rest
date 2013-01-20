@@ -21,29 +21,39 @@ namespace ZfrRest;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
-use ZfrRest\Mvc\HttpExceptionListener;
-use ZfrRest\Mvc\HttpMethodOverrideListener;
 
 /**
  * Module
  *
  * @license MIT
- * @since   0.0.1
  */
-class Module implements BootstrapListenerInterface, ConfigProviderInterface
+class Module implements
+    BootstrapListenerInterface,
+    ConfigProviderInterface
 {
     /**
      * {@inheritDoc}
      */
     public function onBootstrap(EventInterface $e)
     {
-        $application   = $e->getTarget();
-        $eventManager  = $application->getEventManager();
+        $application     = $e->getTarget();
+        $serviceManager  = $application->getServiceManager();
+        $eventManager    = $application->getEventManager();
 
-        $eventManager->attach(new HttpExceptionListener());
-        $eventManager->attach(new HttpMethodOverrideListener());
-        $eventManager->attach(new SelectModelListener());
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
+        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+
+        if ($moduleOptions->getRegisterHttpExceptionListener()) {
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
+        }
+
+        if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
+        }
+
+        if ($moduleOptions->getRegisterSelectModelListener()) {
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
+        }
     }
 
     /**

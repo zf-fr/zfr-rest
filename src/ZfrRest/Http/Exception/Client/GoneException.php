@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ClientException;
  * GoneException
  *
  * @license MIT
- * @since   0.0.1
  */
 class GoneException extends ClientException
 {

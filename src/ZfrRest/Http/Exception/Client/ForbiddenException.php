@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ClientException;
  * ForbiddenException
  *
  * @license MIT
- * @since   0.0.1
  */
 class ForbiddenException extends ClientException
 {

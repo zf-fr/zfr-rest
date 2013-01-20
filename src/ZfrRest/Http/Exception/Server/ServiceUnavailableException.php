@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ServerException;
  * ServiceUnavailableException
  *
  * @license MIT
- * @since   0.0.1
  */
 class ServiceUnavailableException extends ServerException
 {

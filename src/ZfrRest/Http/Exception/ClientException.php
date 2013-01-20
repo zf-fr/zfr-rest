@@ -24,7 +24,6 @@ use InvalidArgumentException;
  * ClientException
  *
  * @license MIT
- * @since   0.0.1
  */
 class ClientException extends AbstractHttpException
 {

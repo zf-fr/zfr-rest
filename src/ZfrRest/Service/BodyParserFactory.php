@@ -16,28 +16,24 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\Service;
 
-use ZfrRest\Http\Exception\ClientException;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Http\Request\Parser\BodyParser;
 
 /**
- * BadRequestException
+ * BodyParserFactory
  *
  * @license MIT
  */
-class BadRequestException extends ClientException
+class BodyParserFactory implements FactoryInterface
 {
     /**
-     * @var string
+     * {@inheritDoc}
      */
-    protected $message = 'The request cannot be fulfilled due to bad syntax';
-
-
-    /**
-     * @param string $message
-     */
-    public function __construct($message = '')
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        parent::__construct(400, $message);
+        return new BodyParser($serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager'));
     }
 }

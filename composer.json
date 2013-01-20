@@ -26,7 +26,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
-        "doctrine/common": "dev-master",
+        "doctrine/common": ">=2.4.x-dev",
+        "symfony/serializer": "2.1.*",
         "zendframework/zendframework": "2.*"
     },
     "autoload": {
