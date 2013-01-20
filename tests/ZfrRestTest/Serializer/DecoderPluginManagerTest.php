@@ -44,7 +44,7 @@ class DecoderPluginManagerTest extends TestCase
         $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
 
         $plugin = $this->decoderPluginManager->get('application/xml');
-        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\XmlDecoder', $plugin);
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\XmlEncoder', $plugin);
         $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
     }
 
