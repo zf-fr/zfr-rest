@@ -39,15 +39,13 @@ class EncoderPluginManagerTest extends TestCase
 
     public function testCanRetrieveEncodersFromDefaultFormat()
     {
-        $plugin = $this->encoderPluginManager->get('json');
-        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\JsonEncoder', $plugin);
+        $plugin = $this->encoderPluginManager->get('application/json');
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\JsonEncode', $plugin);
         $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\EncoderInterface', $plugin);
-        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
 
-        $plugin = $this->encoderPluginManager->get('xml');
+        $plugin = $this->encoderPluginManager->get('application/xml');
         $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\XmlEncoder', $plugin);
         $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\EncoderInterface', $plugin);
-        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
     }
 
     public function testCanRetrievePluginManagerWithServiceManager()

@@ -26,7 +26,6 @@ use ZfrRest\Options\ModuleOptions;
  * ModuleOptionsFactory
  *
  * @license MIT
- * @since   0.0.1
  */
 class ModuleOptionsFactory implements FactoryInterface
 {
@@ -36,10 +35,6 @@ class ModuleOptionsFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('Config');
-        $config = $config['zfr_rest'];
-
-        $moduleOptions = new ModuleOptions($config);
-
-        return $moduleOptions;
+        return new ModuleOptions($config['zfr_rest']);
     }
 }

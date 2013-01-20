@@ -25,7 +25,6 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
  * DecoderPluginManager
  *
  * @license MIT
- * @since   0.0.1
  */
 class DecoderPluginManager extends AbstractPluginManager
 {
@@ -51,5 +50,13 @@ class DecoderPluginManager extends AbstractPluginManager
             'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\DecoderInterface',
             (is_object($plugin) ? get_class($plugin) : gettype($plugin))
         ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function canonicalizeName($name)
+    {
+        return $name;
     }
 }

@@ -24,7 +24,6 @@ use Zend\Stdlib\AbstractOptions;
  * ModuleOptions
  *
  * @license MIT
- * @since   0.0.1
  */
 class ModuleOptions extends AbstractOptions
 {

@@ -23,7 +23,6 @@ use Zend\Http\Header\Accept as AcceptHeader;
 use Zend\Http\Request as HttpRequest;
 use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
-use ZfrRest\Mime\FormatDecoder;
 use ZfrRest\Mvc\View\Http\SelectModelListener;
 use ZfrRest\View\Model\ModelPluginManager;
 
@@ -46,7 +45,7 @@ class SelectModelListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->selectModelListener = new SelectModelListener(new ModelPluginManager(), new FormatDecoder());
+        $this->selectModelListener = new SelectModelListener(new ModelPluginManager());
 
         // Init the MvcEvent object
         $request = new HttpRequest();
@@ -126,9 +125,9 @@ class SelectModelListenerTest extends TestCase
         $request->getHeaders()->clearHeaders()->addHeader($accept);
 
         $this->selectModelListener->injectErrorModel($this->event);
+        $model = $this->event->getViewModel();
 
-        $formatDecoder = new FormatDecoder();
-        if ($formatDecoder->decode($mimeType) === 'html') {
+        if (get_class($model) === 'Zend\View\Model\ViewModel') {
             $this->assertFalse($this->event->propagationIsStopped());
         } else {
             $this->assertInstanceOf($modelClass, $this->event->getViewModel());

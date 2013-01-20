@@ -24,7 +24,6 @@ use Zend\Mvc\Service\AbstractPluginManagerFactory;
  * ModelPluginManagerFactory
  *
  * @license MIT
- * @since   0.0.1
  */
 class ModelPluginManagerFactory extends AbstractPluginManagerFactory
 {

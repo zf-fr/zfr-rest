@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ClientException;
  * BadRequestException
  *
  * @license MIT
- * @since   0.0.1
  */
 class BadRequestException extends ClientException
 {

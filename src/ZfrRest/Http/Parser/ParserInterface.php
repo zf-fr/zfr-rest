@@ -19,13 +19,11 @@
 namespace ZfrRest\Http\Parser;
 
 use Zend\Stdlib\MessageInterface;
-use ZfrRest\Serializer\EncoderPluginManager;
 
 /**
  * ParserInterface
  *
  * @license MIT
- * @since   0.0.1
  */
 interface ParserInterface
 {

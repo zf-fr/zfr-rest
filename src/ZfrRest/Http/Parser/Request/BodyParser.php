@@ -26,7 +26,6 @@ use ZfrRest\Http\Parser\AbstractParser;
  * Parse the body of a request according to the Content-Type header
  *
  * @license MIT
- * @since   0.0.1
  */
 class BodyParser extends AbstractParser
 {

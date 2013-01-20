@@ -26,7 +26,6 @@ use Zend\Http\Response as HttpResponse;
  * ExceptionInterface
  *
  * @license MIT
- * @since   0.0.1
  */
 abstract class AbstractHttpException extends Exception implements ExceptionInterface
 {

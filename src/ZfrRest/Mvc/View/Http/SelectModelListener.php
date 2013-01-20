@@ -32,7 +32,6 @@ use ZfrRest\View\Model\ModelPluginManager;
  * according to the Accept header
  *
  * @license MIT
- * @since   0.0.1
  */
 class SelectModelListener implements ListenerAggregateInterface
 {
@@ -154,7 +153,8 @@ class SelectModelListener implements ListenerAggregateInterface
         }
 
         $acceptValues = $acceptHeader->getPrioritized();
+        $acceptValue  = reset($acceptValues);
 
-        return $acceptValues[0]->getTypeString();
+        return $acceptValue->getTypeString();
     }
 }

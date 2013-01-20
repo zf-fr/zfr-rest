@@ -24,7 +24,6 @@ use RuntimeException as BaseRuntimeException;
  * RuntimeException
  *
  * @license MIT
- * @since   0.0.1
  */
 class RuntimeException extends BaseRuntimeException
 {

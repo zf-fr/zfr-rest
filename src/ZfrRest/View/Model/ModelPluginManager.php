@@ -29,7 +29,6 @@ use ZfrRest\View\Exception;
  *       we can serialize data to XML)
  *
  * @license MIT
- * @since   0.0.1
  */
 class ModelPluginManager extends AbstractPluginManager
 {
@@ -57,5 +56,13 @@ class ModelPluginManager extends AbstractPluginManager
             'Plugin of type %s is invalid; must implement Zend\View\ViewModel',
             (is_object($plugin) ? get_class($plugin) : gettype($plugin))
         ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function canonicalizeName($name)
+    {
+        return $name;
     }
 }

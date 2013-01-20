@@ -24,7 +24,6 @@ use DomainException as BaseDomainException;
  * Domain Exception
  *
  * @license MIT
- * @since   0.0.1
  */
 class DomainException extends BaseDomainException
 {}

@@ -21,14 +21,11 @@ namespace ZfrRest;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use ZfrRest\Mvc\HttpExceptionListener;
-use ZfrRest\Mvc\HttpMethodOverrideListener;
 
 /**
  * Module
  *
  * @license MIT
- * @since   0.0.1
  */
 class Module implements
     BootstrapListenerInterface,
@@ -47,11 +44,11 @@ class Module implements
         $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
 
         if ($moduleOptions->getRegisterHttpExceptionListener()) {
-            $eventManager->attach(new HttpExceptionListener());
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
         }
 
         if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
-            $eventManager->attach(new HttpMethodOverrideListener());
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
         }
 
         if ($moduleOptions->getRegisterSelectModelListener()) {

@@ -16,34 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\View\Mode;
+namespace ZfrRestTest\Serializer;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
-use ZfrRest\View\Model\ModelPluginManager;
+use ZfrRest\Serializer\DecoderPluginManager;
 
-class ModelPluginManagerTest extends TestCase
+class DecoderPluginManagerTest extends TestCase
 {
     /**
-     * @var ModelPluginManager
+     * @var DecoderPluginManager
      */
-    protected $modelPluginManager;
+    protected $decoderPluginManager;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->modelPluginManager = new ModelPluginManager();
+        $this->decoderPluginManager = new DecoderPluginManager();
     }
 
-    public function testCanRetrieveModelFromDefaultFormat()
+    public function testCanRetrieveEncodersFromDefaultFormat()
     {
-        $plugin = $this->modelPluginManager->get('text/html');
-        $this->assertInstanceOf('Zend\View\Model\ViewModel', $plugin);
+        $plugin = $this->decoderPluginManager->get('application/json');
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\JsonDecode', $plugin);
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
 
-        $plugin = $this->modelPluginManager->get('application/json');
-        $this->assertInstanceOf('Zend\View\Model\JsonModel', $plugin);
+        $plugin = $this->decoderPluginManager->get('application/xml');
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\XmlDecoder', $plugin);
+        $this->assertInstanceOf('Symfony\Component\Serializer\Encoder\DecoderInterface', $plugin);
     }
 
     public function testCanRetrievePluginManagerWithServiceManager()
@@ -51,13 +53,13 @@ class ModelPluginManagerTest extends TestCase
         $serviceManager = new ServiceManager(
             new ServiceManagerConfig(array(
                 'factories' => array(
-                    'ModelPluginManager' => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
+                    'DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory',
                 ),
             ))
         );
         $serviceManager->setService('Config', array());
 
-        $modelPluginManager = $serviceManager->get('ModelPluginManager');
-        $this->assertInstanceOf('ZfrRest\View\Model\ModelPluginManager', $modelPluginManager);
+        $decoderPluginManager = $serviceManager->get('DecoderPluginManager');
+        $this->assertInstanceOf('ZfrRest\Serializer\DecoderPluginManager', $decoderPluginManager);
     }
 }

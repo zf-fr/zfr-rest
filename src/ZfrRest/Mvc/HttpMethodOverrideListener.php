@@ -31,7 +31,6 @@ use Zend\Mvc\MvcEvent;
  * This can also be handy for forms, that only support GET and POST.
  *
  * @license MIT
- * @since   0.0.1
  */
 class HttpMethodOverrideListener implements ListenerAggregateInterface
 {
