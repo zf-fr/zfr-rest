@@ -17,6 +17,16 @@
  */
 
 return array(
+    'service_manager' => array(
+        'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Service\BodyParserFactory',
+        'ZfrRest\Mime\FormatDecoder'                => 'ZfrRest\Service\FormatDecoderFactory',
+        'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Service\ModuleOptionsFactory',
+        'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Service\SelectModelListenerFactory',
+
+        'ZfrRest\Serializer\EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
+        'ZfrRest\View\Model\ModelPluginManager'   => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
+    ),
+
     'view_manager' => array(
         'strategies' => array(
             'ViewJsonStrategy'

@@ -20,6 +20,11 @@ namespace ZfrRest\Http\Parser;
 
 use ZfrRest\Serializer\EncoderPluginManager;
 
+/**
+ * AbstractParser
+ *
+ * @license MIT
+ */
 abstract class AbstractParser implements ParserInterface
 {
     /**
@@ -27,24 +32,14 @@ abstract class AbstractParser implements ParserInterface
      */
     protected $encoderPluginManager;
 
+
     /**
-     * {@inheritDoc}
+     * Constructor
+     *
+     * @param EncoderPluginManager $pluginManager
      */
-    public function setEncoderPluginManager(EncoderPluginManager $pluginManager)
+    public function __construct(EncoderPluginManager $pluginManager)
     {
         $this->encoderPluginManager = $pluginManager;
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEncoderPluginManager()
-    {
-        if ($this->encoderPluginManager === null) {
-            $this->encoderPluginManager = new EncoderPluginManager();
-        }
-
-        return $this->encoderPluginManager;
     }
 }

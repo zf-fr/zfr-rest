@@ -22,6 +22,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Stdlib\MessageInterface;
 use ZfrRest\Http\Parser\AbstractParser;
 use ZfrRest\Mime\FormatDecoder;
+use ZfrRest\Serializer\EncoderPluginManager;
 
 /**
  * Parse the body of a request according to the Content-Type header
@@ -40,33 +41,13 @@ class BodyParser extends AbstractParser
     /**
      * Constructor
      *
-     * @param FormatDecoder $formatDecoder
+     * @param EncoderPluginManager $pluginManager
+     * @param FormatDecoder        $formatDecoder
      */
-    public function __construct(FormatDecoder $formatDecoder)
+    public function __construct(EncoderPluginManager $pluginManager, FormatDecoder $formatDecoder)
     {
+        parent::__construct($pluginManager);
         $this->formatDecoder = $formatDecoder;
-    }
-
-    /**
-     * Set the format decoder (used to convert MIME-Type to a format)
-     *
-     * @param  FormatDecoder $formatDecoder
-     * @return BodyParser
-     */
-    public function setFormatDecoder(FormatDecoder $formatDecoder)
-    {
-        $this->formatDecoder = $formatDecoder;
-        return $this;
-    }
-
-    /**
-     * Get a format decoder (used to convert MIME-Type to a format)
-     *
-     * @return FormatDecoder
-     */
-    public function getFormatDecoder()
-    {
-        return $this->getFormatDecoder();
     }
 
     /**
@@ -87,11 +68,10 @@ class BodyParser extends AbstractParser
         }
 
         $mimeType = $header->getFieldValue();
-        $format   = $this->getFormatDecoder()->decode($mimeType);
+        $format   = $this->formatDecoder->decode($mimeType);
         $content  = $request->getContent();
 
-        $pluginManager = $this->getEncoderPluginManager();
-        $encoder       = $pluginManager->get($format);
+        $encoder = $this->encoderPluginManager->get($format);
 
         return $encoder->decode($content, $format);
     }

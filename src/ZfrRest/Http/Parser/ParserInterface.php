@@ -30,21 +30,6 @@ use ZfrRest\Serializer\EncoderPluginManager;
 interface ParserInterface
 {
     /**
-     * Set the encoder plugin manager
-     *
-     * @param  EncoderPluginManager $pluginManager
-     * @return ParserInterface
-     */
-    public function setEncoderPluginManager(EncoderPluginManager $pluginManager);
-
-    /**
-     * Get the encoder plugin manager
-     *
-     * @return EncoderPluginManager
-     */
-    public function getEncoderPluginManager();
-
-    /**
      * @param  MessageInterface $message
      * @return mixed
      */

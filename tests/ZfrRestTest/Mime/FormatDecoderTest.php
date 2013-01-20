@@ -56,8 +56,8 @@ class FormatDecoderTest extends TestCase
 
     public function testAddAnExistingMimeTypeDoesNotAddItTwice()
     {
-        $this->formatDecoder->add('html', 'funny/mime-type')
-                            ->add('html', 'funny/mime-type');
+        $this->formatDecoder->add('html', 'funny/mime-type');
+        $this->formatDecoder->add('html', 'funny/mime-type');
 
         $refl         = new ReflectionClass('ZfrRest\Mime\FormatDecoder');
         $reflProperty = $refl->getProperty('matches');

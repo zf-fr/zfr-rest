@@ -20,7 +20,7 @@ namespace ZfrRest\Mime;
 
 /**
  * This is a simple class that map a format (eg. json, xml, html...) to a list of MIME-Types. It
- * contains some default matches, but of course all of them can be overriden
+ * contains some default matches, but of course all of them can be overridden
  *
  * @license MIT
  * @since   0.0.1
@@ -42,7 +42,7 @@ class FormatDecoder
      *
      * @param  string $format
      * @param  string $mimeType
-     * @return FormatDecoder
+     * @return void
      */
     public function add($format, $mimeType)
     {
@@ -53,15 +53,13 @@ class FormatDecoder
             $this->remove($mimeType);
             $this->matches[$format][] = $mimeType;
         }
-
-        return $this;
     }
 
     /**
      * Remove the MIME-Type so that it is not matched to any format anymore
      *
      * @param  string $mimeType
-     * @return FormatDecoder
+     * @return void
      */
     public function remove($mimeType)
     {
@@ -70,11 +68,9 @@ class FormatDecoder
 
             if ($key !== false) {
                 unset($mimeTypes[$key]);
-                return $this;
+                return;
             }
         }
-
-        return $this;
     }
 
     /**

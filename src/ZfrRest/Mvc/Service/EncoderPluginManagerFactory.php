@@ -19,7 +19,6 @@
 namespace ZfrRest\Mvc\Service;
 
 use Zend\Mvc\Service\AbstractPluginManagerFactory;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * EncoderPluginManagerFactory
@@ -30,13 +29,4 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class EncoderPluginManagerFactory extends AbstractPluginManagerFactory
 {
     const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\EncoderPluginManager';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        $plugins = parent::createService($serviceLocator);
-        return $plugins;
-    }
 }

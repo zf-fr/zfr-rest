@@ -56,11 +56,13 @@ class SelectModelListener implements ListenerAggregateInterface
     /**
      * Constructor
      *
-     * @param FormatDecoder $formatDecoder
+     * @param ModelPluginManager $modelPluginManager
+     * @param FormatDecoder      $formatDecoder
      */
-    public function __construct(FormatDecoder $formatDecoder)
+    public function __construct(ModelPluginManager $modelPluginManager, FormatDecoder $formatDecoder)
     {
-        $this->formatDecoder = $formatDecoder;
+        $this->modelPluginManager = $modelPluginManager;
+        $this->formatDecoder      = $formatDecoder;
     }
 
     /**
@@ -87,32 +89,6 @@ class SelectModelListener implements ListenerAggregateInterface
     }
 
     /**
-     * Set the model plugin manager
-     *
-     * @param  ModelPluginManager $pluginManager
-     * @return SelectModelListener
-     */
-    public function setModelPluginManager(ModelPluginManager $pluginManager)
-    {
-        $this->modelPluginManager = $pluginManager;
-        return $this;
-    }
-
-    /**
-     * Get the model plugin manager
-     *
-     * @return ModelPluginManager
-     */
-    public function getModelPluginManager()
-    {
-        if ($this->modelPluginManager === null) {
-            $this->modelPluginManager = new ModelPluginManager();
-        }
-
-        return $this->modelPluginManager;
-    }
-
-    /**
      * Select the correct ModelInterface instance by matching the values of the Accept header to a ModelInterface
      *
      * @param  MvcEvent $e
@@ -135,7 +111,7 @@ class SelectModelListener implements ListenerAggregateInterface
             return;
         }
 
-        $model = $this->getModelPluginManager()->get($format);
+        $model = $this->modelPluginManager->create($format);
 
         if ($result !== null) {
             $model->setVariables($result);

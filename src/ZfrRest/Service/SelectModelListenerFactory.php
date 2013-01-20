@@ -16,17 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Service;
+namespace ZfrRest\Service;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
 
 /**
- * ModelPluginManagerFactory
+ * SelectModelListenerFactory
  *
  * @license MIT
- * @since   0.0.1
  */
-class ModelPluginManagerFactory extends AbstractPluginManagerFactory
+class SelectModelListenerFactory implements FactoryInterface
 {
-    const PLUGIN_MANAGER_CLASS = 'ZfrRest\View\Model\ModelPluginManager';
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $formatDecoder      = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
+        $modelPluginManager = $serviceLocator->get('ZfrRest\View\Model\ModelPluginManager');
+
+        return new SelectModelListener($modelPluginManager, $formatDecoder);
+    }
 }
