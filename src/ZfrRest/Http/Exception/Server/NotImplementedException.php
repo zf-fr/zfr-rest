@@ -24,7 +24,6 @@ use ZfrRest\Http\Exception\ServerException;
  * NotImplementedException
  *
  * @license MIT
- * @since   0.0.1
  */
 class NotImplementedException extends ServerException
 {

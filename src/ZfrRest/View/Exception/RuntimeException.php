@@ -16,28 +16,15 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\View\Exception;
 
-use ZfrRest\Http\Exception\ClientException;
+use RuntimeException as BaseRuntimeException;
 
 /**
- * BadRequestException
+ * RuntimeException
  *
  * @license MIT
  */
-class BadRequestException extends ClientException
+class RuntimeException extends BaseRuntimeException
 {
-    /**
-     * @var string
-     */
-    protected $message = 'The request cannot be fulfilled due to bad syntax';
-
-
-    /**
-     * @param string $message
-     */
-    public function __construct($message = '')
-    {
-        parent::__construct(400, $message);
-    }
 }

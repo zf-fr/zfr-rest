@@ -16,28 +16,30 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Client;
+namespace ZfrRest\Http\Parser;
 
-use ZfrRest\Http\Exception\ClientException;
+use ZfrRest\Serializer\DecoderPluginManager;
 
 /**
- * BadRequestException
+ * AbstractParser
  *
  * @license MIT
  */
-class BadRequestException extends ClientException
+abstract class AbstractParser implements ParserInterface
 {
     /**
-     * @var string
+     * @var DecoderPluginManager
      */
-    protected $message = 'The request cannot be fulfilled due to bad syntax';
+    protected $decoderPluginManager;
 
 
     /**
-     * @param string $message
+     * Constructor
+     *
+     * @param DecoderPluginManager $pluginManager
      */
-    public function __construct($message = '')
+    public function __construct(DecoderPluginManager $pluginManager)
     {
-        parent::__construct(400, $message);
+        $this->decoderPluginManager = $pluginManager;
     }
 }
