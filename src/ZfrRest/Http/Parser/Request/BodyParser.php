@@ -21,8 +21,6 @@ namespace ZfrRest\Http\Request\Parser;
 use Zend\Http\Request as HttpRequest;
 use Zend\Stdlib\MessageInterface;
 use ZfrRest\Http\Parser\AbstractParser;
-use ZfrRest\Mime\FormatDecoder;
-use ZfrRest\Serializer\EncoderPluginManager;
 
 /**
  * Parse the body of a request according to the Content-Type header
@@ -32,24 +30,6 @@ use ZfrRest\Serializer\EncoderPluginManager;
  */
 class BodyParser extends AbstractParser
 {
-    /**
-     * @var FormatDecoder
-     */
-    protected $formatDecoder;
-
-
-    /**
-     * Constructor
-     *
-     * @param EncoderPluginManager $pluginManager
-     * @param FormatDecoder        $formatDecoder
-     */
-    public function __construct(EncoderPluginManager $pluginManager, FormatDecoder $formatDecoder)
-    {
-        parent::__construct($pluginManager);
-        $this->formatDecoder = $formatDecoder;
-    }
-
     /**
      * Parse the body
      *
@@ -68,11 +48,10 @@ class BodyParser extends AbstractParser
         }
 
         $mimeType = $header->getFieldValue();
-        $format   = $this->formatDecoder->decode($mimeType);
         $content  = $request->getContent();
 
-        $encoder = $this->encoderPluginManager->get($format);
+        $decoder = $this->decoderPluginManager->get($mimeType);
 
-        return $encoder->decode($content, $format);
+        return $decoder->decode($content, $mimeType);
     }
 }

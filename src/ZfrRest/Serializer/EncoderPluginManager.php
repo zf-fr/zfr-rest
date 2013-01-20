@@ -19,7 +19,6 @@
 namespace ZfrRest\Serializer;
 
 use Zend\ServiceManager\AbstractPluginManager;
-use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 
 /**
@@ -34,8 +33,9 @@ class EncoderPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $invokableClasses = array(
-        'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-        'xml'  => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
+        'application/json'       => 'Symfony\Component\Serializer\Encoder\JsonEncode',
+        'application/javascript' => 'Symfony\Component\Serializer\Encoder\JsonEncode',
+        'application/xml'        => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
     );
 
     /**
@@ -43,12 +43,13 @@ class EncoderPluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if (!$plugin instanceof EncoderInterface || !$plugin instanceof DecoderInterface) {
-            throw new Exception\RuntimeException(sprintf(
-                'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\DecoderInterface
-                 or Symfony\Component\Serializer\Encoder\EncoderInterface',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin))
-            ));
+        if ($plugin instanceof EncoderInterface) {
+            return;
         }
+
+        throw new Exception\RuntimeException(sprintf(
+            'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\EncoderInterface',
+            (is_object($plugin) ? get_class($plugin) : gettype($plugin))
+        ));
     }
 }

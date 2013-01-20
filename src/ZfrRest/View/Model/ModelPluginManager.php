@@ -37,8 +37,10 @@ class ModelPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $invokableClasses = array(
-        'html' => 'Zend\View\Model\ViewModel',
-        'json' => 'Zend\View\Model\JsonModel'
+        'text/html'              => 'Zend\View\Model\ViewModel',
+        'application/xhtml+xml'  => 'Zend\View\Model\ViewModel',
+        'application/json'       => 'Zend\View\Model\JsonModel',
+        'application/javascript' => 'Zend\View\Model\JsonModel',
     );
 
 
@@ -47,11 +49,13 @@ class ModelPluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if (!$plugin instanceof ModelInterface) {
-            throw new Exception\RuntimeException(sprintf(
-                'Plugin of type %s is invalid; must implement Zend\View\ViewModel',
-                (is_object($plugin) ? get_class($plugin) : gettype($plugin))
-            ));
+        if ($plugin instanceof ModelInterface) {
+            return;
         }
+
+        throw new Exception\RuntimeException(sprintf(
+            'Plugin of type %s is invalid; must implement Zend\View\ViewModel',
+            (is_object($plugin) ? get_class($plugin) : gettype($plugin))
+        ));
     }
 }

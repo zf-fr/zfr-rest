@@ -38,10 +38,6 @@ class ModuleOptionsFactory implements FactoryInterface
         $config = $serviceLocator->get('Config');
         $config = $config['zfr_rest'];
 
-        if ($config === null) {
-            throw new Exception\RuntimeException('No options set for the module ZfrRest');
-        }
-
         $moduleOptions = new ModuleOptions($config);
 
         return $moduleOptions;

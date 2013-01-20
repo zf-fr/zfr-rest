@@ -16,46 +16,40 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Service;
+namespace ZfrRest\Serializer;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mime\FormatDecoder;
-use ZfrRest\Options\FormatDecoderOptions;
+use Zend\ServiceManager\AbstractPluginManager;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 /**
- * FormatDecoderFactory
+ * DecoderPluginManager
  *
  * @license MIT
  * @since   0.0.1
  */
-class FormatDecoderFactory implements FactoryInterface
+class DecoderPluginManager extends AbstractPluginManager
 {
+    /**
+     * @var array
+     */
+    protected $invokableClasses = array(
+        'application/json'       => 'Symfony\Component\Serializer\Encoder\JsonDecode',
+        'application/javascript' => 'Symfony\Component\Serializer\Encoder\JsonDecode',
+        'application/xml'        => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
+    );
+
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function validatePlugin($plugin)
     {
-        $config = $serviceLocator->get('Config');
-        $config = $config['zfr_rest'];
-        $config = isset($config['format_decoder']) ? $config['format_decoder'] : null;
-
-        if ($config === null) {
-            throw new Exception\RuntimeException(sprintf(
-                'No options set for the format decoder in %s',
-                __CLASS__
-            ));
+        if ($plugin instanceof DecoderInterface) {
+            return;
         }
 
-        $options = new FormatDecoderOptions($config);
-
-        $formatDecoder = new FormatDecoder();
-        $matches       = $options->getMatches();
-
-        foreach ($matches as $format => $mimeType) {
-            $formatDecoder->add($format, $mimeType);
-        }
-
-        return $formatDecoder;
+        throw new Exception\RuntimeException(sprintf(
+            'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\DecoderInterface',
+            (is_object($plugin) ? get_class($plugin) : gettype($plugin))
+        ));
     }
 }

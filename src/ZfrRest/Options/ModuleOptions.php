@@ -60,12 +60,11 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  boolean $registerHttpExceptionListener
-     * @return ModuleOptions
+     * @return void
      */
     public function setRegisterHttpExceptionListener($registerHttpExceptionListener)
     {
         $this->registerHttpExceptionListener = (bool) $registerHttpExceptionListener;
-        return $this;
     }
 
     /**
@@ -78,12 +77,11 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  boolean $registerHttpMethodOverrideListener
-     * @return ModuleOptions
+     * @return void
      */
     public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
     {
         $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
-        return $this;
     }
 
     /**
@@ -96,12 +94,11 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  boolean $registerSelectModelListener
-     * @return ModuleOptions
+     * @return void
      */
     public function setRegisterSelectModelListener($registerSelectModelListener)
     {
         $this->registerSelectModelListener = (bool) $registerSelectModelListener;
-        return $this;
     }
 
     /**

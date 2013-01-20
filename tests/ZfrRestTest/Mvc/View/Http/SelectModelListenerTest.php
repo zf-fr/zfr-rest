@@ -25,6 +25,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Mime\FormatDecoder;
 use ZfrRest\Mvc\View\Http\SelectModelListener;
+use ZfrRest\View\Model\ModelPluginManager;
 
 class SelectModelListenerTest extends TestCase
 {
@@ -45,7 +46,7 @@ class SelectModelListenerTest extends TestCase
     {
         parent::setUp();
 
-        $this->selectModelListener = new SelectModelListener(new FormatDecoder());
+        $this->selectModelListener = new SelectModelListener(new ModelPluginManager(), new FormatDecoder());
 
         // Init the MvcEvent object
         $request = new HttpRequest();

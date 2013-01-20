@@ -24,7 +24,6 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
-use ZfrRest\Mime\FormatDecoder;
 use ZfrRest\Mvc\Exception;
 use ZfrRest\View\Model\ModelPluginManager;
 
@@ -47,22 +46,15 @@ class SelectModelListener implements ListenerAggregateInterface
      */
     protected $modelPluginManager;
 
-    /**
-     * @var FormatDecoder
-     */
-    protected $formatDecoder;
-
 
     /**
      * Constructor
      *
      * @param ModelPluginManager $modelPluginManager
-     * @param FormatDecoder      $formatDecoder
      */
-    public function __construct(ModelPluginManager $modelPluginManager, FormatDecoder $formatDecoder)
+    public function __construct(ModelPluginManager $modelPluginManager)
     {
         $this->modelPluginManager = $modelPluginManager;
-        $this->formatDecoder      = $formatDecoder;
     }
 
     /**
@@ -106,12 +98,8 @@ class SelectModelListener implements ListenerAggregateInterface
             return;
         }
 
-        $format = $this->getRequestFormat($request);
-        if ($format === null) {
-            return;
-        }
-
-        $model = $this->modelPluginManager->create($format);
+        $contentType = $this->getContentType($request);
+        $model       = $this->modelPluginManager->create($contentType);
 
         if ($result !== null) {
             $model->setVariables($result);
@@ -140,12 +128,9 @@ class SelectModelListener implements ListenerAggregateInterface
             return;
         }
 
-        /** @var $request HttpRequest */
-        $request = $e->getRequest();
-        $format  = $this->getRequestFormat($request);
-
-        // If want to render HTML, just let the other listeners insert the template
-        if ($format === 'html') {
+        // If it's an exact instance of Zend\View\Model\ViewModel we return as we want to let the other
+        // listeners to inject layout
+        if (get_class($result) === 'Zend\View\Model\ViewModel') {
             return;
         }
 
@@ -155,12 +140,12 @@ class SelectModelListener implements ListenerAggregateInterface
     }
 
     /**
-     * Get the format of the request (html, json...) from the Accept header
+     * Get the content type with higher priority in the request
      *
      * @param  HttpRequest $request
      * @return string|null
      */
-    protected function getRequestFormat(HttpRequest $request)
+    protected function getContentType(HttpRequest $request)
     {
         /** @var $acceptHeader \Zend\Http\Header\Accept */
         $acceptHeader = $request->getHeader('Accept', null);
@@ -170,16 +155,6 @@ class SelectModelListener implements ListenerAggregateInterface
 
         $acceptValues = $acceptHeader->getPrioritized();
 
-        /** @var $fieldValue \Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart */
-        foreach ($acceptValues as $fieldValue) {
-            $mimeType = $fieldValue->getTypeString();
-            $format   = $this->formatDecoder->decode($mimeType);
-
-            if ($format !== null) {
-                return $format;
-            }
-        }
-
-        return null;
+        return $acceptValues[0]->getTypeString();
     }
 }

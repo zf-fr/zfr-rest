@@ -34,9 +34,7 @@ class BodyParserFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $formatDecoder        = $serviceLocator->get('ZfrRest\Mime\FormatDecoder');
-        $encoderPluginManager = $serviceLocator->get('ZfrRest\Serializer\EncoderPluginManager');
-
-        return new BodyParser($encoderPluginManager, $formatDecoder);
+        $decoderPluginManager = $serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager');
+        return new BodyParser($decoderPluginManager);
     }
 }

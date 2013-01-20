@@ -16,46 +16,16 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Options;
+namespace ZfrRest\Mvc\Service;
 
-use Zend\Stdlib\AbstractOptions;
+use Zend\Mvc\Service\AbstractPluginManagerFactory;
 
 /**
- * FormatDecoderOptions
+ * DecoderPluginManagerFactory
  *
  * @license MIT
- * @since   0.0.1
  */
-class FormatDecoderOptions extends AbstractOptions
+class DecoderPluginManagerFactory extends AbstractPluginManagerFactory
 {
-    /**
-     * @var array
-     */
-    protected $matches;
-
-
-    /**
-     * @param  array $matches
-     * @return FormatDecoderOptions
-     */
-    public function setMatches(array $matches)
-    {
-        foreach ($matches as &$match) {
-            if (!is_array($match)) {
-                $match = (array) $match;
-            }
-        }
-
-        $this->matches = $matches;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMatches()
-    {
-        return $this->matches;
-    }
+    const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\DecoderPluginManager';
 }
