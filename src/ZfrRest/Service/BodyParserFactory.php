@@ -26,6 +26,7 @@ use ZfrRest\Http\Request\Parser\BodyParser;
  * BodyParserFactory
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class BodyParserFactory implements FactoryInterface
 {

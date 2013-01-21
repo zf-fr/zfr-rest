@@ -26,6 +26,7 @@ use ZfrRest\Options\ModuleOptions;
  * ModuleOptionsFactory
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class ModuleOptionsFactory implements FactoryInterface
 {

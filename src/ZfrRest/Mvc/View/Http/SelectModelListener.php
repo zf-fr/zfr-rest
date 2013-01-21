@@ -32,6 +32,7 @@ use ZfrRest\View\Model\ModelPluginManager;
  * according to the Accept header
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class SelectModelListener implements ListenerAggregateInterface
 {

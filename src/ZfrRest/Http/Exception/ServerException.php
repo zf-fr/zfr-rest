@@ -24,6 +24,7 @@ use InvalidArgumentException;
  * ServerException
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class ServerException extends AbstractHttpException
 {

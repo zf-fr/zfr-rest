@@ -25,6 +25,7 @@ use Symfony\Component\Serializer\Encoder\EncoderInterface;
  * EncoderPluginManager
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class EncoderPluginManager extends AbstractPluginManager
 {

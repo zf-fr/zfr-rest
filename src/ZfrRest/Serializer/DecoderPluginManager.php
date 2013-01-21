@@ -25,6 +25,7 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
  * DecoderPluginManager
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class DecoderPluginManager extends AbstractPluginManager
 {

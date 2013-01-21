@@ -24,6 +24,7 @@ use ZfrRest\Serializer\DecoderPluginManager;
  * AbstractParser
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 abstract class AbstractParser implements ParserInterface
 {

@@ -24,6 +24,7 @@ use Zend\Mvc\Service\AbstractPluginManagerFactory;
  * DecoderPluginManagerFactory
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class DecoderPluginManagerFactory extends AbstractPluginManagerFactory
 {

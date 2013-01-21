@@ -26,6 +26,7 @@ use Zend\Http\Response as HttpResponse;
  * UnauthorizedException
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class UnauthorizedException extends ClientException
 {
