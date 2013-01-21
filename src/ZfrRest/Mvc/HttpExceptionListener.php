@@ -28,6 +28,7 @@ use ZfrRest\Http\Exception\AbstractHttpException;
  * HttpExceptionListener
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class HttpExceptionListener implements ListenerAggregateInterface
 {

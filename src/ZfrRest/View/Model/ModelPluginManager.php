@@ -25,10 +25,8 @@ use ZfrRest\View\Exception;
 /**
  * ModelPluginManager. It allows to retrieve a view model from a format.
  *
- * TODO: Add a Zend\View\Model\XmlModel into Zend Framework 2, currently it's not supported (although
- *       we can serialize data to XML)
- *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class ModelPluginManager extends AbstractPluginManager
 {
