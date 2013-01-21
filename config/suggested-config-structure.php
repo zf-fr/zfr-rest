@@ -18,15 +18,30 @@
 
 return array(
     'zfr_rest' => array(
-        'resources' => array(
+        // these are the "base resources", which are the entry points that allow tree traversal on our resources
+        'base_resources' => array(
             'user' => array(
-                // class name - used to fetch the correct class metadata instance
-                'resource'      => 'ZfcUser\\Entity\\User',
+                // base resource from which to start. Could be a Collection, a Selectable or mixed (anything else)
+                // the string refers to the service name for the resource
+                'resource' => 'EntityRepository\\UserRepository',
 
-                // optional - name of the route used to reach the resource - the default resource route works too
-                'route'         => 'route_name_here',
+                // controller to be used for this particular resource/collection. If none set, it
+                // means the resource is not directly accessible
+                'controller'    => 'My\\Controller\\User',
+            ),
+            'blog' => array(
+                // base resource from which to start. Could be a Collection, a Selectable or mixed (anything else)
+                // the string refers to the service name for the resource
+                'resource' => 'CustomService\\BlogPostService',
 
-                // controller to be used for this particular resource
+                // controller to be used for this particular resource/collection. If none set, it
+                // means the resource is not directly accessible
+                'controller'    => 'My\\Controller\\BlogPost',
+            ),
+        ),
+        'resource_types' => array(
+            'My\\Entity\\User' => array(
+                // controller to be used for this particular resource type. If none set, the resource is not accessible
                 'controller'    => 'My\\Controller\\User',
 
                 // input filter to be used for this resource (when requested by the user)
@@ -35,7 +50,7 @@ return array(
                 // hydrator to be used for this resource (when requested by the user)
                 'hydrator'      => 'My\\Hydrator\\UserHydrator',
 
-                // map of decoders to be used with this resource
+                // map of decoders to be used with this resource type
                 'decoders'      => array(
                     'application/json'         => 'My\\Custom\\User\\JsonDecoder',
                     'application/xml'          => 'My\\Custom\\User\\XmlDecoder',
@@ -59,8 +74,27 @@ return array(
                     'company'       => true,
                     'accounts'      => false,
                 ),
-
-                // @todo - how to handle controllers for multi-valued associations? (collections are resources)
+            ),
+            'My\\Entity\\User.friends' => array(
+                // same as above, but these rules affect only the `friends` collection in the user type
+                // controller
+                // input_filter
+                // hydrator
+                // decoders
+                // encoders
+                // associations is ignored, since this is a collection
+            ),
+            'My\\Entity\\User.accounts' => array(
+                // same as above, but these rules affect only the `accounts` collection in the user type
+            ),
+            'My\\Entity\\User.addresses' => array(
+                // same as above, but these rules affect only the `addresses` collection in the user type
+            ),
+            'My\\Entity\\BlogPost' => array(
+                // same as above, but these rules affect only the `My\\Entity\\BlogPost` resource type
+            ),
+            'My\\Entity\\BlogPost.comments' => array(
+                // same as above, but these rules affect only the `comments` collection in the blog post type
             ),
         ),
     ),
