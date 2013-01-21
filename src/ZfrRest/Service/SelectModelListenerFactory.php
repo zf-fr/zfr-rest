@@ -26,6 +26,7 @@ use ZfrRest\Mvc\View\Http\SelectModelListener;
  * SelectModelListenerFactory
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class SelectModelListenerFactory implements FactoryInterface
 {

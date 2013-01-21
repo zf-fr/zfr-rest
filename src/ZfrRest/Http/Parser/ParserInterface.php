@@ -24,6 +24,7 @@ use Zend\Stdlib\MessageInterface;
  * ParserInterface
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 interface ParserInterface
 {

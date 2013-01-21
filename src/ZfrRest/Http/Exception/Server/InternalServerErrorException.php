@@ -24,6 +24,7 @@ use ZfrRest\Http\Exception\ServerException;
  * InternalServerErrorException
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class InternalServerErrorException extends ServerException
 {

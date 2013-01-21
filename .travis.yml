@@ -10,7 +10,7 @@ before_script:
   - cd ZendSkeletonApplication
   - cp ../ZfrRest/.travis/composer.json ./
   - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
+  - php composer.phar install --prefer-source
   - rm -rf vendor/zfr/zfr-rest
   - cp -r ../ZfrRest vendor/zfr/zfr-rest
   - rm config/application.config.php && cp ../ZfrRest/.travis/application.config.php config/

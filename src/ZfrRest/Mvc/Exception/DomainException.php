@@ -24,6 +24,7 @@ use DomainException as BaseDomainException;
  * Domain Exception
  *
  * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class DomainException extends BaseDomainException
 {}
