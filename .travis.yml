@@ -20,5 +20,5 @@ script:
   - phpunit
 
 notifications:
-  irc: "irc.freenode.org#zftalk.dev"
+  irc: "irc.freenode.org#zftalk.modules"
   email: false
