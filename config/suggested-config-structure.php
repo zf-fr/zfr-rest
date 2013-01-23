@@ -57,8 +57,8 @@ return array(
 
     // Define the metadata of resources
     'zfr_rest' => array(
-        'resources' => array(
-            // Metadata used for /users/*
+        'metadata' => array(
+            // Metadata for user resource
             'users' => array(
                 // The fetcher can be any class that "respect" some conventions, and can be services,
                 // selectable...
@@ -73,15 +73,19 @@ return array(
                     'application/json' => 'Application\Encoder\JsonUser'
                 ),
 
-                'child_resources' => array(
-                    // This will open the endpoint /users/posts/*
+                'associations' => array(
+                    // Metadata for user/posts resource. This metadata will be used and will override the
+                    // generic "posts" metadata whenever we access the post resource through the user. It will
+                    // also enable to routes like /users/4/posts/*
                     'posts' => array(
                         // Define input filter, hydrator, decoder, encoder...
                     )
+
+                    // Any undefined assocations will prohibit routing
                 )
             ),
 
-            // Metadata used for /posts
+            // Metadata for post resource
             'posts' => array(
                 // ...
             )
