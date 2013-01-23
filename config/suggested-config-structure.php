@@ -97,11 +97,28 @@ return array(
 /**
  * @Rest\InputFilter(name="Application\InputFilter\User")
  * @Rest\Hydrator(name="Application\Hydrator\User")
+ * @Rest\Decoders({
+ *      @Rest\Decoder(mimeType="application\json", decoder="Application\Decoder\JsonUser")
+ * })
  */
 class User
 {
+    /**
+     * @Rest\Expose
+     */
+    protected $id;
 
+    /**
+     * Do not expose
+     */
+    protected $password;
 
+    /**
+     * @Rest\Association
+     * @Rest\InputFilter(name="Application\InputFilter\Post")
+     * ...
+     */
+    protected $posts;
 }
 
 
