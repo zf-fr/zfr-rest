@@ -34,6 +34,7 @@ return array(
                 'type'    => 'Rest',
                 'options' => array(
                     'route'    => '/users',
+                    'resource' => 'Application\Entity\User',
                     'defaults' => array(
                         'controller' => 'Application\Controller\User'
                     )
@@ -45,6 +46,7 @@ return array(
                 'type'    => 'Rest',
                 'options' => array(
                     'route'    => '/blogs',
+                    'resource' => 'Application\Entity\Blog',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Blog'
                     )
