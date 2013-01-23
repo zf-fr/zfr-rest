@@ -34,7 +34,7 @@ return array(
                 'type'    => 'Rest',
                 'options' => array(
                     'route'    => '/users',
-                    'resource' => 'Application\Entity\User',
+                    'resource' => 'users',
                     'defaults' => array(
                         'controller' => 'Application\Controller\User'
                     )
@@ -46,7 +46,7 @@ return array(
                 'type'    => 'Rest',
                 'options' => array(
                     'route'    => '/blogs',
-                    'resource' => 'Application\Entity\Blog',
+                    'resource' => 'blogs',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Blog'
                     )
@@ -59,10 +59,11 @@ return array(
     'zfr_rest' => array(
         'resources' => array(
             // Metadata used for /users/*
-            'Application\Entity\User' => array(
+            'users' => array(
                 // The fetcher can be any class that "respect" some conventions, and can be services,
                 // selectable...
                 'fetcher'      => 'Application\Service\User',
+                'object'       => 'Application\Entity\User',
                 'input_filter' => 'Application\InputFilter\User',
                 'hydrator'     => 'Application\Hydrator\User',
                 'decoders'     => array(
@@ -81,7 +82,7 @@ return array(
             ),
 
             // Metadata used for /posts
-            'Application\Entity\Post' => array(
+            'posts' => array(
                 // ...
             )
         )
