@@ -16,6 +16,78 @@
  * and is licensed under the MIT license.
  */
 
+
+return array(
+    // Register our custom route. This is done in our config file
+    'routes' => array(
+        'factories' => array(
+            'Rest' => 'ZfrRest\Mvc\Router\Route\Rest'
+        )
+    ),
+
+    // Then, the user can define his own routes. Because each route is using the Rest route, it has access to
+    // metadata defined in the zfr_rest['resources'] array
+    'router' => array(
+        'routes' => array(
+            // This route will open the endpoint /users/* and dispatch everything to Application\Controller\User
+            'users' => array(
+                'type'    => 'Rest',
+                'options' => array(
+                    'route'    => '/users',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\User'
+                    )
+                )
+            ),
+
+            // This route will open the endpoint /blogs/* and dispatch everything to Application\Controller\Blog
+            'blogs' => array(
+                'type'    => 'Rest',
+                'options' => array(
+                    'route'    => '/blogs',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Blog'
+                    )
+                )
+            )
+        )
+    ),
+
+    // Define the metadata of resources
+    'zfr_rest' => array(
+        'resources' => array(
+            // Metadata used for /users/*
+            'Application\Entity\User' => array(
+                // The fetcher can be any class that "respect" some conventions, and can be services,
+                // selectable...
+                'fetcher'      => 'Application\Service\User',
+                'input_filter' => 'Application\InputFilter\User',
+                'hydrator'     => 'Application\Hydrator\User',
+                'decoders'     => array(
+                    'application/json' => 'Application\Decoder\JsonUser'
+                ),
+                'encoders'     => array(
+                    'application/json' => 'Application\Encoder\JsonUser'
+                ),
+
+                'child_resources' => array(
+                    // This will open the endpoint /users/posts/*
+                    'posts' => array(
+                        // Define input filter, hydrator, decoder, encoder...
+                    )
+                )
+            ),
+
+            // Metadata used for /posts
+            'Application\Entity\Post' => array(
+                // ...
+            )
+        )
+    )
+);
+
+
+/*
 return array(
     'zfr_rest' => array(
         // these are the "base resources", which are the entry points that allow tree traversal on our resources
@@ -99,3 +171,4 @@ return array(
         ),
     ),
 );
+*/
