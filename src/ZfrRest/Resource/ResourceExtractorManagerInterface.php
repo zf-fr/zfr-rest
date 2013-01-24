@@ -18,12 +18,34 @@
 
 namespace ZfrRest\Resource;
 
-use Doctrine\Common\Collections\Selectable as SelectableInterface;
-
 /**
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-interface ResourceLoaderInterface extends SelectableInterface
+interface ResourceExtractorManagerInterface
 {
+    /**
+     * Retrieves a resource extractor for the provided resource
+     *
+     * @param string $resourceName
+     * @param mixed  $resource
+     *
+     * @return \ZfrRest\Resource\ResourceExtractorInterface
+     *
+     * @throws \ZfrRest\Resource\Exception\UnknownResourceException
+     */
+    public function getResourceExtractor($resourceName, $resource);
+
+    /**
+     * Retrieves a resource extractor for the provided association
+     *
+     * @param string $resourceName
+     * @param string $associationName
+     * @param mixed  $resource
+     *
+     * @return \ZfrRest\Resource\ResourceExtractorInterface
+     *
+     * @throws \ZfrRest\Resource\Exception\UnknownResourceException
+     */
+    public function getResourceAssociationExtractor($resourceName, $associationName, $resource);
 }

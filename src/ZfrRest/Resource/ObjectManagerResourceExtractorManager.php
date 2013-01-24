@@ -26,7 +26,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterface
+class ObjectManagerResourceExtractorManager implements ResourceExtractorManagerInterface
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectManager
@@ -44,7 +44,7 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
     /**
      * {@inheritDoc}
      */
-    public function getResourceLoader($resourceName, $resource)
+    public function getResourceExtractor($resourceName, $resource)
     {
         if (!$resource instanceof SelectableInterface || !$resource instanceof ObjectRepository) {
             throw new Exception\BadMethodCallException(
@@ -55,13 +55,13 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
             );
         }
 
-        return new RepositoryResourceLoader($resource);
+        return new RepositoryResourceExtractor($resource);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getResourceAssociationLoader($resourceName, $associationName, $resource)
+    public function getResourceAssociationExtractor($resourceName, $associationName, $resource)
     {
         $metadata = $this->objectManager->getClassMetadata($resourceName);
         $name     = $metadata->getName();
@@ -83,11 +83,11 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
         }
 
         if ($metadata->isSingleValuedAssociation($associationName)) {
-            return new SingleValuedAssociationResourceLoader($resource, $associationName, $metadata);
+            return new SingleValuedAssociationResourceExtractor($resource, $associationName, $metadata);
         }
 
         if ($metadata->isCollectionValuedAssociation($associationName)) {
-            return new CollectionValuedAssociationResourceLoader($resource, $associationName, $metadata);
+            return new CollectionValuedAssociationResourceExtractor($resource, $associationName, $metadata);
         }
 
         throw new Exception\InvalidArgumentException(

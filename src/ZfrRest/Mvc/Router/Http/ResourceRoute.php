@@ -21,7 +21,7 @@ namespace ZfrRest\Mvc;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Stdlib\RequestInterface;
 use ZfrRest\Mvc\Exception;
-use ZfrRest\Resource\ResourceLoaderManagerInterface;
+use ZfrRest\Resource\ResourceExtractorManagerInterface;
 use ZfrRest\Resource\ResourceManagerInterface;
 
 /**
@@ -43,9 +43,9 @@ class ResourceRoute implements RouteInterface
     protected $resourceManager;
 
     /**
-     * @var \ZfrRest\Resource\ResourceLoaderManagerInterface
+     * @var \ZfrRest\Resource\ResourceExtractorManagerInterface
      */
-    protected $resourceLoaderManager;
+    protected $resourceExtractorManager;
 
     /**
      * @var mixed
@@ -58,24 +58,24 @@ class ResourceRoute implements RouteInterface
     protected $resourceName;
 
     /**
-     * @param \ZfrRest\Resource\ResourceManagerInterface       $resourceManager
-     * @param \ZfrRest\Resource\ResourceLoaderManagerInterface $resourceLoaderManager
-     * @param                                                  $route
-     * @param                                                  $resource
-     * @param                                                  $resourceName
+     * @param \ZfrRest\Resource\ResourceManagerInterface          $resourceManager
+     * @param \ZfrRest\Resource\ResourceExtractorManagerInterface $resourceExtractorManager
+     * @param string                                              $route
+     * @param mixed                                               $resource
+     * @param string                                              $resourceName
      */
     public function __construct(
         ResourceManagerInterface $resourceManager,
-        ResourceLoaderManagerInterface $resourceLoaderManager,
+        ResourceExtractorManagerInterface $resourceExtractorManager,
         $route,
         $resource,
         $resourceName
     ) {
-        $this->resourceManager       = $resourceManager;
-        $this->resourceLoaderManager = $resourceLoaderManager;
-        $this->route                 = (string) $route;
-        $this->resource              = $resource;
-        $this->resourceName          = (string) $resourceName;
+        $this->resourceManager          = $resourceManager;
+        $this->resourceExtractorManager = $resourceExtractorManager;
+        $this->route                    = (string) $route;
+        $this->resource                 = $resource;
+        $this->resourceName             = (string) $resourceName;
     }
 
     /**

@@ -20,6 +20,7 @@ namespace ZfrRest\Resource;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use ZfrRest\Resource\Exception\UnexpectedValueException;
 
@@ -27,7 +28,7 @@ use ZfrRest\Resource\Exception\UnexpectedValueException;
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-class SingleValuedAssociationResourceLoader implements ResourceLoaderInterface
+class CollectionValuedAssociationResourceExtractor implements ResourceExtractorInterface
 {
     /**
      * @var mixed
@@ -67,20 +68,22 @@ class SingleValuedAssociationResourceLoader implements ResourceLoaderInterface
      */
     function matching(Criteria $criteria)
     {
-        if ($criteria->getWhereExpression()) {
-            throw new Exception\BadMethodCallException(
-                'Filtering single valued associations is not currently supported'
-            );
-        }
-
         $reflectionProperty = $this->metadata->getReflectionClass()->getProperty($this->association);
         $reflectionProperty->setAccessible(true);
         $value = $reflectionProperty->getValue($this->resource);
 
-        if (null === $value) {
-            return new ArrayCollection();
+        if (!$value instanceof Selectable && $criteria->getWhereExpression()) {
+            throw UnexpectedValueException::nonMatchableCollection($value);
         }
 
-        return new ArrayCollection(array($value));
+        if ($value instanceof Selectable) {
+            return $value->matching($criteria);
+        }
+
+        if (is_array($value)) {
+            return new ArrayCollection($value);
+        }
+
+        throw UnexpectedValueException::unknownCollectionType($value);
     }
 }

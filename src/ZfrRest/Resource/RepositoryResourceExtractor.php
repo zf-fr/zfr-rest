@@ -26,7 +26,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-class RepositoryResourceLoader implements ResourceLoaderInterface
+class RepositoryResourceExtractor implements ResourceExtractorInterface
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\Common\Collections\Selectable

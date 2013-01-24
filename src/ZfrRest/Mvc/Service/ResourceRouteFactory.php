@@ -67,21 +67,30 @@ class ResourceRouteFactory implements FactoryInterface
             throw new Exception\InvalidArgumentException('Missing "resource" in options array');
         }
 
+        if (!$serviceLocator->has($options['resource'])) {
+            throw new Exception\InvalidArgumentException(
+                sprintf('Resource "%s" was not found in the service locator', $options['resource'])
+            );
+        }
+
         if (!isset($options['resource_name'])) {
             throw new Exception\InvalidArgumentException('Missing "resource_name" in options array');
         }
 
         /** @var $resourceManager \ZfrRest\Resource\ResourceManagerInterface */
+        $resource = $serviceLocator->get('ZfrRest\Resource\ResourceManager');
+
+        /** @var $resourceManager \ZfrRest\Resource\ResourceManagerInterface */
         $resourceManager = $serviceLocator->get('ZfrRest\Resource\ResourceManager');
 
-        /** @var $resourceLoader \ZfrRest\Resource\ResourceLoaderManagerInterface */
-        $resourceLoader  = $serviceLocator->get('ZfrRest\Resource\ObjectManagerResourceLoaderManager');
+        /** @var $resourceExtractorManager \ZfrRest\Resource\ResourceExtractorManagerInterface */
+        $resourceExtractorManager = $serviceLocator->get('ZfrRest\Resource\ObjectManagerResourceExtractorManager');
 
         return new ResourceRoute(
             $resourceManager,
-            $resourceLoader,
+            $resourceExtractorManager,
             $options['route'],
-            $options['resource'],
+            $resource,
             $options['resource_name']
         );
     }
