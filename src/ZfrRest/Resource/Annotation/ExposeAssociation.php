@@ -22,10 +22,10 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-class Association
+class ExposeAssociation
 {
     /**
      * @var bool
      */
-    public $expose = true;
+    public $value = true;
 }
