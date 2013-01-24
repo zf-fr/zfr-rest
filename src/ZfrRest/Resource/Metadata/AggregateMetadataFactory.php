@@ -23,6 +23,7 @@ use ZfrRest\Resource\Exception;
 
 /**
  * Aggregate metadata factory - allows
+ *
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */

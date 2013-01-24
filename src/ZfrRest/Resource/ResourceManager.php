@@ -43,10 +43,8 @@ class ResourceManager implements ResourceManagerInterface
      * @param \ZfrRest\Options\ModuleOptions                            $moduleOptions
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory $metadataFactory
      */
-    public function __construct(
-        ModuleOptions $moduleOptions,
-        ClassMetadataFactory $metadataFactory
-    ) {
+    public function __construct(ModuleOptions $moduleOptions, ClassMetadataFactory $metadataFactory)
+    {
         $this->moduleOptions   = $moduleOptions;
         $this->metadataFactory = $metadataFactory;
     }
