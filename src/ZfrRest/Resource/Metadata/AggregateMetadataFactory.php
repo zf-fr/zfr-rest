@@ -19,6 +19,7 @@
 namespace ZfrRest\Resource;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use ZfrRest\Resource\Exception;
 
 /**
  * Aggregate metadata factory - allows
@@ -77,7 +78,7 @@ class AggregateMetadataFactory implements ClassMetadataFactory
             }
         }
 
-        throw new \UnexpectedValueException(sprintf('No metadata found for "%s"', $className));
+        throw Exception\UnexpectedValueException::unknownMetadata($className);
     }
 
     /**
@@ -99,7 +100,7 @@ class AggregateMetadataFactory implements ClassMetadataFactory
      */
     function setMetadataFor($className, $class)
     {
-        throw new \BadMethodCallException('Unsupported');
+        throw new Exception\BadMethodCallException('Unsupported');
     }
 
     /**

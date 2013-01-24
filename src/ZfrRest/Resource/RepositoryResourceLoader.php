@@ -36,12 +36,12 @@ class RepositoryResourceLoader implements ResourceLoaderInterface
     /**
      * @param \Doctrine\Common\Persistence\ObjectRepository $objectRepository
      *
-     * @throws \BadMethodCallException
+     * @throws Exception\BadMethodCallException
      */
     public function __construct(ObjectRepository $objectRepository)
     {
         if (!$objectRepository instanceof Selectable) {
-            throw new \BadMethodCallException(
+            throw new Exception\BadMethodCallException(
                 sprintf(
                     'Currently supports only repositories implementing the criteria API, "%s given"',
                     get_class($objectRepository)

@@ -31,7 +31,7 @@ class UnexpectedValueException extends BaseUnexpectedValueException
      * @param mixed                                              $resource
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $metadata
      *
-     * @return static
+     * @return \ZfrRest\Resource\Exception\UnexpectedValueException
      */
     public static function invalidResourceException($resource, ClassMetadata $metadata)
     {
@@ -47,7 +47,7 @@ class UnexpectedValueException extends BaseUnexpectedValueException
     /**
      * @param mixed $value
      *
-     * @return static
+     * @return \ZfrRest\Resource\Exception\UnexpectedValueException
      */
     public static function nonMatchableCollection($value)
     {
@@ -58,10 +58,11 @@ class UnexpectedValueException extends BaseUnexpectedValueException
             )
         );
     }
+
     /**
      * @param mixed $value
      *
-     * @return static
+     * @return \ZfrRest\Resource\Exception\UnexpectedValueException
      */
     public static function unknownCollectionType($value)
     {
@@ -69,6 +70,21 @@ class UnexpectedValueException extends BaseUnexpectedValueException
             sprintf(
                 'Unknown collection value "%s" found, expecting array or selectable collection',
                 is_object($value) ? get_class($value) : gettype($value)
+            )
+        );
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return \ZfrRest\Resource\Exception\UnexpectedValueException
+     */
+    public static function unknownMetadata($value)
+    {
+        return new static(
+            sprintf(
+                'No metadata found for "%s"',
+                $value
             )
         );
     }

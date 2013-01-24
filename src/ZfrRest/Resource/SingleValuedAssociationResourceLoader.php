@@ -68,7 +68,9 @@ class SingleValuedAssociationResourceLoader implements ResourceLoaderInterface
     function matching(Criteria $criteria)
     {
         if ($criteria->getWhereExpression()) {
-            throw new \BadMethodCallException('Filtering single valued associations is not currently supported');
+            throw new Exception\BadMethodCallException(
+                'Filtering single valued associations is not currently supported'
+            );
         }
 
         $reflectionProperty = $this->metadata->getReflectionClass()->getProperty($this->association);

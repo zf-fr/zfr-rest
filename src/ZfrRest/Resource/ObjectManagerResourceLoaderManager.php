@@ -47,7 +47,7 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
     public function getResourceLoader($resourceName, $resource)
     {
         if (!$resource instanceof SelectableInterface || !$resource instanceof ObjectRepository) {
-            throw new \BadMethodCallException(
+            throw new Exception\BadMethodCallException(
                 sprintf(
                     'Not yet supported: resource must be a selectable, "%s" given',
                     is_object($resource) ? get_class($resource) : gettype($resource)
@@ -64,10 +64,10 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
     public function getResourceAssociationLoader($resourceName, $associationName, $resource)
     {
         $metadata = $this->objectManager->getClassMetadata($resourceName);
-        $name = $metadata->getName();
+        $name     = $metadata->getName();
 
         if (!$resource instanceof $name) {
-            throw new \InvalidArgumentException(
+            throw new Exception\InvalidArgumentException(
                 sprintf(
                     'Provided resource must be an instance of "%s", "%s" provided',
                     $name,
@@ -90,7 +90,7 @@ class ObjectManagerResourceLoaderManager implements ResourceLoaderManagerInterfa
             return new CollectionValuedAssociationResourceLoader($resource, $associationName, $metadata);
         }
 
-        throw new \InvalidArgumentException(
+        throw new Exception\InvalidArgumentException(
             sprintf('Association "%s" on resource "%s" is neither single nor collection valued?!')
         );
     }
