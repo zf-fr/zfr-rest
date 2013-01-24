@@ -93,6 +93,17 @@ return array(
         ),
     ),
 
+    'routes' => array(
+        'invokables' => array(
+            'ZfrRest\Mvc\Router\Http\ResourceRoute' => 'ZfrRest\Mvc\Service\ResourceRouteFactory'
+        ),
+
+        'aliases' => array(
+            'ResourceRoute'                         => 'ZfrRest\Mvc\Router\Http\ResourceRoute',
+            'Resource'                              => 'ZfrRest\Mvc\Router\Http\ResourceRoute'
+        )
+    ),
+
     'view_manager' => array(
         'strategies' => array(
             'ViewJsonStrategy'

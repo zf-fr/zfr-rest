@@ -18,8 +18,9 @@
 
 namespace ZfrRest\Mvc;
 
-use Zend\Stdlib\RequestInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
+use Zend\Stdlib\RequestInterface;
+use ZfrRest\Mvc\Exception;
 use ZfrRest\Resource\ResourceLoaderManagerInterface;
 use ZfrRest\Resource\ResourceManagerInterface;
 
@@ -31,6 +32,11 @@ use ZfrRest\Resource\ResourceManagerInterface;
  */
 class ResourceRoute implements RouteInterface
 {
+    /**
+     * @var string
+     */
+    protected $route;
+
     /**
      * @var \ZfrRest\Resource\ResourceManagerInterface
      */
@@ -54,19 +60,22 @@ class ResourceRoute implements RouteInterface
     /**
      * @param \ZfrRest\Resource\ResourceManagerInterface       $resourceManager
      * @param \ZfrRest\Resource\ResourceLoaderManagerInterface $resourceLoaderManager
+     * @param                                                  $route
      * @param                                                  $resource
      * @param                                                  $resourceName
      */
     public function __construct(
         ResourceManagerInterface $resourceManager,
         ResourceLoaderManagerInterface $resourceLoaderManager,
+        $route,
         $resource,
         $resourceName
     ) {
-        $this->resourceManager = $resourceManager;
+        $this->resourceManager       = $resourceManager;
         $this->resourceLoaderManager = $resourceLoaderManager;
-        $this->resource = $resource;
-        $this->resourceName = (string) $resourceName;
+        $this->route                 = (string) $route;
+        $this->resource              = $resource;
+        $this->resourceName          = (string) $resourceName;
     }
 
     /**
@@ -90,7 +99,10 @@ class ResourceRoute implements RouteInterface
      */
     public static function factory($options = array())
     {
-        throw new \BadMethodCallException('Not yet implemented');
+        throw new \BadMethodCallException(sprintf(
+            'Resource route should not be created from the method "%s"',
+            __CLASS__
+        ));
     }
 
     /**

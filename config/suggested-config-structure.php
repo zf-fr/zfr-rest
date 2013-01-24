@@ -35,10 +35,7 @@ return array(
                 'options' => array(
                     'route'         => '/users',
                     'resource'      => 'Application\EntityRepository\UserRepository',
-                    'resource_type' => 'Application\Entity\User',
-                    'defaults'      => array(
-                        'controller'    => 'Application\Controller\User'
-                    )
+                    'resource_name' => 'Application\Entity\User',
                 )
             ),
 
@@ -49,9 +46,6 @@ return array(
                     'route'         => '/blogs',
                     'resource'      => 'Application\Service\BlogService',
                     'resource_type' => 'Application\Entity\BlogService',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Blog'
-                    )
                 )
             )
         )
