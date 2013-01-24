@@ -33,10 +33,11 @@ return array(
             'users' => array(
                 'type'    => 'Rest',
                 'options' => array(
-                    'route'    => '/users',
-                    'resource' => 'Application\Entity\User',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\User'
+                    'route'         => '/users',
+                    'resource'      => 'Application\EntityRepository\UserRepository',
+                    'resource_type' => 'Application\Entity\User',
+                    'defaults'      => array(
+                        'controller'    => 'Application\Controller\User'
                     )
                 )
             ),
@@ -45,8 +46,9 @@ return array(
             'blogs' => array(
                 'type'    => 'Rest',
                 'options' => array(
-                    'route'    => '/blogs',
-                    'resource' => 'Application\Entity\Blog',
+                    'route'         => '/blogs',
+                    'resource'      => 'Application\Service\BlogService',
+                    'resource_type' => 'Application\Entity\BlogService',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Blog'
                     )
@@ -62,22 +64,28 @@ return array(
             'Application\Entity\User' => array(
                 // The fetcher can be any class that "respect" some conventions, and can be services,
                 // selectable...
-                'fetcher'      => 'Application\Service\User',
+                'controller'   => 'Application\Controller\UserController',
                 'input_filter' => 'Application\InputFilter\User',
                 'hydrator'     => 'Application\Hydrator\User',
                 'decoders'     => array(
-                    'application/json' => 'Application\Decoder\JsonUser'
+                    'application/json'         => 'My\\Custom\\User\\JsonDecoder',
+                    'application/xml'          => 'My\\Custom\\User\\XmlDecoder',
+                    'application/xml;vnd/ocra' => 'Ocra\\User\\XmlDecoder',
                 ),
                 'encoders'     => array(
-                    'application/json' => 'Application\Encoder\JsonUser'
+                    'application/json'         => 'My\\Custom\\User\\JsonEncoder',
+                    'application/xml'          => 'My\\Custom\\User\\XmlEncoder',
+                    'application/xml;vnd/ocra' => 'Ocra\\User\\XmlEncoder',
+                    'application/xml;vnd/bla'  => 'Bakura\\User\\XmlEncoder',
+                    'image/png'                => 'My\\User\\AvatarEncoder',
                 ),
 
                 'associations' => array(
                     // Metadata for user/posts resource. This metadata will be used and will override the
                     // generic "posts" metadata whenever we access the post resource through the user. It will
                     // also enable to routes like /users/4/posts/*
-                    'Application\Entity\Post' => array(
-                        // Define input filter, hydrator, decoder, encoder...
+                    'posts' => array(
+                        // same as above
                     )
 
                     // Any undefined assocations will prohibit routing

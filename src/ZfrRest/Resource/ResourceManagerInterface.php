@@ -18,9 +18,9 @@
 
 namespace ZfrRest\Resource;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-
 /**
+ * Resource manager that provides mapping information about resources
+ *
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
@@ -29,11 +29,11 @@ interface ResourceManagerInterface
     /**
      * Retrieves whether the resource manager knows the given resource name or metadata instance
      *
-     * @param string|\Doctrine\Common\Persistence\Mapping\ClassMetadata $resource
+     * @param string $resourceName
      *
      * @return bool
      */
-    public function hasResource($resource);
+    public function hasResource($resourceName);
 
     /**
      * Retrieves whether the resource manager knows the given association on the provided resource
@@ -48,22 +48,11 @@ interface ResourceManagerInterface
     /**
      * Retrieves class metadata for the provided resource name
      *
-     * @param string $name
+     * @param string $resourceName
      *
      * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
      *
      * @throws \ZfrRest\Resource\Exception\UnknownResourceException
      */
-    public function getResourceClassMetadata($name);
-
-    /**
-     * Retrieves the resource name for the provided metadata
-     *
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $metadata
-     *
-     * @return string
-     *
-     * @throws \ZfrRest\Resource\Exception\UnknownResourceException
-     */
-    public function getResourceName(ClassMetadata $metadata);
+    public function getResourceClassMetadata($resourceName);
 }

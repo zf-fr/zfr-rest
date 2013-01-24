@@ -49,6 +49,8 @@ class CollectionValuedAssociationResourceLoader implements ResourceLoaderInterfa
      * @param mixed                                              $resource
      * @param string                                             $association
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $metadata
+     *
+     * @throws \ZfrRest\Resource\Exception\UnexpectedValueException
      */
     public function __construct($resource, $association, ClassMetadata $metadata)
     {

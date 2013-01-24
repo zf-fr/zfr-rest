@@ -36,6 +36,7 @@ class Module implements
      */
     public function onBootstrap(EventInterface $e)
     {
+        /* @var $application \Zend\Mvc\Application */
         $application     = $e->getTarget();
         $serviceManager  = $application->getServiceManager();
         $eventManager    = $application->getEventManager();

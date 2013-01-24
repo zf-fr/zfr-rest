@@ -5,9 +5,11 @@
 .idea
 .project
 .settings
+.composer.lock
+.composer.phar
 Thumbs.db
 phpunit.xml
 clover.xml
 tmp/
 vendor/
-
+build/

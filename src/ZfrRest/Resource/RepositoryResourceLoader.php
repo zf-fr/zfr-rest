@@ -29,15 +29,26 @@ use Doctrine\Common\Persistence\ObjectRepository;
 class RepositoryResourceLoader implements ResourceLoaderInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\Common\Collections\Selectable
      */
     protected $objectRepository;
 
     /**
-     * @param \Doctrine\Common\Persistence\ObjectRepository $repository
+     * @param \Doctrine\Common\Persistence\ObjectRepository $objectRepository
+     *
+     * @throws \BadMethodCallException
      */
     public function __construct(ObjectRepository $objectRepository)
     {
+        if (!$objectRepository instanceof Selectable) {
+            throw new \BadMethodCallException(
+                sprintf(
+                    'Currently supports only repositories implementing the criteria API, "%s given"',
+                    get_class($objectRepository)
+                )
+            );
+        }
+
         $this->objectRepository = $objectRepository;
     }
 
@@ -46,10 +57,6 @@ class RepositoryResourceLoader implements ResourceLoaderInterface
      */
     function matching(Criteria $criteria)
     {
-        if ($this->objectRepository instanceof Selectable) {
-            return $this->objectRepository->matching($criteria);
-        }
-
-        throw new \BadMethodCallException('Currently supports only repositories implementing the criteria API');
+        return $this->objectRepository->matching($criteria);
     }
 }

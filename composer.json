@@ -1,6 +1,6 @@
 {
     "name": "zfr/zfr-rest",
-    "description": "Zend Framework 2 REST Module.",
+    "description": "Zend Framework 2 REST Module",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -26,9 +26,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
-        "doctrine/common": ">=2.4.x-dev",
-        "symfony/serializer": "2.1.*",
-        "zendframework/zendframework": "2.*"
+        "doctrine/common": ">=2.4.x-dev,<=2.5.x-dev",
+        "symfony/serializer": "~2.1",
+        "zendframework/zendframework": ">=2.1.x-dev,<=2.2.x-dev"
     },
     "autoload": {
         "psr-0": {

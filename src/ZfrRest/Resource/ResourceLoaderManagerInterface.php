@@ -28,22 +28,24 @@ interface ResourceLoaderManagerInterface
      * Retrieves a resource loader for the provided resource
      *
      * @param string $resourceName
+     * @param mixed  $resource
      *
      * @return \ZfrRest\Resource\ResourceLoaderInterface
      *
      * @throws \ZfrRest\Resource\Exception\UnknownResourceException
      */
-    public function getResourceLoader($resourceName);
+    public function getResourceLoader($resourceName, $resource);
 
     /**
      * Retrieves a resource loader for the provided association
      *
      * @param string $resourceName
      * @param string $associationName
+     * @param mixed  $resource
      *
      * @return \ZfrRest\Resource\ResourceLoaderInterface
      *
      * @throws \ZfrRest\Resource\Exception\UnknownResourceException
      */
-    public function getResourceAssociationLoader($resourceName, $associationName);
+    public function getResourceAssociationLoader($resourceName, $associationName, $resource);
 }
