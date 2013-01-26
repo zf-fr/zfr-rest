@@ -35,7 +35,7 @@ class AbstractRestfulControllerTest extends TestCase
      */
     protected $event;
 
-    
+
     public function setUp()
     {
         $this->event = new MvcEvent();
