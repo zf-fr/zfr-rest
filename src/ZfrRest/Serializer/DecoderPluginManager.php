@@ -33,9 +33,18 @@ class DecoderPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $invokableClasses = array(
-        'application/json'       => 'Symfony\Component\Serializer\Encoder\JsonDecode',
-        'application/javascript' => 'Symfony\Component\Serializer\Encoder\JsonDecode',
-        'application/xml'        => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
+        'application/xml' => 'Symfony\Component\Serializer\Encoder\XmlEncoder'
+    );
+
+    /**
+     * Factories are used for JsonDecoder because, by default, Symfony\Serializer component return
+     * data as stdClass, while we prefer the data to be returned as plain associative arrays
+     *
+     * @var array
+     */
+    protected $factories = array(
+        'application/json'       => 'ZfrRest\Service\JsonDecoderFactory',
+        'application/javascript' => 'ZfrRest\Service\JsonDecoderFactory',
     );
 
     /**
