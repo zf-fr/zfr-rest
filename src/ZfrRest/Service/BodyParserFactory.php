@@ -20,7 +20,7 @@ namespace ZfrRest\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Http\Request\Parser\BodyParser;
+use ZfrRest\Http\Parser\Request\BodyParser;
 
 /**
  * BodyParserFactory
