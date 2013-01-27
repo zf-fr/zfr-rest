@@ -100,8 +100,8 @@ public function get(User $user)
 ```
 
 
-Resource
---------
+Resources
+---------
 
 ### What is a resource ?
 
