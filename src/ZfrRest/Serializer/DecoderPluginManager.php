@@ -37,6 +37,9 @@ class DecoderPluginManager extends AbstractPluginManager
     );
 
     /**
+     * Factories are used for JsonDecoder because, by default, Symfony\Serializer component return
+     * data as stdClass, while we prefer the data to be returned as plain associative arrays
+     *
      * @var array
      */
     protected $factories = array(
