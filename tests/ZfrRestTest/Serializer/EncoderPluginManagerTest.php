@@ -20,8 +20,8 @@ namespace ZfrRestTest\Serializer;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use ZfrRest\Serializer\EncoderPluginManager;
+use ZfrRestTest\Util\ServiceManagerFactory;
 
 class EncoderPluginManagerTest extends TestCase
 {
@@ -30,10 +30,14 @@ class EncoderPluginManagerTest extends TestCase
      */
     protected $encoderPluginManager;
 
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
+
     public function setUp()
     {
-        parent::setUp();
-
+        $this->serviceManager       = ServiceManagerFactory::getServiceManager();
         $this->encoderPluginManager = new EncoderPluginManager();
     }
 
@@ -50,16 +54,7 @@ class EncoderPluginManagerTest extends TestCase
 
     public function testCanRetrievePluginManagerWithServiceManager()
     {
-        $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
-                ),
-            ))
-        );
-        $serviceManager->setService('Config', array());
-
-        $encoderPluginManager = $serviceManager->get('EncoderPluginManager');
+        $encoderPluginManager = $this->serviceManager->get('ZfrRest\Serializer\EncoderPluginManager');
         $this->assertInstanceOf('ZfrRest\Serializer\EncoderPluginManager', $encoderPluginManager);
     }
 }

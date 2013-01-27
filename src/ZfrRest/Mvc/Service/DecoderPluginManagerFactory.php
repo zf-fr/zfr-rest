@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Service;
 
 use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * DecoderPluginManagerFactory
@@ -29,4 +30,25 @@ use Zend\Mvc\Service\AbstractPluginManagerFactory;
 class DecoderPluginManagerFactory extends AbstractPluginManagerFactory
 {
     const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\DecoderPluginManager';
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /** @var $serviceListener \Zend\ModuleManager\Listener\ServiceListener */
+        $serviceListener = $serviceLocator->get('ServiceListener');
+
+        // This will allow to register new decoders easily, either by implementing the DecoderProviderInterface
+        // in your Module.php file, or by adding the "decoders" key in your module.config.php file
+        $serviceListener->addServiceManager(
+            $serviceLocator,
+            'decoders',
+            'ZfrRest\ModuleManager\Feature\DecoderProviderInterface',
+            'getDecoderConfig'
+        );
+
+        return parent::createService($serviceLocator);
+    }
 }

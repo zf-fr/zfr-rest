@@ -86,7 +86,11 @@ class UnauthorizedException extends ClientException
     {
         parent::prepareResponse($response);
 
-        $headers            = $response->getHeaders();
+        $headers = $response->getHeaders();
+        if ($headers->has('WWWAuthenticate')) {
+            return;
+        }
+
         $challenge          = $this->getChallenge();
         $authenticateHeader = Header\WWWAuthenticate::fromString("WWW-Authenticate: $challenge");
 
