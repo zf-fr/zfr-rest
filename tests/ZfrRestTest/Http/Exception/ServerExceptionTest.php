@@ -16,42 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Parser\Request;
+namespace ZfrRestTest\Http\Exception;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\Stdlib\MessageInterface;
-use ZfrRest\Http\Parser\AbstractParser;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Http\Exception;
 
-/**
- * Parse the body of a request according to the Content-Type header
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class BodyParser extends AbstractParser
+class ServerExceptionTest extends TestCase
 {
-    /**
-     * Parse the body
-     *
-     * @param  MessageInterface $request
-     * @return array|null
-     */
-    public function parse(MessageInterface $request)
+    public function testThrowExceptionIfStatusCodeIsNotInRange()
     {
-        if (!$request instanceof HttpRequest) {
-            return null;
-        }
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for server errors must be between 500 and 599, 600 given'
+        );
 
-        $header = $request->getHeader('Content-Type', null);
-        if ($header === null) {
-            return null;
-        }
+        $exception = new Exception\ServerException(600);
 
-        $mimeType = $header->getFieldValue();
-        $content  = $request->getContent();
+        $this->setExpectedException(
+            'InvalidArgumentException',
+            'Status code for server errors must be between 500 and 599, 499 given'
+        );
 
-        $decoder = $this->decoderPluginManager->get($mimeType);
+        $exception = new Exception\ServerException(499);
+    }
 
-        return $decoder->decode($content, $mimeType);
+    public function testAlwaysContainDefaultMessage()
+    {
+        $exception = new Exception\ServerException(501);
+        $this->assertContains('A server error occurred', $exception->getMessage());
     }
 }

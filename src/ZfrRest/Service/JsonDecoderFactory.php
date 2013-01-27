@@ -16,33 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Http;
+namespace ZfrRest\Service;
 
-use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Http\Exception;
+use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ClientExceptionTest extends TestCase
+/**
+ * JsonDecoderFactory
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class JsonDecoderFactory implements FactoryInterface
 {
-    public function testThrowExceptionIfStatusCodeIsNotInRange()
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Status code for client errors must be between 400 and 499, 500 given'
-        );
-
-        $exception = new Exception\ClientException(500);
-
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Status code for client errors must be between 400 and 499, 399 given'
-        );
-
-        $exception = new Exception\ClientException(399);
-    }
-
-    public function testAlwaysContainDefaultMessage()
-    {
-        $exception = new Exception\ClientException(401);
-        $this->assertContains('A client error occurred', $exception->getMessage());
+        return new JsonDecode(true);
     }
 }
