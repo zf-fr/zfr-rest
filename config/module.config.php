@@ -25,6 +25,7 @@ return array(
 
         'factories' => array(
             'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Service\BodyParserFactory',
+            'ZfrRest\Resource\ResourceMetadataFactory'  => 'ZfrRest\Service\ResourceMetadataFactoryFactory',
             'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Service\ModuleOptionsFactory',
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Service\SelectModelListenerFactory',
 
@@ -47,5 +48,10 @@ return array(
         'register_http_exception_listener'       => true,
         'register_select_model_listener'         => true,
         'register_http_method_override_listener' => false,
+
+        /**
+         * Register the driver chains for resource mapping
+         */
+        'driver_chain' => array()
     )
 );
