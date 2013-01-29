@@ -16,27 +16,48 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Service;
+namespace ZfrRest\Options;
 
-use Metadata\MetadataFactory;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Metadata\Driver\DriverInterface;
+use Zend\Stdlib\AbstractOptions;
 
 /**
- * ResourceMetadataFactoryFactory
+ * DriverChainOptions
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadataFactoryFactory implements FactoryInterface
+class DriverChainOptions extends AbstractOptions
 {
     /**
-     * {@inheritDoc}
+     * Set the drivers for the driver chain
+     *
+     * @var DriverInterface[]
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    protected $drivers;
+
+    /**
+     * @param  DriverInterface[] $drivers
+     * @return void
+     */
+    public function setDrivers(array $drivers)
     {
-        /** @var $options \ZfrRest\Options\DriverChainOptions */
-        $options = $serviceLocator->get('ZfrRest\Options\DriverChainOptions');
-        return new MetadataFactory($options->getDriverChain());
+        $this->drivers = $drivers;
+    }
+
+    /**
+     * @return DriverInterface[]
+     */
+    public function getDrivers()
+    {
+        return $this->drivers;
+    }
+
+    /**
+     *
+     */
+    public function getDriverChain()
+    {
+
     }
 }

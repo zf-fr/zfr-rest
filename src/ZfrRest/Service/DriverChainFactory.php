@@ -16,16 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Options\Exception;
+namespace ZfrRest\Service;
 
-use RuntimeException as BaseRuntimeException;
+use Metadata\Driver\DriverChain;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Options\DriverChainOptions;
 
 /**
- * RuntimeException
+ * DriverChainFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+class DriverChainFactory implements FactoryInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config  = $serviceLocator->get('Config');
+        $drivers = $config['driver_chain'];
+
+        if (empty($driverChain)) {
+            throw new Exception\RuntimeException(
+                'No drivers for resources mapping has been set in ZfrRest'
+            );
+        }
+
+        foreach ($drivers as $driver) {
+            $class = $driver['class'];
+        }
+
+        return new DriverChainOptions($driverChain);
+    }
 }

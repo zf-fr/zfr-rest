@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Options;
 
-use Metadata\Driver\DriverChain;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -29,6 +28,11 @@ use Zend\Stdlib\AbstractOptions;
  */
 class ModuleOptions extends AbstractOptions
 {
+    /**
+     * @var bool
+     */
+    protected $__strictMode__ = false;
+
     /**
      * If this listener is registered (true by default), it will listen on MvcEvent::EVENT_DISPATCH_ERROR,
      * and allow to automatically set Response code and message if a ZfrRest\Http exception is thrown
@@ -53,13 +57,6 @@ class ModuleOptions extends AbstractOptions
      * @var bool
      */
     protected $registerHttpMethodOverrideListener;
-
-    /**
-     * Set the driver chain that define the mapping for the resource
-     *
-     * @var DriverChain
-     */
-    protected $driverChain;
 
 
     /**
@@ -111,29 +108,5 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterSelectModelListener()
     {
         return $this->registerSelectModelListener;
-    }
-
-    /**
-     * @param  array $driverChain
-     * @throws Exception\RuntimeException
-     * @return void
-     */
-    public function setDriverChain(array $driverChain)
-    {
-        if (empty($driverChain)) {
-            throw new Exception\RuntimeException(
-                'No drivers for resources mapping has been set in ZfrRest'
-            );
-        }
-
-        $this->driverChain = $driverChain;
-    }
-
-    /**
-     * @return DriverChain
-     */
-    public function getDriverChain()
-    {
-        return $this->driverChain;
     }
 }

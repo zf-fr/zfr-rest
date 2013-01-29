@@ -16,27 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Service;
+namespace ZfrRest\Resource\Metadata\Driver;
 
-use Metadata\MetadataFactory;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Metadata\Driver\DriverInterface;
 
 /**
- * ResourceMetadataFactoryFactory
+ * AnnotationDriver
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadataFactoryFactory implements FactoryInterface
+class AnnotationDriver implements DriverInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function loadMetadataForClass(\ReflectionClass $class)
     {
-        /** @var $options \ZfrRest\Options\DriverChainOptions */
-        $options = $serviceLocator->get('ZfrRest\Options\DriverChainOptions');
-        return new MetadataFactory($options->getDriverChain());
+        // TODO: Implement loadMetadataForClass() method.
     }
 }
