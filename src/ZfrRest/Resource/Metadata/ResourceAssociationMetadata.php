@@ -18,53 +18,84 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Metadata\ClassMetadata;
+
 /**
- * Contract for any resource type
+ * ResourceAssociationMetadata
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-interface ResourceAssociationMetadata
+class ResourceAssociationMetadata extends ClassMetadata
 {
+    /**
+     * @var array
+     */
+    public $propertyMetadata = array(
+        'controller',
+        'input_filter',
+        'hydrator',
+        'encoders',
+        'decoders'
+    );
+
     /**
      * Get the name of the resource, as recognized by the class metadata factory
      *
      * @return string
      */
-    public function getName();
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * Get the controller used for the resource
      *
-     * @return \Zend\Mvc\Controller\AbstractController
+     * @return string
      */
-    public function getController();
+    public function getController()
+    {
+        return $this->propertyMetadata['controller'];
+    }
 
     /**
      * Get the input filter used to valid data
      *
-     * @return \Zend\InputFilter\InputFilterInterface
+     * @return string
      */
-    public function getInputFilter();
+    public function getInputFilter()
+    {
+        return $this->propertyMetadata['input_filter'];
+    }
 
     /**
      * Get the hydrator used for the resource
      *
-     * @return \Zend\Stdlib\Hydrator\HydratorInterface
+     * @return string
      */
-    public function getHydrator();
+    public function getHydrator()
+    {
+        return $this->propertyMetadata['hydrator'];
+    }
 
     /**
      * Get a list that map Content-Type to encoders
      *
-     * @return \Symfony\Component\Serializer\Encoder\EncoderInterface[]
+     * @return array
      */
-    public function getEncoders();
+    public function getEncoders()
+    {
+        return $this->propertyMetadata['encoders'];
+    }
 
     /**
      * Get a list that map Content-Type to decoders
      *
-     * @return \Symfony\Component\Serializer\Encoder\DecoderInterface[]
+     * @return array
      */
-    public function getDecoders();
+    public function getDecoders()
+    {
+        return $this->propertyMetadata['decoders'];
+    }
 }

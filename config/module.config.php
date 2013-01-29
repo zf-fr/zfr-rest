@@ -50,7 +50,7 @@ return array(
         'register_http_method_override_listener' => false,
 
         /**
-         * Register the driver chains for resource mapping
+         * Register the driver chain for resource mapping
          */
         'driver_chain' => array()
     )

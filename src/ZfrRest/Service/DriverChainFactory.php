@@ -19,9 +19,9 @@
 namespace ZfrRest\Service;
 
 use Metadata\Driver\DriverChain;
+use Metadata\Driver\DriverInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Options\DriverChainOptions;
 
 /**
  * DriverChainFactory
@@ -39,16 +39,64 @@ class DriverChainFactory implements FactoryInterface
         $config  = $serviceLocator->get('Config');
         $drivers = $config['driver_chain'];
 
-        if (empty($driverChain)) {
+        if (empty($drivers)) {
             throw new Exception\RuntimeException(
                 'No drivers for resources mapping has been set in ZfrRest'
             );
         }
 
-        foreach ($drivers as $driver) {
-            $class = $driver['class'];
+        foreach ($drivers as &$driver) {
+            $driver = $this->createDriver($driver);
         }
 
-        return new DriverChainOptions($driverChain);
+        return new DriverChain($drivers);
+    }
+
+    /**
+     * Create a new driver from
+     *
+     * @param  array $driver
+     * @throws Exception\RuntimeException
+     * @return DriverInterface
+     */
+    protected function createDriver(array $driver)
+    {
+        $class = $driver['class'];
+
+        if (!is_subclass_of($class, 'Metadata\Driver\DriverInterface')) {
+            throw new Exception\RuntimeException(sprintf(
+                'Drivers must implement Metadata\Driver\DriverInterface, %s given',
+                $class
+            ));
+        }
+
+        /** @var $driver \Metadata\Driver\DriverInterface */
+        $driver = new $class();
+
+        //return $driver;
+
+        return array(
+            'zfr_rest' => array(
+                // Drivers for resources, this will lead to a Metadata\DriverChain
+                'metadata' => array(
+                    // Set the cache for metadata
+                    'cache' => 'Doctrine\Common\Cache\ApcCache',
+
+                    'drivers' => array(
+                        // Comes from annotations
+                        'app_driver' => array(
+                            'class' => 'ZfrRest\Metadata\Driver\AnnotationDriver',
+                            'paths' => array()
+                        ),
+
+                        // Comes from PHP files
+                        'anoter_driver' => array(
+                            'class' => 'ZfrRest\Metadata\Driver\FileDriver',
+                            'paths' => array()
+                        )
+                    )
+                )
+            )
+        );
     }
 }
