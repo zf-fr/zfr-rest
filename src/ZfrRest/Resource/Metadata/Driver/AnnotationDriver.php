@@ -18,7 +18,10 @@
 
 namespace ZfrRest\Resource\Metadata\Driver;
 
+use ReflectionClass;
+use Doctrine\Common\Annotations\Reader as AnnotationReader;
 use Metadata\Driver\DriverInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
  * AnnotationDriver
@@ -29,10 +32,50 @@ use Metadata\Driver\DriverInterface;
 class AnnotationDriver implements DriverInterface
 {
     /**
+     * @var AnnotationReader
+     */
+    protected $annotationReader;
+
+    /**
+     * Constructor
+     *
+     * @param \Doctrine\Common\Annotations\Reader $reader
+     */
+    public function __construct(AnnotationReader $reader)
+    {
+        $this->annotationReader = $reader;
+    }
+
+    /**
      * {@inheritDoc}
      */
-    public function loadMetadataForClass(\ReflectionClass $class)
+    public function loadMetadataForClass(ReflectionClass $class)
     {
-        // TODO: Implement loadMetadataForClass() method.
+        $resourceMetadata = new ResourceMetadata($class->getName());
+
+        // First handle class level annotations
+        $classAnnotations = $this->annotationReader->getClassAnnotations($class);
+        foreach ($classAnnotations as $classAnnotation) {
+            var_dump($classAnnotation);
+        }
+
+/*
+        $properties = $class->getProperties();
+
+        foreach ($class->getProperties() as $reflectionProperty) {
+            $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
+
+            $annotation = $this->reader->getPropertyAnnotation(
+                $reflectionProperty,
+                'Matthias\\AnnotationBundle\\Annotation\\DefaultValue'
+            );
+
+            if (null !== $annotation) {
+                // a "@DefaultValue" annotation was found
+                $propertyMetadata->defaultValue = $annotation->value;
+            }
+
+            $classMetadata->addPropertyMetadata($propertyMetadata);
+        }*/
     }
 }

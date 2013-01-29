@@ -18,21 +18,30 @@
 
 namespace ZfrRest\Resource\Metadata\Driver;
 
-use Metadata\Driver\DriverInterface;
+use ReflectionClass;
+use Metadata\Driver\AbstractFileDriver;
 
 /**
- * FileDriver
+ * PhpDriver
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class FileDriver implements DriverInterface
+class PhpDriver extends AbstractFileDriver
 {
     /**
      * {@inheritDoc}
      */
-    public function loadMetadataForClass(\ReflectionClass $class)
+    protected function loadMetadataFromFile(ReflectionClass $class, $file)
     {
-        // TODO: Implement loadMetadataForClass() method.
+        // TODO: Implement loadMetadataFromFile() method.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getExtension()
+    {
+        return 'php';
     }
 }

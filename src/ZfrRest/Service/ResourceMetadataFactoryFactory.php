@@ -18,9 +18,15 @@
 
 namespace ZfrRest\Service;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Metadata\Cache\DoctrineCacheAdapter;
+use Metadata\Driver\DriverChain;
+use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Options\ResourceMetadataOptions;
 
 /**
  * ResourceMetadataFactoryFactory
@@ -35,8 +41,35 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /** @var $options \ZfrRest\Options\DriverChainOptions */
-        $options = $serviceLocator->get('ZfrRest\Options\DriverChainOptions');
-        return new MetadataFactory($options->getDriverChain());
+        $options         = $serviceLocator->get('Config');
+        $metadataOptions = new ResourceMetadataOptions($options['zfr_rest']['resource_metadata']);
+
+        // Create the driver chain
+        $drivers = $metadataOptions->getDrivers();
+        foreach ($drivers as &$driver) {
+            $class = $driver['class'];
+            $paths = $driver['paths'];
+
+            if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
+                // Special care is taken for PhpDriver, as we need to create a FileLocator
+                $fileLocator = new FileLocator($paths);
+                $driver      = new $class($fileLocator);
+            } elseif ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
+                // Add the path to the annotations
+                AnnotationRegistry::registerAutoloadNamespace('ZfrRest\Resource\Annotation');
+                $driver = new $class(new AnnotationReader());
+            }
+        }
+
+        $metadataFactory = new MetadataFactory(new DriverChain($drivers));
+
+        // Set the cache if defined
+        $cache = $metadataOptions->getCache();
+        if ($cache !== null) {
+            $cacheAdapter = new DoctrineCacheAdapter('resource_metadata', new $cache);
+            $metadataFactory->setCache($cacheAdapter);
+        }
+
+        return $metadataFactory;
     }
 }

@@ -16,21 +16,16 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'zfr_rest' => array(
-        // Specify the drivers to the resource mapping
-        'driver_chain' => array(
-            // For annotations
-            'my_annotation_driver' => array(
-                'class' => 'ZfrRest\Metadata\Driver\AnnotationDriver',
-                'paths' => array()
-            ),
+namespace ZfrRest\Options\Exception;
 
-            // For PHP config
-            'my_php_driver' => array(
-                'class' => 'ZfrRest\Metadata\Driver\PhpDriver',
-                'paths' => array()
-            ),
-        )
-    )
-);
+use RuntimeException as BaseRuntimeException;
+
+/**
+ * RuntimeException
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class RuntimeException extends BaseRuntimeException
+{
+}

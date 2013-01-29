@@ -52,6 +52,6 @@ return array(
         /**
          * Register the driver chain for resource mapping
          */
-        'driver_chain' => array()
+        'resource_metadata' => array()
     )
 );
