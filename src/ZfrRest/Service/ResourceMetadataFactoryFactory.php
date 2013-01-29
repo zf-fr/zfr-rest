@@ -56,7 +56,11 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
                 $driver      = new $class($fileLocator);
             } elseif ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
                 // Add the path to the annotations
-                AnnotationRegistry::registerAutoloadNamespace('ZfrRest\Resource\Annotation');
+                AnnotationRegistry::registerAutoloadNamespace(
+                    'ZfrRest\Resource\Annotation',
+                    __DIR__ . '/../..'
+                );
+
                 $driver = new $class(new AnnotationReader());
             }
         }

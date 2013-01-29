@@ -20,7 +20,11 @@ namespace ZfrRest\Resource\Metadata\Driver;
 
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader as AnnotationReader;
+use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use ZfrRest\Resource\Annotation;
+use ZfrRest\Resource\Metadata\ResourceAssociationMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -37,13 +41,20 @@ class AnnotationDriver implements DriverInterface
     protected $annotationReader;
 
     /**
+     * @var ClassMetadataFactory
+     */
+    protected $classMetadataFactory;
+
+    /**
      * Constructor
      *
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param \Doctrine\Common\Annotations\Reader                       $reader
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory $classMetadataFactory
      */
-    public function __construct(AnnotationReader $reader)
+    public function __construct(AnnotationReader $reader, ClassMetadataFactory $classMetadataFactory)
     {
-        $this->annotationReader = $reader;
+        $this->annotationReader     = $reader;
+        $this->classMetadataFactory = $classMetadataFactory;
     }
 
     /**
@@ -51,31 +62,80 @@ class AnnotationDriver implements DriverInterface
      */
     public function loadMetadataForClass(ReflectionClass $class)
     {
+        $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
         $resourceMetadata = new ResourceMetadata($class->getName());
 
-        // First handle class level annotations
-        $classAnnotations = $this->annotationReader->getClassAnnotations($class);
-        foreach ($classAnnotations as $classAnnotation) {
-            var_dump($classAnnotation);
+        /**
+         * First handle class level annotations
+         */
+        $annotations = $this->annotationReader->getClassAnnotations($class);
+        foreach ($annotations as $annotation) {
+            $this->processMetadata($resourceMetadata, $annotation);
         }
 
-/*
+        /**
+         * Then handle associations
+         */
         $properties = $class->getProperties();
+        foreach ($properties as $property) {
+            $expose = $this->annotationReader->getPropertyAnnotation($property, 'ZfrRest\Resource\Annotation\ExposeAssociation');
 
-        foreach ($class->getProperties() as $reflectionProperty) {
-            $propertyMetadata = new PropertyMetadata($class->getName(), $reflectionProperty->getName());
+            // Only load the metadata for associations that are exposed
+            if ($expose !== null) {
+                $targetClass                 = $classMetadata->getAssociationTargetClass($property->name);
+                $resourceAssociationMetadata = new ResourceAssociationMetadata($targetClass);
 
-            $annotation = $this->reader->getPropertyAnnotation(
-                $reflectionProperty,
-                'Matthias\\AnnotationBundle\\Annotation\\DefaultValue'
-            );
+                $annotations = $this->annotationReader->getPropertyAnnotations($property);
 
-            if (null !== $annotation) {
-                // a "@DefaultValue" annotation was found
-                $propertyMetadata->defaultValue = $annotation->value;
+                foreach($annotations as $annotation) {
+                    $this->processMetadata($resourceAssociationMetadata, $annotation);
+                }
+
+                $resourceMetadata->propertyMetadata['associations_metadata'][$property->name] = $resourceAssociationMetadata;
             }
+        }
+    }
 
-            $classMetadata->addPropertyMetadata($propertyMetadata);
-        }*/
+    /**
+     * @param  \Metadata\ClassMetadata $metadata
+     * @param  mixed                   $annotation
+     * @return void
+     */
+    private function processMetadata(ClassMetadata $metadata, $annotation)
+    {
+        $annotationClass = get_class($annotation);
+
+        switch($annotationClass) {
+            case 'ZfrRest\Resource\Annotation\Controller':
+                $metadata->propertyMetadata['controller'] = $annotation->name;
+                break;
+            case 'ZfrRest\Resource\Annotation\Hydrator':
+                $metadata->propertyMetadata['hydrator'] = $annotation->name;
+                break;
+            case 'ZfrRest\Resource\Annotation\InputFilter':
+                $metadata->propertyMetadata['input_filter'] = $annotation->name;
+                break;
+            case 'ZfrRest\Resource\Annotation\Decoders':
+                $decoders = $annotation->decoders;
+                foreach ($decoders as $decoder) {
+                    $metadata->propertyMetadata['decoders'][] = array(
+                        $decoder->mimeType => $decoder->name
+                    );
+                }
+
+                break;
+            case 'ZfrRest\Resource\Annotation\Encoders':
+                $encoders = $annotation->encoders;
+                foreach ($encoders as $encoder) {
+                    $metadata->propertyMetadata['encoders'][] = array(
+                        $encoder->mimeType => $encoder->name
+                    );
+                }
+
+                break;
+            default:
+                // Ignore unknown annotations
+                break;
+        }
     }
 }
