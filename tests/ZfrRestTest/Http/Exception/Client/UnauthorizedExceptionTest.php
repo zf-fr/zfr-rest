@@ -16,33 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Http;
+namespace ZfrRestTest\Http\Exception\Client;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Http\Exception;
+use ZfrRest\Http\Exception\Client;
 
-class ServerExceptionTest extends TestCase
+class UnauthorizedExceptionTest extends TestCase
 {
-    public function testThrowExceptionIfStatusCodeIsNotInRange()
+    public function testAssertUnauthorizedExceptionContainsBasicChallengeByDefault()
     {
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Status code for server errors must be between 500 and 599, 600 given'
-        );
+        $exception = new Client\UnauthorizedException();
 
-        $exception = new Exception\ServerException(600);
-
-        $this->setExpectedException(
-            'InvalidArgumentException',
-            'Status code for server errors must be between 500 and 599, 499 given'
-        );
-
-        $exception = new Exception\ServerException(499);
-    }
-
-    public function testAlwaysContainDefaultMessage()
-    {
-        $exception = new Exception\ServerException(501);
-        $this->assertContains('A server error occurred', $exception->getMessage());
+        $this->assertEquals('Basic', $exception->getChallenge());
     }
 }

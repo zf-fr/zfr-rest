@@ -16,42 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Parser\Request;
+namespace ZfrRest\Http\Exception\Client;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\Stdlib\MessageInterface;
-use ZfrRest\Http\Parser\AbstractParser;
+use ZfrRest\Http\Exception\ClientException;
 
 /**
- * Parse the body of a request according to the Content-Type header
+ * ConflictException
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class BodyParser extends AbstractParser
+class ConflictException extends ClientException
 {
     /**
-     * Parse the body
-     *
-     * @param  MessageInterface $request
-     * @return array|null
+     * @var string
      */
-    public function parse(MessageInterface $request)
+    protected $message = 'The request could not be processed because of conflict in the request, such as an edit conflict';
+
+
+    /**
+     * @param string $message
+     */
+    public function __construct($message = '')
     {
-        if (!$request instanceof HttpRequest) {
-            return null;
-        }
-
-        $header = $request->getHeader('Content-Type', null);
-        if ($header === null) {
-            return null;
-        }
-
-        $mimeType = $header->getFieldValue();
-        $content  = $request->getContent();
-
-        $decoder = $this->decoderPluginManager->get($mimeType);
-
-        return $decoder->decode($content, $mimeType);
+        parent::__construct(409, $message);
     }
 }
