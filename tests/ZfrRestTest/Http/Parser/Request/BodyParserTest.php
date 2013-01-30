@@ -20,10 +20,10 @@ namespace ZfrRestTest\Http\Parser\Request;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
 use ZfrRest\Http\Parser\Request\BodyParser;
 use ZfrRest\Serializer\DecoderPluginManager;
+use ZfrRestTest\Util\ServiceManagerFactory;
 
 class BodyParserTest extends TestCase
 {
@@ -32,10 +32,16 @@ class BodyParserTest extends TestCase
      */
     protected $bodyParser;
 
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
+
 
     public function setUp()
     {
-        $this->bodyParser = new BodyParser(new DecoderPluginManager());
+        $this->serviceManager = ServiceManagerFactory::getServiceManager();
+        $this->bodyParser     = new BodyParser(new DecoderPluginManager());
     }
 
     public function testAlwaysReturnNullIfNoContentTypeIsSet()
@@ -91,18 +97,7 @@ EOD;
 
     public function testCanRetrieveBodyParserWithServiceManager()
     {
-        $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'ZfrRest\Http\Parser\Request\BodyParser'  => 'ZfrRest\Service\BodyParserFactory',
-                    'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory'
-                ),
-            ))
-        );
-        $serviceManager->setService('Config', array());
-
-        $bodyParser = $serviceManager->get('ZfrRest\Http\Parser\Request\BodyParser');
-
+        $bodyParser = $this->serviceManager->get('ZfrRest\Http\Parser\Request\BodyParser');
         $this->assertInstanceOf('ZfrRest\Http\Parser\Request\BodyParser', $bodyParser);
     }
 }

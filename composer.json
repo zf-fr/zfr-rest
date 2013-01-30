@@ -30,6 +30,9 @@
         "symfony/serializer": "2.1.*",
         "zendframework/zendframework": "2.*"
     },
+    "suggest": {
+        "outeredge/swagger-module": "If you need to generate Swagger documentation for your REST API"
+    },
     "autoload": {
         "psr-0": {
             "ZfrRest\\": "src/"
