@@ -105,16 +105,162 @@ Resources
 
 ### What is a resource ?
 
-TODO
+It is kind of hard to define what is a resource from a REST point of view. Basically, a resource can be "anything". Most often, a URL returns a representation of a given resource. For instance, the URL "/users/5" will return a representation (in some defined format like JSON or Xml) of the user whose id is 5. But a resource can be something else, like a web service that returns the temperature of a given location.
+
+### Resources metadata
+
+Most of the time, you will want to retrieve representation of your entities. Various tasks,
+such as routing, data validation and serialization, are performed automatically for you by
+ZfrRest. However, for this to work, ZfrRest needs to have some information about your
+resources.
+
+Similar to Doctrine 2, ZfrRest uses class metadata. Here are the metadata that you can specify:
+
+* Controller: the controller that is used for a given resource type.
+* Input filter: the input filter is responsible for validating data.
+* Hydrator: the hydrator converts the object to an array and vice-versa.
+* Encoders: the decoders convert the data to a given type specified by the Accept header.
+
+For defining this metadata, you have two choices: annotations or PHP config files. ZfrRest
+uses, internally, a driver chain. This allows you to mix both annotations and PHP config
+files.
+
 
 ### From annotations
 
+To add an annotation driver, just add the following code in any of your module config (a
+good practice is to add one driver for each module, they will be merged automatically):
+
+```php
+// in any module.config.php
+return array(
+	'zfr_rest' => array(
+		'resource_metadata' => array(
+			'drivers' => array(
+				'application_driver' => array(
+					'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+					'paths' => array(__DIR__ . '/../src/Application/Entity')
+				)
+			)
+		)
+	);
+);
+```
+
+Now, any classes that are within the paths can be successfully extracted!
+
+Here is an example of a simple entity annotated:
+
+TODO: need to complete (how to handle hydrators)
+
+
+```php
+namespace Application\Entity;
+
+use ZfrRest\Resource\Metadata\Annotation as Rest;
+
+/**
+ * @Rest\Controller(name="Application\Controller\UserController")
+ * @Rest\InputFilter(name="Application\InputFilter\UserInputFilter")
+ */
+class User
+{
+	/**
+	 * @Rest\ExposeAssociation
+	 * @Rest\Controller(name="Application\Controller\AddressController")
+	 */
+	protected $address;
+}
+```
+
+#### Annotations reference
+
 TODO
+
 
 ### From PHP config files
 
+To add a PHP driver, just add the following code in any of your module config (a
+good practice is to add one driver for each module, they will be merged automatically):
+
+```php
+// in any module.config.php
+return array(
+	'zfr_rest' => array(
+		'resource_metadata' => array(
+			'drivers' => array(
+				'application_driver' => array(
+					'class' => 'ZfrRest\Resource\Metadata\Driver\PhpDriver'
+					'paths' => array(
+						'Application\Entity' => __DIR__ . '/../resources'
+					)
+				)
+			)
+		)
+	);
+);
+```
+
+Please note that contrary to the annotation driver, the parameter in the paths must be
+a key => value whose key is the namespace of the entities whose config are in resources. Now,
+if you want to add a config file for User entity, just add a User.php file into the
+resources folder. This will map to Application\Entity\User.
+
+#### PHP reference
+
 TODO
 
+### Setting a cache
+
+Parsing the annotations is expensive. This is why, in production, you must cache the
+resources metadata. By default, ZfrRest uses a simple array cache, but this is not persistent
+across requests. For better performance, you can use a Apc cache, for instance. Hopefully,
+this is pretty simple. Just override the "cache" key in the resources metadata options:
+
+```php
+// in your config file
+return array(
+	'zfr_rest' => array(
+		'resources_metadata' => array(
+			'cache' => 'Doctrine\Common\Cache\ApcCache'
+		)
+	)
+);
+
+```
+
+You can use any Doctrine cache class (there are implementations for Memcached, Memcache,
+Redis…).
+
+#### Explicitely clearing the cache
+
+If you are using any cache that is persistent accross requests (for instance the Apc cache),
+any changes to the metadata won't be taken into account. Hopefully, ZfrRest provides a basic
+command to clear the cache. This is provided through the ZF 2 Console component. Go to your
+public folder in your Terminal, and type the following: 
+
+``php index.php rest clear metadata cache``
+
+Of course, in development, you'd better use a simpler cache like ArrayCache (which is the
+default).
+
+
+### Fetching resource metadata
+
+Now that you have define your resource metadata, you can fetch the ResourceMetadataFactory,
+and get individual resource metadata:
+
+```php
+$resourceFactory = $locator->get('ZfrRest\Resource\ResourceMetadataFactory');
+$metadata = $resourceFactory->getClassMetadataFor('Application\Entity\User');
+
+var_dump($metadata->getController()); // prints Application\Controller\UserController
+var_dump($metadata->hasResourceAssociation('address')); // prints true
+
+// Get the resource metadata of this association
+$assocMetadata = $metadata->getResourceAssociation('address');
+
+```
 
 
 Routes
