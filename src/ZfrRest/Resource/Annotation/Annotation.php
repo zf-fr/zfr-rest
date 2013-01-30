@@ -19,34 +19,22 @@
 namespace ZfrRest\Resource\Annotation;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Decoders implements Annotation
+interface Annotation
 {
     /**
-     * @var array
+     * Get the key of the annotation
+     *
+     * @return string
      */
-    public $decoders = array();
+    public function getKey();
 
     /**
-     * {@inheritDoc}
+     * Get the value of the annotation
+     *
+     * @return mixed
      */
-    public function getKey()
-    {
-        return 'decoders';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        $decoders = array();
-        foreach ($this->decoders as $decoder) {
-            $decoders[] = $decoder->getValue();
-        }
-
-        return $decoders;
-    }
+    public function getValue();
 }

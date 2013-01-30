@@ -22,10 +22,26 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-class Hydrator
+final class Hydrator implements Annotation
 {
     /**
      * @var string
      */
     public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'hydrator';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
+    }
 }

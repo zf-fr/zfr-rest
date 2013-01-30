@@ -22,10 +22,31 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-class Encoders
+final class Encoders implements Annotation
 {
     /**
      * @var array
      */
     public $encoders = array();
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'encoders';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        $encoders = array();
+        foreach ($this->encoders as $encoder) {
+            $encoders[] = $encoder->getValue();
+        }
+
+        return $encoders;
+    }
 }

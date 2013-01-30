@@ -22,10 +22,26 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-class Controller
+final class Controller implements Annotation
 {
     /**
      * @var string
      */
     public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'controller';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
+    }
 }

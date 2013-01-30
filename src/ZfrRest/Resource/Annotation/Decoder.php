@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"ANNOTATION"})
  */
-class Decoder
+final class Decoder implements Annotation
 {
     /**
      * @var string
@@ -33,4 +33,22 @@ class Decoder
      * @var string
      */
     public $mimeType;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'decoder';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            $this->mimeType => $this->name
+        );
+    }
 }

@@ -22,6 +22,21 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-class ExposeAssociation
+final class ExposeAssociation implements Annotation
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'association';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return true;
+    }
 }

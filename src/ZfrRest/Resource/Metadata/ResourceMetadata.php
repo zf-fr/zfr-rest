@@ -29,16 +29,35 @@ use Metadata\ClassMetadata;
 class ResourceMetadata extends ClassMetadata
 {
     /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator;
+
+    /**
      * @var array
      */
-    public $propertyMetadata = array(
-        'controller',
-        'input_filter',
-        'hydrator',
-        'encoders',
-        'decoders',
-        'associations_metadata'
-    );
+    public $decoders;
+
+    /**
+     * @var array
+     */
+    public $encoders;
+
+    /**
+     * @var array
+     */
+    public $associations;
+
 
     /**
      * Get the name of the resource, as recognized by the class metadata factory
@@ -57,7 +76,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getController()
     {
-        return $this->propertyMetadata['controller'];
+        return $this->controller;
     }
 
     /**
@@ -67,7 +86,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getInputFilter()
     {
-        return $this->propertyMetadata['input_filter'];
+        return $this->inputFilter;
     }
 
     /**
@@ -77,7 +96,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getHydrator()
     {
-        return $this->propertyMetadata['hydrator'];
+        return $this->hydrator;
     }
 
     /**
@@ -87,7 +106,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getEncoders()
     {
-        return $this->propertyMetadata['encoders'];
+        return $this->encoders;
     }
 
     /**
@@ -97,7 +116,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getDecoders()
     {
-        return $this->propertyMetadata['decoders'];
+        return $this->decoders;
     }
 
     /**
@@ -108,7 +127,7 @@ class ResourceMetadata extends ClassMetadata
      */
     public function hasAssociationMetadata($associationName)
     {
-        return isset($this->propertyMetadata['associations_metadata'][$associationName]);
+        return isset($this->associations[$associationName]);
     }
 
     /**
@@ -119,6 +138,6 @@ class ResourceMetadata extends ClassMetadata
      */
     public function getAssociationMetadata($associationName)
     {
-        return $this->propertyMetadata['associations_metadata'][$associationName];
+        return $this->associations[$associationName];
     }
 }

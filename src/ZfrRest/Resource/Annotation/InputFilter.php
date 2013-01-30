@@ -22,10 +22,26 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-class InputFilter
+final class InputFilter implements Annotation
 {
     /**
      * @var string
      */
     public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'inputFilter';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
+    }
 }

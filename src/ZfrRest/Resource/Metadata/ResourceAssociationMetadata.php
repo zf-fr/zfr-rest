@@ -29,15 +29,30 @@ use Metadata\ClassMetadata;
 class ResourceAssociationMetadata extends ClassMetadata
 {
     /**
+     * @var string
+     */
+    protected $controller;
+
+    /**
+     * @var string
+     */
+    protected $inputFilter;
+
+    /**
+     * @var string
+     */
+    protected $hydrator;
+
+    /**
      * @var array
      */
-    public $propertyMetadata = array(
-        'controller',
-        'input_filter',
-        'hydrator',
-        'encoders',
-        'decoders'
-    );
+    protected $decoders;
+
+    /**
+     * @var array
+     */
+    protected $encoders;
+
 
     /**
      * Get the name of the resource, as recognized by the class metadata factory
@@ -56,7 +71,7 @@ class ResourceAssociationMetadata extends ClassMetadata
      */
     public function getController()
     {
-        return $this->propertyMetadata['controller'];
+        return $this->controller;
     }
 
     /**
@@ -66,7 +81,7 @@ class ResourceAssociationMetadata extends ClassMetadata
      */
     public function getInputFilter()
     {
-        return $this->propertyMetadata['input_filter'];
+        return $this->inputFilter;
     }
 
     /**
@@ -76,7 +91,7 @@ class ResourceAssociationMetadata extends ClassMetadata
      */
     public function getHydrator()
     {
-        return $this->propertyMetadata['hydrator'];
+        return $this->hydrator;
     }
 
     /**
@@ -86,7 +101,7 @@ class ResourceAssociationMetadata extends ClassMetadata
      */
     public function getEncoders()
     {
-        return $this->propertyMetadata['encoders'];
+        return $this->encoders;
     }
 
     /**
@@ -96,6 +111,6 @@ class ResourceAssociationMetadata extends ClassMetadata
      */
     public function getDecoders()
     {
-        return $this->propertyMetadata['decoders'];
+        return $this->decoders;
     }
 }
