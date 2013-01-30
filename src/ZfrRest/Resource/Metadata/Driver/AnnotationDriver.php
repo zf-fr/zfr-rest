@@ -18,15 +18,12 @@
 
 namespace ZfrRest\Resource\Metadata\Driver;
 
-use \Metadata\PropertyMetadata;
-
-
-
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader as AnnotationReader;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Annotation;
 use ZfrRest\Resource\Metadata\ResourceAssociationMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
