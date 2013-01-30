@@ -24,8 +24,4 @@ namespace ZfrRest\Resource\Annotation;
  */
 class ExposeAssociation
 {
-    /**
-     * @var bool
-     */
-    public $value = true;
 }
