@@ -35,6 +35,29 @@ return array(
         )
     ),
 
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'clear-cache' => array(
+                    'type'    => 'Simple',
+                    'options' => array(
+                        'route'    => 'rest clear metadata cache',
+                        'defaults' => array(
+                            'controller' => 'ZfrRest\Controller\Cache',
+                            'action'     => 'clear-cache'
+                        )
+                    )
+                )
+            )
+        )
+    ),
+
+    'controllers' => array(
+        'invokables' => array(
+            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController'
+        )
+    ),
+
     'view_manager' => array(
         'strategies' => array(
             'ViewJsonStrategy'

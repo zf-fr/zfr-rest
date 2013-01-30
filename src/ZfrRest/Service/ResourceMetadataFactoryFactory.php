@@ -41,8 +41,9 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $options         = $serviceLocator->get('Config');
-        $metadataOptions = new ResourceMetadataOptions($options['zfr_rest']['resource_metadata']);
+        /** @var $options \ZfrRest\Options\ModuleOptions */
+        $options         = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $metadataOptions = $options->getResourceMetadata();
 
         // Create the driver chain
         $drivers = $metadataOptions->getDrivers();
