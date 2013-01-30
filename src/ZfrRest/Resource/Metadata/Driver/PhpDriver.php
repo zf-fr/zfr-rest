@@ -77,6 +77,8 @@ class PhpDriver extends AbstractFileDriver
         }
 
         $this->processMetadata($resourceMetadata, $config);
+
+        return $resourceMetadata;
     }
 
     /**
@@ -94,7 +96,7 @@ class PhpDriver extends AbstractFileDriver
     private function processMetadata(ClassMetadata $metadata, array $data)
     {
         foreach ($data as $key => $value) {
-            // Normalize the key (in a PHP array, the key are underscore_separated)
+            // Normalize the key (in a PHP array, the keys are underscore_separated)
             $key = lcfirst(StaticFilter::execute($key, 'WordUnderscoreToCamelCase'));
 
             $propertyMetadata = new PropertyMetadata($metadata, $key);

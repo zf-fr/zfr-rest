@@ -70,7 +70,7 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         // Set the cache if defined
         $cache = $metadataOptions->getCache();
         if ($cache !== null) {
-            $cacheAdapter = new DoctrineCacheAdapter('resource_metadata', new $cache);
+            $cacheAdapter = new DoctrineCacheAdapter('resource_metadata_', new $cache);
             $metadataFactory->setCache($cacheAdapter);
         }
 

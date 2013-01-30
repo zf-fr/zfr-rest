@@ -95,6 +95,8 @@ class AnnotationDriver implements DriverInterface
                 }
             }
         }
+
+        return $resourceMetadata;
     }
 
     /**
