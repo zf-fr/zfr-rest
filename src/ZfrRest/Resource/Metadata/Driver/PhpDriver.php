@@ -21,8 +21,10 @@ namespace ZfrRest\Resource\Metadata\Driver;
 use ReflectionClass;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Metadata\ClassMetadata;
+use Metadata\PropertyMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
+use Zend\Filter\StaticFilter;
 use ZfrRest\Resource\Metadata\ResourceAssociationMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
@@ -61,26 +63,20 @@ class PhpDriver extends AbstractFileDriver
         $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
         $resourceMetadata = new ResourceMetadata($class->getName());
 
-        // If config has any associations set, handle it first
+        // First process associations, so that we can safely remove it and handle the other config normally
         if (isset($config['associations'])) {
-            foreach ($config['associations'] as $associationName => $values) {
+            foreach ($config['associations'] as $associationName => $associationConfig) {
                 $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
                 $resourceAssociationMetadata = new ResourceAssociationMetadata($targetClass);
 
-                foreach ($values as $key => $value) {
-                    $this->processMetadata($resourceAssociationMetadata, $key, $value);
-                }
-
-                $resourceMetadata->propertyMetadata['associations_metadata'][$targetClass] = $resourceAssociationMetadata;
+                $this->processMetadata($resourceAssociationMetadata, $associationConfig);
+                $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
             }
 
             unset($config['associations']);
         }
 
-        // Then handle class values
-        foreach ($config as $key => $value) {
-            $this->processMetadata($resourceMetadata, $key, $value);
-        }
+        $this->processMetadata($resourceMetadata, $config);
     }
 
     /**
@@ -92,42 +88,17 @@ class PhpDriver extends AbstractFileDriver
     }
 
     /**
-     * @param  \Metadata\ClassMetadata $metadata
-     * @param  string                  $key
-     * @param  mixed                   $value
-     * @return void
+     * @param \Metadata\ClassMetadata $metadata
+     * @param array                   $data
      */
-    private function processMetadata(ClassMetadata $metadata, $key, $value)
+    private function processMetadata(ClassMetadata $metadata, array $data)
     {
-        switch($key) {
-            case 'controller':
-                $metadata->propertyMetadata['controller'] = $value;
-                break;
-            case 'hydrator':
-                $metadata->propertyMetadata['hydrator'] = $value;
-                break;
-            case 'input_filter':
-                $metadata->propertyMetadata['input_filter'] = $value;
-                break;
-            case 'decoders':
-                foreach ($value as $mimeType => $decoder) {
-                    $metadata->propertyMetadata['decoders'][] = array(
-                        $mimeType => $decoder
-                    );
-                }
+        foreach ($data as $key => $value) {
+            // Normalize the key (in a PHP array, the key are underscore_separated)
+            $key = lcfirst(StaticFilter::execute($key, 'WordUnderscoreToCamelCase'));
 
-                break;
-            case 'encoders':
-                foreach ($value as $mimeType => $encoder) {
-                    $metadata->propertyMetadata['encoders'][] = array(
-                        $mimeType => $encoder
-                    );
-                }
-
-                break;
-            default:
-                // Ignore unknown annotations
-                break;
+            $propertyMetadata = new PropertyMetadata($metadata, $key);
+            $propertyMetadata->setValue($metadata, $value);
         }
     }
 }
