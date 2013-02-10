@@ -83,6 +83,7 @@ class ResourceTest extends TestCase
     {
         return array(
             array($this->getMock('Iterator'), true),
+            array($this->getMock('Doctrine\\Common\\Collections\\Selectable'), true),
             array($this->getMock('Doctrine\\Common\\Collections\\Collection'), true),
             array(array(), true),
             array(new \stdClass(), false),

@@ -19,6 +19,7 @@
 namespace ZfrRest\Resource;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Selectable;
 use ZfrRest\Exception\InvalidResourceException;
 
 /**
@@ -82,8 +83,9 @@ class Resource implements ResourceInterface
         return (
             (
                 $this->resource instanceof Collection
-                || is_array($this->resource)
+                || $this->resource instanceof Selectable
                 || $this->resource instanceof \Traversable
+                || is_array($this->resource)
             )
             && ! $this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
         );

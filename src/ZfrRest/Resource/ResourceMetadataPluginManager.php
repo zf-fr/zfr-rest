@@ -16,31 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Exception;
+namespace ZfrRest\Resource;
 
-use ZfrRest\Resource\ResourceMetadataInterface;
+use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\Exception\InvalidArgumentException;
+use ZfrRest\Exception\InvalidResourceException;
 
 /**
- * Exception for invalid resources
+ * {@inheritDoc}
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-class InvalidResourceException extends \InvalidArgumentException implements ExceptionInterface
+class ResourceMetadataPluginManager extends AbstractPluginManager
 {
     /**
-     * @param mixed                                       $resource
-     * @param \ZfrRest\Resource\ResourceMetadataInterface $metadata
-     *
-     * @return self
+     * {@inheritDoc}
      */
-    public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
+    protected $autoAddInvokableClass = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function validatePlugin($plugin)
     {
-        return new self(
-            sprintf(
-                'Provided resource of type "%s" is not an instance nor collection of requested type "%s"',
-                is_object($resource) ? get_class($resource) : gettype($resource),
-                $metadata->getClassMetadata()->getName()
-            )
-        );
+        if ($plugin instanceof ResourceMetadataInterface) {
+            return;
+        }
+
+        throw new InvalidArgumentException(sprintf(
+            'Plugin of type %s is invalid; must implement ZfrRest\\Resource\\ResourceMetadataInterface',
+            is_object($plugin) ? get_class($plugin) : gettype($plugin)
+        ));
     }
 }

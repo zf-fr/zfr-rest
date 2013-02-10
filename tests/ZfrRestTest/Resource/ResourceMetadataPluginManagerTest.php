@@ -16,31 +16,30 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Exception;
+namespace ZfrRestTest\Resource;
 
-use ZfrRest\Resource\ResourceMetadataInterface;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Resource\ResourceMetadataAbstractFactory;
+use ZfrRest\Resource\ResourceMetadataPluginManager;
 
 /**
- * Exception for invalid resources
+ * Tests for {@see \ZfrRest\Resource\ResourceMetadataPluginManager}
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-class InvalidResourceException extends \InvalidArgumentException implements ExceptionInterface
+class ResourceMetadataPluginManagerTest extends TestCase
 {
     /**
-     * @param mixed                                       $resource
-     * @param \ZfrRest\Resource\ResourceMetadataInterface $metadata
-     *
-     * @return self
+     * @covers \ZfrRest\Resource\ResourceMetadataPluginManager::validatePlugin
      */
-    public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
+    public function testValidatePlugin()
     {
-        return new self(
-            sprintf(
-                'Provided resource of type "%s" is not an instance nor collection of requested type "%s"',
-                is_object($resource) ? get_class($resource) : gettype($resource),
-                $metadata->getClassMetadata()->getName()
-            )
-        );
+        $pluginManager = new ResourceMetadataPluginManager();
+
+        $pluginManager->validatePlugin($this->getMock('ZfrRest\\Resource\\ResourceMetadataInterface'));
+
+        $this->setExpectedException('Zend\\ServiceManager\\Exception\\InvalidArgumentException');
+
+        $pluginManager->validatePlugin(new \stdClass());
     }
 }

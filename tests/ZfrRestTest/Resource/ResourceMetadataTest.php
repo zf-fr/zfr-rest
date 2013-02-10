@@ -19,7 +19,6 @@
 namespace ZfrRestTest\Resource;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceMetadata;
 
 /**
