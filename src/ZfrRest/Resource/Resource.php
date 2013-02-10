@@ -1,0 +1,91 @@
+<?php
+/*
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software consists of voluntary contributions made by many individuals
+ * and is licensed under the MIT license.
+ */
+
+namespace ZfrRest\Resource;
+
+use Doctrine\Common\Collections\Collection;
+use ZfrRest\Exception\InvalidResourceException;
+
+/**
+ * {@inheritDoc}
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ */
+class Resource implements ResourceInterface
+{
+    /**
+     * @var mixed
+     */
+    protected $resource;
+
+    /**
+     * @var \ZfrRest\Resource\ResourceMetadataInterface
+     */
+    protected $metadata;
+
+    /**
+     * @param mixed                     $resource
+     * @param ResourceMetadataInterface $metadata
+     *
+     * @throws \ZfrRest\Exception\InvalidResourceException if the resource is neither an instance or of a collection
+     *                                                     of instances of the expected type
+     */
+    public function __construct($resource, ResourceMetadataInterface $metadata)
+    {
+        $this->resource = $resource;
+        $this->metadata = $metadata;
+
+        if (
+            ! $metadata->getClassMetadata()->getReflectionClass()->isInstance($resource)
+            && ! $this->isCollection()
+        ) {
+            throw InvalidResourceException::invalidResourceProvided($resource, $metadata);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isCollection()
+    {
+        return (
+            (
+                $this->resource instanceof Collection
+                || is_array($this->resource)
+                || $this->resource instanceof \Traversable
+            )
+            && ! $this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
+        );
+    }
+}
