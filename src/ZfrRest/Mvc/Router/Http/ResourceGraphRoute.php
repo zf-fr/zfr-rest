@@ -145,12 +145,11 @@ class ResourceGraphRoute implements RouteInterface
         $path             = trim($path, '/');
         $resourceMetadata = $resource->getMetadata();
         $classMetadata    = $resourceMetadata->getClassMetadata();
-        $associations     = $resourceMetadata->getAssociations();
 
         $chunks          = explode('/', $path);
         $associationName = array_shift($chunks);
 
-        if (!isset($associations[$associationName])) {
+        if (!$resourceMetadata->hasAssociation($associationName)) {
             return null;
         }
 
@@ -160,7 +159,7 @@ class ResourceGraphRoute implements RouteInterface
 
         $resource = $reflProperty->getValue($resource);
 
-        $resourceMetadata = ""; // TODO: inject the metadata factory
+        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
         $resource         = new Resource($resource, $resourceMetadata);
 
         // We've processed the whole path

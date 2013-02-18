@@ -27,7 +27,9 @@ namespace ZfrRest\Resource;
 interface ResourceInterface
 {
     /**
-     * @return \ZfrRest\Resource\ResourceMetadataInterface
+     * Get the resource metadata
+     *
+     * @return \ZfrRest\Resource\Metadata\ResourceMetadataInterface
      */
     public function getMetadata();
 
@@ -40,7 +42,9 @@ interface ResourceInterface
     public function getResource();
 
     /**
-     * @return bool true if the resource is a collection of instances of the resource type
+     * Check if the resource is a collection of instances of the resource type
+     *
+     * @return bool
      */
     public function isCollection();
 }

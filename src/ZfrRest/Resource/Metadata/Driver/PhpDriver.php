@@ -25,7 +25,6 @@ use Metadata\PropertyMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
 use Zend\Filter\StaticFilter;
-use ZfrRest\Resource\Metadata\ResourceAssociationMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -67,7 +66,7 @@ class PhpDriver extends AbstractFileDriver
         if (isset($config['associations'])) {
             foreach ($config['associations'] as $associationName => $associationConfig) {
                 $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
-                $resourceAssociationMetadata = new ResourceAssociationMetadata($targetClass);
+                $resourceAssociationMetadata = new ResourceMetadata($targetClass);
 
                 $this->processMetadata($resourceAssociationMetadata, $associationConfig);
                 $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

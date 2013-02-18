@@ -76,7 +76,10 @@ return array(
          * Register the driver chain for resource mapping
          */
         'resource_metadata' => array(
-            'cache' => 'Doctrine\Common\Cache\ArrayCache'
+            'cache' => array(
+                'adapter' => 'Doctrine\Common\Cache\ArrayCache',
+                'prefix'  => 'resource_metadata_'
+            )
         )
     )
 );

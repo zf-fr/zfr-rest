@@ -16,10 +16,10 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Exception;
+namespace ZfrRest\Resource\Exception;
 
 use InvalidArgumentException;
-use ZfrRest\Resource\ResourceMetadataInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * Exception for invalid resources
@@ -29,9 +29,9 @@ use ZfrRest\Resource\ResourceMetadataInterface;
 class InvalidResourceException extends InvalidArgumentException
 {
     /**
-     * @param mixed                                        $resource
-     * @param \ZfrRest\Resource\ResourceMetadataInterface  $metadata
-     * @return \ZfrRest\Exception\InvalidResourceException
+     * @param mixed                                                 $resource
+     * @param \ZfrRest\Resource\Metadata\ResourceMetadataInterface  $metadata
+     * @return \ZfrRest\Resource\Exception\InvalidResourceException
      */
     public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
     {

@@ -25,7 +25,6 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Annotation;
-use ZfrRest\Resource\Metadata\ResourceAssociationMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -83,7 +82,7 @@ class AnnotationDriver implements DriverInterface
 
                     $associationName             = $classProperty->getName();
                     $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
-                    $resourceAssociationMetadata = new ResourceAssociationMetadata($targetClass);
+                    $resourceAssociationMetadata = new ResourceMetadata($targetClass);
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

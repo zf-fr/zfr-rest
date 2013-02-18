@@ -26,7 +26,6 @@ use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Options\ResourceMetadataOptions;
 
 /**
  * ResourceMetadataFactoryFactory

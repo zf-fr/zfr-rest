@@ -69,9 +69,18 @@ interface ResourceMetadataInterface
     public function getDecoderNames();
 
     /**
-     * Get a list of associations that can be traversed on this resource
+     * Get the metadata to a given association
      *
-     * @return array|string[]
+     * @param  string $association
+     * @return ResourceMetadataInterface
      */
-    public function getAssociations();
+    public function getAssociationMetadata($association);
+
+    /**
+     * Check if the resource metadata can traverse the given association
+     *
+     * @param  string $association
+     * @return bool
+     */
+    public function hasAssociation($association);
 }

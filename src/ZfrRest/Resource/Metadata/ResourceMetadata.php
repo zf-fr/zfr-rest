@@ -26,118 +26,105 @@ use Metadata\ClassMetadata;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadata extends ClassMetadata
+class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
 {
     /**
-     * @var string
+     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
      */
-    public $controller;
+    public $classMetadata;
 
     /**
      * @var string
      */
-    public $inputFilter;
+    public $controllerName;
 
     /**
      * @var string
      */
-    public $hydrator;
+    public $inputFilterName;
 
     /**
-     * @var array
+     * @var string
      */
-    public $decoders;
+    public $hydratorName;
 
     /**
-     * @var array
+     * @var string[]|array
      */
-    public $encoders;
+    public $encoderNames;
 
     /**
-     * @var array
+     * @var string[]|array
+     */
+    public $decoderNames;
+
+    /**
+     * @var ResourceMetadataInterface[]|array
      */
     public $associations;
 
 
     /**
-     * Get the name of the resource, as recognized by the class metadata factory
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function getName()
+    public function getClassMetadata()
     {
-        return $this->name;
+        return $this->classMetadata;
     }
 
     /**
-     * Get the controller used for the resource
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function getController()
+    public function getControllerName()
     {
-        return $this->controller;
+        return $this->controllerName;
     }
 
     /**
-     * Get the input filter used to valid data
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function getInputFilter()
+    public function getInputFilterName()
     {
-        return $this->inputFilter;
+        return $this->inputFilterName;
     }
 
     /**
-     * Get the hydrator used for the resource
-     *
-     * @return string
+     * {@inheritDoc}
      */
-    public function getHydrator()
+    public function getHydratorName()
     {
-        return $this->hydrator;
+        return $this->hydratorName;
     }
 
     /**
-     * Get a list that map Content-Type to encoders
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getEncoders()
+    public function getEncoderNames()
     {
-        return $this->encoders;
+        return $this->encoderNames;
     }
 
     /**
-     * Get a list that map Content-Type to decoders
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getDecoders()
+    public function getDecoderNames()
     {
-        return $this->decoders;
+        return $this->decoderNames;
     }
 
     /**
-     * Return true if this resource metadata has metadata for an association
-     *
-     * @param  string $associationName
-     * @return bool
+     * {@inheritDoc}
      */
-    public function hasAssociationMetadata($associationName)
+    public function getAssociationMetadata($association)
     {
-        return isset($this->associations[$associationName]);
+        return $this->associations[$association];
     }
 
     /**
-     * Get the association metadata for the given association
-     *
-     * @param  string $associationName
-     * @return ResourceAssociationMetadata
+     * {@inheritDoc}
      */
-    public function getAssociationMetadata($associationName)
+    public function hasAssociation($association)
     {
-        return $this->associations[$associationName];
+        return isset($this->associations[$association]);
     }
 }

@@ -18,9 +18,11 @@
 
 namespace ZfrRest\Resource;
 
+use Traversable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Selectable;
-use ZfrRest\Exception\InvalidResourceException;
+use ZfrRest\Resource\Exception\InvalidResourceException;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * {@inheritDoc}
@@ -35,16 +37,17 @@ class Resource implements ResourceInterface
     protected $resource;
 
     /**
-     * @var \ZfrRest\Resource\ResourceMetadataInterface
+     * @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface
      */
     protected $metadata;
+
 
     /**
      * @param mixed                     $resource
      * @param ResourceMetadataInterface $metadata
      *
-     * @throws \ZfrRest\Exception\InvalidResourceException if the resource is neither an instance or of a collection
-     *                                                     of instances of the expected type
+     * @throws \ZfrRest\Resource\Exception\InvalidResourceException if the resource is neither an instance nor of a
+     *                                                              collection of instances of the expected type
      */
     public function __construct($resource, ResourceMetadataInterface $metadata)
     {
@@ -52,8 +55,8 @@ class Resource implements ResourceInterface
         $this->metadata = $metadata;
 
         if (
-            ! $metadata->getClassMetadata()->getReflectionClass()->isInstance($resource)
-            && ! $this->isCollection()
+            !$metadata->getClassMetadata()->getReflectionClass()->isInstance($resource)
+            && !$this->isCollection()
         ) {
             throw InvalidResourceException::invalidResourceProvided($resource, $metadata);
         }
@@ -84,10 +87,10 @@ class Resource implements ResourceInterface
             (
                 $this->resource instanceof Collection
                 || $this->resource instanceof Selectable
-                || $this->resource instanceof \Traversable
+                || $this->resource instanceof Traversable
                 || is_array($this->resource)
             )
-            && ! $this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
+            && !$this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
         );
     }
 }
