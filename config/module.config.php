@@ -25,12 +25,36 @@ return array(
 
         'factories' => array(
             'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Service\BodyParserFactory',
+            'ZfrRest\Resource\ResourceMetadataFactory'  => 'ZfrRest\Service\ResourceMetadataFactoryFactory',
             'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Service\ModuleOptionsFactory',
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Service\SelectModelListenerFactory',
 
             'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory',
             'ZfrRest\Serializer\EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
             'ZfrRest\View\Model\ModelPluginManager'   => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
+        )
+    ),
+
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'clear-cache' => array(
+                    'type'    => 'Simple',
+                    'options' => array(
+                        'route'    => 'rest clear metadata cache',
+                        'defaults' => array(
+                            'controller' => 'ZfrRest\Controller\Cache',
+                            'action'     => 'clear-cache'
+                        )
+                    )
+                )
+            )
+        )
+    ),
+
+    'controllers' => array(
+        'invokables' => array(
+            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController'
         )
     ),
 
@@ -47,5 +71,15 @@ return array(
         'register_http_exception_listener'       => true,
         'register_select_model_listener'         => true,
         'register_http_method_override_listener' => false,
+
+        /**
+         * Register the driver chain for resource mapping
+         */
+        'resource_metadata' => array(
+            'cache' => array(
+                'adapter' => 'Doctrine\Common\Cache\ArrayCache',
+                'prefix'  => 'resource_metadata_'
+            )
+        )
     )
 );

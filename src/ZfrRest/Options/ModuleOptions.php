@@ -29,11 +29,6 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * Turn off strict options mode
-     */
-    protected $__strictMode__ = false;
-
-    /**
      * If this listener is registered (true by default), it will listen on MvcEvent::EVENT_DISPATCH_ERROR,
      * and allow to automatically set Response code and message if a ZfrRest\Http exception is thrown
      *
@@ -57,6 +52,14 @@ class ModuleOptions extends AbstractOptions
      * @var bool
      */
     protected $registerHttpMethodOverrideListener;
+
+    /**
+     * The options for the resource metadata
+     *
+     * @var ResourceMetadataOptions
+     */
+    protected $resourceMetadata;
+
 
     /**
      * @param  boolean $registerHttpExceptionListener
@@ -107,5 +110,21 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterSelectModelListener()
     {
         return $this->registerSelectModelListener;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setResourceMetadata(array $options)
+    {
+        $this->resourceMetadata = new ResourceMetadataOptions($options);
+    }
+
+    /**
+     * @return ResourceMetadataOptions
+     */
+    public function getResourceMetadata()
+    {
+        return $this->resourceMetadata;
     }
 }
