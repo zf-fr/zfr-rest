@@ -18,12 +18,12 @@
 
 namespace ZfrRest\Mvc\Router\Http;
 
-use RuntimeException;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Zend\Mvc\Router\Console\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
+use ZfrRest\Mvc\Exception;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -113,7 +113,7 @@ class ResourceGraphRoute implements RouteInterface
         $identifiers   = $classMetadata->getIdentifierFieldNames();
 
         if (count($identifiers) > 1) {
-            throw new RuntimeException('Composite identifiers are not currently supported by ZfrRest');
+            throw new Exception\RuntimeException('Composite identifiers are not currently supported by ZfrRest');
         }
 
         $resource = $resource->getResource();

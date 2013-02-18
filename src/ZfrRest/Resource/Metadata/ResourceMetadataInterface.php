@@ -16,47 +16,62 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource;
+namespace ZfrRest\Resource\Metadata;
+
 
 /**
- * Base resource metadata interface - contains data about
+ * Base resource metadata interface
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
 interface ResourceMetadataInterface
 {
     /**
+     * Get the class metadata (provides information about mapping)
+     *
      * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
      */
     public function getClassMetadata();
 
     /**
-     * @return string|null name of the controller
+     * Get the controller's FQCN
+     *
+     * @return string|null
      */
     public function getControllerName();
 
     /**
-     * @return string|null name of the input filter to be used for this resource
+     * Get the input filter's FQCN to be used for this resource
+     *
+     * @return string|null
      */
     public function getInputFilterName();
 
     /**
-     * @return string|null name of the hydrator to be used for this resource
+     * Get the hydrator's FQCN to be used for this resource
+     *
+     * @return string|null
      */
     public function getHydratorName();
 
     /**
-     * @return array|string[] map of encoders to be used for this resource, indexed by content type
+     * Get a map of encoders' FQCN to be used for this resource, indexed by content type
+     *
+     * @return array|string[]
      */
     public function getEncoderNames();
 
     /**
-     * @return array|string[] map of decoders to be used for this resource, indexed by content type
+     * Get a map of decoders' FQCN to be used for this resource, indexed by content type
+     *
+     * @return array|string[]
      */
     public function getDecoderNames();
 
     /**
-     * @return array|string[] list of associations that can be traversed on this resource
+     * Get a list of associations that can be traversed on this resource
+     *
+     * @return array|string[]
      */
     public function getAssociations();
 }

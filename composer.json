@@ -28,6 +28,7 @@
         "php": ">=5.3.3",
         "doctrine/common": ">=2.4.x-dev",
         "symfony/serializer": "2.1.*",
+        "jms/metadata": "dev-master",
         "zendframework/zendframework": "2.*"
     },
     "autoload": {

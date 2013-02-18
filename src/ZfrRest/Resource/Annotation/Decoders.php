@@ -16,36 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource;
-
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception\InvalidArgumentException;
-use ZfrRest\Exception\InvalidResourceException;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * {@inheritDoc}
- *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-class ResourceMetadataPluginManager extends AbstractPluginManager
+final class Decoders implements Annotation
 {
     /**
-     * {@inheritDoc}
+     * @var array
      */
-    protected $autoAddInvokableClass = false;
+    public $decoders = array();
 
     /**
      * {@inheritDoc}
      */
-    public function validatePlugin($plugin)
+    public function getKey()
     {
-        if ($plugin instanceof ResourceMetadataInterface) {
-            return;
+        return 'decoders';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        $decoders = array();
+        foreach ($this->decoders as $decoder) {
+            $decoders[] = $decoder->getValue();
         }
 
-        throw new InvalidArgumentException(sprintf(
-            'Plugin of type %s is invalid; must implement ZfrRest\\Resource\\ResourceMetadataInterface',
-            is_object($plugin) ? get_class($plugin) : gettype($plugin)
-        ));
+        return $decoders;
     }
 }

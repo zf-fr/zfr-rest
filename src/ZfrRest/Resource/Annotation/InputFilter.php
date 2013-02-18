@@ -16,31 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Exception;
-
-use ZfrRest\Resource\ResourceMetadataInterface;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * Exception for invalid resources
- *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-class InvalidResourceException extends \InvalidArgumentException implements ExceptionInterface
+final class InputFilter implements Annotation
 {
     /**
-     * @param mixed                                       $resource
-     * @param \ZfrRest\Resource\ResourceMetadataInterface $metadata
-     *
-     * @return self
+     * @var string
      */
-    public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
+    public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
     {
-        return new self(
-            sprintf(
-                'Provided resource of type "%s" is not an instance nor collection of requested type "%s"',
-                is_object($resource) ? get_class($resource) : gettype($resource),
-                $metadata->getClassMetadata()->getName()
-            )
-        );
+        return 'inputFilter';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
     }
 }

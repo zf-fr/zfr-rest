@@ -16,13 +16,15 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Exception;
+namespace ZfrRest\Mvc\Exception;
+
+use RuntimeException as BaseRuntimeException;
 
 /**
- * Base resource interface
+ * RuntimeException
  *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-interface ExceptionInterface
-{
-}
+class RuntimeException extends BaseRuntimeException
+{}
