@@ -18,10 +18,13 @@
 
 namespace ZfrRest\Mvc\Router\Http;
 
+use RuntimeException;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Zend\Mvc\Router\Console\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
+use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 class ResourceGraphRoute implements RouteInterface
@@ -35,6 +38,7 @@ class ResourceGraphRoute implements RouteInterface
      * @var string
      */
     protected $path;
+
 
     /**
      * @todo consider passing in a resource name instead of the resource itself for performance
@@ -85,25 +89,85 @@ class ResourceGraphRoute implements RouteInterface
         $uri  = $request->getUri();
         $path = trim($uri->getPath(), '/');
 
-        /*if ($path === $this->path) {
+        if ($path === $this->path) {
             return new RouteMatch(array('resource' => $this->resource), strlen($this->path));
-        }*/
+        }
 
-        $chunks = explode('/', $path);
-
-        if (0 !== strpos($path, $this->path)) {
+        if (0 !== strpos($path, $this->path) || !$this->resource->isCollection()) {
             return null;
         }
 
-        if (!$this->resource->isCollection()) {
+        return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
+    }
+
+    /**
+     * @param  \ZfrRest\Resource\ResourceInterface $resource
+     * @param  string                              $path
+     * @return null|\Zend\Mvc\Router\Http\RouteMatch
+     * @throws \RuntimeException
+     */
+    protected function matchIdentifier(ResourceInterface $resource, $path)
+    {
+        $path          = trim($path, '/');
+        $classMetadata = $resource->getMetadata()->getClassMetadata();
+        $identifiers   = $classMetadata->getIdentifierFieldNames();
+
+        if (count($identifiers) > 1) {
+            throw new RuntimeException('Composite identifiers are not currently supported by ZfrRest');
+        }
+
+        $resource = $resource->getResource();
+        $chunks   = explode('/', $path);
+
+        if ($resource instanceof Selectable) {
+            $criteria = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
+            $resource = $resource->matching($criteria);
+        }
+
+        // We've processed the whole path
+        if (empty($chunks)) {
+            return new RouteMatch(array('resource' => $resource), strlen($path));
+        }
+
+        $resourceMetadata = ""; // TODO: inject the metadata factory
+        $resource         = new Resource($resource, $resourceMetadata);
+
+        return $this->matchAssociation($resource, substr($path, strpos($path, '/')));
+    }
+
+    /**
+     * @param  \ZfrRest\Resource\ResourceInterface $resource
+     * @param  string                              $path
+     * @return null|\Zend\Mvc\Router\Http\RouteMatch
+     */
+    protected function matchAssociation(ResourceInterface $resource, $path)
+    {
+        $path             = trim($path, '/');
+        $resourceMetadata = $resource->getMetadata();
+        $classMetadata    = $resourceMetadata->getClassMetadata();
+        $associations     = $resourceMetadata->getAssociations();
+
+        $chunks          = explode('/', $path);
+        $associationName = array_shift($chunks);
+
+        if (!isset($associations[$associationName])) {
             return null;
         }
 
-        return $this->matchMultiValueAssociation(
-            $this->resource,
-            $this->resourceManager->getResourceClassMetadata($this->resourceName),
-            substr($path, $offset),
-            $offset
-        );
+        $refl         = $classMetadata->getReflectionClass();
+        $reflProperty = $refl->getProperty($associationName);
+        $reflProperty->setAccessible(true);
+
+        $resource = $reflProperty->getValue($resource);
+
+        $resourceMetadata = ""; // TODO: inject the metadata factory
+        $resource         = new Resource($resource, $resourceMetadata);
+
+        // We've processed the whole path
+        if (empty($chunks)) {
+            return new RouteMatch(array('resource' => $resource), strlen($path));
+        }
+
+        return $this->matchIdentifier($resource, substr($path, strpos($path, '/')));
     }
 }
