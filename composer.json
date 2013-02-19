@@ -28,7 +28,7 @@
         "php": ">=5.3.3",
         "doctrine/common": ">=2.4.x-dev",
         "symfony/serializer": "2.1.*",
-        "zendframework/zendframework": "2.*"
+        "zendframework/zendframework": ">=2.1"
     },
     "autoload": {
         "psr-0": {
