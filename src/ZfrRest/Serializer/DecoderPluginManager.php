@@ -43,8 +43,8 @@ class DecoderPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $factories = array(
-        'application/json'       => 'ZfrRest\Service\JsonDecoderFactory',
-        'application/javascript' => 'ZfrRest\Service\JsonDecoderFactory',
+        'application/json'       => 'ZfrRest\Factory\JsonDecoderFactory',
+        'application/javascript' => 'ZfrRest\Factory\JsonDecoderFactory',
     );
 
     /**

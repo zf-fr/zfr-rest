@@ -16,25 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Service;
+namespace ZfrRest\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Config;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\View\Http\SelectModelListener;
+use Zend\ServiceManager\FactoryInterface;
+use ZfrRest\Serializer\EncoderPluginManager;
 
 /**
- * SelectModelListenerFactory
+ * EncoderPluginManagerFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class SelectModelListenerFactory implements FactoryInterface
+class EncoderPluginManagerFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new SelectModelListener($serviceLocator->get('ZfrRest\View\Model\ModelPluginManager'));
+        $config = $serviceLocator->get('Config');
+        $config = $config['zfr_rest']['encoders'];
+
+        $encoderPluginManager = new EncoderPluginManager(new Config($config));
+        $encoderPluginManager->setServiceLocator($serviceLocator);
+
+        return $encoderPluginManager;
     }
 }

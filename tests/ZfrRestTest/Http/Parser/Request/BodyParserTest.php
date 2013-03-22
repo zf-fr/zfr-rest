@@ -94,12 +94,16 @@ EOD;
         $serviceManager = new ServiceManager(
             new ServiceManagerConfig(array(
                 'factories' => array(
-                    'ZfrRest\Http\Parser\Request\BodyParser'  => 'ZfrRest\Service\BodyParserFactory',
-                    'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory'
+                    'ZfrRest\Http\Parser\Request\BodyParser'  => 'ZfrRest\Factory\BodyParserFactory',
+                    'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory'
                 ),
             ))
         );
-        $serviceManager->setService('Config', array());
+        $serviceManager->setService('Config', array(
+            'zfr_rest' => array(
+                'decoders' => array()
+            )
+        ));
 
         $bodyParser = $serviceManager->get('ZfrRest\Http\Parser\Request\BodyParser');
 

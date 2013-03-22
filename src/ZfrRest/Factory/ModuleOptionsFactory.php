@@ -16,17 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Service;
+namespace ZfrRest\Factory;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Options\ModuleOptions;
 
 /**
- * EncoderPluginManagerFactory
+ * ModuleOptionsFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class EncoderPluginManagerFactory extends AbstractPluginManagerFactory
+class ModuleOptionsFactory implements FactoryInterface
 {
-    const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\EncoderPluginManager';
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $config = $serviceLocator->get('Config');
+        return new ModuleOptions($config['zfr_rest']);
+    }
 }

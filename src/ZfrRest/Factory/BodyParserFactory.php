@@ -16,17 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Service;
+namespace ZfrRest\Factory;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Http\Parser\Request\BodyParser;
 
 /**
- * ModelPluginManagerFactory
+ * BodyParserFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ModelPluginManagerFactory extends AbstractPluginManagerFactory
+class BodyParserFactory implements FactoryInterface
 {
-    const PLUGIN_MANAGER_CLASS = 'ZfrRest\View\Model\ModelPluginManager';
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new BodyParser($serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager'));
+    }
 }

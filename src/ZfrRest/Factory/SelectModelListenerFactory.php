@@ -16,17 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Service;
+namespace ZfrRest\Factory;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\View\Http\SelectModelListener;
 
 /**
- * DecoderPluginManagerFactory
+ * SelectModelListenerFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class DecoderPluginManagerFactory extends AbstractPluginManagerFactory
+class SelectModelListenerFactory implements FactoryInterface
 {
-    const PLUGIN_MANAGER_CLASS = 'ZfrRest\Serializer\DecoderPluginManager';
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new SelectModelListener($serviceLocator->get('ZfrRest\View\Model\ModelPluginManager'));
+    }
 }
