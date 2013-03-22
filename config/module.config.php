@@ -24,13 +24,12 @@ return array(
         ),
 
         'factories' => array(
-            'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Service\BodyParserFactory',
-            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Service\ModuleOptionsFactory',
-            'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Service\SelectModelListenerFactory',
-
-            'ZfrRest\Serializer\DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory',
-            'ZfrRest\Serializer\EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
-            'ZfrRest\View\Model\ModelPluginManager'   => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
+            'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Factory\BodyParserFactory',
+            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
+            'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
+            'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
+            'ZfrRest\View\Model\ModelPluginManager'     => 'ZfrRest\Factory\ModelPluginManagerFactory',
         )
     ),
 
@@ -47,5 +46,20 @@ return array(
         'register_http_exception_listener'       => true,
         'register_select_model_listener'         => true,
         'register_http_method_override_listener' => false,
+
+        /**
+         * Decoders
+         */
+        'decoders' => array(),
+
+        /**
+         * Encoders
+         */
+        'encoders' => array(),
+
+        /**
+         * Models
+         */
+        'models' => array()
     )
 );

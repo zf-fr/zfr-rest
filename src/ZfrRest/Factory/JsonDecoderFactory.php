@@ -16,26 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Service;
+namespace ZfrRest\Factory;
 
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Options\ModuleOptions;
 
 /**
- * ModuleOptionsFactory
+ * JsonDecoderFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ModuleOptionsFactory implements FactoryInterface
+class JsonDecoderFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Config');
-        return new ModuleOptions($config['zfr_rest']);
+        return new JsonDecode(true);
     }
 }

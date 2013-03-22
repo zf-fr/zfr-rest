@@ -53,11 +53,15 @@ class EncoderPluginManagerTest extends TestCase
         $serviceManager = new ServiceManager(
             new ServiceManagerConfig(array(
                 'factories' => array(
-                    'EncoderPluginManager' => 'ZfrRest\Mvc\Service\EncoderPluginManagerFactory',
-                ),
+                    'EncoderPluginManager' => 'ZfrRest\Factory\EncoderPluginManagerFactory',
+                )
             ))
         );
-        $serviceManager->setService('Config', array());
+        $serviceManager->setService('Config', array(
+            'zfr_rest' => array(
+                'encoders' => array()
+            )
+        ));
 
         $encoderPluginManager = $serviceManager->get('EncoderPluginManager');
         $this->assertInstanceOf('ZfrRest\Serializer\EncoderPluginManager', $encoderPluginManager);

@@ -51,11 +51,15 @@ class ModelPluginManagerTest extends TestCase
         $serviceManager = new ServiceManager(
             new ServiceManagerConfig(array(
                 'factories' => array(
-                    'ModelPluginManager' => 'ZfrRest\Mvc\Service\ModelPluginManagerFactory',
-                ),
+                    'ModelPluginManager' => 'ZfrRest\Factory\ModelPluginManagerFactory',
+                )
             ))
         );
-        $serviceManager->setService('Config', array());
+        $serviceManager->setService('Config', array(
+            'zfr_rest' => array(
+                'models' => array()
+            )
+        ));
 
         $modelPluginManager = $serviceManager->get('ModelPluginManager');
         $this->assertInstanceOf('ZfrRest\View\Model\ModelPluginManager', $modelPluginManager);

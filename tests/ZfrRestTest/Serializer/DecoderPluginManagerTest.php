@@ -53,11 +53,15 @@ class DecoderPluginManagerTest extends TestCase
         $serviceManager = new ServiceManager(
             new ServiceManagerConfig(array(
                 'factories' => array(
-                    'DecoderPluginManager' => 'ZfrRest\Mvc\Service\DecoderPluginManagerFactory',
+                    'DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory',
                 ),
             ))
         );
-        $serviceManager->setService('Config', array());
+        $serviceManager->setService('Config', array(
+            'zfr_rest' => array(
+                'decoders' => array()
+            )
+        ));
 
         $decoderPluginManager = $serviceManager->get('DecoderPluginManager');
         $this->assertInstanceOf('ZfrRest\Serializer\DecoderPluginManager', $decoderPluginManager);
