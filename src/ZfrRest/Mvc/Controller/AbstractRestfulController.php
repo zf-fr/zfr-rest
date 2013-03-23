@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Controller;
 
+use Traversable;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
@@ -72,7 +73,12 @@ abstract class AbstractRestfulController extends AbstractController
             throw new Client\NotFoundException();
         }
 
-        $return = $this->$method($resource->getResource());
+        $resource = $resource->getResource();
+        if($resource instanceof Traversable) {
+            $method .= 'List';
+        }
+
+        $return = $this->$method($resource);
 
         $e->setResult($return);
 

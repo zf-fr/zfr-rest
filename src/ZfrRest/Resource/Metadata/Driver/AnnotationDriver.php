@@ -85,6 +85,8 @@ class AnnotationDriver implements DriverInterface
                     $associationName             = $classProperty->getName();
                     $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
 
+                    // @TODO: we should inject MetadataFactory here (does it make sense ?)
+
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
                     $resourceAssociationMetadata = $this->loadMetadataForClass(new ReflectionClass($targetClass));

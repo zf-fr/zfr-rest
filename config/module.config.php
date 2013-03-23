@@ -64,7 +64,7 @@ return array(
 
         'aliases' => array(
             'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
-        )
+        ),
     ),
 
     'view_manager' => array(
