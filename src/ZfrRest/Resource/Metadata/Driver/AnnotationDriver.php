@@ -63,7 +63,9 @@ class AnnotationDriver implements DriverInterface
     public function loadMetadataForClass(ReflectionClass $class)
     {
         $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
+
         $resourceMetadata = new ResourceMetadata($class->getName());
+        $resourceMetadata->classMetadata = $classMetadata;
 
         // Process class level annotations
         $classAnnotations = $this->annotationReader->getClassAnnotations($class);
@@ -102,6 +104,10 @@ class AnnotationDriver implements DriverInterface
     private function processMetadata(ClassMetadata $metadata, array $annotations)
     {
         foreach ($annotations as $annotation) {
+            if (!($annotation instanceof Annotation\AnnotationInterface)) {
+                continue;
+            }
+
             $propertyMetadata = new PropertyMetadata($metadata, $annotation->getKey());
             $propertyMetadata->setValue($metadata, $annotation->getValue());
 

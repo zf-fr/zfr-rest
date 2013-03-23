@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-interface Annotation
+interface AnnotationInterface
 {
     /**
      * Get the key of the annotation

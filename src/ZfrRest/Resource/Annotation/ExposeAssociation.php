@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-final class ExposeAssociation implements Annotation
+final class ExposeAssociation implements AnnotationInterface
 {
     /**
      * {@inheritDoc}

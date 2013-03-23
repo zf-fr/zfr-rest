@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-final class InputFilter implements Annotation
+final class InputFilter implements AnnotationInterface
 {
     /**
      * @var string

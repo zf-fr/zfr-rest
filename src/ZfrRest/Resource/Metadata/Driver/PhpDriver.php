@@ -60,7 +60,9 @@ class PhpDriver extends AbstractFileDriver
         $config = include $file;
 
         $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
+
         $resourceMetadata = new ResourceMetadata($class->getName());
+        $resourceMetadata->classMetadata = $classMetadata;
 
         // First process associations, so that we can safely remove it and handle the other config normally
         if (isset($config['associations'])) {

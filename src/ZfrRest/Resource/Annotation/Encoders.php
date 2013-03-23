@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-final class Encoders implements Annotation
+final class Encoders implements AnnotationInterface
 {
     /**
      * @var array

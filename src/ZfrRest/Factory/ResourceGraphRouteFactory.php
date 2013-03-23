@@ -21,10 +21,33 @@ namespace ZfrRest\Factory;
 use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Factory\Exception\RuntimeException;
 use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
 
 class ResourceGraphRouteFactory implements FactoryInterface
 {
+    /**
+     * @var array
+     */
+    protected $creationOptions;
+
+    /**
+     * @param  array $creationOptions
+     * @throws Exception\RuntimeException
+     */
+    public function __construct(array $creationOptions)
+    {
+        $this->creationOptions = $creationOptions;
+
+        if (!isset($this->creationOptions['resource'])) {
+            throw new RuntimeException('No resource option specified for ResourceGraphRoute');
+        }
+
+        if (!isset($this->creationOptions['route'])) {
+            throw new RuntimeException('No route option specified for ResourceGraphRoute');
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -32,6 +55,6 @@ class ResourceGraphRouteFactory implements FactoryInterface
     {
         /** @var $metadataFactory \Metadata\MetadataFactory */
         $metadataFactory   = $serviceLocator->getServiceLocator()->get('ZfrRest\Resource\Metadata\MetadataFactory');
-        return new ResourceGraphRoute($metadataFactory);
+        return new ResourceGraphRoute($metadataFactory, $this->creationOptions['resource'], $this->creationOptions['route']);
     }
 }

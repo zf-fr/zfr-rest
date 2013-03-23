@@ -21,7 +21,7 @@ namespace ZfrRest\Mvc\Router\Http;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Metadata\MetadataFactory;
-use Zend\Mvc\Router\Console\RouteInterface;
+use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
@@ -47,15 +47,17 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @param \Metadata\MetadataFactory           $metadataFactory
-     * @param \ZfrRest\Resource\ResourceInterface $resource
-     * @param string $path
+     * @param \Metadata\MetadataFactory $metadataFactory
+     * @param string                    $resource
+     * @param string                    $path
      */
-    public function __construct(MetadataFactory $metadataFactory, ResourceInterface $resource, $path)
+    public function __construct(MetadataFactory $metadataFactory, $resource, $path)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->resource        = $resource;
         $this->path            = trim($path, '/');
+
+        $resourceMetadata = $this->metadataFactory->getMetadataForClass($resource)->getRootClassMetadata();
+        $this->resource = new Resource($resource, $resourceMetadata);
     }
 
     /**
@@ -96,7 +98,7 @@ class ResourceGraphRoute implements RouteInterface
         $path = trim($uri->getPath(), '/');
 
         if ($path === $this->path) {
-            return new RouteMatch(array('resource' => $this->resource), strlen($this->path));
+            return $this->createRouteMatch($this->resource, $this->path);
         }
 
         if (0 !== strpos($path, $this->path) || !$this->resource->isCollection()) {
@@ -132,7 +134,7 @@ class ResourceGraphRoute implements RouteInterface
 
         // We've processed the whole path
         if (empty($chunks)) {
-            return new RouteMatch(array('resource' => $resource), strlen($path));
+            return $this->createRouteMatch($this->resource, $path);
         }
 
         $resourceMetadata = "";
@@ -170,9 +172,20 @@ class ResourceGraphRoute implements RouteInterface
 
         // We've processed the whole path
         if (empty($chunks)) {
-            return new RouteMatch(array('resource' => $resource), strlen($path));
+            return $this->createRouteMatch($this->resource, $path);
         }
 
         return $this->matchIdentifier($resource, substr($path, strpos($path, '/')));
+    }
+
+    /**
+     * @param  ResourceInterface $resource
+     * @param  $path
+     * @return RouteMatch
+     */
+    protected function createRouteMatch(ResourceInterface $resource, $path)
+    {
+        $controller = $resource->getMetadata()->getControllerName();
+        return new RouteMatch(array('resource' => $resource, 'controller' => $controller), strlen($path));
     }
 }

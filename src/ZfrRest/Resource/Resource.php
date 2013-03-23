@@ -54,12 +54,12 @@ class Resource implements ResourceInterface
         $this->resource = $resource;
         $this->metadata = $metadata;
 
-        if (
+        /*if (
             !$metadata->getClassMetadata()->getReflectionClass()->isInstance($resource)
             && !$this->isCollection()
         ) {
             throw InvalidResourceException::invalidResourceProvided($resource, $metadata);
-        }
+        }*/
     }
 
     /**
@@ -90,7 +90,7 @@ class Resource implements ResourceInterface
                 || $this->resource instanceof Traversable
                 || is_array($this->resource)
             )
-            && !$this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
+            //&& !$this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
         );
     }
 }

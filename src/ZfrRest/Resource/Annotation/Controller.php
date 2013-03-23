@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-final class Controller implements Annotation
+final class Controller implements AnnotationInterface
 {
     /**
      * @var string

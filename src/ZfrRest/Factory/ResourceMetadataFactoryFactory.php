@@ -46,7 +46,7 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             ));
         }
 
-        $objectManager = $serviceLocator->get($objectManager);
+        $objectManager = $serviceLocator->get($objectManager)->getMetadataFactory();
         $drivers       = $resourceOptions->getDrivers();
 
         foreach ($drivers as &$driver) {

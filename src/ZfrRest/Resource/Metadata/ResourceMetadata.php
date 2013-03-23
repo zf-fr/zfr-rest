@@ -36,27 +36,27 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * @var string
      */
-    public $controllerName;
+    public $controller;
 
     /**
      * @var string
      */
-    public $inputFilterName;
+    public $inputFilter;
 
     /**
      * @var string
      */
-    public $hydratorName;
+    public $hydrator;
 
     /**
      * @var string[]|array
      */
-    public $encoderNames;
+    public $encoders;
 
     /**
      * @var string[]|array
      */
-    public $decoderNames;
+    public $decoders;
 
     /**
      * @var ResourceMetadataInterface[]|array
@@ -77,7 +77,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getControllerName()
     {
-        return $this->controllerName;
+        return $this->controller;
     }
 
     /**
@@ -85,7 +85,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getInputFilterName()
     {
-        return $this->inputFilterName;
+        return $this->inputFilter;
     }
 
     /**
@@ -93,7 +93,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getHydratorName()
     {
-        return $this->hydratorName;
+        return $this->hydrator;
     }
 
     /**
@@ -101,7 +101,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getEncoderNames()
     {
-        return $this->encoderNames;
+        return $this->encoders;
     }
 
     /**
@@ -109,7 +109,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getDecoderNames()
     {
-        return $this->decoderNames;
+        return $this->decoders;
     }
 
     /**

@@ -22,7 +22,7 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-final class Hydrator implements Annotation
+final class Hydrator implements AnnotationInterface
 {
     /**
      * @var string
