@@ -146,15 +146,7 @@ class ResourceGraphRoute implements RouteInterface
 
         if ($resource instanceof Selectable) {
             $expression = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
-            $criteria   = new Criteria($expression);
-
-            if (!empty($this->query) && empty($chunks)) {
-                foreach ($this->query as $key => $value) {
-                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
-                }
-            }
-
-            $resource = $resource->matching($criteria)->first();
+            $resource   = $resource->matching(new Criteria($expression))->first();
         }
 
         $this->resource = new Resource($resource, $this->resource->getMetadata());
@@ -191,13 +183,28 @@ class ResourceGraphRoute implements RouteInterface
 
         $resource = $reflProperty->getValue($resource->getResource());
 
+        // We've processed the whole path
+        if (empty($chunks)) {
+            // Filter by query
+            if (!empty($this->query) && $resource instanceof Selectable) {
+                $criteria = Criteria::create();
+
+                foreach ($this->query as $key => $value) {
+                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
+                }
+
+                $resource = $resource->matching($criteria);
+
+                $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
+                $this->resource   = new Resource($resource, $resourceMetadata);
+            }
+
+            return $this->createRouteMatch($this->resource, $path);
+        }
+
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
         $this->resource   = new Resource($resource, $resourceMetadata);
 
-        // We've processed the whole path
-        if (empty($chunks)) {
-            return $this->createRouteMatch($this->resource, $path);
-        }
 
         return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
