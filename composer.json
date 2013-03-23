@@ -27,8 +27,9 @@
     "require": {
         "php": ">=5.3.3",
         "doctrine/common": ">=2.4.x-dev",
+        "zendframework/zendframework": "2.*"
         "symfony/serializer": "2.1.*",
-        "zendframework/zendframework": ">=2.1"
+        "jms/metadata": "dev-master"
     },
     "autoload": {
         "psr-0": {
