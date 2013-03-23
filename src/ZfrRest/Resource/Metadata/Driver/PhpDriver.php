@@ -59,7 +59,7 @@ class PhpDriver extends AbstractFileDriver
     {
         $config = include $file;
 
-        $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
+        $classMetadata = $this->classMetadataFactory->getMetadataFor($class->getName());
 
         $resourceMetadata = new ResourceMetadata($class->getName());
         $resourceMetadata->classMetadata = $classMetadata;
@@ -68,6 +68,8 @@ class PhpDriver extends AbstractFileDriver
         if (isset($config['associations'])) {
             foreach ($config['associations'] as $associationName => $associationConfig) {
                 $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
+
+                // @TODO: load the mapping defined at the association level, and then override like in annotation driver
                 $resourceAssociationMetadata = new ResourceMetadata($targetClass);
 
                 $this->processMetadata($resourceAssociationMetadata, $associationConfig);

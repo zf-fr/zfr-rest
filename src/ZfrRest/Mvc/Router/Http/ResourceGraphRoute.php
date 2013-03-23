@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Router\Http;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
+use Doctrine\Common\Persistence\ObjectManager;
 use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
@@ -36,6 +37,11 @@ class ResourceGraphRoute implements RouteInterface
     protected $metadataFactory;
 
     /**
+     * @var \Doctrine\Common\Persistence\ObjectManager
+     */
+    protected $objectManager;
+
+    /**
      * @var \ZfrRest\Resource\ResourceInterface
      */
     protected $resource;
@@ -47,17 +53,21 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @param \Metadata\MetadataFactory $metadataFactory
-     * @param string                    $resource
-     * @param string                    $path
+     * @param \Metadata\MetadataFactory                  $metadataFactory
+     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
+     * @param string                                     $resource
+     * @param string                                     $path
      */
-    public function __construct(MetadataFactory $metadataFactory, $resource, $path)
+    public function __construct(MetadataFactory $metadataFactory, ObjectManager $objectManager, $resource, $path)
     {
         $this->metadataFactory = $metadataFactory;
+        $this->objectManager   = $objectManager;
         $this->path            = trim($path, '/');
 
         $resourceMetadata = $this->metadataFactory->getMetadataForClass($resource)->getRootClassMetadata();
-        $this->resource = new Resource($resource, $resourceMetadata);
+        $resource         = $this->objectManager->getRepository($resource);
+
+        $this->resource   = new Resource($resource, $resourceMetadata);
     }
 
     /**
@@ -128,19 +138,18 @@ class ResourceGraphRoute implements RouteInterface
         $chunks   = explode('/', $path);
 
         if ($resource instanceof Selectable) {
-            $criteria = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
-            $resource = $resource->matching($criteria);
+            $expression = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
+            $resource   = $resource->matching(new Criteria($expression))->first();
         }
+
+        $this->resource = new Resource($resource, $this->resource->getMetadata());
 
         // We've processed the whole path
         if (empty($chunks)) {
             return $this->createRouteMatch($this->resource, $path);
         }
 
-        $resourceMetadata = "";
-        $resource         = new Resource($resource, $resourceMetadata);
-
-        return $this->matchAssociation($resource, substr($path, strpos($path, '/')));
+        return $this->matchAssociation($this->resource, substr($path, strpos($path, '/')));
     }
 
     /**
@@ -165,17 +174,17 @@ class ResourceGraphRoute implements RouteInterface
         $reflProperty = $refl->getProperty($associationName);
         $reflProperty->setAccessible(true);
 
-        $resource = $reflProperty->getValue($resource);
+        $resource = $reflProperty->getValue($resource->getResource());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($resource, $resourceMetadata);
+        $this->resource   = new Resource($resource, $resourceMetadata);
 
         // We've processed the whole path
         if (empty($chunks)) {
             return $this->createRouteMatch($this->resource, $path);
         }
 
-        return $this->matchIdentifier($resource, substr($path, strpos($path, '/')));
+        return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
 
     /**

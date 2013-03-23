@@ -45,21 +45,11 @@ class Resource implements ResourceInterface
     /**
      * @param mixed                     $resource
      * @param ResourceMetadataInterface $metadata
-     *
-     * @throws \ZfrRest\Resource\Exception\InvalidResourceException if the resource is neither an instance nor of a
-     *                                                              collection of instances of the expected type
      */
     public function __construct($resource, ResourceMetadataInterface $metadata)
     {
         $this->resource = $resource;
         $this->metadata = $metadata;
-
-        /*if (
-            !$metadata->getClassMetadata()->getReflectionClass()->isInstance($resource)
-            && !$this->isCollection()
-        ) {
-            throw InvalidResourceException::invalidResourceProvided($resource, $metadata);
-        }*/
     }
 
     /**
@@ -90,7 +80,7 @@ class Resource implements ResourceInterface
                 || $this->resource instanceof Traversable
                 || is_array($this->resource)
             )
-            //&& !$this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
+            && !$this->metadata->getClassMetadata()->getReflectionClass()->isInstance($this->resource)
         );
     }
 }

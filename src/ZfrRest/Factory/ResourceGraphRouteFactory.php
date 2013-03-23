@@ -53,8 +53,19 @@ class ResourceGraphRouteFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        $parentLocator = $serviceLocator->getServiceLocator();
+
         /** @var $metadataFactory \Metadata\MetadataFactory */
-        $metadataFactory   = $serviceLocator->getServiceLocator()->get('ZfrRest\Resource\Metadata\MetadataFactory');
-        return new ResourceGraphRoute($metadataFactory, $this->creationOptions['resource'], $this->creationOptions['route']);
+        $metadataFactory   = $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory');
+
+        $resourceOptions = $parentLocator->get('ZfrRest\Options\ModuleOptions')->getResourceMetadata();
+        $objectManager   = $parentLocator->get($resourceOptions->getObjectManager());
+
+        return new ResourceGraphRoute(
+            $metadataFactory,
+            $objectManager,
+            $this->creationOptions['resource'],
+            $this->creationOptions['route']
+        );
     }
 }

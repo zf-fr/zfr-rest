@@ -62,7 +62,7 @@ class AnnotationDriver implements DriverInterface
      */
     public function loadMetadataForClass(ReflectionClass $class)
     {
-        $classMetadata    = $this->classMetadataFactory->getMetadataFor($class->getName());
+        $classMetadata = $this->classMetadataFactory->getMetadataFor($class->getName());
 
         $resourceMetadata = new ResourceMetadata($class->getName());
         $resourceMetadata->classMetadata = $classMetadata;
@@ -84,7 +84,10 @@ class AnnotationDriver implements DriverInterface
 
                     $associationName             = $classProperty->getName();
                     $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
-                    $resourceAssociationMetadata = new ResourceMetadata($targetClass);
+
+                    // We first load the metadata for the entity, and we then loop through the annotations defined
+                    // at the association level so that the user can override some properties
+                    $resourceAssociationMetadata = $this->loadMetadataForClass(new ReflectionClass($targetClass));
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

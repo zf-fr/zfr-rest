@@ -64,13 +64,15 @@ abstract class AbstractRestfulController extends AbstractController
             throw new Client\MethodNotAllowedException();
         }
 
-        // We should always have a resource, otherwise throw an 404 exception
+        /** @var $resource \ZfrRest\Resource\ResourceInterface|null */
         $resource = $e->getRouteMatch()->getParam('resource', null);
+
+        // We should always have a resource, otherwise throw an 404 exception
         if (null === $resource) {
             throw new Client\NotFoundException();
         }
 
-        $return = $this->$method($resource);
+        $return = $this->$method($resource->getResource());
 
         $e->setResult($return);
 
