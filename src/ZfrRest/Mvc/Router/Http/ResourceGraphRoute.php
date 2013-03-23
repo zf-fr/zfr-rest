@@ -51,6 +51,11 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected $path;
 
+    /**
+     * @var array
+     */
+    protected $query;
+
 
     /**
      * @param \Metadata\MetadataFactory                  $metadataFactory
@@ -115,6 +120,8 @@ class ResourceGraphRoute implements RouteInterface
             return null;
         }
 
+        $this->query = $uri->getQueryAsArray();
+
         return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
 
@@ -139,7 +146,15 @@ class ResourceGraphRoute implements RouteInterface
 
         if ($resource instanceof Selectable) {
             $expression = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
-            $resource   = $resource->matching(new Criteria($expression))->first();
+            $criteria   = new Criteria($expression);
+
+            if (!empty($this->query) && empty($chunks)) {
+                foreach ($this->query as $key => $value) {
+                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
+                }
+            }
+
+            $resource = $resource->matching($criteria)->first();
         }
 
         $this->resource = new Resource($resource, $this->resource->getMetadata());
