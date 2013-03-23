@@ -183,28 +183,29 @@ class ResourceGraphRoute implements RouteInterface
 
         $resource = $reflProperty->getValue($resource->getResource());
 
+        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
+        $this->resource   = new Resource($resource, $resourceMetadata);
+
         // We've processed the whole path
         if (empty($chunks)) {
             // Filter by query
             if (!empty($this->query) && $resource instanceof Selectable) {
-                $criteria = Criteria::create();
+                $associationClassMetadata = $resourceMetadata->getClassMetadata();
+                $criteria                 = Criteria::create();
 
                 foreach ($this->query as $key => $value) {
-                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
+                    if ($associationClassMetadata->hasField($key)) {
+                        $criteria->andWhere(Criteria::expr()->eq($key, $value));
+                    }
                 }
 
                 $resource = $resource->matching($criteria);
 
-                $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-                $this->resource   = new Resource($resource, $resourceMetadata);
+                $this->resource = new Resource($resource, $resourceMetadata);
             }
 
             return $this->createRouteMatch($this->resource, $path);
         }
-
-        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $this->resource   = new Resource($resource, $resourceMetadata);
-
 
         return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
