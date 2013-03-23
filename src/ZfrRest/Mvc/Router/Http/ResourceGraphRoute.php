@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Router\Http;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
+use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Console\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
@@ -29,6 +30,11 @@ use ZfrRest\Resource\ResourceInterface;
 
 class ResourceGraphRoute implements RouteInterface
 {
+    /**
+     * @var \Metadata\MetadataFactory
+     */
+    protected $metadataFactory;
+
     /**
      * @var \ZfrRest\Resource\ResourceInterface
      */
@@ -41,15 +47,15 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @todo consider passing in a resource name instead of the resource itself for performance
-     *
+     * @param \Metadata\MetadataFactory           $metadataFactory
      * @param \ZfrRest\Resource\ResourceInterface $resource
-     * @param string                              $path
+     * @param string $path
      */
-    public function __construct(ResourceInterface $resource, $path)
+    public function __construct(MetadataFactory $metadataFactory, ResourceInterface $resource, $path)
     {
-        $this->resource = $resource;
-        $this->path     = trim($path, '/');
+        $this->metadataFactory = $metadataFactory;
+        $this->resource        = $resource;
+        $this->path            = trim($path, '/');
     }
 
     /**
@@ -103,8 +109,8 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * @param  \ZfrRest\Resource\ResourceInterface $resource
      * @param  string                              $path
+     * @throws \ZfrRest\Mvc\Exception\RuntimeException
      * @return null|\Zend\Mvc\Router\Http\RouteMatch
-     * @throws \RuntimeException
      */
     protected function matchIdentifier(ResourceInterface $resource, $path)
     {
@@ -129,7 +135,7 @@ class ResourceGraphRoute implements RouteInterface
             return new RouteMatch(array('resource' => $resource), strlen($path));
         }
 
-        $resourceMetadata = ""; // TODO: inject the metadata factory
+        $resourceMetadata = "";
         $resource         = new Resource($resource, $resourceMetadata);
 
         return $this->matchAssociation($resource, substr($path, strpos($path, '/')));

@@ -16,16 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Factory;
 
-use RuntimeException as BaseRuntimeException;
+use Metadata\MetadataFactory;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
 
-/**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class RuntimeException extends BaseRuntimeException
+class ResourceGraphRouteFactory implements FactoryInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /** @var $metadataFactory \Metadata\MetadataFactory */
+        $metadataFactory   = $serviceLocator->getServiceLocator()->get('ZfrRest\Resource\Metadata\MetadataFactory');
+        return new ResourceGraphRoute($metadataFactory);
+    }
 }

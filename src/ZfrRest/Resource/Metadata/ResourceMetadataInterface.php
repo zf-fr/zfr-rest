@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Resource\Metadata;
 
-
 /**
  * Base resource metadata interface
  *
