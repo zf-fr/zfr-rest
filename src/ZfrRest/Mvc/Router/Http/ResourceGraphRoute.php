@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\Router\Http;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
@@ -49,7 +50,7 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * @var string
      */
-    protected $path;
+    protected $route;
 
     /**
      * @var array
@@ -61,17 +62,17 @@ class ResourceGraphRoute implements RouteInterface
      * @param \Metadata\MetadataFactory                  $metadataFactory
      * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
      * @param string                                     $resource
-     * @param string                                     $path
+     * @param string                                     $route
      */
-    public function __construct(MetadataFactory $metadataFactory, ObjectManager $objectManager, $resource, $path)
+    public function __construct(MetadataFactory $metadataFactory, ObjectManager $objectManager, $resource, $route)
     {
         $this->metadataFactory = $metadataFactory;
         $this->objectManager   = $objectManager;
-        $this->path            = trim($path, '/');
+        $this->route           = trim($route, '/');
 
+        // We begin traversal by fetching the repository for the given resource
         $resourceMetadata = $this->metadataFactory->getMetadataForClass($resource)->getRootClassMetadata();
         $resource         = $this->objectManager->getRepository($resource);
-
         $this->resource   = new Resource($resource, $resourceMetadata);
     }
 
@@ -112,15 +113,16 @@ class ResourceGraphRoute implements RouteInterface
         $uri  = $request->getUri();
         $path = trim($uri->getPath(), '/');
 
-        if ($path === $this->path) {
-            return $this->createRouteMatch($this->resource, $this->path);
+        // Save the query part (GET parameters) to optionally filter the result
+        $this->query = $uri->getQueryAsArray();
+
+        if ($path === $this->route) {
+            return $this->buildRouteMatch($this->resource, $path);
         }
 
-        if (0 !== strpos($path, $this->path) || !$this->resource->isCollection()) {
+        if (0 !== strpos($path, $this->route) || !$this->resource->isCollection()) {
             return null;
         }
-
-        $this->query = $uri->getQueryAsArray();
 
         return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
@@ -144,16 +146,21 @@ class ResourceGraphRoute implements RouteInterface
         $resource = $resource->getResource();
         $chunks   = explode('/', $path);
 
-        if ($resource instanceof Selectable) {
+        // Favor Repository over Selectable as it allow to call custom repository methods
+        if ($resource instanceof ObjectRepository) {
+            $resource = $resource->find(array_shift($chunks));
+        } elseif ($resource instanceof Selectable) {
             $expression = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
             $resource   = $resource->matching(new Criteria($expression))->first();
         }
 
+        // We matched an identifier, so the metadata stay the same (but we moved from a Collection to
+        // a single item
         $this->resource = new Resource($resource, $this->resource->getMetadata());
 
         // We've processed the whole path
         if (empty($chunks)) {
-            return $this->createRouteMatch($this->resource, $path);
+            return $this->buildRouteMatch($this->resource, $path);
         }
 
         return $this->matchAssociation($this->resource, substr($path, strpos($path, '/')));
@@ -188,36 +195,42 @@ class ResourceGraphRoute implements RouteInterface
 
         // We've processed the whole path
         if (empty($chunks)) {
-            // Filter by query
-            if (!empty($this->query) && $resource instanceof Selectable) {
-                $associationClassMetadata = $resourceMetadata->getClassMetadata();
-                $criteria                 = Criteria::create();
-
-                foreach ($this->query as $key => $value) {
-                    if ($associationClassMetadata->hasField($key)) {
-                        $criteria->andWhere(Criteria::expr()->eq($key, $value));
-                    }
-                }
-
-                $resource = $resource->matching($criteria);
-
-                $this->resource = new Resource($resource, $resourceMetadata);
-            }
-
-            return $this->createRouteMatch($this->resource, $path);
+            return $this->buildRouteMatch($this->resource, $path);
         }
 
         return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
     }
 
     /**
+     * Build a route match. This function extract the controller from the resource metadata, and does
+     * optional filtering by query
+     *
      * @param  ResourceInterface $resource
      * @param  $path
      * @return RouteMatch
      */
-    protected function createRouteMatch(ResourceInterface $resource, $path)
+    protected function buildRouteMatch(ResourceInterface $resource, $path)
     {
-        $controller = $resource->getMetadata()->getControllerName();
-        return new RouteMatch(array('resource' => $resource, 'controller' => $controller), strlen($path));
+        $classMetadata    = $resource->getMetadata()->getClassMetadata();
+        $resourceMetadata = $resource->getMetadata();
+        $resource         = $resource->getResource();
+
+        if ($resource instanceof Selectable) {
+            $criteria = Criteria::create();
+
+            foreach ($this->query as $key => $value) {
+                if ($classMetadata->hasField($key)) {
+                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
+                }
+            }
+
+            $resource = $resource->matching($criteria);
+        }
+
+        return new RouteMatch(array(
+            'resource'   => $resource,
+            'metadata'   => $resourceMetadata,
+            'controller' => $resourceMetadata->getControllerName()
+        ), strlen($path));
     }
 }

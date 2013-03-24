@@ -26,7 +26,7 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
-     * Get the class metadata (provides information about mapping)
+     * Get the class metadata (provides information about Doctrine mapping)
      *
      * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
      */

@@ -37,15 +37,24 @@ class ResourceGraphRouteFactory implements FactoryInterface
      */
     public function __construct(array $creationOptions)
     {
-        $this->creationOptions = $creationOptions;
+        $this->setCreationOptions($creationOptions);
+    }
 
-        if (!isset($this->creationOptions['resource'])) {
+    /**
+     * @param  array $creationOptions
+     * @throws Exception\RuntimeException
+     */
+    public function setCreationOptions(array $creationOptions)
+    {
+        if (!isset($creationOptions['resource'])) {
             throw new RuntimeException('No resource option specified for ResourceGraphRoute');
         }
 
-        if (!isset($this->creationOptions['route'])) {
+        if (!isset($creationOptions['route'])) {
             throw new RuntimeException('No route option specified for ResourceGraphRoute');
         }
+
+        $this->creationOptions = $creationOptions;
     }
 
     /**

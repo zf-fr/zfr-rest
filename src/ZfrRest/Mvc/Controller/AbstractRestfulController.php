@@ -73,12 +73,11 @@ abstract class AbstractRestfulController extends AbstractController
             throw new Client\NotFoundException();
         }
 
-        $resource = $resource->getResource();
-        if($resource instanceof Traversable) {
+        if($resource instanceof Traversable || is_array($resource)) {
             $method .= 'List';
         }
 
-        $return = $this->$method($resource);
+        $return = $this->$method($resource, $e->getRouteMatch()->getParam('metadata'));
 
         $e->setResult($return);
 
