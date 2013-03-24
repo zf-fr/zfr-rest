@@ -29,6 +29,11 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
+     * @var bool
+     */
+    protected $__strictMode__ = false;
+
+    /**
      * If this listener is registered (true by default), it will listen on MvcEvent::EVENT_DISPATCH_ERROR,
      * and allow to automatically set Response code and message if a ZfrRest\Http exception is thrown
      *

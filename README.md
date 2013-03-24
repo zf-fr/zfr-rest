@@ -191,6 +191,27 @@ class UserController extends AbstractRestfulController
 }
 ```
 
+Every method will also receive a second parameter, which is a ResourceMetadataInterface. This object allows to
+retrieve various information, like the hydrator used, which associations are exposed... So you could rewrite
+your controllers like this if you need those information:
+
+```php
+namespace Application\Controller;
+
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
+
+class UserController extends AbstractRestfulController
+{
+    public function get(User $resource, ResourceMetadataInterface $metadata)
+    {
+    }
+
+    public function getList(Collection $users, ResourceMetadataInterface $metadata)
+    {
+    }
+}
+```
+
 
 ### More filter
 

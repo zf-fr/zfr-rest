@@ -52,9 +52,7 @@ abstract class AbstractRestfulController extends AbstractController
      * Execute the request. Try to match the HTTP verb to an action
      *
      * @param  MvcEvent $e
-     *
      * @return mixed
-     *
      * @throws Client\NotFoundException If the resource cannot be found
      * @throws Client\MethodNotAllowedException If the method to handle the request is not implemented
      */

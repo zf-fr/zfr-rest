@@ -70,6 +70,8 @@ class ResourceGraphRoute implements RouteInterface
         $this->objectManager   = $objectManager;
         $this->route           = trim($route, '/');
 
+        // @TODO: find a way not to create a repository so early in the route match for performance
+
         // We begin traversal by fetching the repository for the given resource
         $resourceMetadata = $this->metadataFactory->getMetadataForClass($resource)->getRootClassMetadata();
         $resource         = $this->objectManager->getRepository($resource);
@@ -146,7 +148,7 @@ class ResourceGraphRoute implements RouteInterface
         $resource = $resource->getResource();
         $chunks   = explode('/', $path);
 
-        // Favor Repository over Selectable as it allow to call custom repository methods
+        // Favor Repository over Selectable as it allows to call custom repository methods
         if ($resource instanceof ObjectRepository) {
             $resource = $resource->find(array_shift($chunks));
         } elseif ($resource instanceof Selectable) {
@@ -187,6 +189,9 @@ class ResourceGraphRoute implements RouteInterface
         $refl         = $classMetadata->getReflectionClass();
         $reflProperty = $refl->getProperty($associationName);
         $reflProperty->setAccessible(true);
+
+        // @TODO: add a property to the annotation ExposeAssociation like @ExposeAssociation(paginate="true") that
+        // will automatically wrap the collection in Paginator
 
         $resource = $reflProperty->getValue($resource->getResource());
 
