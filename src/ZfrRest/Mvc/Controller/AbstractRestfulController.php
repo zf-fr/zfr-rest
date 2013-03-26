@@ -119,6 +119,9 @@ abstract class AbstractRestfulController extends AbstractController
      *      - we hydrate valid data
      *      - we pass the object to the post method of the controller
      *
+     * As you can see, the post method have three arguments: the resource, which is the collection in which the
+     * object is inserted, the object itself, and metadata
+     *
      * @param  mixed                     $resource
      * @param  ResourceMetadataInterface $metadata
      * @return mixed
@@ -151,9 +154,58 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         /** @var $hydrator \Zend\Stdlib\Hydrator\HydratorInterface */
-        $resource = $hydrator->hydrate($inputFilter->getValues(), new $metadata->getClassName());
+        $object = $hydrator->hydrate($inputFilter->getValues(), new $metadata->getClassName());
 
-        return $this->post($resource, $metadata);
+        $this->post($resource, $object, $metadata);
+
+        // Set the Location header with the URL to the newly created resource
+        $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($object));
+        $url             = trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
+
+        $this->response->setStatusCode(201);
+        $this->response->getHeaders()->addHeaderLine('Location', $url);
+
+        return $this->response;
+    }
+
+    /**
+     * PUT method is used to update an existing resource
+     *
+     * @param mixed                     $resource
+     * @param ResourceMetadataInterface $metadata
+     * @return mixed
+     */
+    protected function handlePutMethod($resource, ResourceMetadataInterface $metadata)
+    {
+        $inputFilterName = $metadata->getInputFilterName();
+
+        // We try to get the input filter from service locator first so that user can specify dependencies
+        if ($this->serviceLocator->has($inputFilterName)) {
+            $inputFilter = $this->serviceLocator->get($inputFilterName);
+        } else {
+            $inputFilter = new $inputFilterName;
+        }
+
+        /** @var $inputFilter \Zend\InputFilter\InputFilter */
+        $inputFilter->setData($this->parsePost());
+        if (!$inputFilter->isValid()) {
+            // @TODO: around which error should we wrap this ? BadRequest ?
+            return $inputFilter->getMessages();
+        }
+
+        $hydratorName = $metadata->getHydratorName();
+
+        // Same for hydrator, we first try to get it from service locator
+        if ($this->serviceLocator->has($hydratorName)) {
+            $hydrator = $this->serviceLocator->get($hydratorName);
+        } else {
+            $hydrator = new $hydratorName;
+        }
+
+        /** @var $hydrator \Zend\Stdlib\Hydrator\HydratorInterface */
+        $object = $hydrator->hydrate($inputFilter->getValues(), $resource);
+
+        return $this->put($object, $metadata);
     }
 
     /**
