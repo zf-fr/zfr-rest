@@ -26,6 +26,13 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
+     * Get the class name
+     *
+     * @return string
+     */
+    public function getClassName();
+
+    /**
      * Get the class metadata (provides information about Doctrine mapping)
      *
      * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata

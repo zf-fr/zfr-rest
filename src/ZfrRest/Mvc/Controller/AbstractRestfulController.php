@@ -112,8 +112,12 @@ abstract class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * POST method is used to create a new resource. On successful creation, POST method returns a HTTP status 201,
-     * with a Location header containing the URL of the newly created resource
+     * POST method is used to create a new resource. On successful creation, POST method should return a HTTP status
+     * 201, with a Location header containing the URL of the newly created resource. We are doing several things for the
+     * user automatically:
+     *      - we validate post data with the input filter defined in metadata
+     *      - we hydrate valid data
+     *      - we pass the object to the post method of the controller
      *
      * @param  mixed                     $resource
      * @param  ResourceMetadataInterface $metadata
@@ -121,7 +125,35 @@ abstract class AbstractRestfulController extends AbstractController
      */
     protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
     {
-      //  $
+        $inputFilterName = $metadata->getInputFilterName();
+
+        // We try to get the input filter from service locator first so that user can specify dependencies
+        if ($this->serviceLocator->has($inputFilterName)) {
+            $inputFilter = $this->serviceLocator->get($inputFilterName);
+        } else {
+            $inputFilter = new $inputFilterName;
+        }
+
+        /** @var $inputFilter \Zend\InputFilter\InputFilter */
+        $inputFilter->setData($this->parsePost());
+        if (!$inputFilter->isValid()) {
+            // @TODO: around which error should we wrap this ? BadRequest ?
+            return $inputFilter->getMessages();
+        }
+
+        $hydratorName = $metadata->getHydratorName();
+
+        // Same for hydrator, we first try to get it from service locator
+        if ($this->serviceLocator->has($hydratorName)) {
+            $hydrator = $this->serviceLocator->get($hydratorName);
+        } else {
+            $hydrator = new $hydratorName;
+        }
+
+        /** @var $hydrator \Zend\Stdlib\Hydrator\HydratorInterface */
+        $resource = $hydrator->hydrate($inputFilter->getValues(), new $metadata->getClassName());
+
+        return $this->post($resource, $metadata);
     }
 
     /**
