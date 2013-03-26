@@ -169,7 +169,10 @@ abstract class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * PUT method is used to update an existing resource
+     * PUT method is used to update an existing resource. We are doing several things for the user automatically:
+     *      - we validate post data with the input filter defined in metadata
+     *      - we hydrate valid data to update existing resource
+     *      - we pass the object to the put method of the controller
      *
      * @param mixed                     $resource
      * @param ResourceMetadataInterface $metadata
