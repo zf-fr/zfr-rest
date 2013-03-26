@@ -25,6 +25,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
+use ZfrRest\Http\Exception\ClientException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
@@ -124,6 +125,7 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @param  mixed                     $resource
      * @param  ResourceMetadataInterface $metadata
+     * @throws \ZfrRest\Http\Exception\Client\BadRequestException if validation fails
      * @return mixed
      */
     protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
@@ -140,8 +142,7 @@ abstract class AbstractRestfulController extends AbstractController
         /** @var $inputFilter \Zend\InputFilter\InputFilter */
         $inputFilter->setData($this->parsePost());
         if (!$inputFilter->isValid()) {
-            // @TODO: around which error should we wrap this ? BadRequest ?
-            return $inputFilter->getMessages();
+            throw new Client\BadRequestException($inputFilter->getMessages());
         }
 
         $hydratorName = $metadata->getHydratorName();
@@ -176,6 +177,7 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @param mixed                     $resource
      * @param ResourceMetadataInterface $metadata
+     * @throws \ZfrRest\Http\Exception\Client\BadRequestException if validation fails
      * @return mixed
      */
     protected function handlePutMethod($resource, ResourceMetadataInterface $metadata)
@@ -192,8 +194,7 @@ abstract class AbstractRestfulController extends AbstractController
         /** @var $inputFilter \Zend\InputFilter\InputFilter */
         $inputFilter->setData($this->parsePost());
         if (!$inputFilter->isValid()) {
-            // @TODO: around which error should we wrap this ? BadRequest ?
-            return $inputFilter->getMessages();
+            throw new Client\BadRequestException($inputFilter->getMessages());
         }
 
         $hydratorName = $metadata->getHydratorName();
