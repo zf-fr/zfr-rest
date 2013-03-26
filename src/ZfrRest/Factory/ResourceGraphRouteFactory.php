@@ -62,18 +62,19 @@ class ResourceGraphRouteFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        /** @var $parentLocator \Zend\ServiceManager\ServiceManager */
         $parentLocator = $serviceLocator->getServiceLocator();
 
-        /** @var $metadataFactory \Metadata\MetadataFactory */
-        $metadataFactory   = $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory');
-
-        $resourceOptions = $parentLocator->get('ZfrRest\Options\ModuleOptions')->getResourceMetadata();
-        $objectManager   = $parentLocator->get($resourceOptions->getObjectManager());
+        if (!$parentLocator->has($this->creationOptions['resource'])) {
+            throw new RuntimeException(sprintf(
+                'Resource "%s" cannot be found from service locator',
+                $this->creationOptions['resource']
+            ));
+        }
 
         return new ResourceGraphRoute(
-            $metadataFactory,
-            $objectManager,
-            $this->creationOptions['resource'],
+            $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory'),
+            $parentLocator->get($this->creationOptions['resource']),
             $this->creationOptions['route']
         );
     }

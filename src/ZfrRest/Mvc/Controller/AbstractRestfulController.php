@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Mvc\Controller;
 
-use Traversable;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
@@ -26,10 +25,16 @@ use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * Abstract RESTful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
  * exception if the method is not implemented.
+ *
+ * By default, AbstractRestfulController handles the "big four" methods (GET, DELETE, PUT and POST). You can add
+ * your own verbs or changing existing ones by overriding methods like handle*Method (eg.: handleGetMethod,
+ * handlePostMethod, handlePatchMethod...). Please note that your handlers must always return the result of
+ * the action!
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -58,27 +63,105 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function onDispatch(MvcEvent $e)
     {
-        $method = strtolower($this->getRequest()->getMethod());
-        if (!method_exists($this, $method)) {
+        $method  = strtolower($this->getRequest()->getMethod());
+        $handler = 'handle' . ucfirst($method) . 'Method';
+
+        if (!method_exists($this, $method) || !method_exists($this, $handler)) {
             throw new Client\MethodNotAllowedException();
         }
 
-        /** @var $resource \ZfrRest\Resource\ResourceInterface|null */
         $resource = $e->getRouteMatch()->getParam('resource', null);
+        $metadata = $e->getRouteMatch()->getParam('metadata', null);
 
-        // We should always have a resource, otherwise throw an 404 exception
-        if (null === $resource) {
+        // We should always have a resource and metadata, otherwise throw an 404 exception
+        if (null === $resource || null === $metadata) {
             throw new Client\NotFoundException();
         }
 
-        if($resource instanceof Traversable || is_array($resource)) {
-            $method .= 'List';
-        }
-
-        $return = $this->$method($resource, $e->getRouteMatch()->getParam('metadata'));
+        $return = $this->$handler($resource, $metadata);
 
         $e->setResult($return);
 
         return $return;
+    }
+
+    /**
+     * GET method is used to retrieve (or read) a representation of a resource. Get method is idempotant, which means
+     * that making multiple identical requests ends up having the same result as a single request. Get requests should
+     * not modify any resources
+     *
+     * @param  mixed                     $resource
+     * @param  ResourceMetadataInterface $metadata
+     * @return mixed
+     */
+    protected function handleGetMethod($resource, ResourceMetadataInterface $metadata)
+    {
+        return $this->get($resource, $metadata);
+    }
+
+    /**
+     * DELETE method is used to delete a representation of a resource
+     *
+     * @param  mixed                     $resource
+     * @param  ResourceMetadataInterface $metadata
+     * @return mixed
+     */
+    protected function handleDeleteMethod($resource, ResourceMetadataInterface $metadata)
+    {
+        return $this->delete($resource, $metadata);
+    }
+
+    /**
+     * POST method is used to create a new resource. On successful creation, POST method returns a HTTP status 201,
+     * with a Location header containing the URL of the newly created resource
+     *
+     * @param  mixed                     $resource
+     * @param  ResourceMetadataInterface $metadata
+     * @return mixed
+     */
+    protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
+    {
+      //  $
+    }
+
+    /**
+     * Parse the body according to the Content-Type value
+     *
+     * @return array|null
+     */
+    protected function parseBody()
+    {
+        return $this->decode($this->request->getContent());
+    }
+
+    /**
+     * Parse the post array according to the Content-Type value
+     *
+     * @return array|null
+     */
+    protected function parsePost()
+    {
+        return $this->decode($this->request->getPost());
+    }
+
+    /**
+     * Decode a content according to the Content-Type value
+     *
+     * @param  mixed $content
+     * @return array
+     */
+    protected function decode($content)
+    {
+        /** @var $decoderPluginManager \ZfrRest\Serializer\DecoderPluginManager */
+        $decoderPluginManager = $this->serviceLocator('ZfrRest\Serializer\DecoderPluginManager');
+
+        $header = $this->request->getHeader('Content-Type', null);
+        if ($header === null) {
+            return null;
+        }
+
+        $mimeType = $header->getFieldValue();
+
+        return $decoderPluginManager->get($mimeType)->decode($content);
     }
 }

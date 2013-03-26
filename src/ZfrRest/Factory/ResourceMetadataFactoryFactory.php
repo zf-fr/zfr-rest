@@ -46,8 +46,8 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             ));
         }
 
-        $objectManager = $serviceLocator->get($objectManager)->getMetadataFactory();
-        $drivers       = $resourceOptions->getDrivers();
+        $metadataFactory = $serviceLocator->get($objectManager)->getMetadataFactory();
+        $drivers         = $resourceOptions->getDrivers();
 
         foreach ($drivers as &$driver) {
             $class = $driver['class'];
@@ -56,7 +56,7 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
                 // Special care is taken for PhpDriver, as we need to create a FileLocator
                 $fileLocator = new FileLocator($paths);
-                $driver      = new $class($fileLocator, $objectManager);
+                $driver      = new $class($fileLocator, $metadataFactory);
             } elseif ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
                 // Add the path to the annotations
                 AnnotationRegistry::registerAutoloadNamespace(
@@ -64,12 +64,10 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
                     __DIR__ . '/../..'
                 );
 
-                $driver = new $class(new AnnotationReader(), $objectManager);
+                $driver = new $class(new AnnotationReader(), $metadataFactory);
             }
         }
 
-        $metadataFactory = new MetadataFactory(new DriverChain($drivers));
-
-        return $metadataFactory;
+        return new MetadataFactory(new DriverChain($drivers));
     }
 }

@@ -24,7 +24,6 @@ return array(
         ),
 
         'factories' => array(
-            'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Factory\BodyParserFactory',
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
             'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',

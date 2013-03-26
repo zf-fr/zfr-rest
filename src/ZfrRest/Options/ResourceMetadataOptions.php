@@ -36,13 +36,6 @@ class ResourceMetadataOptions extends AbstractOptions
     protected $cache;
 
     /**
-     * Key to retrieve the Doctrine object manager
-     *
-     * @var string
-     */
-    protected $objectManager;
-
-    /**
      * Drivers that are used for creating the metadata factory
      *
      * @var array
@@ -77,28 +70,6 @@ class ResourceMetadataOptions extends AbstractOptions
     public function getCache()
     {
         return $this->cache;
-    }
-
-    /**
-     * Set the key in service locator to retrieve an object manager
-     *
-     * @param  string $objectManager
-     * @return ResourceMetadataOptions
-     */
-    public function setObjectManager($objectManager)
-    {
-        $this->objectManager = (string) $objectManager;
-        return $this;
-    }
-
-    /**
-     * Get the key of the object manager
-     *
-     * @return string
-     */
-    public function getObjectManager()
-    {
-        return $this->objectManager;
     }
 
     /**

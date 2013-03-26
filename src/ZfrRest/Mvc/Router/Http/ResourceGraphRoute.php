@@ -20,7 +20,6 @@ namespace ZfrRest\Mvc\Router\Http;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Http\RouteInterface;
@@ -43,7 +42,7 @@ class ResourceGraphRoute implements RouteInterface
     protected $objectManager;
 
     /**
-     * @var \ZfrRest\Resource\ResourceInterface
+     * @var \ZfrRest\Resource\ResourceInterface|mixed
      */
     protected $resource;
 
@@ -59,23 +58,15 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @param \Metadata\MetadataFactory                  $metadataFactory
-     * @param \Doctrine\Common\Persistence\ObjectManager $objectManager
-     * @param string                                     $resource
-     * @param string                                     $route
+     * @param \Metadata\MetadataFactory $metadataFactory
+     * @param mixed                     $resource
+     * @param string                    $route
      */
-    public function __construct(MetadataFactory $metadataFactory, ObjectManager $objectManager, $resource, $route)
+    public function __construct(MetadataFactory $metadataFactory, $resource, $route)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->objectManager   = $objectManager;
         $this->route           = trim($route, '/');
-
-        // @TODO: find a way not to create a repository so early in the route match for performance
-
-        // We begin traversal by fetching the repository for the given resource
-        $resourceMetadata = $this->metadataFactory->getMetadataForClass($resource)->getRootClassMetadata();
-        $resource         = $this->objectManager->getRepository($resource);
-        $this->resource   = new Resource($resource, $resourceMetadata);
+        $this->resource        = $resource;
     }
 
     /**
@@ -118,11 +109,19 @@ class ResourceGraphRoute implements RouteInterface
         // Save the query part (GET parameters) to optionally filter the result
         $this->query = $uri->getQueryAsArray();
 
+        // If the route is not even contained within the URI, this means we can return early...
+        if (strpos($path, $this->route) === false) {
+            return null;
+        }
+
+        // ... and we can now do initializing the resource
+        $this->initializeResource();
+
         if ($path === $this->route) {
             return $this->buildRouteMatch($this->resource, $path);
         }
 
-        if (0 !== strpos($path, $this->route) || !$this->resource->isCollection()) {
+        if (!$this->resource->isCollection()) {
             return null;
         }
 
@@ -237,5 +236,26 @@ class ResourceGraphRoute implements RouteInterface
             'metadata'   => $resourceMetadata,
             'controller' => $resourceMetadata->getControllerName()
         ), strlen($path));
+    }
+
+    /**
+     * Initializes the resource to create an object implementing the ResourceInterface interface. A resource can
+     * be anything: an entity, a collection, a Selectable... However, any ResourceInterface object contains both
+     * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
+     *
+     * @return void
+     */
+    protected function initializeResource()
+    {
+        $resource = $this->resource;
+        $metadata = null;
+
+        if ($resource instanceof ObjectRepository) {
+            $metadata = $this->metadataFactory->getMetadataForClass($resource->getClassName());
+        } else {
+            $metadata = $this->metadataFactory->getMetadataForClass($resource);
+        }
+
+        $this->resource = new Resource($resource, $metadata->getRootClassMetadata());
     }
 }
