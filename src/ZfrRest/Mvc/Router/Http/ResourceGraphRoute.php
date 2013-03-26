@@ -37,11 +37,6 @@ class ResourceGraphRoute implements RouteInterface
     protected $metadataFactory;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
      * @var \ZfrRest\Resource\ResourceInterface|mixed
      */
     protected $resource;
