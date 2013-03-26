@@ -29,6 +29,11 @@ use ZfrRest\Mvc\Exception;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
+/**
+ * @license MIT
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
 class ResourceGraphRoute implements RouteInterface
 {
     /**
