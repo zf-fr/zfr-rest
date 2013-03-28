@@ -16,42 +16,30 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Parser\Request;
+namespace ZfrRestTest\Resource;
 
-use Zend\Http\Request as HttpRequest;
-use Zend\Stdlib\MessageInterface;
-use ZfrRest\Http\Parser\AbstractParser;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Resource\ResourceMetadataAbstractFactory;
+use ZfrRest\Resource\ResourceMetadataPluginManager;
 
 /**
- * Parse the body of a request according to the Content-Type header
+ * Tests for {@see \ZfrRest\Resource\ResourceMetadataPluginManager}
  *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author Marco Pivetta <ocramius@gmail.com>
  */
-class BodyParser extends AbstractParser
+class ResourceMetadataPluginManagerTest extends TestCase
 {
     /**
-     * Parse the body
-     *
-     * @param  MessageInterface $request
-     * @return array|null
+     * @covers \ZfrRest\Resource\ResourceMetadataPluginManager::validatePlugin
      */
-    public function parse(MessageInterface $request)
+    public function testValidatePlugin()
     {
-        if (!$request instanceof HttpRequest) {
-            return null;
-        }
+        $pluginManager = new ResourceMetadataPluginManager();
 
-        $header = $request->getHeader('Content-Type', null);
-        if ($header === null) {
-            return null;
-        }
+        $pluginManager->validatePlugin($this->getMock('ZfrRest\\Resource\\ResourceMetadataInterface'));
 
-        $mimeType = $header->getFieldValue();
-        $content  = $request->getContent();
+        $this->setExpectedException('Zend\\ServiceManager\\Exception\\InvalidArgumentException');
 
-        $decoder = $this->decoderPluginManager->get($mimeType);
-
-        return $decoder->decode($content, $mimeType);
+        $pluginManager->validatePlugin(new \stdClass());
     }
 }

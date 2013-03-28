@@ -16,31 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Parser;
-
-use ZfrRest\Serializer\DecoderPluginManager;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * AbstractParser
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-abstract class AbstractParser implements ParserInterface
+class Paginate implements AnnotationInterface
 {
     /**
-     * @var DecoderPluginManager
+     * {@inheritDoc}
      */
-    protected $decoderPluginManager;
-
+    public function getKey()
+    {
+        return 'paginate';
+    }
 
     /**
-     * Constructor
-     *
-     * @param DecoderPluginManager $pluginManager
+     * {@inheritDoc}
      */
-    public function __construct(DecoderPluginManager $pluginManager)
+    public function getValue()
     {
-        $this->decoderPluginManager = $pluginManager;
+        return true;
     }
 }

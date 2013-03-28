@@ -16,16 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * RuntimeException
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+interface AnnotationInterface
 {
+    /**
+     * Get the key of the annotation
+     *
+     * @return string
+     */
+    public function getKey();
+
+    /**
+     * Get the value of the annotation
+     *
+     * @return mixed
+     */
+    public function getValue();
 }

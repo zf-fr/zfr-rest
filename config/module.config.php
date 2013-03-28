@@ -24,13 +24,46 @@ return array(
         ),
 
         'factories' => array(
-            'ZfrRest\Http\Parser\Request\BodyParser'    => 'ZfrRest\Factory\BodyParserFactory',
-            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
+            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
             'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
             'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
             'ZfrRest\View\Model\ModelPluginManager'     => 'ZfrRest\Factory\ModelPluginManagerFactory',
         )
+    ),
+
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+                'clear-cache' => array(
+                    'type'    => 'Simple',
+                    'options' => array(
+                        'route'    => 'rest clear metadata cache',
+                        'defaults' => array(
+                            'controller' => 'ZfrRest\Controller\Cache',
+                            'action'     => 'clear-cache'
+                        )
+                    )
+                )
+            )
+        )
+    ),
+
+    'controllers' => array(
+        'invokables' => array(
+            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController'
+        )
+    ),
+
+    'route_manager' => array(
+        'factories' => array(
+            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
+        ),
+
+        'aliases' => array(
+            'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
+        ),
     ),
 
     'view_manager' => array(
@@ -50,16 +83,16 @@ return array(
         /**
          * Decoders
          */
-        'decoders' => array(),
+        //'decoders' => array(),
 
         /**
          * Encoders
          */
-        'encoders' => array(),
+        //'encoders' => array(),
 
         /**
          * Models
          */
-        'models' => array()
+        //'models' => array()
     )
 );

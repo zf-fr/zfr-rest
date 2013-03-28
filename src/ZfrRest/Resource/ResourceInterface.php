@@ -16,16 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace ZfrRest\Resource;
 
 /**
- * RuntimeException
+ * Base resource interface - allows interacting with a resource object of which
+ * we have the instance and some metadata information
  *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author Marco Pivetta <ocramius@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+interface ResourceInterface
 {
+    /**
+     * Get the resource metadata
+     *
+     * @return \ZfrRest\Resource\Metadata\ResourceMetadataInterface
+     */
+    public function getMetadata();
+
+    /**
+     * Retrieves the resource, which can be either an instance of the provided metadata name or
+     * a collection of these instances
+     *
+     * @return mixed
+     */
+    public function getResource();
+
+    /**
+     * Check if the resource is a collection of instances of the resource type
+     *
+     * @return bool
+     */
+    public function isCollection();
 }

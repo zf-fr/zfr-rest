@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Options\Exception;
 
 use RuntimeException as BaseRuntimeException;
 

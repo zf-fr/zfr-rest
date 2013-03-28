@@ -16,16 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"PROPERTY"})
  */
-class RuntimeException extends BaseRuntimeException
+final class ExposeAssociation implements AnnotationInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'association';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return true;
+    }
 }

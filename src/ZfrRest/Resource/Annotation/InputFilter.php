@@ -16,21 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Parser;
-
-use Zend\Stdlib\MessageInterface;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * ParserInterface
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-interface ParserInterface
+final class InputFilter implements AnnotationInterface
 {
     /**
-     * @param  MessageInterface $message
-     * @return mixed
+     * @var string
      */
-    public function parse(MessageInterface $message);
+    public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'inputFilter';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
+    }
 }
