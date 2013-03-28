@@ -21,9 +21,11 @@ namespace ZfrRest\Mvc\Router\Http;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
+use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
 use ZfrRest\Resource\Resource;
@@ -228,7 +230,10 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            $resource = $resource->matching($criteria);
+            // Paginate or not
+            $resource = new Paginator(new SelectableAdapter($resource, $criteria));
+
+            //$resource = $resource->matching($criteria);
         }
 
         return new RouteMatch(array(
