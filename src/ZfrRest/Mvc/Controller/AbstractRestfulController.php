@@ -18,14 +18,16 @@
 
 namespace ZfrRest\Mvc\Controller;
 
+use Doctrine\Common\Collections\Collection;
+use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
-use ZfrRest\Http\Exception\ClientException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
@@ -77,6 +79,12 @@ abstract class AbstractRestfulController extends AbstractController
         // We should always have a resource and metadata, otherwise throw an 404 exception
         if (null === $resource || null === $metadata) {
             throw new Client\NotFoundException();
+        }
+
+        // If the metadata is specified that collection should be paginated, we automatically create a
+        // paginator from it
+        if ($metadata->isPaginated() && $resource instanceof Collection) {
+            $resource = new Paginator(new CollectionAdapter($resource));
         }
 
         $return = $this->$handler($resource, $metadata);
@@ -140,7 +148,7 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         /** @var $inputFilter \Zend\InputFilter\InputFilter */
-        $inputFilter->setData($this->parsePost());
+        $inputFilter->setData($this->decodePost());
         if (!$inputFilter->isValid()) {
             throw new Client\BadRequestException($inputFilter->getMessages());
         }
@@ -192,7 +200,7 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         /** @var $inputFilter \Zend\InputFilter\InputFilter */
-        $inputFilter->setData($this->parsePost());
+        $inputFilter->setData($this->decodeBody());
         if (!$inputFilter->isValid()) {
             throw new Client\BadRequestException($inputFilter->getMessages());
         }
@@ -217,7 +225,7 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @return array|null
      */
-    protected function parseBody()
+    protected function decodeBody()
     {
         return $this->decode($this->request->getContent());
     }
@@ -227,7 +235,7 @@ abstract class AbstractRestfulController extends AbstractController
      *
      * @return array|null
      */
-    protected function parsePost()
+    protected function decodePost()
     {
         return $this->decode($this->request->getPost());
     }
