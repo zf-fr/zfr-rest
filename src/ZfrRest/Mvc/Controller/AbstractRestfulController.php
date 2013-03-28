@@ -18,8 +18,6 @@
 
 namespace ZfrRest\Mvc\Controller;
 
-use Doctrine\Common\Collections\Collection;
-use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
@@ -79,12 +77,6 @@ abstract class AbstractRestfulController extends AbstractController
         // We should always have a resource and metadata, otherwise throw an 404 exception
         if (null === $resource || null === $metadata) {
             throw new Client\NotFoundException();
-        }
-
-        // If the metadata is specified that collection should be paginated, we automatically create a
-        // paginator from it
-        if ($metadata->isPaginated() && $resource instanceof Collection) {
-            $resource = new Paginator(new CollectionAdapter($resource));
         }
 
         $return = $this->$handler($resource, $metadata);

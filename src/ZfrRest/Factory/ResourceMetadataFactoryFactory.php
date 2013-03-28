@@ -38,7 +38,7 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         $moduleOptions   = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
         $resourceOptions = $moduleOptions->getResourceMetadata();
 
-        $objectManager = $resourceOptions->getObjectManager();
+        $objectManager = 'doctrine.entitymanager.orm_default';
         if (!$serviceLocator->has($objectManager)) {
             throw new RuntimeException(sprintf(
                 'The object manager key is not valid, %s given',
