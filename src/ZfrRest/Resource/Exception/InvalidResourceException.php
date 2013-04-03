@@ -16,16 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Resource\Exception;
 
-use RuntimeException as BaseRuntimeException;
+use InvalidArgumentException;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * RuntimeException
+ * Exception for invalid resources
  *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author Marco Pivetta <ocramius@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+class InvalidResourceException extends InvalidArgumentException
 {
+    /**
+     * @param mixed                                                 $resource
+     * @param \ZfrRest\Resource\Metadata\ResourceMetadataInterface  $metadata
+     * @return \ZfrRest\Resource\Exception\InvalidResourceException
+     */
+    public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
+    {
+        return new self(
+            sprintf(
+                'Provided resource of type "%s" is not an instance nor collection of requested type "%s"',
+                is_object($resource) ? get_class($resource) : gettype($resource),
+                $metadata->getClassMetadata()->getName()
+            )
+        );
+    }
 }

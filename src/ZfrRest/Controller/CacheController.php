@@ -16,16 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Controller;
 
-use RuntimeException as BaseRuntimeException;
+use Zend\Mvc\Controller\AbstractActionController;
 
 /**
- * RuntimeException
+ * CacheController
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+class CacheController extends AbstractActionController
 {
+    /**
+     * Clear the cache (for now, only for metadata)
+     *
+     * @return string
+     */
+    public function clearCacheAction()
+    {
+        /** @var $options \ZfrRest\Options\ModuleOptions */
+        $options                 = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $resourceMetadataOptions = $options->getResourceMetadata();
+
+        $cacheClass = $resourceMetadataOptions->getCache();
+        if ($cacheClass !== null) {
+            /** @var $cache \Doctrine\Common\Cache\CacheProvider */
+            $cache = $this->serviceLocator->get($cacheClass);
+            $cache->flushAll();
+        }
+
+        return "\nThe cache were successfully cleared\n\n";
+    }
 }

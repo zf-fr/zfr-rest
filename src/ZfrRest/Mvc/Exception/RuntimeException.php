@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Mvc\Exception;
 
 use RuntimeException as BaseRuntimeException;
 
@@ -27,5 +27,4 @@ use RuntimeException as BaseRuntimeException;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class RuntimeException extends BaseRuntimeException
-{
-}
+{}

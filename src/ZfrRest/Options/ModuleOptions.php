@@ -29,7 +29,7 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * Turn off strict options mode
+     * @var bool
      */
     protected $__strictMode__ = false;
 
@@ -57,6 +57,14 @@ class ModuleOptions extends AbstractOptions
      * @var bool
      */
     protected $registerHttpMethodOverrideListener;
+
+    /**
+     * The options for the resource metadata
+     *
+     * @var ResourceMetadataOptions
+     */
+    protected $resourceMetadata;
+
 
     /**
      * @param  boolean $registerHttpExceptionListener
@@ -107,5 +115,21 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterSelectModelListener()
     {
         return $this->registerSelectModelListener;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setResourceMetadata(array $options)
+    {
+        $this->resourceMetadata = new ResourceMetadataOptions($options);
+    }
+
+    /**
+     * @return ResourceMetadataOptions
+     */
+    public function getResourceMetadata()
+    {
+        return $this->resourceMetadata;
     }
 }

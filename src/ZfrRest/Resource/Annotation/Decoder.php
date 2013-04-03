@@ -16,16 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"ANNOTATION"})
  */
-class RuntimeException extends BaseRuntimeException
+final class Decoder implements AnnotationInterface
 {
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+    public $mimeType;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'decoder';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            $this->mimeType => $this->name
+        );
+    }
 }

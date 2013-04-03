@@ -16,16 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-class RuntimeException extends BaseRuntimeException
+final class Controller implements AnnotationInterface
 {
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'controller';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return $this->name;
+    }
 }

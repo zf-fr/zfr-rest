@@ -16,25 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
-
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Http\Parser\Request\BodyParser;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * BodyParserFactory
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"ANNOTATION"})
  */
-class BodyParserFactory implements FactoryInterface
+final class Encoder implements AnnotationInterface
 {
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+    public $mimeType;
+
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function getKey()
     {
-        return new BodyParser($serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager'));
+        return 'encoder';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            $this->mimeType => $this->name
+        );
     }
 }

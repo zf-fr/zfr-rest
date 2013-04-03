@@ -16,16 +16,21 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRestTest\Mvc\Asset;
 
-use RuntimeException as BaseRuntimeException;
+use Zend\View\Model\ViewModel;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 
-/**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class RuntimeException extends BaseRuntimeException
+class DummyController extends AbstractRestfulController
 {
+    /**
+     * @param  mixed $resource
+     * @return \Zend\View\Model\ViewModel
+     */
+    public function get($resource)
+    {
+        return new ViewModel(array(
+            'resource' => $resource
+        ));
+    }
 }
