@@ -3,10 +3,8 @@ ZfrRest
 
 [![Build Status](https://travis-ci.org/zf-fr/ZfrRest.png?branch=master)](https://travis-ci.org/zf-fr/ZfrRest)
 
-UPDATE : 21st March of 2013: Don't worry, this module is not dead. Both Ocramius and I have a lot of work currently BUT
-this project is definitely not dead and we know that a lot of people are waiting for it ! Thanks for your patience ;-).
-
-NOTE : This module is in heavy development, it's not usable yet.
+UPDATE 3rd april 2013 : a develop branch has been merged to master as convenience, because the PR was getting too massive
+to handle. However, please note that the API may change completely and it's not means to development yet. Thanks !
 
 A module for Zend Framework 2 that aims to simplify RESTful
 
