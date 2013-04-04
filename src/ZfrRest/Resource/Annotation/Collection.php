@@ -22,14 +22,24 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-class Paginate implements AnnotationInterface
+final class Collection implements AnnotationInterface
 {
+    /**
+     * @var bool
+     */
+    public $paginate = true;
+
+    /**
+     * @var string
+     */
+    public $controller;
+
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'paginate';
+        return 'collection';
     }
 
     /**
@@ -37,6 +47,9 @@ class Paginate implements AnnotationInterface
      */
     public function getValue()
     {
-        return true;
+        return array(
+            'paginate'   => $this->paginate,
+            'controller' => $this->controller
+        );
     }
 }
