@@ -187,10 +187,11 @@ abstract class AbstractRestfulController extends AbstractController
      */
     protected function validateData($inputFilterClass, array $data)
     {
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
         $controllerBehaviours = $moduleOptions->getControllerBehaviours();
 
-        if (!$controllerBehaviours->shouldAutoValidate()) {
+        if (!$controllerBehaviours->getAutoValidate()) {
             return $data;
         }
 
@@ -232,10 +233,11 @@ abstract class AbstractRestfulController extends AbstractController
      */
     public function hydrateData($hydratorClass, array $data, $object)
     {
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
         $controllerBehaviours = $moduleOptions->getControllerBehaviours();
 
-        if (!$controllerBehaviours->shouldAutoHydrate()) {
+        if (!$controllerBehaviours->getAutoHydrate()) {
             return $data;
         }
 
@@ -288,7 +290,7 @@ abstract class AbstractRestfulController extends AbstractController
     protected function decode($content)
     {
         /** @var $decoderPluginManager \ZfrRest\Serializer\DecoderPluginManager */
-        $decoderPluginManager = $this->serviceLocator('ZfrRest\Serializer\DecoderPluginManager');
+        $decoderPluginManager = $this->serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager');
 
         $header = $this->request->getHeader('Content-Type', null);
         if (null === $header) {

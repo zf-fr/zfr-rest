@@ -96,5 +96,11 @@ return array(
              */
             // 'drivers' => array()
         ),
+
+        /**
+         * This configuration allow to add classes to the ModelPluginManager. This works like any other
+         * plugin manager
+         */
+        'models' => array()
     )
 );

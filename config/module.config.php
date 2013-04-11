@@ -91,7 +91,6 @@ return array(
         'listeners' => array(
             'register_http_exception'         => true,
             'register_resource_serialization' => true,
-            'register_resource_normalization' => true,
             'register_select_model'           => true,
             'register_http_method_override'   => false
         ),
@@ -112,36 +111,9 @@ return array(
             'drivers' => array()
         ),
 
-
         /**
-         * Select which listeners should be registered
+         * Set ModelPluginManager
          */
-        'register_http_exception_listener'       => true,
-        'register_select_model_listener'         => true,
-        'register_http_method_override_listener' => false,
-
-        /**
-         * Decoders
-         */
-        //'decoders' => array(),
-
-        /**
-         * Encoders
-         */
-        //'encoders' => array(),
-
-        /**
-         * Models
-         */
-        'models' => array(
-            'application/vnd-user-v1' => 'Zend\View\Model\JsonModel'
-        ),
-
-        /**
-         * Resource metadata
-         */
-        'resource_metadata' => array(
-            'cache' => 'Doctrine\Common\Cache\ArrayCache'
-        )
+        'models' => array()
     )
 );
