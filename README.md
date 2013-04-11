@@ -218,3 +218,21 @@ the tweets from user 5 that has title = info.
 
 
 ### Thoughts ?
+
+
+
+
+
+NOTES:
+
+Here is the workflow for various HTTP verbs:
+
+## GET:
+
+1. The routes are iterated, and if a REST route is matched, it inserts two params in RouteMatch object: `resource` which is the resource (most often, a model, a Paginator...), and `resource_metadata` which is an object that implements ZfrRest\Resource\Metadata\ResourceMetadataInterface.
+2. If GET method is not implemented in controller, it returns a 405 error (method not allowed) or if resource has not been found, it returns a 404 error.
+3. Otherwise, goes to the GET method implemented by the user. This method is like this : get($resource, $metadata).
+4. The user can returns anything: an array, a ModelInterface, a request or, more useful, the resource (User object...).
+5. If a resource object is returned, the SerializeModelListener is triggered so that the object representation is serialized to an array.
+6. If a normalizer has been set, a NormalizerModelInterface listener is triggered. This listener allows to normalize data. For instance, EmberJS framework expects data to be formatted a given way (underscore_separated...). Only one normalizer can exist currently.
+7. Then, the SelectModelListener is triggered. This listener selects the right ViewModel (JsonModel, ViewModel...) according to the Content-Type header content, and set the data previously computed. If this listener is deactivated, you must make sure to either return Request, ViewModel or array from actions, and not object.
