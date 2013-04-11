@@ -51,7 +51,7 @@ return array(
              * directly instantiate it if not found -, and validate data. If data is incorrect, it will return
              * a 400 HTTP error (Bad Request) with the failed validation messages in it).
              */
-            // 'auto_filtering' => true,
+            // 'auto_validate' => true,
 
             /**
              * If this is set to true (it is by default), then controller will automatically instantiate the hydrator
@@ -59,9 +59,9 @@ return array(
              * it if not found - and hydrate resource object with previously validated data.
              *
              * Please note that for security reason, if you activate this option, you SHOULD NOT deactivate auto
-             * filtering UNLESS you validate data yourself.
+             * validation UNLESS you validate data yourself.
              */
-            // 'auto_hydrating' => true
+            // 'auto_hydrate' => true
         ),
 
         /**
@@ -88,7 +88,7 @@ return array(
              *      )
              *
              * To add a PHP driver:
-             * 
+             *
              *      'application_driver' => array(
              *          'class' => 'ZfrRest\Resource\Metadata\Driver\PhpDriver',
              *          'paths' => array(__DIR__ . '/../src/Application/Entity')

@@ -100,8 +100,8 @@ return array(
          * Which behaviours each controller should automatically do for us?
          */
         'controller_behaviours' => array(
-            'auto_filtering' => true,
-            'auto_hydrating' => true
+            'auto_validate' => true,
+            'auto_hydrate'  => true
         ),
 
         /**
