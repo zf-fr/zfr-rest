@@ -19,8 +19,9 @@
 namespace ZfrRest\Http\Exception;
 
 use Exception;
-use Zend\Http\Exception\ExceptionInterface;
+use Zend\Http\Exception\ExceptionInterface as HttpExceptionInterface;
 use Zend\Http\Response as HttpResponse;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
  * ExceptionInterface
@@ -28,7 +29,7 @@ use Zend\Http\Response as HttpResponse;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-abstract class AbstractHttpException extends Exception implements ExceptionInterface
+abstract class AbstractHttpException extends Exception implements ExceptionInterface, HttpExceptionInterface
 {
     /**
      * @var int

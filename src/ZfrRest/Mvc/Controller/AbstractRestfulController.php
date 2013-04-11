@@ -213,7 +213,7 @@ abstract class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * Parse the body according to the Content-Type value
+     * Parse the body content according to the Content-Type value
      *
      * @return array|null
      */
@@ -244,7 +244,7 @@ abstract class AbstractRestfulController extends AbstractController
         $decoderPluginManager = $this->serviceLocator('ZfrRest\Serializer\DecoderPluginManager');
 
         $header = $this->request->getHeader('Content-Type', null);
-        if ($header === null) {
+        if (null === $header) {
             return null;
         }
 

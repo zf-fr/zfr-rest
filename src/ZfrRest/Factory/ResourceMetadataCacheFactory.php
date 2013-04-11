@@ -16,17 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Factory;
 
-use RuntimeException as BaseRuntimeException;
-use ZfrRest\Exception\ExceptionInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-/**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class RuntimeException extends BaseRuntimeException implements ExceptionInterface
+class ResourceMetadataCacheFactory implements FactoryInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
+        $moduleOptions = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $cacheClass    = $moduleOptions->getResourceMetadata()->getCache();
+
+        if (!$cacheClass) {
+            return null;
+        }
+
+        return new $cacheClass();
+    }
 }

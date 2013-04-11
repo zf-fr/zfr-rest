@@ -26,6 +26,7 @@ return array(
         'factories' => array(
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
             'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\CacheProvider'   => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
             'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
             'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
             'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
@@ -44,6 +45,16 @@ return array(
                             'controller' => 'ZfrRest\Controller\Cache',
                             'action'     => 'clear-cache'
                         )
+                    ),
+                ),
+                'ensure-production-settings' => array(
+                    'type'    => 'Simple',
+                    'options' => array(
+                        'route'    => 'rest ensure production settings',
+                        'defaults' => array(
+                            'controller' => 'ZfrRest\Controller\Other',
+                            'action'     => 'ensure-production-settings'
+                        )
                     )
                 )
             )
@@ -52,7 +63,8 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController'
+            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController',
+            'ZfrRest\Controller\Other' => 'ZfrRest\Controller\OtherController'
         )
     ),
 
@@ -74,6 +86,34 @@ return array(
 
     'zfr_rest' => array(
         /**
+         * Listeners options
+         */
+        'listeners' => array(
+            'register_http_exception'         => true,
+            'register_resource_serialization' => true,
+            'register_resource_normalization' => true,
+            'register_select_model'           => true,
+            'register_http_method_override'   => false
+        ),
+
+        /**
+         * Which behaviours each controller should automatically do for us?
+         */
+        'controller_behaviours' => array(
+            'auto_filtering' => true,
+            'auto_hydrating' => true
+        ),
+
+        /**
+         * Resource metadata options
+         */
+        'resource_metadata' => array(
+            'cache'   => 'Doctrine\Common\Cache\ArrayCache',
+            'drivers' => array()
+        ),
+
+
+        /**
          * Select which listeners should be registered
          */
         'register_http_exception_listener'       => true,
@@ -93,6 +133,15 @@ return array(
         /**
          * Models
          */
-        //'models' => array()
+        'models' => array(
+            'application/vnd-user-v1' => 'Zend\View\Model\JsonModel'
+        ),
+
+        /**
+         * Resource metadata
+         */
+        'resource_metadata' => array(
+            'cache' => 'Doctrine\Common\Cache\ArrayCache'
+        )
     )
 );

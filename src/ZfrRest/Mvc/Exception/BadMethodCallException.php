@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Exception;
 
 use BadMethodCallException as BaseBadMethodCallException;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
  * BadMethodCallException
@@ -26,5 +27,6 @@ use BadMethodCallException as BaseBadMethodCallException;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class BadMethodCallException extends BaseBadMethodCallException
-{}
+class BadMethodCallException extends BaseBadMethodCallException implements ExceptionInterface
+{
+}

@@ -16,17 +16,14 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
-use ZfrRest\Exception\ExceptionInterface;
+namespace ZfrRest\Exception;
 
 /**
- * RuntimeException
+ * Exception interface for every ZfrRest exceptions
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException implements ExceptionInterface
+interface ExceptionInterface
 {
 }
