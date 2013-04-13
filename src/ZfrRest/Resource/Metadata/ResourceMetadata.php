@@ -59,6 +59,11 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public $decoders;
 
     /**
+     * @var array
+     */
+    public $collection;
+
+    /**
      * @var ResourceMetadataInterface[]|array
      */
     public $associations;
@@ -118,6 +123,22 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public function getDecoderNames()
     {
         return $this->decoders;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCollectionControllerName()
+    {
+        return $this->collection['controller'];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function shouldPaginateCollection()
+    {
+        return $this->collection['paginate'];
     }
 
     /**

@@ -16,17 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Mvc\Exception;
 
-use RuntimeException as BaseRuntimeException;
+use BadMethodCallException as BaseBadMethodCallException;
 use ZfrRest\Exception\ExceptionInterface;
 
 /**
- * RuntimeException
+ * BadMethodCallException
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException implements ExceptionInterface
+class BadMethodCallException extends BaseBadMethodCallException implements ExceptionInterface
 {
 }

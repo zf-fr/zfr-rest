@@ -19,6 +19,7 @@
 namespace ZfrRest\Serializer\Exception;
 
 use RuntimeException as BaseRuntimeException;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
  * RuntimeException
@@ -26,6 +27,6 @@ use RuntimeException as BaseRuntimeException;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException
+class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
 }

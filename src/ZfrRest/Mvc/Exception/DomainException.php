@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Exception;
 
 use DomainException as BaseDomainException;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
  * Domain Exception
@@ -26,5 +27,6 @@ use DomainException as BaseDomainException;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class DomainException extends BaseDomainException
-{}
+class DomainException extends BaseDomainException implements ExceptionInterface
+{
+}

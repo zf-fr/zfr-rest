@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Router\Http;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -39,30 +40,34 @@ use ZfrRest\Resource\ResourceInterface;
 class ResourceGraphRoute implements RouteInterface
 {
     /**
-     * @var \Metadata\MetadataFactory
+     * @var MetadataFactory
      */
     protected $metadataFactory;
 
     /**
-     * @var \ZfrRest\Resource\ResourceInterface|mixed
+     * @var ResourceInterface|mixed
      */
     protected $resource;
 
     /**
+     * Entry point route
+     *
      * @var string
      */
     protected $route;
 
     /**
+     * Optional GET parameters that are extracted from the request
+     *
      * @var array
      */
     protected $query;
 
 
     /**
-     * @param \Metadata\MetadataFactory $metadataFactory
-     * @param mixed                     $resource
-     * @param string                    $route
+     * @param MetadataFactory $metadataFactory
+     * @param mixed           $resource
+     * @param string          $route
      */
     public function __construct(MetadataFactory $metadataFactory, $resource, $route)
     {
@@ -76,7 +81,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        // TODO: Implement assemble() method.
+        // TODO: Implement getAssembledParams() method.
     }
 
     /**
@@ -92,7 +97,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public static function factory($options = array())
     {
-        throw new \BadMethodCallException('Not supported');
+        throw new Exception\BadMethodCallException('Not supported');
     }
 
     /**
@@ -108,7 +113,7 @@ class ResourceGraphRoute implements RouteInterface
         $uri  = $request->getUri();
         $path = trim($uri->getPath(), '/');
 
-        // Save the query part (GET parameters) to optionally filter the result
+        // Save the query part (GET parameters) to optionally filter the result at the end
         $this->query = $uri->getQueryAsArray();
 
         // If the route is not even contained within the URI, this means we can return early...
@@ -116,7 +121,7 @@ class ResourceGraphRoute implements RouteInterface
             return null;
         }
 
-        // ... and we can now do initializing the resource
+        // ...and we can now initialize the resource
         $this->initializeResource();
 
         if ($path === $this->route) {
@@ -131,10 +136,10 @@ class ResourceGraphRoute implements RouteInterface
     }
 
     /**
-     * @param  \ZfrRest\Resource\ResourceInterface $resource
-     * @param  string                              $path
-     * @throws \ZfrRest\Mvc\Exception\RuntimeException
-     * @return null|\Zend\Mvc\Router\Http\RouteMatch
+     * @param  ResourceInterface $resource
+     * @param  string            $path
+     * @throws Exception\RuntimeException
+     * @return RouteMatch|null
      */
     protected function matchIdentifier(ResourceInterface $resource, $path)
     {
@@ -157,11 +162,15 @@ class ResourceGraphRoute implements RouteInterface
             $resource   = $resource->matching(new Criteria($expression))->first();
         }
 
+        if (null === $resource) {
+            return $this->buildErrorRouteMatch($this->resource, $path);
+        }
+
         // We matched an identifier, so the metadata stay the same (but we moved from a Collection to
-        // a single item
+        // a single item)
         $this->resource = new Resource($resource, $this->resource->getMetadata());
 
-        // We've processed the whole path
+        // If empty, then we have processed the whole path
         if (empty($chunks)) {
             return $this->buildRouteMatch($this->resource, $path);
         }
@@ -170,9 +179,9 @@ class ResourceGraphRoute implements RouteInterface
     }
 
     /**
-     * @param  \ZfrRest\Resource\ResourceInterface $resource
-     * @param  string                              $path
-     * @return null|\Zend\Mvc\Router\Http\RouteMatch
+     * @param  ResourceInterface $resource
+     * @param  string            $path
+     * @return RouteMatch|null
      */
     protected function matchAssociation(ResourceInterface $resource, $path)
     {
@@ -191,15 +200,12 @@ class ResourceGraphRoute implements RouteInterface
         $reflProperty = $refl->getProperty($associationName);
         $reflProperty->setAccessible(true);
 
-        // @TODO: add a property to the annotation ExposeAssociation like @ExposeAssociation(paginate="true") that
-        // will automatically wrap the collection in Paginator
-
         $resource = $reflProperty->getValue($resource->getResource());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
         $this->resource   = new Resource($resource, $resourceMetadata);
 
-        // We've processed the whole path
+        // If empty, we have processed the whole path
         if (empty($chunks)) {
             return $this->buildRouteMatch($this->resource, $path);
         }
@@ -212,7 +218,7 @@ class ResourceGraphRoute implements RouteInterface
      * optional filtering by query
      *
      * @param  ResourceInterface $resource
-     * @param  $path
+     * @param  string            $path
      * @return RouteMatch
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
@@ -230,30 +236,59 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            // Paginate or not
-            $resource = new Paginator(new SelectableAdapter($resource, $criteria));
+            if ($resourceMetadata->shouldPaginateCollection()) {
+                $resource = new Paginator(new SelectableAdapter($resource, $criteria));
+            } else {
+                $resource = $resource->matching($criteria);
+            }
+        }
 
-            //$resource = $resource->matching($criteria);
+        // If returned resource is a Collection, then we use the controller specified in Collection mapping
+        if ($resource instanceof Paginator || $resource instanceof Collection) {
+            $controllerName = $resourceMetadata->getCollectionControllerName();
+        } else {
+            $controllerName = $resourceMetadata->getControllerName();
         }
 
         return new RouteMatch(array(
             'resource'   => $resource,
             'metadata'   => $resourceMetadata,
-            'controller' => $resourceMetadata->getControllerName()
+            'controller' => $controllerName
         ), strlen($path));
     }
 
     /**
-     * Initializes the resource to create an object implementing the ResourceInterface interface. A resource can
+     * Build an error route match. This can happen if, for instance, no object was found after matching an
+     * identifier. However, we still want to dispatch to the controller so that we can do further error handling
+     *
+     * @param  ResourceInterface $resource
+     * @param  string            $path
+     * @return RouteMatch
+     */
+    protected function buildErrorRouteMatch(ResourceInterface $resource, $path)
+    {
+        return new RouteMatch(array(
+            'controller' => $resource->getMetadata()->getControllerName()
+        ), strlen($path));
+    }
+
+    /**
+     * Initialize the resource to create an object implementing the ResourceInterface interface. A resource can
      * be anything: an entity, a collection, a Selectable... However, any ResourceInterface object contains both
      * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
      *
      * @return void
      */
-    protected function initializeResource()
+    private function initializeResource()
     {
-        $resource = $this->resource;
+        // Don't initialize twice
+        if ($this->resource instanceof ResourceInterface) {
+            return;
+        }
+
+        /** @var $metadata \Metadata\ClassHierarchyMetadata */
         $metadata = null;
+        $resource = $this->resource;
 
         if ($resource instanceof ObjectRepository) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource->getClassName());
