@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Controller;
 
+use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 
 /**
@@ -35,17 +36,17 @@ class CacheController extends AbstractActionController
      */
     public function clearCacheAction()
     {
-        /** @var $options \ZfrRest\Options\ModuleOptions */
-        $options                 = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
-        $resourceMetadataOptions = $options->getResourceMetadata();
-
-        $cacheClass = $resourceMetadataOptions->getCache();
-        if ($cacheClass !== null) {
+        try {
             /** @var $cache \Doctrine\Common\Cache\CacheProvider */
-            $cache = $this->serviceLocator->get($cacheClass);
-            $cache->flushAll();
+            $cache = $this->serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
+        } catch(Exception $e) {
+            return "\nNo cache to clear. Are you sure you set ZfrRest cache correctly?\n\n";
         }
 
-        return "\nThe cache were successfully cleared\n\n";
+        if($cache->flushAll()) {
+            return "\nThe cache were successfully cleared\n\n";
+        }
+
+        return "\nImpossible to clear the cache\n\n";
     }
 }

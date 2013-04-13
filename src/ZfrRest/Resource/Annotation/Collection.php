@@ -16,17 +16,40 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
-
-use RuntimeException as BaseRuntimeException;
-use ZfrRest\Exception\ExceptionInterface;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * RuntimeException
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-class RuntimeException extends BaseRuntimeException implements ExceptionInterface
+final class Collection implements AnnotationInterface
 {
+    /**
+     * @var bool
+     */
+    public $paginate = true;
+
+    /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'collection';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            'paginate'   => $this->paginate,
+            'controller' => $this->controller
+        );
+    }
 }

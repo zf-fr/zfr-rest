@@ -16,27 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Factory;
 
-/**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
- */
-class Paginate implements AnnotationInterface
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+class ResourceMetadataCacheFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return 'paginate';
-    }
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
+        $moduleOptions = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $cacheClass    = $moduleOptions->getResourceMetadata()->getCache();
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return true;
+        if (!$cacheClass) {
+            return null;
+        }
+
+        return new $cacheClass();
     }
 }

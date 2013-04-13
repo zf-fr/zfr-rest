@@ -68,9 +68,10 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         $metadataFactory = new MetadataFactory(new DriverChain($drivers));
 
         // Set the cache if defined
-        $cache = $metadataOptions->getCache();
-        if ($cache !== null) {
-            $cacheAdapter = new DoctrineCacheAdapter('resource_metadata_', new $cache);
+        if ($metadataOptions->getCache()) {
+            $cache = $serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
+
+            $cacheAdapter = new DoctrineCacheAdapter('resource_metadata_', $cache);
             $metadataFactory->setCache($cacheAdapter);
         }
 

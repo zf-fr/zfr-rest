@@ -16,37 +16,49 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc;
+namespace ZfrRest\Mvc\View\Http;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
+use ZfrRest\Serializer\DecoderPluginManager;
 
 /**
- * This listener can be used for some old browsers or proxies that only support POST or GET method. To
- * bypass this limitation, a common method is to add a specific header called "X-HTTP-Method-Override" whose
- * value is the Http method to use.
- *
- * This can also be handy for forms, that only support GET and POST.
+ * SerializeModelListener. This listener is used to convert the resource to a given format
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class HttpMethodOverrideListener implements ListenerAggregateInterface
+class DecodeModelListener implements ListenerAggregateInterface
 {
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
      */
     protected $listeners = array();
 
+    /**
+     * @var DecoderPluginManager
+     */
+    protected $decoderPluginManager;
+
+
+    /**
+     * Constructor
+     *
+     * @param DecoderPluginManager $decoderPluginManager
+     */
+    public function __construct(DecoderPluginManager $decoderPluginManager)
+    {
+        $this->decoderPluginManager = $decoderPluginManager;
+    }
 
     /**
      * {@inheritDoc}
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'overrideHttpMethod'), 1000);
+        $sharedManager = $events->getSharedManager();
+        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'decodeModel'), -40);
     }
 
     /**
@@ -62,24 +74,11 @@ class HttpMethodOverrideListener implements ListenerAggregateInterface
     }
 
     /**
-     * Check if the X-HTTP-Method-Override exist in the request, and if so, change the method
-     *
      * @param  MvcEvent $e
      * @return void
      */
-    public function overrideHttpMethod(MvcEvent $e)
+    public function decodeModel(MvcEvent $e)
     {
-        $request = $e->getRequest();
 
-        if (!$request instanceof HttpRequest) {
-            return;
-        }
-
-        $header = $request->getHeader('X-HTTP-Method-Override', null);
-
-        if ($header !== null) {
-            $method = $header->getFieldValue();
-            $request->setMethod($method);
-        }
     }
 }

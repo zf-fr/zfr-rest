@@ -26,6 +26,7 @@ return array(
         'factories' => array(
             'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
             'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\CacheProvider'   => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
             'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
             'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
             'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
@@ -44,6 +45,16 @@ return array(
                             'controller' => 'ZfrRest\Controller\Cache',
                             'action'     => 'clear-cache'
                         )
+                    ),
+                ),
+                'ensure-production-settings' => array(
+                    'type'    => 'Simple',
+                    'options' => array(
+                        'route'    => 'rest ensure production settings',
+                        'defaults' => array(
+                            'controller' => 'ZfrRest\Controller\Other',
+                            'action'     => 'ensure-production-settings'
+                        )
                     )
                 )
             )
@@ -52,7 +63,8 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController'
+            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController',
+            'ZfrRest\Controller\Other' => 'ZfrRest\Controller\OtherController'
         )
     ),
 
@@ -74,25 +86,34 @@ return array(
 
     'zfr_rest' => array(
         /**
-         * Select which listeners should be registered
+         * Listeners options
          */
-        'register_http_exception_listener'       => true,
-        'register_select_model_listener'         => true,
-        'register_http_method_override_listener' => false,
+        'listeners' => array(
+            'register_http_exception'         => true,
+            'register_resource_serialization' => true,
+            'register_select_model'           => true,
+            'register_http_method_override'   => false
+        ),
 
         /**
-         * Decoders
+         * Which behaviours each controller should automatically do for us?
          */
-        //'decoders' => array(),
+        'controller_behaviours' => array(
+            'auto_validate' => true,
+            'auto_hydrate'  => true
+        ),
 
         /**
-         * Encoders
+         * Resource metadata options
          */
-        //'encoders' => array(),
+        'resource_metadata' => array(
+            'cache'   => 'Doctrine\Common\Cache\ArrayCache',
+            'drivers' => array()
+        ),
 
         /**
-         * Models
+         * Set ModelPluginManager
          */
-        //'models' => array()
+        'models' => array()
     )
 );

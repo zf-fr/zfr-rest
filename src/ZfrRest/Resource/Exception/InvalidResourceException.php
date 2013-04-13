@@ -19,6 +19,7 @@
 namespace ZfrRest\Resource\Exception;
 
 use InvalidArgumentException;
+use ZfrRest\Exception\ExceptionInterface;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
@@ -26,7 +27,7 @@ use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-class InvalidResourceException extends InvalidArgumentException
+class InvalidResourceException extends InvalidArgumentException implements ExceptionInterface
 {
     /**
      * @param mixed                                                 $resource
