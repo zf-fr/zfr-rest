@@ -16,17 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory\Exception;
+namespace ZfrRest\Factory;
 
-use RuntimeException as BaseRuntimeException;
-use ZfrRest\Exception\ExceptionInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\View\Http\DecodeModelListener;
 
 /**
- * RuntimeException
+ * DecodeModelListenerFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class RuntimeException extends BaseRuntimeException implements ExceptionInterface
+class DecodeModelListenerFactory implements FactoryInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new DecodeModelListener($serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager'));
+    }
 }

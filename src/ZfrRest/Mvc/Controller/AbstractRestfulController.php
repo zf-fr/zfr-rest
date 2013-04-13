@@ -19,13 +19,16 @@
 namespace ZfrRest\Mvc\Controller;
 
 use Zend\Http\Request as HttpRequest;
+use Zend\InputFilter\InputFilter;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
 use Zend\Paginator\Paginator;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
+use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
@@ -123,48 +126,30 @@ abstract class AbstractRestfulController extends AbstractController
      * As you can see, the post method have three arguments: the resource, which is the collection in which the
      * object is inserted, the object itself, and metadata
      *
+     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
+     * do nothing
+     *
      * @param  mixed                     $resource
      * @param  ResourceMetadataInterface $metadata
-     * @throws \ZfrRest\Http\Exception\Client\BadRequestException if validation fails
+     * @throws Client\BadRequestException if validation fails
      * @return mixed
      */
     protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
     {
-        $inputFilterName = $metadata->getInputFilterName();
+        $data = $this->validateData($this->decodeBody(), $metadata->getInputFilterName());
+        $data = $this->hydrateData($metadata->getHydratorName(), $data, new $metadata->getClassName());
 
-        // We try to get the input filter from service locator first so that user can specify dependencies
-        if ($this->serviceLocator->has($inputFilterName)) {
-            $inputFilter = $this->serviceLocator->get($inputFilterName);
-        } else {
-            $inputFilter = new $inputFilterName;
-        }
-
-        /** @var $inputFilter \Zend\InputFilter\InputFilter */
-        $inputFilter->setData($this->decodePost());
-        if (!$inputFilter->isValid()) {
-            throw new Client\BadRequestException($inputFilter->getMessages());
-        }
-
-        $hydratorName = $metadata->getHydratorName();
-
-        // Same for hydrator, we first try to get it from service locator
-        if ($this->serviceLocator->has($hydratorName)) {
-            $hydrator = $this->serviceLocator->get($hydratorName);
-        } else {
-            $hydrator = new $hydratorName;
-        }
-
-        /** @var $hydrator \Zend\Stdlib\Hydrator\HydratorInterface */
-        $object = $hydrator->hydrate($inputFilter->getValues(), new $metadata->getClassName());
-
-        $this->post($resource, $object, $metadata);
+        $this->post($resource, $data, $metadata);
 
         // Set the Location header with the URL to the newly created resource
-        $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($object));
-        $url             = trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
+        if (is_object($data)) {
+            $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($data));
+            $url             = trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
+
+            $this->response->getHeaders()->addHeaderLine('Location', $url);
+        }
 
         $this->response->setStatusCode(201);
-        $this->response->getHeaders()->addHeaderLine('Location', $url);
 
         return $this->response;
     }
@@ -175,45 +160,109 @@ abstract class AbstractRestfulController extends AbstractController
      *      - we hydrate valid data to update existing resource
      *      - we pass the object to the put method of the controller
      *
+     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
+     * do nothing
+     *
      * @param mixed                     $resource
      * @param ResourceMetadataInterface $metadata
-     * @throws \ZfrRest\Http\Exception\Client\BadRequestException if validation fails
+     * @throws Client\BadRequestException if validation fails
      * @return mixed
      */
     protected function handlePutMethod($resource, ResourceMetadataInterface $metadata)
     {
-        $inputFilterName = $metadata->getInputFilterName();
+        $data = $this->validateData($this->decodeBody(), $metadata->getInputFilterName());
+        $data = $this->hydrateData($metadata->getHydratorName(), $data, $resource);
 
-        // We try to get the input filter from service locator first so that user can specify dependencies
-        if ($this->serviceLocator->has($inputFilterName)) {
-            $inputFilter = $this->serviceLocator->get($inputFilterName);
-        } else {
-            $inputFilter = new $inputFilterName;
+        return $this->put($data, $metadata);
+    }
+
+    /**
+     * Automatically create an InputFilter object, and validate data against it.
+     *
+     * @param  string $inputFilterClass
+     * @param  array  $data
+     * @throws RuntimeException if no input filter could be created
+     * @throws Client\BadRequestException if validation failed
+     * @return array
+     */
+    protected function validateData($inputFilterClass, array $data)
+    {
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
+        $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $controllerBehaviours = $moduleOptions->getControllerBehaviours();
+
+        if (!$controllerBehaviours->getAutoValidate()) {
+            return $data;
         }
 
-        /** @var $inputFilter \Zend\InputFilter\InputFilter */
-        $inputFilter->setData($this->decodeBody());
+        /** @var $inputFilter InputFilter|null */
+        $inputFilter = null;
+
+        if ($this->serviceLocator->has($inputFilterClass)) {
+            $inputFilter = $this->serviceLocator->get($inputFilterClass);
+        } else {
+            $inputFilter = new $inputFilterClass;
+        }
+
+        if (!$inputFilter || !($inputFilter instanceof InputFilter)) {
+            throw new RuntimeException(sprintf(
+                'ZfrRest was configured to automatically validate data, but input filter could not be created or
+                 is not a valid Zend\InputFilter\InputFilter object, %s given',
+                is_object($inputFilter) ? get_class($inputFilter) : $inputFilter
+            ));
+        }
+
+        $inputFilter->setData($data);
         if (!$inputFilter->isValid()) {
             throw new Client\BadRequestException($inputFilter->getMessages());
         }
 
-        $hydratorName = $metadata->getHydratorName();
-
-        // Same for hydrator, we first try to get it from service locator
-        if ($this->serviceLocator->has($hydratorName)) {
-            $hydrator = $this->serviceLocator->get($hydratorName);
-        } else {
-            $hydrator = new $hydratorName;
-        }
-
-        /** @var $hydrator \Zend\Stdlib\Hydrator\HydratorInterface */
-        $object = $hydrator->hydrate($inputFilter->getValues(), $resource);
-
-        return $this->put($object, $metadata);
+        // Return validated and filtered values
+        return $inputFilter->getValues();
     }
 
     /**
-     * Parse the body according to the Content-Type value
+     * Automatically create a Hydrator object, and hydrate object. If ZfrRest was configured to not hydrate
+     * automatically, then this method only returns untouched data as array
+     *
+     * @param  string $hydratorClass
+     * @param  array  $data
+     * @param  object $object
+     * @throws RuntimeException if no hydrator could be created
+     * @return array|object
+     */
+    public function hydrateData($hydratorClass, array $data, $object)
+    {
+        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
+        $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $controllerBehaviours = $moduleOptions->getControllerBehaviours();
+
+        if (!$controllerBehaviours->getAutoHydrate()) {
+            return $data;
+        }
+
+        /** @var $hydrator HydratorInterface|null */
+        $hydrator = null;
+
+        if ($this->serviceLocator->has($hydratorClass)) {
+            $hydrator = $this->serviceLocator->get($hydratorClass);
+        } else {
+            $hydrator = new $hydratorClass;
+        }
+
+        if (!$hydrator || !($hydrator instanceof HydratorInterface)) {
+            throw new RuntimeException(sprintf(
+                'ZfrRest was configured to automatically hydrate data, but hydrator could not be created or
+                 is not a valid Zend\Stdlib\HydratorInteface object, %s given',
+                is_object($hydrator) ? get_class($hydrator) : $hydrator
+            ));
+        }
+
+        return $hydrator->hydrate($data, $object);
+    }
+
+    /**
+     * Parse the body content according to the Content-Type value
      *
      * @return array|null
      */
@@ -241,10 +290,10 @@ abstract class AbstractRestfulController extends AbstractController
     protected function decode($content)
     {
         /** @var $decoderPluginManager \ZfrRest\Serializer\DecoderPluginManager */
-        $decoderPluginManager = $this->serviceLocator('ZfrRest\Serializer\DecoderPluginManager');
+        $decoderPluginManager = $this->serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager');
 
         $header = $this->request->getHeader('Content-Type', null);
-        if ($header === null) {
+        if (null === $header) {
             return null;
         }
 

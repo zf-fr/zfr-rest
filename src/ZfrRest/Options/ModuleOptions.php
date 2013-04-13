@@ -29,100 +29,72 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * @var bool
+     * {@inheritDoc}
      */
     protected $__strictMode__ = false;
 
     /**
-     * If this listener is registered (true by default), it will listen on MvcEvent::EVENT_DISPATCH_ERROR,
-     * and allow to automatically set Response code and message if a ZfrRest\Http exception is thrown
+     * Listeners options (allow to activate/deactive listeners)
      *
-     * @var bool
+     * @var ListenersOptions
      */
-    protected $registerHttpExceptionListener;
+    protected $listenersOptions;
 
     /**
-     * If this listener is registered (true by default), it will listen on both MvcEvent::EVENT_DISPATCH and
-     * MvcEvent::EVENT_DISPATCH_ERROR to select the appropriate ModelInterface instance according to the
-     * Accept-Header value
+     * Controller behaviours options
      *
-     * @var bool
+     * @var ControllerBehavioursOptions
      */
-    protected $registerSelectModelListener;
+    protected $controllerBehavioursOptions;
 
     /**
-     * If this listener is registered (false by default), it will listen on MvcEvent::EVENT_DISPATCH and
-     * check the existence of a specific header that allow to override Http method
-     *
-     * @var bool
-     */
-    protected $registerHttpMethodOverrideListener;
-
-    /**
-     * The options for the resource metadata
+     * Options for resource metadata
      *
      * @var ResourceMetadataOptions
      */
-    protected $resourceMetadata;
-
+    protected $resourceMetadataOptions;
 
     /**
-     * @param  boolean $registerHttpExceptionListener
+     * @param  array $options
      * @return void
      */
-    public function setRegisterHttpExceptionListener($registerHttpExceptionListener)
+    public function setListeners(array $options)
     {
-        $this->registerHttpExceptionListener = (bool) $registerHttpExceptionListener;
+        $this->listenersOptions = new ListenersOptions($options);
     }
 
     /**
-     * @return boolean
+     * @return ListenersOptions
      */
-    public function getRegisterHttpExceptionListener()
+    public function getListeners()
     {
-        return $this->registerHttpExceptionListener;
+        return $this->listenersOptions;
     }
 
     /**
-     * @param  boolean $registerHttpMethodOverrideListener
+     * @param  array $options
      * @return void
      */
-    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
+    public function setControllerBehaviours(array $options)
     {
-        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
+        $this->controllerBehavioursOptions = new ControllerBehavioursOptions($options);
     }
 
     /**
-     * @return boolean
+     * @return ControllerBehavioursOptions
      */
-    public function getRegisterHttpMethodOverrideListener()
+    public function getControllerBehaviours()
     {
-        return $this->registerHttpMethodOverrideListener;
+        return $this->controllerBehavioursOptions;
     }
 
     /**
-     * @param  boolean $registerSelectModelListener
+     * @param  array $options
      * @return void
-     */
-    public function setRegisterSelectModelListener($registerSelectModelListener)
-    {
-        $this->registerSelectModelListener = (bool) $registerSelectModelListener;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getRegisterSelectModelListener()
-    {
-        return $this->registerSelectModelListener;
-    }
-
-    /**
-     * @param array $options
      */
     public function setResourceMetadata(array $options)
     {
-        $this->resourceMetadata = new ResourceMetadataOptions($options);
+        $this->resourceMetadataOptions = new ResourceMetadataOptions($options);
     }
 
     /**
@@ -130,6 +102,6 @@ class ModuleOptions extends AbstractOptions
      */
     public function getResourceMetadata()
     {
-        return $this->resourceMetadata;
+        return $this->resourceMetadataOptions;
     }
 }

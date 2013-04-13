@@ -46,17 +46,18 @@ class Module implements
         $eventManager    = $application->getEventManager();
 
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
-        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+        $moduleOptions    = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+        $listenersOptions = $moduleOptions->getListeners();
 
-        if ($moduleOptions->getRegisterHttpExceptionListener()) {
+        if ($listenersOptions->getRegisterHttpException()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
         }
 
-        if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
+        if ($listenersOptions->getRegisterHttpMethodOverride()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
         }
 
-        if ($moduleOptions->getRegisterSelectModelListener()) {
+        if ($listenersOptions->getRegisterSelectModel()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
         }
     }
@@ -74,38 +75,18 @@ class Module implements
      */
     public function getConsoleBanner(AdapterInterface $console)
     {
-        $banner = "--------------------------------------------------------------------------------\n" .
-                  "ZfrRest - REST Zend Framework 2 module\n" .
-                  "--------------------------------------------------------------------------------\n";
-
-        return $banner;
+        return 'ZfrRest ' . Version::VERSION;
     }
 
     /**
-     * Returns an array or a string containing usage information for this module's Console commands.
-     * The method is called with active Zend\Console\Adapter\AdapterInterface that can be used to directly access
-     * Console and send output.
-     *
-     * If the result is a string it will be shown directly in the console window.
-     * If the result is an array, its contents will be formatted to console window width. The array must
-     * have the following format:
-     *
-     *     return array(
-     *                'Usage information line that should be shown as-is',
-     *                'Another line of usage info',
-     *
-     *                '--parameter'        =>   'A short description of that parameter',
-     *                '-another-parameter' =>   'A short description of another parameter',
-     *                ...
-     *            )
-     *
-     * @param AdapterInterface $console
-     * @return array|string|null
+     * {@inheritDoc}
      */
     public function getConsoleUsage(AdapterInterface $console)
     {
         return array(
-            'rest clear metadata cache' => 'Clear all resource metadata cache'
+            'Usage:',
+            'rest clear metadata cache'     => 'Clear all resource metadata cache',
+            'rest ensure production settings' => 'Verify that ZfrRest is configured for a production environment'
         );
     }
 }

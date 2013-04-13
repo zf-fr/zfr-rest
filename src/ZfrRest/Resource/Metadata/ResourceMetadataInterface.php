@@ -75,6 +75,20 @@ interface ResourceMetadataInterface
     public function getDecoderNames();
 
     /**
+     * Get the controller's FQCN when the resource is a collection
+     *
+     * @return string|null
+     */
+    public function getCollectionControllerName();
+
+    /**
+     * If the resource is a collection, should we paginate it ?
+     *
+     * @return bool
+     */
+    public function shouldPaginateCollection();
+
+    /**
      * Get the metadata to a given association
      *
      * @param  string $association
