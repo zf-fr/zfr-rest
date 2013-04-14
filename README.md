@@ -20,6 +20,7 @@ the metadata contains hydrators, encoders and decoders, but I'm not satisfied wi
 we should be able to swap libraries with minimal amount of work, typically by changing the NamingStrategy).
 * Tests, tests, tests once we are happy with the code base !
 
+EDIT: may be interesting to see if we cannot do anything with this concept: http://nicksda.apotomo.de/2011/12/ruby-on-rest-introducing-the-representer-pattern/
 
 ## Quick Start
 
