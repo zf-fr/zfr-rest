@@ -81,7 +81,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        // TODO: Implement getAssembledParams() method.
+        var_dump($this->resource);
     }
 
     /**
