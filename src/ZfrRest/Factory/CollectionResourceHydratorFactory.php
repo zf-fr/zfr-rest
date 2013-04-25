@@ -16,67 +16,24 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Factory;
 
-use Metadata\ClassMetadata;
+use Zend\EventManager\EventManager;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator;
 
 /**
- * ResourceMetadata
- *
- * @license MIT
+ * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class CollectionResourceHydratorFactory implements FactoryInterface
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator';
-
-    /**
-     * @var bool
-     */
-    public $paginate = true;
-
-    /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return $this->controller;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getInputFilterName()
-    {
-        return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->hydrator;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function shouldPaginate()
-    {
-        return $this->paginate;
+        return new CollectionResourceHydrator(new EventManager());
     }
 }

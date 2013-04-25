@@ -69,6 +69,12 @@ return array(
         )
     ),
 
+    'hydrators' => array(
+        'factories' => array(
+            'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator' => 'ZfrRest\Factory\CollectionResourceHydratorFactory'
+        )
+    ),
+
     'route_manager' => array(
         'factories' => array(
             'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'

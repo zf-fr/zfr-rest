@@ -16,67 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Stdlib\Hydrator;
 
-use Metadata\ClassMetadata;
+use Zend\Paginator\Paginator;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 
-/**
- * ResourceMetadata
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class PaginatorHydrator implements HydratorInterface
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator';
-
-    /**
-     * @var bool
-     */
-    public $paginate = true;
-
-    /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function extract($object)
     {
-        return $this->controller;
+        if (!$object instanceof Paginator) {
+            return array();
+        }
+
+        return array(
+            'current_page' => $object->getCurrentPageNumber(),
+            'total_count'  => $object->getTotalItemCount()
+        );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function hydrate(array $data, $object)
     {
-        return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->hydrator;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function shouldPaginate()
-    {
-        return $this->paginate;
+        // TODO: Implement hydrate() method.
     }
 }

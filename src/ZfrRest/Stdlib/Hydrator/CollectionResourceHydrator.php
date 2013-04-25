@@ -16,7 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-class AbstractHydrator
-{
+namespace ZfrRest\Stdlib\Hydrator;
 
+use Zend\EventManager\EventManagerInterface;
+use Zend\Stdlib\Hydrator\AggregateHydrator;
+
+/**
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class CollectionResourceHydrator extends AggregateHydrator
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(EventManagerInterface $eventManager)
+    {
+        parent::__construct($eventManager);
+
+        // TODO: fetch from hydrator plugin manager
+        $this->attach(new PaginatorHydrator());
+    }
 }
