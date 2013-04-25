@@ -6,6 +6,10 @@ This documentation is up-to-date with current master branch (as of 13rd april 20
 > Please note that this module is not ready for use. The API will change until we are all happy with it. I didn't
 write tests yet, but I will.
 
+## TODO:
+
+- Update the PHP file driver to latest metadata mapping
+
 ## How you can help ?
 
 I really need help with this module, as I lack some architecture skills. Here are some things that you can do:

@@ -242,10 +242,12 @@ class ResourceGraphRoute implements RouteInterface
             } else {
                 $data = $data->matching($criteria);
             }
+
+            $resource = new Resource($data, $resourceMetadata);
         }
 
         // If returned $data is a Traversable, then we use the controller specified in Collection mapping
-        if ($data instanceof Traversable) {
+        if ($resource->isCollection()) {
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $resourceMetadata->getControllerName();
