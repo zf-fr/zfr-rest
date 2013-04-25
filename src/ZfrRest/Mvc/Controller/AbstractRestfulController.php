@@ -123,8 +123,8 @@ abstract class AbstractRestfulController extends AbstractController
      *      - we hydrate valid data
      *      - we pass the object to the post method of the controller
      *
-     * As you can see, the post method have three arguments: the resource, which is the collection in which the
-     * object is inserted, the object itself, and metadata
+     * As you can see, the post method have three arguments: the object that is inserted, the resource metadata and
+     * the resource itself (which is the Collection where the object is added)
      *
      * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
      * do nothing
@@ -139,10 +139,11 @@ abstract class AbstractRestfulController extends AbstractController
         $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, new $metadata->getClassName());
 
-        $this->post($resource, $data, $metadata);
+        $this->post($data, $metadata, $resource);
 
         // Set the Location header with the URL to the newly created resource
         if (is_object($data)) {
+            // TODO: use Router for that
             $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($data));
             $url             = trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
 
