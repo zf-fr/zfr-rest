@@ -47,13 +47,12 @@ class ListenersOptions extends AbstractOptions
 
     /**
      * If this listener is registered, it allows you to return an object (an entity, for instance) from a
-     * controller's action, and automatically serialize its content to an array. This is especially useful if
-     * you specify a serializer into resource metadata. Please note that if you deactivate this listener, you
-     * MUST NOT return a resource (entity...) from your controller, but an array
+     * controller's action, and automatically create payload from its content. Please note that if you deactivate
+     * this listener, you MUST NOT return a resource (entity...) from your controller, but an array or Model
      *
      * @var bool
      */
-    protected $registerResourceSerialization;
+    protected $registerCreateResourcePayload;
 
     /**
      * If this listener is registered (it is by default), please note that if you deactivate this listener,
@@ -99,20 +98,20 @@ class ListenersOptions extends AbstractOptions
     }
 
     /**
-     * @param  bool $registerResourceSerialization
+     * @param  bool $registerCreateResourcePayload
      * @return void
      */
-    public function setRegisterResourceSerialization($registerResourceSerialization)
+    public function setRegisterCreateResourcePayload($registerCreateResourcePayload)
     {
-        $this->registerResourceSerialization = $registerResourceSerialization;
+        $this->registerCreateResourcePayload = $registerCreateResourcePayload;
     }
 
     /**
      * @return bool
      */
-    public function getRegisterResourceSerialization()
+    public function getRegisterCreateResourcePayload()
     {
-        return $this->registerResourceSerialization;
+        return $this->registerCreateResourcePayload;
     }
 
     /**

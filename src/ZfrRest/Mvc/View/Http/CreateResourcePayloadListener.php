@@ -21,36 +21,22 @@ namespace ZfrRest\Mvc\View\Http;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\ResponseInterface;
+use Zend\View\Model\ModelInterface;
 use ZfrRest\Serializer\DecoderPluginManager;
 
 /**
- * SerializeModelListener. This listener is used to convert the resource to a given format
+ * CreateResourcePayloadListener. This listener is used to extract data from a resource
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class DecodeModelListener implements ListenerAggregateInterface
+class CreateResourcePayloadListener implements ListenerAggregateInterface
 {
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
      */
     protected $listeners = array();
-
-    /**
-     * @var DecoderPluginManager
-     */
-    protected $decoderPluginManager;
-
-
-    /**
-     * Constructor
-     *
-     * @param DecoderPluginManager $decoderPluginManager
-     */
-    public function __construct(DecoderPluginManager $decoderPluginManager)
-    {
-        $this->decoderPluginManager = $decoderPluginManager;
-    }
 
     /**
      * {@inheritDoc}
@@ -74,11 +60,26 @@ class DecodeModelListener implements ListenerAggregateInterface
     }
 
     /**
+     * The logic is as follow: extract the resource metadata, use the bound hydrator to extract data, and set the
+     * data as new result
+     *
      * @param  MvcEvent $e
      * @return void
      */
     public function decodeModel(MvcEvent $e)
     {
+        $result = $e->getResult();
+        if ($result instanceof ModelInterface || $result instanceof ResponseInterface) {
+            return;
+        }
 
+        /** @var \ZfrRest\Resource\ResourceInterface $resource */
+        $resource         = $e->getRouteMatch()->getParam('resource');
+        $resourceMetadata = $resource->getMetadata();
+
+        $hydratorName = $resourceMetadata->getHydratorName();
+        $hydrator = new $hydratorName();
+
+        $e->setResult($hydrator->extract($resource->getData()));
     }
 }

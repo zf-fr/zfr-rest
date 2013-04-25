@@ -34,12 +34,12 @@ interface ResourceInterface
     public function getMetadata();
 
     /**
-     * Retrieves the resource, which can be either an instance of the provided metadata name or
+     * Retrieves the resource data, which can be either an instance of the provided metadata name or
      * a collection of these instances
      *
      * @return mixed
      */
-    public function getResource();
+    public function getData();
 
     /**
      * Check if the resource is a collection of instances of the resource type

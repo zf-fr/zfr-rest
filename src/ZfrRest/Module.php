@@ -57,6 +57,10 @@ class Module implements
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
         }
 
+        if ($listenersOptions->getRegisterCreateResourcePayload()) {
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'));
+        }
+
         if ($listenersOptions->getRegisterSelectModel()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
         }

@@ -16,39 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Serializer;
+
+use ZfrRest\Representer\RepresenterInterface;
+use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Resource\Serializer\Adapter\ResourceSerializerAdapterInterface;
 
 /**
- * @Annotation
- * @Target({"ANNOTATION"})
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Encoder implements AnnotationInterface
+class ResourceSerializer
 {
     /**
-     * @var string
+     * @var ResourceSerializerAdapterInterface
      */
-    public $name;
+    protected $adapter;
 
     /**
-     * @var string
+     * @param ResourceSerializerAdapterInterface $adapter
      */
-    public $mimeType;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKey()
+    public function __construct(ResourceSerializerAdapterInterface $adapter)
     {
-        return 'encoder';
+        $this->adapter = $adapter;
     }
 
     /**
-     * {@inheritDoc}
+     * @param ResourceInterface    $resource
+     * @param RepresenterInterface $representer
      */
-    public function getValue()
+    public function serialize(ResourceInterface $resource, RepresenterInterface $representer)
     {
-        return array(
-            $this->mimeType => $this->name
-        );
+
     }
 }

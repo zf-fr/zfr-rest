@@ -49,24 +49,14 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public $hydrator;
 
     /**
-     * @var string[]|array
-     */
-    public $encoders;
-
-    /**
-     * @var string[]|array
-     */
-    public $decoders;
-
-    /**
-     * @var array
-     */
-    public $collection;
-
-    /**
      * @var ResourceMetadataInterface[]|array
      */
     public $associations;
+
+    /**
+     * @var CollectionResourceMetadataInterface
+     */
+    public $collection;
 
 
     /**
@@ -112,38 +102,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * {@inheritDoc}
      */
-    public function getEncoderNames()
-    {
-        return $this->encoders;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getDecoderNames()
-    {
-        return $this->decoders;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCollectionControllerName()
-    {
-        return $this->collection['controller'];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function shouldPaginateCollection()
-    {
-        return $this->collection['paginate'];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getAssociationMetadata($association)
     {
         return $this->associations[$association];
@@ -155,5 +113,13 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public function hasAssociation($association)
     {
         return isset($this->associations[$association]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCollectionMetadata()
+    {
+        return $this->collection;
     }
 }

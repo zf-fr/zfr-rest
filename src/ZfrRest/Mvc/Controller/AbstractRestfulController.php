@@ -74,15 +74,15 @@ abstract class AbstractRestfulController extends AbstractController
             throw new Client\MethodNotAllowedException();
         }
 
+        /** @var \ZfrRest\Resource\ResourceInterface $resource */
         $resource = $e->getRouteMatch()->getParam('resource', null);
-        $metadata = $e->getRouteMatch()->getParam('metadata', null);
 
-        // We should always have a resource and metadata, otherwise throw an 404 exception
-        if (null === $resource || null === $metadata) {
+        // We should always have a resource, otherwise throw an 404 exception
+        if (null === $resource) {
             throw new Client\NotFoundException();
         }
 
-        $return = $this->$handler($resource, $metadata);
+        $return = $this->$handler($resource->getData(), $resource->getMetadata());
 
         $e->setResult($return);
 

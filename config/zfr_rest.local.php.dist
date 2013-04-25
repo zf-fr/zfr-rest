@@ -25,13 +25,11 @@ return array(
             // 'register_http_method_override' => false,
 
             /**
-             * If this listener is registered (it is by default), it allows you to return an object (an entity,
-             * for instance) from a controller's action, and automatically serialize its content to an array. This
-             * is especially useful if you specify a serializer into resource metadata. Please note that if you
-             * deactivate this listener, you MUST NOT return a resource (entity...) from your controller, but an
-             * array
+             * If this listener is registered, it allows you to return an object (an entity, for instance) from a
+             * controller's action, and automatically create payload from its content. Please note that if you deactivate
+             * this listener, you MUST NOT return a resource (entity...) from your controller, but an array or Model
              */
-            // 'register_resource_serialization' => true,
+            // 'register_create_resource_payload' => true,
 
             /**
              * If this listener is registered (it is by default), please note that if you deactivate this listener,

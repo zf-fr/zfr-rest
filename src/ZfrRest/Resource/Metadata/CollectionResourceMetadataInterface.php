@@ -16,37 +16,41 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * Base collection resource metadata interface
+ *
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com
  */
-final class Decoders implements AnnotationInterface
+interface CollectionResourceMetadataInterface
 {
     /**
-     * @var array
+     * Get the controller's FQCN
+     *
+     * @return string|null
      */
-    public $decoders = array();
+    public function getControllerName();
 
     /**
-     * {@inheritDoc}
+     * Get the input filter's FQCN to be used for this resource
+     *
+     * @return string|null
      */
-    public function getKey()
-    {
-        return 'decoders';
-    }
+    public function getInputFilterName();
 
     /**
-     * {@inheritDoc}
+     * Get the hydrator's FQCN to be used for this resource
+     *
+     * @return string|null
      */
-    public function getValue()
-    {
-        $decoders = array();
-        foreach ($this->decoders as $decoder) {
-            $decoders[] = $decoder->getValue();
-        }
+    public function getHydratorName();
 
-        return $decoders;
-    }
+    /**
+     * Return true if the resource should be paginated if it is a collection
+     *
+     * @return bool
+     */
+    public function shouldPaginate();
 }

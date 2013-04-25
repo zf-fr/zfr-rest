@@ -19,8 +19,9 @@
 return array(
     'service_manager' => array(
         'invokables' => array(
-            'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener'
+            'ZfrRest\Mvc\HttpExceptionListener'                   => 'ZfrRest\Mvc\HttpExceptionListener',
+            'ZfrRest\Mvc\HttpMethodOverrideListener'              => 'ZfrRest\Mvc\HttpMethodOverrideListener',
+            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener' => 'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'
         ),
 
         'factories' => array(
@@ -89,10 +90,10 @@ return array(
          * Listeners options
          */
         'listeners' => array(
-            'register_http_exception'         => true,
-            'register_resource_serialization' => true,
-            'register_select_model'           => true,
-            'register_http_method_override'   => false
+            'register_http_exception'          => true,
+            'register_create_resource_payload' => true,
+            'register_select_model'            => true,
+            'register_http_method_override'    => false
         ),
 
         /**

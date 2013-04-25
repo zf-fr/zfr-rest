@@ -25,7 +25,9 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Annotation;
+use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * AnnotationDriver
@@ -48,8 +50,8 @@ class AnnotationDriver implements DriverInterface
     /**
      * Constructor
      *
-     * @param \Doctrine\Common\Annotations\Reader                       $reader
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory $classMetadataFactory
+     * @param AnnotationReader     $reader
+     * @param ClassMetadataFactory $classMetadataFactory
      */
     public function __construct(AnnotationReader $reader, ClassMetadataFactory $classMetadataFactory)
     {
@@ -82,8 +84,8 @@ class AnnotationDriver implements DriverInterface
                 if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
                     unset($propertyAnnotations[$key]);
 
-                    $associationName             = $classProperty->getName();
-                    $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
+                    $associationName = $classProperty->getName();
+                    $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
 
                     // @TODO: we should inject MetadataFactory here (does it make sense ?)
 
@@ -103,8 +105,8 @@ class AnnotationDriver implements DriverInterface
     }
 
     /**
-     * @param \Metadata\ClassMetadata                   $metadata
-     * @param \ZfrRest\Resource\Annotation\Annotation[] $annotations
+     * @param ClassMetadata                    $metadata
+     * @param Annotation\AnnotationInterface[] $annotations
      */
     private function processMetadata(ClassMetadata $metadata, array $annotations)
     {
@@ -114,7 +116,19 @@ class AnnotationDriver implements DriverInterface
             }
 
             $propertyMetadata = new PropertyMetadata($metadata, $annotation->getKey());
-            $propertyMetadata->setValue($metadata, $annotation->getValue());
+
+            // We handle Collection annotation differently
+            if ($annotation instanceof Annotation\Collection) {
+                $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+
+                foreach ($annotation->getValue() as $key => $value) {
+                    $collectionMetadata->{$key} = $value;
+                }
+
+                $propertyMetadata->setValue($metadata, $collectionMetadata);
+            } else {
+                $propertyMetadata->setValue($metadata, $annotation->getValue());
+            }
 
             $metadata->addPropertyMetadata($propertyMetadata);
         }

@@ -16,37 +16,67 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata;
+
+use Metadata\ClassMetadata;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * ResourceMetadata
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Encoders implements AnnotationInterface
+class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
 {
     /**
-     * @var array
+     * @var string
      */
-    public $encoders = array();
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator;
+
+    /**
+     * @var bool
+     */
+    public $paginate;
 
     /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function getControllerName()
     {
-        return 'encoders';
+        return $this->controller;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getValue()
+    public function getInputFilterName()
     {
-        $encoders = array();
-        foreach ($this->encoders as $encoder) {
-            $encoders[] = $encoder->getValue();
-        }
+        return $this->inputFilter;
+    }
 
-        return $encoders;
+    /**
+     * {@inheritDoc}
+     */
+    public function getHydratorName()
+    {
+        return $this->hydrator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function shouldPaginate()
+    {
+        return $this->paginate ?: false;
     }
 }
