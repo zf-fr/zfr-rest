@@ -118,6 +118,11 @@ return array(
         ),
 
         /**
+         * Set DecoderPluginManager
+         */
+        'decoders' => array(),
+
+        /**
          * Set ModelPluginManager
          */
         'models' => array()

@@ -59,9 +59,12 @@ class HttpExceptionListener extends AbstractListenerAggregate
 
         $exception->prepareResponse($response);
 
-        $e->setResult(array(
+        $data = array(
             'status_code' => $exception->getStatusCode(),
-            'message'     => $exception->getMessage()
-        ));
+            'message'     => $exception->getMessage(),
+            'errors'      => $exception->getErrors()
+        );
+
+        $e->setResult(array_filter($data));
     }
 }

@@ -136,7 +136,7 @@ abstract class AbstractRestfulController extends AbstractController
      */
     protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
     {
-        $data = $this->validateData($this->decodeBody(), $metadata->getInputFilterName());
+        $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, new $metadata->getClassName());
 
         $this->post($resource, $data, $metadata);
@@ -170,7 +170,7 @@ abstract class AbstractRestfulController extends AbstractController
      */
     protected function handlePutMethod($resource, ResourceMetadataInterface $metadata)
     {
-        $data = $this->validateData($this->decodeBody(), $metadata->getInputFilterName());
+        $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, $resource);
 
         return $this->put($data, $metadata);
@@ -200,7 +200,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         $inputFilter->setData($data);
         if (!$inputFilter->isValid()) {
-            throw new Client\BadRequestException($inputFilter->getMessages());
+            throw new Client\BadRequestException('', $inputFilter->getMessages());
         }
 
         // Return validated and filtered values
@@ -271,6 +271,6 @@ abstract class AbstractRestfulController extends AbstractController
 
         $mimeType = $header->getFieldValue();
 
-        return $decoderPluginManager->get($mimeType)->decode($content);
+        return $decoderPluginManager->get($mimeType)->decode($content, '');
     }
 }

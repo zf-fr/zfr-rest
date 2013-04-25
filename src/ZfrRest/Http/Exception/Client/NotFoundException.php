@@ -36,9 +36,10 @@ class NotFoundException extends ClientException
 
     /**
      * @param string $message
+     * @param mixed  $errors
      */
-    public function __construct($message = '')
+    public function __construct($message = '', $errors = '')
     {
-        parent::__construct(404, $message);
+        parent::__construct(404, $message, $errors);
     }
 }

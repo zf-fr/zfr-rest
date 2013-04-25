@@ -41,12 +41,18 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
      */
     protected $message = 'An error occurred';
 
+    /**
+     * @var mixed
+     */
+    protected $errors;
+
 
     /**
      * @param null|int $statusCode
      * @param string   $message
+     * @param string   $errors
      */
-    public function __construct($statusCode = null, $message = '')
+    public function __construct($statusCode = null, $message = '', $errors = '')
     {
         if ($statusCode !== null) {
             $this->setStatusCode($statusCode);
@@ -55,6 +61,8 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
         if ($message !== '') {
             $this->message = $message;
         }
+
+        $this->errors = $errors;
     }
 
     /**
@@ -66,7 +74,6 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     public function setStatusCode($statusCode)
     {
         $this->statusCode = (int) $statusCode;
-        return $this;
     }
 
     /**
@@ -77,6 +84,28 @@ abstract class AbstractHttpException extends Exception implements ExceptionInter
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Set errors (this is a generic placeholder for more errors)
+     *
+     * @param  mixed $errors
+     * @return AbstractHttpException
+     */
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
+        return $this;
+    }
+
+    /**
+     * Get errors
+     *
+     * @return mixed
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
     /**
