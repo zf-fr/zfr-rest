@@ -236,21 +236,21 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * Parse the body content according to the Content-Type value
      *
-     * @return array|null
+     * @return array
      */
     protected function decodeBody()
     {
-        return $this->decode($this->request->getContent());
+        return $this->decode($this->request->getContent()) ?: array();
     }
 
     /**
      * Parse the post array according to the Content-Type value
      *
-     * @return array|null
+     * @return array
      */
     protected function decodePost()
     {
-        return $this->decode($this->request->getPost());
+        return $this->decode($this->request->getPost()) ?: array();
     }
 
     /**
