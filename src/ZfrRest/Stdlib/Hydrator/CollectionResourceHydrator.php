@@ -37,4 +37,9 @@ class CollectionResourceHydrator extends AggregateHydrator
         // TODO: fetch from hydrator plugin manager
         $this->attach(new PaginatorHydrator());
     }
+
+    public function extract($object)
+    {
+        return parent::extract($object);
+    }
 }
