@@ -18,12 +18,12 @@
 
 namespace ZfrRest\Mvc\View\Http;
 
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
-use ZfrRest\Serializer\DecoderPluginManager;
 
 /**
  * CreateResourcePayloadListener. This listener is used to extract data from a resource
@@ -31,12 +31,20 @@ use ZfrRest\Serializer\DecoderPluginManager;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CreateResourcePayloadListener implements ListenerAggregateInterface
+class CreateResourcePayloadListener extends AbstractListenerAggregate
 {
     /**
-     * @var \Zend\Stdlib\CallbackHandler[]
+     * @var HydratorPluginManager
      */
-    protected $listeners = array();
+    protected $hydratorPluginManager;
+
+    /**
+     * @param HydratorPluginManager $hydratorPluginManager
+     */
+    public function __construct(HydratorPluginManager $hydratorPluginManager)
+    {
+        $this->hydratorPluginManager = $hydratorPluginManager;
+    }
 
     /**
      * {@inheritDoc}
@@ -44,19 +52,7 @@ class CreateResourcePayloadListener implements ListenerAggregateInterface
     public function attach(EventManagerInterface $events)
     {
         $sharedManager = $events->getSharedManager();
-        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'decodeModel'), -40);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $index => $listener) {
-            if ($events->detach($listener)) {
-                unset($this->listeners[$index]);
-            }
-        }
+        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'createPayload'), -40);
     }
 
     /**
@@ -66,7 +62,7 @@ class CreateResourcePayloadListener implements ListenerAggregateInterface
      * @param  MvcEvent $e
      * @return void
      */
-    public function decodeModel(MvcEvent $e)
+    public function createPayload(MvcEvent $e)
     {
         $result = $e->getResult();
         if ($result instanceof ModelInterface || $result instanceof ResponseInterface) {
@@ -76,9 +72,7 @@ class CreateResourcePayloadListener implements ListenerAggregateInterface
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
         $resource         = $e->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
-
-        $hydratorName = $resourceMetadata->getHydratorName();
-        $hydrator = new $hydratorName();
+        $hydrator         = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
 
         $e->setResult($hydrator->extract($resource->getData()));
     }

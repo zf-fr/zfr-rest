@@ -18,8 +18,8 @@
 
 namespace ZfrRest\Mvc;
 
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Http\Exception\AbstractHttpException;
@@ -30,32 +30,14 @@ use ZfrRest\Http\Exception\AbstractHttpException;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class HttpExceptionListener implements ListenerAggregateInterface
+class HttpExceptionListener extends AbstractListenerAggregate
 {
-    /**
-     * @var \Zend\Stdlib\CallbackHandler[]
-     */
-    protected $listeners = array();
-
-
     /**
      * {@inheritDoc}
      */
     public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'onDispatchError'), 100);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $index => $listener) {
-            if ($events->detach($listener)) {
-                unset($this->listeners[$index]);
-            }
-        }
     }
 
     /**

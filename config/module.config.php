@@ -19,19 +19,19 @@
 return array(
     'service_manager' => array(
         'invokables' => array(
-            'ZfrRest\Mvc\HttpExceptionListener'                   => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener'              => 'ZfrRest\Mvc\HttpMethodOverrideListener',
-            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener' => 'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'
+            'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
+            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener',
         ),
 
         'factories' => array(
-            'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
-            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\Resource\Metadata\CacheProvider'   => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
-            'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
-            'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
-            'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
-            'ZfrRest\View\Model\ModelPluginManager'     => 'ZfrRest\Factory\ModelPluginManagerFactory',
+            'ZfrRest\Mvc\View\Http\SelectModelListener'           => 'ZfrRest\Factory\SelectModelListenerFactory',
+            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener' => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
+            'ZfrRest\Options\ModuleOptions'                       => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\CacheProvider'             => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
+            'ZfrRest\Resource\Metadata\MetadataFactory'           => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
+            'ZfrRest\Serializer\DecoderPluginManager'             => 'ZfrRest\Factory\DecoderPluginManagerFactory',
+            'ZfrRest\Serializer\EncoderPluginManager'             => 'ZfrRest\Factory\EncoderPluginManagerFactory',
+            'ZfrRest\View\Model\ModelPluginManager'               => 'ZfrRest\Factory\ModelPluginManagerFactory',
         )
     ),
 

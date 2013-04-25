@@ -195,22 +195,8 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
-        /** @var $inputFilter InputFilter|null */
-        $inputFilter = null;
-
-        if ($this->serviceLocator->has($inputFilterClass)) {
-            $inputFilter = $this->serviceLocator->get($inputFilterClass);
-        } else {
-            $inputFilter = new $inputFilterClass;
-        }
-
-        if (!$inputFilter || !($inputFilter instanceof InputFilter)) {
-            throw new RuntimeException(sprintf(
-                'ZfrRest was configured to automatically validate data, but input filter could not be created or
-                 is not a valid Zend\InputFilter\InputFilter object, %s given',
-                is_object($inputFilter) ? get_class($inputFilter) : $inputFilter
-            ));
-        }
+        $inputFilterManager = $this->serviceLocator->get('InputFilterManager');
+        $inputFilter        = $inputFilterManager->get($inputFilterClass);
 
         $inputFilter->setData($data);
         if (!$inputFilter->isValid()) {
@@ -241,22 +227,8 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
-        /** @var $hydrator HydratorInterface|null */
-        $hydrator = null;
-
-        if ($this->serviceLocator->has($hydratorClass)) {
-            $hydrator = $this->serviceLocator->get($hydratorClass);
-        } else {
-            $hydrator = new $hydratorClass;
-        }
-
-        if (!$hydrator || !($hydrator instanceof HydratorInterface)) {
-            throw new RuntimeException(sprintf(
-                'ZfrRest was configured to automatically hydrate data, but hydrator could not be created or
-                 is not a valid Zend\Stdlib\HydratorInteface object, %s given',
-                is_object($hydrator) ? get_class($hydrator) : $hydrator
-            ));
-        }
+        $hydratorManager = $this->serviceLocator->get('HydratorManager');
+        $hydrator        = $hydratorManager->get($hydratorClass);
 
         return $hydrator->hydrate($data, $object);
     }
