@@ -41,12 +41,12 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     /**
      * @var string
      */
-    public $hydrator;
+    public $hydrator = 'ZfrRest\Stdlib\Hydrator\AbstractHydrator';
 
     /**
      * @var bool
      */
-    public $paginate;
+    public $paginate = true;
 
     /**
      * {@inheritDoc}
@@ -77,6 +77,6 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
      */
     public function shouldPaginate()
     {
-        return $this->paginate ?: false;
+        return $this->paginate;
     }
 }

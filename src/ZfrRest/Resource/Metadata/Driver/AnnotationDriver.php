@@ -122,7 +122,9 @@ class AnnotationDriver implements DriverInterface
                 $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
 
                 foreach ($annotation->getValue() as $key => $value) {
-                    $collectionMetadata->{$key} = $value;
+                    if (null !== $value) {
+                        $collectionMetadata->{$key} = $value;
+                    }
                 }
 
                 $propertyMetadata->setValue($metadata, $collectionMetadata);

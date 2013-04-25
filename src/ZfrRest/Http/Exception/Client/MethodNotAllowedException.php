@@ -31,7 +31,7 @@ class MethodNotAllowedException extends ClientException
     /**
      * @var string
      */
-    protected $message = 'A request was made using a request method not supported by that resource';
+    protected $message = 'A request was made using a HTTP method not supported by that resource';
 
 
     /**

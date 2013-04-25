@@ -16,52 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
-
-/**
- * @Annotation
- * @Target({"CLASS"})
- */
-final class Collection implements AnnotationInterface
+class AbstractHydrator
 {
-    /**
-     * @var string
-     */
-    public $controller;
 
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
-     * @var bool
-     */
-    public $paginate;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKey()
-    {
-        return 'collection';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return array(
-            'controller'  => $this->controller,
-            'inputFilter' => $this->inputFilter,
-            'hydrator'    => $this->hydrator,
-            'paginate'    => $this->paginate
-        );
-    }
 }

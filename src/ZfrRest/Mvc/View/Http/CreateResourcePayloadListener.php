@@ -65,14 +65,19 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
     public function createPayload(MvcEvent $e)
     {
         $result = $e->getResult();
-        if ($result instanceof ModelInterface || $result instanceof ResponseInterface) {
+        if ($result instanceof ModelInterface || $result instanceof ResponseInterface || empty($result)) {
             return;
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
         $resource         = $e->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
-        $hydrator         = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+
+        if ($resource->isCollection()) {
+            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getCollectionMetadata()->getHydratorName());
+        } else {
+            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+        }
 
         $e->setResult($hydrator->extract($resource->getData()));
     }
