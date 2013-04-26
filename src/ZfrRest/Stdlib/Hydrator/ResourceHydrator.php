@@ -85,13 +85,27 @@ class ResourceHydrator extends AggregateHydrator
     }
 
     /**
-     * Normalize data according to the
-     * 
+     * Normalize data according to the attached resource normalizer
+     *
      * @param  array                     $data
      * @param  ResourceMetadataInterface $metadata
      * @return array
      */
     protected function normalize(array $data, ResourceMetadataInterface $metadata)
+    {
+        foreach ($data as $key => $value) {
+
+        }
+    }
+
+    /**
+     * Denormalize data according to the attached resource normalizer
+     *
+     * @param  array                     $data
+     * @param  ResourceMetadataInterface $metadata
+     * @return array
+     */
+    protected function denormalize(array $data, ResourceMetadataInterface $metadata)
     {
 
     }

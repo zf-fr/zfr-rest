@@ -49,26 +49,50 @@ interface ResourceNormalizerInterface
     public function getWrapperKey($resourceClass, $isCollection);
 
     /**
-     * Get the key for a property
+     * Normalize the key for a property
      *
      * @param  string $name
      * @return string
      */
-    public function getKeyForProperty($name);
+    public function normalizeKeyForProperty($name);
 
     /**
-     * Get the key for a "has one" association
+     * Denormalize the key for a property
      *
      * @param  string $name
      * @return string
      */
-    public function getKeyForHasOneAssociation($name);
+    public function denormalizeKeyForProperty($name);
 
     /**
-     * Get the key for a "has many" association
+     * Normalize the key for a "has one" association
      *
      * @param  string $name
      * @return string
      */
-    public function getKeyForHasManyAssociation($name);
+    public function normalizeKeyForHasOneAssociation($name);
+
+    /**
+     * Denormalize the key for a "has one" association
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function denormalizeKeyForHasOneAssociation($name);
+
+    /**
+     * Normalize the key for a "has many" association
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function normalizeKeyForHasManyAssociation($name);
+
+    /**
+     * Denormalize the key for a "has many" association
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function denormalizeKeyForHasManyAssociation($name);
 }

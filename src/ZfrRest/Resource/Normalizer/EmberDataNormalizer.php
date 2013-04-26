@@ -53,7 +53,7 @@ class EmberDataNormalizer implements ResourceNormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function getKeyForProperty($name)
+    public function normalizeKeyForProperty($name)
     {
         return Inflector::tableize($name);
     }
@@ -61,7 +61,7 @@ class EmberDataNormalizer implements ResourceNormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function getKeyForHasOneAssociation($name)
+    public function normalizeKeyForHasOneAssociation($name)
     {
         return Inflector::tableize($name) . '_id';
     }
@@ -69,8 +69,32 @@ class EmberDataNormalizer implements ResourceNormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function getKeyForHasManyAssociation($name)
+    public function normalizeKeyForHasManyAssociation($name)
     {
         return Inflector::tableize(Inflector::singularize($name)) . '_ids';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function denormalizeKeyForProperty($name)
+    {
+        return Inflector::camelize($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function denormalizeKeyForHasOneAssociation($name)
+    {
+        return Inflector::camelize(substr($name, 0, -3));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function denormalizeKeyForHasManyAssociation($name)
+    {
+        return Inflector::camelize(substr($name, 0, -4));
     }
 }
