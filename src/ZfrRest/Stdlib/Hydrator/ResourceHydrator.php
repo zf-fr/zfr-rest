@@ -22,7 +22,6 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Stdlib\Hydrator\AggregateHydrator;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use ZfrRest\Resource\Exception\RuntimeException;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\Normalizer\ResourceNormalizerInterface;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -49,6 +48,7 @@ class ResourceHydrator extends AggregateHydrator
     ) {
         parent::__construct($eventManager);
 
+        $this->normalizer = $normalizer;
         $this->attach($hydrator);
     }
 
@@ -65,7 +65,7 @@ class ResourceHydrator extends AggregateHydrator
             ));
         }
 
-        return $this->normalize(parent::extract($object->getData()), $object->getMetadata());
+        return $this->normalize(parent::extract($object->getData()), $object);
     }
 
     /**
@@ -87,25 +87,35 @@ class ResourceHydrator extends AggregateHydrator
     /**
      * Normalize data according to the attached resource normalizer
      *
-     * @param  array                     $data
-     * @param  ResourceMetadataInterface $metadata
+     * @param  array             $data
+     * @param  ResourceInterface $resource
      * @return array
      */
-    protected function normalize(array $data, ResourceMetadataInterface $metadata)
+    protected function normalize(array $data, ResourceInterface $resource)
     {
-        foreach ($data as $key => $value) {
+        $metadata       = $resource->getMetadata();
+        $representation = array();
 
+        foreach ($data as $key => $value) {
+            $representation[$this->normalizer->normalizeKeyForProperty($key)] = $value;
         }
+
+        if ($this->normalizer->shouldWrapResource()) {
+            $wrapKey        = $this->normalizer->getWrapperKey($metadata->getClassName(), $resource->isCollection());
+            $representation = array($wrapKey => $representation);
+        }
+
+        return $representation;
     }
 
     /**
      * Denormalize data according to the attached resource normalizer
      *
-     * @param  array                     $data
-     * @param  ResourceMetadataInterface $metadata
+     * @param  array             $data
+     * @param  ResourceInterface $resource
      * @return array
      */
-    protected function denormalize(array $data, ResourceMetadataInterface $metadata)
+    protected function denormalize(array $data, ResourceInterface $resource)
     {
 
     }
