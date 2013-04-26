@@ -16,27 +16,27 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Stdlib\Hydrator;
+
+use Zend\EventManager\EventManagerInterface;
+use Zend\Stdlib\Hydrator\AggregateHydrator;
 
 /**
- * @Annotation
- * @Target({"PROPERTY"})
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class ExposeAssociation implements AnnotationInterface
+class CollectionResourceHydrator extends AggregateHydrator
 {
     /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function __construct(EventManagerInterface $eventManager)
     {
-        return 'association';
+        parent::__construct($eventManager);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
+    public function extract($object)
     {
-        return true;
+        return parent::extract($object);
     }
 }

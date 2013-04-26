@@ -18,8 +18,8 @@
 
 namespace ZfrRest\Mvc\View\Http;
 
+use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface;
@@ -34,13 +34,8 @@ use ZfrRest\View\Model\ModelPluginManager;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class SelectModelListener implements ListenerAggregateInterface
+class SelectModelListener extends AbstractListenerAggregate
 {
-    /**
-     * @var \Zend\Stdlib\CallbackHandler[]
-     */
-    protected $listeners = array();
-
     /**
      * @var ModelPluginManager
      */
@@ -66,18 +61,6 @@ class SelectModelListener implements ListenerAggregateInterface
 
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectErrorModel'), 80);
         $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'selectModel'), -60);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function detach(EventManagerInterface $events)
-    {
-        foreach ($this->listeners as $index => $listener) {
-            if ($events->detach($listener)) {
-                unset($this->listeners[$index]);
-            }
-        }
     }
 
     /**

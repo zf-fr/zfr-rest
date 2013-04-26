@@ -16,25 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRest\Stdlib\Hydrator;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\View\Http\DecodeModelListener;
+use Zend\Paginator\Paginator;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 
-/**
- * DecodeModelListenerFactory
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class DecodeModelListenerFactory implements FactoryInterface
+class PaginatorHydrator implements HydratorInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function extract($object)
     {
-        return new DecodeModelListener($serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager'));
+        if (!$object instanceof Paginator) {
+            return array();
+        }
+
+        return array(
+            'current_page' => $object->getCurrentPageNumber(),
+            'total_count'  => $object->getTotalItemCount()
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hydrate(array $data, $object)
+    {
+        // TODO: Implement hydrate() method.
     }
 }

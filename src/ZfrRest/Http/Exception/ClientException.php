@@ -37,9 +37,10 @@ class ClientException extends AbstractHttpException
     /**
      * @param  null|int $statusCode
      * @param  string   $message
-     * @throws InvalidArgumentException If status code is not 4xx
+     * @param  mixed    $errors
+     * @throws \InvalidArgumentException If status code is not 4xx
      */
-    public function __construct($statusCode, $message = '')
+    public function __construct($statusCode, $message = '', $errors = '')
     {
         // Client errors code are 4xx
         if ($statusCode < 400 || $statusCode > 499) {
@@ -49,6 +50,6 @@ class ClientException extends AbstractHttpException
             ));
         }
 
-        parent::__construct($statusCode, $message);
+        parent::__construct($statusCode, $message, $errors);
     }
 }

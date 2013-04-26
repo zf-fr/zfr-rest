@@ -43,15 +43,16 @@ class UnauthorizedException extends ClientException
 
     /**
      * @param string $message
+     * @param mixed  $errors
      * @param string $challenge
      */
-    public function __construct($message = '', $challenge = '')
+    public function __construct($message = '', $errors = '', $challenge = '')
     {
         if (!empty($challenge)) {
             $this->setChallenge($challenge);
         }
 
-        parent::__construct(401, $message);
+        parent::__construct(401, $message, $errors);
     }
 
     /**

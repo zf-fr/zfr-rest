@@ -16,30 +16,41 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception\Server;
-
-use ZfrRest\Http\Exception\ServerException;
+namespace ZfrRest\Resource\Metadata;
 
 /**
- * NotImplementedException
+ * Base collection resource metadata interface
  *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com
  */
-class NotImplementedException extends ServerException
+interface CollectionResourceMetadataInterface
 {
     /**
-     * @var string
+     * Get the controller's FQCN
+     *
+     * @return string|null
      */
-    protected $message = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
-
+    public function getControllerName();
 
     /**
-     * @param string $message
-     * @param mixed  $errors
+     * Get the input filter's FQCN to be used for this resource
+     *
+     * @return string|null
      */
-    public function __construct($message = '', $errors = '')
-    {
-        parent::__construct(501, $message, $errors);
-    }
+    public function getInputFilterName();
+
+    /**
+     * Get the hydrator's FQCN to be used for this resource
+     *
+     * @return string|null
+     */
+    public function getHydratorName();
+
+    /**
+     * Return true if the resource should be paginated if it is a collection
+     *
+     * @return bool
+     */
+    public function shouldPaginate();
 }

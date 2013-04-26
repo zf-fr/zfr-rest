@@ -31,27 +31,27 @@ class Resource implements ResourceInterface
     /**
      * @var mixed
      */
-    protected $resource;
+    protected $data;
 
     /**
-     * @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface
+     * @var ResourceMetadataInterface
      */
     protected $metadata;
 
 
     /**
-     * @param  mixed $resource
+     * @param  mixed                     $data
      * @param  ResourceMetadataInterface $metadata
      * @throws Exception\InvalidResourceException
      */
-    public function __construct($resource, ResourceMetadataInterface $metadata)
+    public function __construct($data, ResourceMetadataInterface $metadata)
     {
-        $this->resource = $resource;
+        $this->data     = $data;
         $this->metadata = $metadata;
 
         $refl = $metadata->getClassMetadata()->getReflectionClass();
-        if (!$this->isCollection() && !$refl->isInstance($resource)) {
-            throw InvalidResourceException::invalidResourceProvided($resource, $metadata);
+        if (!$this->isCollection() && !$refl->isInstance($data)) {
+            throw InvalidResourceException::invalidResourceProvided($data, $metadata);
         }
     }
 
@@ -66,9 +66,9 @@ class Resource implements ResourceInterface
     /**
      * {@inheritDoc}
      */
-    public function getResource()
+    public function getData()
     {
-        return $this->resource;
+        return $this->data;
     }
 
     /**
@@ -76,6 +76,6 @@ class Resource implements ResourceInterface
      */
     public function isCollection()
     {
-        return ($this->resource instanceof Selectable || $this->resource instanceof Traversable || is_array($this->resource));
+        return ($this->data instanceof Selectable || $this->data instanceof Traversable || is_array($this->data));
     }
 }

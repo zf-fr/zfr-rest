@@ -36,9 +36,10 @@ class InternalServerErrorException extends ServerException
 
     /**
      * @param string $message
+     * @param mixed  $errors
      */
-    public function __construct($message = '')
+    public function __construct($message = '', $errors = '')
     {
-        parent::__construct(500, $message);
+        parent::__construct(500, $message, $errors);
     }
 }
