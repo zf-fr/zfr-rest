@@ -20,17 +20,17 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener'
+            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener',
         ),
 
         'factories' => array(
-            'ZfrRest\Mvc\View\Http\SelectModelListener' => 'ZfrRest\Factory\SelectModelListenerFactory',
-            'ZfrRest\Options\ModuleOptions'             => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\Resource\Metadata\CacheProvider'   => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
-            'ZfrRest\Resource\Metadata\MetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
-            'ZfrRest\Serializer\DecoderPluginManager'   => 'ZfrRest\Factory\DecoderPluginManagerFactory',
-            'ZfrRest\Serializer\EncoderPluginManager'   => 'ZfrRest\Factory\EncoderPluginManagerFactory',
-            'ZfrRest\View\Model\ModelPluginManager'     => 'ZfrRest\Factory\ModelPluginManagerFactory',
+            'ZfrRest\Mvc\View\Http\SelectModelListener'           => 'ZfrRest\Factory\SelectModelListenerFactory',
+            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener' => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
+            'ZfrRest\Options\ModuleOptions'                       => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\CacheProvider'             => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
+            'ZfrRest\Resource\Metadata\MetadataFactory'           => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
+            'ZfrRest\Serializer\DecoderPluginManager'             => 'ZfrRest\Factory\DecoderPluginManagerFactory',
+            'ZfrRest\View\Model\ModelPluginManager'               => 'ZfrRest\Factory\ModelPluginManagerFactory',
         )
     ),
 
@@ -68,6 +68,12 @@ return array(
         )
     ),
 
+    'hydrators' => array(
+        'factories' => array(
+            'ZfrRest\Stdlib\Hydrator\ResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory'
+        )
+    ),
+
     'route_manager' => array(
         'factories' => array(
             'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
@@ -89,10 +95,10 @@ return array(
          * Listeners options
          */
         'listeners' => array(
-            'register_http_exception'         => true,
-            'register_resource_serialization' => true,
-            'register_select_model'           => true,
-            'register_http_method_override'   => false
+            'register_http_exception'          => true,
+            'register_create_resource_payload' => true,
+            'register_select_model'            => true,
+            'register_http_method_override'    => false
         ),
 
         /**
@@ -110,6 +116,11 @@ return array(
             'cache'   => 'Doctrine\Common\Cache\ArrayCache',
             'drivers' => array()
         ),
+
+        /**
+         * Set DecoderPluginManager
+         */
+        'decoders' => array(),
 
         /**
          * Set ModelPluginManager

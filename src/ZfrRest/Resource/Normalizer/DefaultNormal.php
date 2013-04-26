@@ -16,110 +16,81 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Resource\Normalizer;
 
-use Metadata\ClassMetadata;
+use Doctrine\Common\Inflector\Inflector;
+use ZfrRest\Resource\Exception\RuntimeException;
 
 /**
- * ResourceMetadata
+ * The default normalizer is a very simple normalizer that does not wrap resources, and just convert all keys
+ * to underscore_separated
  *
- * @license MIT
+ * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
+class DefaultNormalizer implements ResourceNormalizerInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
-     */
-    public $classMetadata;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
-     * @var ResourceMetadataInterface[]|array
-     */
-    public $associations;
-
-    /**
-     * @var CollectionResourceMetadataInterface
-     */
-    public $collection;
-
-
-    /**
      * {@inheritDoc}
      */
-    public function getClassName()
+    public function shouldWrapResource()
     {
-        return $this->name;
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getClassMetadata()
+    public function getWrapperKey($resourceClass, $isCollection)
     {
-        return $this->classMetadata;
+        throw new RuntimeException('This normalizer does not allow to wrap resource');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function normalizeKeyForProperty($name)
     {
-        return $this->controller;
+        return Inflector::tableize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function denormalizeKeyForProperty($name)
     {
-        return $this->inputFilter;
+        return Inflector::camelize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getHydratorName()
+    public function normalizeKeyForHasOneAssociation($name)
     {
-        return $this->hydrator;
+        return Inflector::tableize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getAssociationMetadata($association)
+    public function denormalizeKeyForHasOneAssociation($name)
     {
-        return $this->associations[$association];
+        return Inflector::camelize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function hasAssociation($association)
+    public function normalizeKeyForHasManyAssociation($name)
     {
-        return isset($this->associations[$association]);
+        return Inflector::tableize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCollectionMetadata()
+    public function denormalizeKeyForHasManyAssociation($name)
     {
-        return $this->collection;
+        return Inflector::camelize($name);
     }
 }

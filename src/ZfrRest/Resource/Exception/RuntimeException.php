@@ -16,32 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRest\Resource\Exception;
 
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\FactoryInterface;
-use ZfrRest\Serializer\EncoderPluginManager;
+use RuntimeException as BaseRuntimeException;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
- * EncoderPluginManagerFactory
+ * RuntimeException
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class EncoderPluginManagerFactory implements FactoryInterface
+class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        $config = $serviceLocator->get('Config');
-        $config = $config['zfr_rest']['encoders'];
-
-        $encoderPluginManager = new EncoderPluginManager(new Config($config));
-        $encoderPluginManager->setServiceLocator($serviceLocator);
-
-        return $encoderPluginManager;
-    }
 }

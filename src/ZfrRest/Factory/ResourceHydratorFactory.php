@@ -16,37 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Factory;
+
+use Zend\EventManager\EventManager;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use ZfrRest\Resource\Normalizer\EmberDataNormalizer;
+use ZfrRest\Stdlib\Hydrator\ResourceHydrator;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Decoders implements AnnotationInterface
+class ResourceHydratorFactory implements FactoryInterface
 {
     /**
-     * @var array
-     */
-    public $decoders = array();
-
-    /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return 'decoders';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        $decoders = array();
-        foreach ($this->decoders as $decoder) {
-            $decoders[] = $decoder->getValue();
-        }
-
-        return $decoders;
+        // TODO: replace by Doctrine hydrator
+        $doctrineHydrator = $serviceLocator->get('DoctrineModule\Stdlib\Hydrator\DoctrineObject');
+        return new ResourceHydrator(new EventManager(), new ClassMethods(), new EmberDataNormalizer());
     }
 }

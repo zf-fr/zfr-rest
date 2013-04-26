@@ -61,34 +61,6 @@ interface ResourceMetadataInterface
     public function getHydratorName();
 
     /**
-     * Get a map of encoders' FQCN to be used for this resource, indexed by content type
-     *
-     * @return array|string[]
-     */
-    public function getEncoderNames();
-
-    /**
-     * Get a map of decoders' FQCN to be used for this resource, indexed by content type
-     *
-     * @return array|string[]
-     */
-    public function getDecoderNames();
-
-    /**
-     * Get the controller's FQCN when the resource is a collection
-     *
-     * @return string|null
-     */
-    public function getCollectionControllerName();
-
-    /**
-     * If the resource is a collection, should we paginate it ?
-     *
-     * @return bool
-     */
-    public function shouldPaginateCollection();
-
-    /**
      * Get the metadata to a given association
      *
      * @param  string $association
@@ -103,4 +75,11 @@ interface ResourceMetadataInterface
      * @return bool
      */
     public function hasAssociation($association);
+
+    /**
+     * Get metadata to use in case the resource is a collection of item
+     *
+     * @return CollectionResourceMetadataInterface
+     */
+    public function getCollectionMetadata();
 }

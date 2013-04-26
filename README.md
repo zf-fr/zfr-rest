@@ -1,10 +1,14 @@
 ZfrRest
 =======
 
-This documentation is up-to-date with current master branch (as of 13rd april 2013).
+THE DOCUMENTATION IS NOT UP-TO-DATE WITH CURRENT MASTER BRANCH (as of 26th april 2013).
 
 > Please note that this module is not ready for use. The API will change until we are all happy with it. I didn't
 write tests yet, but I will.
+
+## TODO:
+
+- Update the PHP file driver to latest metadata mapping
 
 ## How you can help ?
 

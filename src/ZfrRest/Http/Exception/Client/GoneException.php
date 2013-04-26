@@ -36,9 +36,10 @@ class GoneException extends ClientException
 
     /**
      * @param string $message
+     * @param mixed  $errors
      */
-    public function __construct($message = '')
+    public function __construct($message = '', $errors = '')
     {
-        parent::__construct(410, $message);
+        parent::__construct(410, $message, $errors);
     }
 }

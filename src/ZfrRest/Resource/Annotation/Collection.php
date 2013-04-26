@@ -20,19 +20,29 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target({"CLASS"})
  */
 final class Collection implements AnnotationInterface
 {
     /**
-     * @var bool
+     * @var string
      */
-    public $paginate = true;
+    public $controller;
 
     /**
      * @var string
      */
-    public $controller;
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator;
+
+    /**
+     * @var bool
+     */
+    public $paginate;
 
     /**
      * {@inheritDoc}
@@ -48,8 +58,10 @@ final class Collection implements AnnotationInterface
     public function getValue()
     {
         return array(
-            'paginate'   => $this->paginate,
-            'controller' => $this->controller
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator,
+            'paginate'    => $this->paginate
         );
     }
 }

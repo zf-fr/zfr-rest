@@ -16,110 +16,85 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Resource\Normalizer;
 
-use Metadata\ClassMetadata;
+use Doctrine\Common\Inflector\Inflector;
 
 /**
- * ResourceMetadata
+ * Resource normalizer for Ember-Data. This is up to date with latest revision 12
  *
- * @license MIT
+ * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
+class EmberDataNormalizer implements ResourceNormalizerInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
-     */
-    public $classMetadata;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
-     * @var ResourceMetadataInterface[]|array
-     */
-    public $associations;
-
-    /**
-     * @var CollectionResourceMetadataInterface
-     */
-    public $collection;
-
-
-    /**
      * {@inheritDoc}
      */
-    public function getClassName()
+    public function shouldWrapResource()
     {
-        return $this->name;
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getClassMetadata()
+    public function getWrapperKey($resourceClass, $isCollection)
     {
-        return $this->classMetadata;
+        $resourceKey = explode('\\', $resourceClass);
+
+        if ($isCollection) {
+            return Inflector::tableize(Inflector::pluralize(end($resourceKey)));
+        }
+
+        return Inflector::tableize(Inflector::singularize(end($resourceKey)));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function normalizeKeyForProperty($name)
     {
-        return $this->controller;
+        return Inflector::tableize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function normalizeKeyForHasOneAssociation($name)
     {
-        return $this->inputFilter;
+        return Inflector::tableize($name) . '_id';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getHydratorName()
+    public function normalizeKeyForHasManyAssociation($name)
     {
-        return $this->hydrator;
+        return Inflector::tableize(Inflector::singularize($name)) . '_ids';
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getAssociationMetadata($association)
+    public function denormalizeKeyForProperty($name)
     {
-        return $this->associations[$association];
+        return Inflector::camelize($name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function hasAssociation($association)
+    public function denormalizeKeyForHasOneAssociation($name)
     {
-        return isset($this->associations[$association]);
+        return Inflector::camelize(substr($name, 0, -3));
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCollectionMetadata()
+    public function denormalizeKeyForHasManyAssociation($name)
     {
-        return $this->collection;
+        return Inflector::camelize(substr($name, 0, -4));
     }
 }

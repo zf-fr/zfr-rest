@@ -16,39 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Factory;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\View\Http\CreateResourcePayloadListener;
 
 /**
- * @Annotation
- * @Target({"ANNOTATION"})
+ * CreateResourcePayloadListenerFactory
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Encoder implements AnnotationInterface
+class CreateResourcePayloadListenerFactory implements FactoryInterface
 {
     /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $mimeType;
-
-    /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return 'encoder';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return array(
-            $this->mimeType => $this->name
-        );
+        return new CreateResourcePayloadListener($serviceLocator->get('HydratorManager'));
     }
 }

@@ -20,26 +20,27 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"ANNOTATION"})
+ * @Target({"PROPERTY"})
  */
-final class Decoder implements AnnotationInterface
+final class Association implements AnnotationInterface
 {
     /**
-     * @var string
+     * @var bool
      */
-    public $name;
+    public $allowTraversal = false;
 
     /**
      * @var string
+     * @Enum({"IDENTIFIERS", "EMBEDDED", "SIDELOAD"})
      */
-    public $mimeType;
+    public $serializationStrategy = 'IDENTIFIERS';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'decoder';
+        return 'association';
     }
 
     /**
@@ -47,8 +48,6 @@ final class Decoder implements AnnotationInterface
      */
     public function getValue()
     {
-        return array(
-            $this->mimeType => $this->name
-        );
+        return true;
     }
 }
