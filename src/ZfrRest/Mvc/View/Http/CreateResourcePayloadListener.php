@@ -26,7 +26,7 @@ use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
 
 /**
- * CreateResourcePayloadListener. This listener is used to extract data from a resource
+ * CreateResourceRepresentationListener. This listener is used to extract data from a resource
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>

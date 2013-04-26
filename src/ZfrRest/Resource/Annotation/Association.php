@@ -16,35 +16,38 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Serializer\Adapter;
+namespace ZfrRest\Resource\Annotation;
 
 /**
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"PROPERTY"})
  */
-interface ResourceSerializerAdapterInterface
+final class Association implements AnnotationInterface
 {
     /**
-     * Get the key for a property
-     *
-     * @param  string $name
-     * @return string
+     * @var bool
      */
-    public function getKeyForProperty($name);
+    public $allowTraversal = false;
 
     /**
-     * Get the key for a "has one" association
-     *
-     * @param  string $name
-     * @return string
+     * @var string
+     * @Enum({"IDENTIFIERS", "EMBEDDED", "SIDELOAD"})
      */
-    public function getKeyForHasOneAssociation($name);
+    public $serializationStrategy = 'IDENTIFIERS';
 
     /**
-     * Get the key for a "has many" association
-     *
-     * @param  string $name
-     * @return string
+     * {@inheritDoc}
      */
-    public function getKeyForHasManyAssociation($name);
+    public function getKey()
+    {
+        return 'association';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return true;
+    }
 }

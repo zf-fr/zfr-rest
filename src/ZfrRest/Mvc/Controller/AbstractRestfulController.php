@@ -30,6 +30,8 @@ use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\Resource;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
  * Abstract RESTful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
@@ -82,7 +84,7 @@ abstract class AbstractRestfulController extends AbstractController
             throw new Client\NotFoundException();
         }
 
-        $return = $this->$handler($resource->getData(), $resource->getMetadata());
+        $return = $this->$handler($resource);
 
         $e->setResult($return);
 
@@ -94,25 +96,23 @@ abstract class AbstractRestfulController extends AbstractController
      * that making multiple identical requests ends up having the same result as a single request. Get requests should
      * not modify any resources
      *
-     * @param  mixed                     $resource
-     * @param  ResourceMetadataInterface $metadata
+     * @param  ResourceInterface $resource
      * @return mixed
      */
-    protected function handleGetMethod($resource, ResourceMetadataInterface $metadata)
+    protected function handleGetMethod(ResourceInterface $resource)
     {
-        return $this->get($resource, $metadata);
+        return $this->get($resource->getData(), $resource->getMetadata());
     }
 
     /**
      * DELETE method is used to delete a representation of a resource
      *
-     * @param  mixed                     $resource
-     * @param  ResourceMetadataInterface $metadata
+     * @param  ResourceInterface $resource
      * @return mixed
      */
-    protected function handleDeleteMethod($resource, ResourceMetadataInterface $metadata)
+    protected function handleDeleteMethod(ResourceInterface $resource)
     {
-        return $this->delete($resource, $metadata);
+        return $this->delete($resource->getData(), $resource->getMetadata());
     }
 
     /**
@@ -129,15 +129,17 @@ abstract class AbstractRestfulController extends AbstractController
      * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
      * do nothing
      *
-     * @param  mixed                     $resource
-     * @param  ResourceMetadataInterface $metadata
+     * @param  ResourceInterface $resource
      * @throws Client\BadRequestException if validation fails
      * @return mixed
      */
-    protected function handlePostMethod($resource, ResourceMetadataInterface $metadata)
+    protected function handlePostMethod(ResourceInterface $resource)
     {
+        $metadata       = $resource->getMetadata();
+        $singleResource = new Resource(new $metadata->getClassName(), $metadata);
+
         $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
-        $data = $this->hydrateData($metadata->getHydratorName(), $data, new $metadata->getClassName());
+        $data = $this->hydrateData($metadata->getHydratorName(), $data, $singleResource);
 
         $this->post($data, $metadata, $resource);
 
@@ -164,13 +166,14 @@ abstract class AbstractRestfulController extends AbstractController
      * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
      * do nothing
      *
-     * @param mixed                     $resource
-     * @param ResourceMetadataInterface $metadata
+     * @param ResourceInterface $resource
      * @throws Client\BadRequestException if validation fails
      * @return mixed
      */
-    protected function handlePutMethod($resource, ResourceMetadataInterface $metadata)
+    protected function handlePutMethod(ResourceInterface $resource)
     {
+        $metadata = $resource->getMetadata();
+
         $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, $resource);
 
@@ -212,13 +215,13 @@ abstract class AbstractRestfulController extends AbstractController
      * Automatically create a Hydrator object, and hydrate object. If ZfrRest was configured to not hydrate
      * automatically, then this method only returns untouched data as array
      *
-     * @param  string $hydratorClass
-     * @param  array  $data
-     * @param  object $object
+     * @param  string            $hydratorClass
+     * @param  array             $data
+     * @param  ResourceInterface $resource
      * @throws RuntimeException if no hydrator could be created
      * @return array|object
      */
-    public function hydrateData($hydratorClass, array $data, $object)
+    public function hydrateData($hydratorClass, array $data, ResourceInterface $resource)
     {
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
@@ -231,7 +234,7 @@ abstract class AbstractRestfulController extends AbstractController
         $hydratorManager = $this->serviceLocator->get('HydratorManager');
         $hydrator        = $hydratorManager->get($hydratorClass);
 
-        return $hydrator->hydrate($data, $object);
+        return $hydrator->hydrate($data, $resource);
     }
 
     /**

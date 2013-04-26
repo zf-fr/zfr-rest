@@ -16,24 +16,17 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRest\Resource\Exception;
 
-use Zend\EventManager\EventManager;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator;
+use RuntimeException as BaseRuntimeException;
+use ZfrRest\Exception\ExceptionInterface;
 
 /**
- * @licence MIT
+ * RuntimeException
+ *
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceHydratorFactory implements FactoryInterface
+class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-        return new CollectionResourceHydrator(new EventManager());
-    }
 }

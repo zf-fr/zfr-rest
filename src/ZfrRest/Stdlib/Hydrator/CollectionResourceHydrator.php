@@ -33,9 +33,6 @@ class CollectionResourceHydrator extends AggregateHydrator
     public function __construct(EventManagerInterface $eventManager)
     {
         parent::__construct($eventManager);
-
-        // TODO: fetch from hydrator plugin manager
-        $this->attach(new PaginatorHydrator());
     }
 
     public function extract($object)

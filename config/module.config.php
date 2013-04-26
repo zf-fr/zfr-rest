@@ -70,7 +70,7 @@ return array(
 
     'hydrators' => array(
         'factories' => array(
-            'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator' => 'ZfrRest\Factory\CollectionResourceHydratorFactory'
+            'ZfrRest\Stdlib\Hydrator\ResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory'
         )
     ),
 

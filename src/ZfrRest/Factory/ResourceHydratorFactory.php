@@ -16,39 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Serializer\Adapter;
+namespace ZfrRest\Factory;
 
-use Doctrine\Common\Inflector\Inflector;
+use Zend\EventManager\EventManager;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
+use ZfrRest\Resource\Normalizer\EmberDataNormalizer;
+use ZfrRest\Stdlib\Hydrator\ResourceHydrator;
 
 /**
- * Simple adapter for EmberJS MVC framework
- *
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class EmberAdapter implements ResourceSerializerAdapterInterface
+class ResourceHydratorFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function getKeyForProperty($name)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return Inflector::tableize($name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKeyForHasOneAssociation($name)
-    {
-        return Inflector::tableize($name) . '_id';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKeyForHasManyAssociation($name)
-    {
-        return Inflector::tableize(Inflector::singularize($name)) . '_ids';
+        // TODO: replace by Doctrine hydrator
+        $doctrineHydrator = $serviceLocator->get('DoctrineModule\Stdlib\Hydrator\DoctrineObject');
+        return new ResourceHydrator(new EventManager(), new ClassMethods(), new EmberDataNormalizer());
     }
 }
