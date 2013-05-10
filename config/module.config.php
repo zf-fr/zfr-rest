@@ -71,6 +71,9 @@ return array(
     'hydrators' => array(
         'factories' => array(
             'ZfrRest\Stdlib\Hydrator\ResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory'
+        ),
+        'aliases' => array(
+            'ResourceHydrator' => 'ZfrRest\Stdlib\Hydrator\ResourceHydrator'
         )
     ),
 
