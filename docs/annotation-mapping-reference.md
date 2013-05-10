@@ -86,7 +86,7 @@ attribute is **required** if you activate the *auto_validate* option (which is t
  * @REST\Resource(
  *    controller="Application\Controller\UserController",
  *    inputFilter="Application\InputFilter\UserInputFilter",
- *     hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
+ *    hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
  * )
  */
 class User
@@ -104,7 +104,7 @@ Here is a complete example:
  * @REST\Resource(
  *    controller="Application\Controller\UserController",
  *    inputFilter="Application\InputFilter\UserInputFilter",
- *	  hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
+ *	   hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
  * )
  * @REST\Collection(
  *    controller="Application\Controller\UserListController"
