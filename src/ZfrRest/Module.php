@@ -91,7 +91,7 @@ class Module implements
     {
         return array(
             'Usage:',
-            
+
             'rest clear metadata cache' => 'Clear all resource metadata cache'
         );
     }

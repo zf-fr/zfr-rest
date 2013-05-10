@@ -37,7 +37,7 @@ class ResourceHydratorFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         // TODO: replace by Doctrine hydrator
-        $doctrineHydrator = $serviceLocator->get('DoctrineModule\Stdlib\Hydrator\DoctrineObject');
+        //$doctrineHydrator = $serviceLocator->get('DoctrineModule\Stdlib\Hydrator\DoctrineObject');
         return new ResourceHydrator(new EventManager(), new ClassMethods(), new EmberDataNormalizer());
     }
 }
