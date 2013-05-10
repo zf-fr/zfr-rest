@@ -26,6 +26,7 @@ final class Collection implements AnnotationInterface
 {
     /**
      * @var string
+     * @Required
      */
     public $controller;
 
@@ -42,7 +43,7 @@ final class Collection implements AnnotationInterface
     /**
      * @var bool
      */
-    public $paginate;
+    public $paginate = true;
 
     /**
      * {@inheritDoc}

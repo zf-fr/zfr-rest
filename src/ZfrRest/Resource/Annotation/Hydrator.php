@@ -26,6 +26,7 @@ final class Hydrator implements AnnotationInterface
 {
     /**
      * @var string
+     * @Required
      */
     public $name;
 

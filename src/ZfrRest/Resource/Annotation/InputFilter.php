@@ -26,6 +26,7 @@ final class InputFilter implements AnnotationInterface
 {
     /**
      * @var string
+     * @Required
      */
     public $name;
 

@@ -26,6 +26,7 @@ final class Controller implements AnnotationInterface
 {
     /**
      * @var string
+     * @Required
      */
     public $name;
 

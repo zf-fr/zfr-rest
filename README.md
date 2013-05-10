@@ -1,7 +1,7 @@
 ZfrRest
 =======
 
-THE DOCUMENTATION IS NOT UP-TO-DATE WITH CURRENT MASTER BRANCH (as of 26th april 2013).
+THE DOCUMENTATION IS UP-TO-DATE WITH CURRENT MASTER BRANCH.
 
 > Please note that this module is not ready for use. The API will change until we are all happy with it. I didn't
 write tests yet, but I will.
