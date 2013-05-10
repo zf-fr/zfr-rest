@@ -89,8 +89,7 @@ class Module implements
     {
         return array(
             'Usage:',
-            'rest clear metadata cache'     => 'Clear all resource metadata cache',
-            'rest ensure production settings' => 'Verify that ZfrRest is configured for a production environment'
+            'rest clear metadata cache' => 'Clear all resource metadata cache'
         );
     }
 }
