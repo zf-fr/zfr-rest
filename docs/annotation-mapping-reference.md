@@ -101,15 +101,17 @@ Here is a complete example:
 
 ```php
 /**
- * This example demonstrates a mapping for a User class. If the router
- * is configured to map this to /users, this mapping will allow the following URLs
- * automatically: /users, /users/:id, /users/:id/tweets
+ * This example demonstrates a mapping for a User class.
  *
  * @REST\Resource(
  *    controller="Application\Controller\UserController",
  *    inputFilter="Application\InputFilter\UserInputFilter",
  *	   hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
  * )
+ *
+ * The mapping defined in Collection is used when we reach a URL that
+ * represent a collection (for instance /users)
+ *
  * @REST\Collection(
  *    controller="Application\Controller\UserListController"
  * )
@@ -128,6 +130,9 @@ class User
    
    /**
     * @var Collection
+    *
+    * This will allow the following route: /users/:id/tweets
+    *
     * @REST\Assocation(allowTraversal=true, serializationStrategy="NONE")
     */
    protected $tweets;
