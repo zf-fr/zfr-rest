@@ -101,6 +101,10 @@ Here is a complete example:
 
 ```php
 /**
+ * This example demonstrates a mapping for a User class. If the router
+ * is configured to map this to /users, this mapping will allow the following URLs
+ * automatically: /users, /users/:id, /users/:id/tweets
+ *
  * @REST\Resource(
  *    controller="Application\Controller\UserController",
  *    inputFilter="Application\InputFilter\UserInputFilter",
