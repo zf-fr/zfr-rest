@@ -8,7 +8,7 @@ In this chapter a reference of ZfrRest annotations is given.
 
 ### Association
 
-This annotation is used to mark an association. This annotation can only be used at property level.
+This annotation is used to mark an association between two resources. This annotation can only be used at property level.
 
 *Optional attributes:*
 
