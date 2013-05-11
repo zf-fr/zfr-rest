@@ -27,7 +27,6 @@ use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Annotation;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * AnnotationDriver
@@ -118,6 +117,11 @@ class AnnotationDriver implements DriverInterface
                 $values = $annotation->getValue();
 
                 foreach ($values as $key => $value) {
+                    // Ignore null values in order to make cascading work as expected
+                    if (null === $value) {
+                        continue;
+                    }
+
                     $propertyMetadata = new PropertyMetadata($metadata, $key);
                     $propertyMetadata->setValue($metadata, $value);
 

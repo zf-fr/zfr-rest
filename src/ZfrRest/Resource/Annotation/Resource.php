@@ -20,7 +20,7 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS"})
+ * @Target({"CLASS", "PROPERTY"})
  */
 final class Resource implements AnnotationInterface
 {
