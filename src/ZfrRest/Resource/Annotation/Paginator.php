@@ -20,22 +20,21 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target({"ANNOTATION"})
  */
-final class Hydrator implements AnnotationInterface
+class Paginator implements AnnotationInterface
 {
     /**
      * @var string
-     * @Required
      */
-    public $name;
+    public $class = 'Zend\Paginator\Paginator';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'hydrator';
+        return 'paginator';
     }
 
     /**
@@ -43,6 +42,8 @@ final class Hydrator implements AnnotationInterface
      */
     public function getValue()
     {
-        return $this->name;
+        return array(
+            'class' => $this->class
+        );
     }
 }

@@ -20,22 +20,32 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target({"CLASS"})
  */
-final class InputFilter implements AnnotationInterface
+final class Resource implements AnnotationInterface
 {
     /**
      * @var string
      * @Required
      */
-    public $name;
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'inputFilter';
+        return 'resource';
     }
 
     /**
@@ -43,6 +53,10 @@ final class InputFilter implements AnnotationInterface
      */
     public function getValue()
     {
-        return $this->name;
+        return array(
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator
+        );
     }
 }

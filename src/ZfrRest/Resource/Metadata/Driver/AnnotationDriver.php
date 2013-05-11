@@ -78,16 +78,14 @@ class AnnotationDriver implements DriverInterface
         foreach ($classProperties as $classProperty) {
             $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
 
-            // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
+            // We need to have at least the Association annotation, so we loop through all the annotations,
             // check if it exists, and remove it so that we can process other annotations
             foreach ($propertyAnnotations as $key => $propertyAnnotation) {
-                if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
+                if ($propertyAnnotation instanceof Annotation\Association) {
                     unset($propertyAnnotations[$key]);
 
                     $associationName = $classProperty->getName();
                     $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
-
-                    // @TODO: we should inject MetadataFactory here (does it make sense ?)
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
@@ -115,24 +113,38 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $propertyMetadata = new PropertyMetadata($metadata, $annotation->getKey());
+            // Resource annotation
+            if ($annotation instanceof Annotation\Resource) {
+                $values = $annotation->getValue();
 
-            // We handle Collection annotation differently
-            if ($annotation instanceof Annotation\Collection) {
-                $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+                foreach ($values as $key => $value) {
+                    $propertyMetadata = new PropertyMetadata($metadata, $key);
+                    $propertyMetadata->setValue($metadata, $value);
 
-                foreach ($annotation->getValue() as $key => $value) {
-                    if (null !== $value) {
-                        $collectionMetadata->{$key} = $value;
-                    }
+                    $metadata->addPropertyMetadata($propertyMetadata);
                 }
-
-                $propertyMetadata->setValue($metadata, $collectionMetadata);
-            } else {
-                $propertyMetadata->setValue($metadata, $annotation->getValue());
             }
 
-            $metadata->addPropertyMetadata($propertyMetadata);
+            // Collection annotation
+            if ($annotation instanceof Annotation\Collection) {
+                $values             = $annotation->getValue();
+                $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+
+                foreach ($values as $key => $value) {
+                    $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
+
+                    // If the value is null, then we reuse the value defined at "resource-level"
+                    if (null === $value && isset($metadata->propertyMetadata[$key])) {
+                        $propertyMetadata->setValue($collectionMetadata, $metadata->propertyMetadata[$key]->getValue($metadata));
+                    } else {
+                        $propertyMetadata->setValue($collectionMetadata, $value);
+                    }
+
+                    $collectionMetadata->addPropertyMetadata($propertyMetadata);
+                }
+
+                $metadata->collectionMetadata = $collectionMetadata;
+            }
         }
     }
 }

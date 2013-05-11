@@ -18,7 +18,7 @@ This annotation is used to mark an association between two resources. This annot
 
 * **allowTraversal**: (default to false) If this attribute is set to true, then the association is exposed by the router,
 hence allowing dispatching to the associated resource.
-* **serializationStrategy**: (default to "IDENTIFIERS") Define how the association is serialized. This value can be 
+* **serializationStrategy**: (default to "IDENTIFIERS") Define how the association is serialized. This value can be
 "IDENTIFIERS" (only identifiers is outputed), "LOAD" (the resources are loaded and sent with the resource) or "NONE"
 (the association is ignored).
 
@@ -34,7 +34,7 @@ protected $tweets;
 
 ### Collection
 
-This annotation is used to define mapping about a collection of a given resource. This annotation basically define 
+This annotation is used to define mapping about a collection of a given resource. This annotation basically define
 the same information than Controller, Hydrator and InputFilter annotations, but in a collection context. This annotation
 can only be used at class level.
 
@@ -71,13 +71,14 @@ This annotation is used to define the resource's mapping. This annotation can on
 
 * **controller**: FQCN of the controller to use. The controller must be added to the controllers plugin manager,
 like any other Zend Framework 2 controllers. It must be a subclass of `ZfrRest\Mvc\Controller\AbstractRestfulController`.
-* **hydrator**: FQCN of the hydrator to use. The hydrtaor must be added to the hydrator plugin manager.
 
 *Optional attributes:*
 
 * **inputFilter**: FQCN of the input filter to use. The input filter must be added to the input
 filter plugin manager. This input filter is used to validate data for POST and PUT verbs. Note that this
 attribute is **required** if you activate the *auto_validate* option (which is true by default).
+* **hydrator**: FQCN of the hydrator to use. The hydrator must be added to the hydrator plugin manager.  By default,
+it uses the DoctrineModule hydrator (`DoctrineModule\Stdlib\Hydrator\DoctrineObject`)
 
 *Example:*
 
@@ -106,7 +107,7 @@ Here is a complete example:
  * @REST\Resource(
  *    controller="Application\Controller\UserController",
  *    inputFilter="Application\InputFilter\UserInputFilter",
- *	   hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
+ *	  hydrator="DoctrineModule\Stdlib\Hydrator\DoctrineObject"
  * )
  *
  * The mapping defined in Collection is used when we reach a URL that
@@ -122,12 +123,12 @@ class User
     * @var int
     */
    protected $id;
-   
+
    /**
     * @var string
     */
    protected $firstName;
-   
+
    /**
     * @var Collection
     *
