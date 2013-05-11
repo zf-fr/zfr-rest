@@ -36,7 +36,7 @@ protected $tweets;
 
 This annotation is used to define mapping about a collection of a given resource. This annotation basically define
 the same information than Controller, Hydrator and InputFilter annotations, but in a collection context. This annotation
-can only be used at class level.
+can be used at class level and property level.
 
 *Required attributes:*
 
@@ -65,7 +65,8 @@ class User
 
 ### Resource
 
-This annotation is used to define the resource's mapping. This annotation can only be used at class level.
+This annotation is used to define the resource's mapping. This annotation can be used at class level and property
+level.
 
 *Required attributes:*
 
@@ -132,9 +133,14 @@ class User
    /**
     * @var Collection
     *
-    * This will allow the following route: /users/:id/tweets
+    * This will allow the following route: /users/:id/tweets. We also override the controller used. By default, it
+    * will reuse the mapping defined in the associated class (in this case, Tweet entity), but you may want to override
+    * some attributes based on the context
     *
     * @REST\Assocation(allowTraversal=true, serializationStrategy="NONE")
+    * @REST\Resource(
+    *     controller="Application\Controller\UserTweetController")
+    * )
     */
    protected $tweets;
 }

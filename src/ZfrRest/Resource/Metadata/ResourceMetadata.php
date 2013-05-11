@@ -29,7 +29,7 @@ use Metadata\ClassMetadata;
 class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @var ClassMetadata
      */
     public $classMetadata;
 
