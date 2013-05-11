@@ -20,6 +20,7 @@ namespace ZfrRest\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Metadata\Cache\CacheInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
@@ -82,10 +83,9 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
 
         foreach ($driversOptions as $driverOptions) {
             $class = $driverOptions['class'];
-            $paths = $driverOptions['paths'];
 
             if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
-                $filePaths = array_merge($filePaths, $paths);
+                $filePaths = array_merge($filePaths, $driverOptions['paths']);
             }
         }
 
@@ -101,6 +101,13 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             if ($metadataDriver instanceof ResourceMetadataDriverInterface) {
                 $metadataDriver->setResourceMetadataFactory($resourceMetadataFactory);
             }
+        }
+
+        // Also add a cache if one is set
+        $cache = $serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
+        
+        if ($cache instanceof CacheInterface) {
+            $resourceMetadataFactory->setCache($cache);
         }
 
         return $resourceMetadataFactory;
