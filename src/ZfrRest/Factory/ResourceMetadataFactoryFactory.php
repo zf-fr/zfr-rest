@@ -26,7 +26,15 @@ use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;
+use ZfrRest\Resource\Metadata\Driver\PhpDriver;
+use ZfrRest\Resource\Metadata\Driver\ResourceMetadataDriverInterface;
 
+/**
+ * ResourceMetadataFactoryFactory
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
 class ResourceMetadataFactoryFactory implements FactoryInterface
 {
     /**
@@ -47,28 +55,54 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             ));
         }
 
-        $metadataFactory = $serviceLocator->get($objectManager)->getMetadataFactory();
-        $drivers         = $resourceOptions->getDrivers();
+        $doctrineMetadataFactory = $serviceLocator->get($objectManager)->getMetadataFactory();
+        $driversOptions          = $resourceOptions->getDrivers();
+        $metadataDrivers         = array();
 
-        foreach ($drivers as &$driver) {
-            $class = $driver['class'];
-            $paths = $driver['paths'];
+        // The annotation driver does not need to be added twice
+        foreach ($driversOptions as $driverOptions) {
+            $class = $driverOptions['class'];
 
-            if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
-                // Special care is taken for PhpDriver, as we need to create a FileLocator
-                $fileLocator = new FileLocator($paths);
-                $driver      = new $class($fileLocator, $metadataFactory);
-            } elseif ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
+            if ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
                 // Add the path to the annotations
                 AnnotationRegistry::registerAutoloadNamespace(
                     'ZfrRest\Resource\Annotation',
                     __DIR__ . '/../..'
                 );
 
-                $driver = new $class(new AnnotationReader(), $metadataFactory);
+                $metadataDrivers[] = new $class(new AnnotationReader(), $doctrineMetadataFactory);
+
+                break;
             }
         }
 
-        return new MetadataFactory(new DriverChain($drivers));
+
+        // We need to handle both drivers differently, as the FileDriver needs all the paths to work properly
+        $filePaths = array();
+
+        foreach ($driversOptions as $driverOptions) {
+            $class = $driverOptions['class'];
+            $paths = $driverOptions['paths'];
+
+            if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
+                $filePaths = array_merge($filePaths, $paths);
+            }
+        }
+
+        if (!empty($filePaths)) {
+            $metadataDrivers[] = new PhpDriver(new FileLocator($filePaths), $doctrineMetadataFactory);
+        }
+
+        $resourceMetadataFactory = new MetadataFactory(new DriverChain($metadataDrivers));
+
+        // We need to inject the resource metadata factory into each driver to allow them to retrieve
+        // metadata from one driver to another
+        foreach ($metadataDrivers as $metadataDriver) {
+            if ($metadataDriver instanceof ResourceMetadataDriverInterface) {
+                $metadataDriver->setResourceMetadataFactory($resourceMetadataFactory);
+            }
+        }
+
+        return $resourceMetadataFactory;
     }
 }

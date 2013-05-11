@@ -20,9 +20,10 @@ namespace ZfrRest\Resource\Metadata\Driver;
 
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader as AnnotationReader;
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Annotation;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
@@ -34,7 +35,7 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class AnnotationDriver implements DriverInterface
+class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterface
 {
     /**
      * @var AnnotationReader
@@ -42,20 +43,33 @@ class AnnotationDriver implements DriverInterface
     protected $annotationReader;
 
     /**
-     * @var ClassMetadataFactory
+     * @var DoctrineMetadataFactory
      */
-    protected $classMetadataFactory;
+    protected $doctrineMetadataFactory;
+
+    /**
+     * @var ResourceMetadataFactory
+     */
+    protected $resourceMetadataFactory;
 
     /**
      * Constructor
      *
-     * @param AnnotationReader     $reader
-     * @param ClassMetadataFactory $classMetadataFactory
+     * @param AnnotationReader        $reader
+     * @param DoctrineMetadataFactory $doctrineMetadataFactory
      */
-    public function __construct(AnnotationReader $reader, ClassMetadataFactory $classMetadataFactory)
+    public function __construct(AnnotationReader $reader, DoctrineMetadataFactory $doctrineMetadataFactory)
     {
-        $this->annotationReader     = $reader;
-        $this->classMetadataFactory = $classMetadataFactory;
+        $this->annotationReader        = $reader;
+        $this->doctrineMetadataFactory = $doctrineMetadataFactory;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setResourceMetadataFactory(ResourceMetadataFactory $metadataFactory)
+    {
+        $this->resourceMetadataFactory = $metadataFactory;
     }
 
     /**
@@ -63,7 +77,7 @@ class AnnotationDriver implements DriverInterface
      */
     public function loadMetadataForClass(ReflectionClass $class)
     {
-        $classMetadata = $this->classMetadataFactory->getMetadataFor($class->getName());
+        $classMetadata = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
 
         $resourceMetadata = new ResourceMetadata($class->getName());
         $resourceMetadata->classMetadata = $classMetadata;
@@ -88,7 +102,7 @@ class AnnotationDriver implements DriverInterface
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
-                    $resourceAssociationMetadata = $this->loadMetadataForClass(new ReflectionClass($targetClass));
+                    $resourceAssociationMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass)->getRootClassMetadata();
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

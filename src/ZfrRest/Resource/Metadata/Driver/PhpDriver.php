@@ -18,13 +18,15 @@
 
 namespace ZfrRest\Resource\Metadata\Driver;
 
-use ReflectionClass;
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
 use Metadata\ClassMetadata;
 use Metadata\PropertyMetadata;
 use Metadata\Driver\AbstractFileDriver;
 use Metadata\Driver\FileLocatorInterface;
+use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
+use ReflectionClass;
 use Zend\Filter\StaticFilter;
+use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -33,24 +35,35 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class PhpDriver extends AbstractFileDriver
+class PhpDriver extends AbstractFileDriver implements ResourceMetadataDriverInterface
 {
     /**
-     * @var ClassMetadataFactory
+     * @var DoctrineMetadataFactory
      */
-    protected $classMetadataFactory;
-
+    protected $doctrineMetadataFactory;
 
     /**
-     * @param \Metadata\Driver\FileLocatorInterface                     $locator
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory $classMetadataFactory
+     * @var ResourceMetadataFactory
      */
-    public function __construct(FileLocatorInterface $locator, ClassMetadataFactory $classMetadataFactory)
+    protected $resourceMetadataFactory;
+
+    /**
+     * @param FileLocatorInterface    $locator
+     * @param DoctrineMetadataFactory $doctrineMetadataFactory
+     */
+    public function __construct(FileLocatorInterface $locator, DoctrineMetadataFactory $doctrineMetadataFactory)
     {
         parent::__construct($locator);
-        $this->classMetadataFactory = $classMetadataFactory;
+        $this->doctrineMetadataFactory = $doctrineMetadataFactory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function setResourceMetadataFactory(ResourceMetadataFactory $metadataFactory)
+    {
+        $this->resourceMetadataFactory = $metadataFactory;
+    }
 
     /**
      * {@inheritDoc}
@@ -59,7 +72,7 @@ class PhpDriver extends AbstractFileDriver
     {
         $config = include $file;
 
-        $classMetadata = $this->classMetadataFactory->getMetadataFor($class->getName());
+        $classMetadata = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
 
         $resourceMetadata = new ResourceMetadata($class->getName());
         $resourceMetadata->classMetadata = $classMetadata;
@@ -69,8 +82,9 @@ class PhpDriver extends AbstractFileDriver
             foreach ($config['associations'] as $associationName => $associationConfig) {
                 $targetClass                 = $classMetadata->getAssociationTargetClass($associationName);
 
-                // @TODO: load the mapping defined at the association level, and then override like in annotation driver
-                $resourceAssociationMetadata = new ResourceMetadata($targetClass);
+                // We first load the metadata for the entity, and we then loop through the annotations defined
+                // at the association level so that the user can override some properties
+                $resourceAssociationMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass)->getRootClassMetadata();
 
                 $this->processMetadata($resourceAssociationMetadata, $associationConfig);
                 $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
@@ -93,17 +107,49 @@ class PhpDriver extends AbstractFileDriver
     }
 
     /**
-     * @param \Metadata\ClassMetadata $metadata
-     * @param array                   $data
+     * @param ClassMetadata $metadata
+     * @param array         $data
      */
     private function processMetadata(ClassMetadata $metadata, array $data)
     {
-        foreach ($data as $key => $value) {
+        foreach ($data as $key => $values) {
             // Normalize the key (in a PHP array, the keys are underscore_separated)
             $key = lcfirst(StaticFilter::execute($key, 'WordUnderscoreToCamelCase'));
 
-            $propertyMetadata = new PropertyMetadata($metadata, $key);
-            $propertyMetadata->setValue($metadata, $value);
+            // Resource metadata
+            if ($key === 'resource') {
+                foreach ($values as $key => $value) {
+                    // Ignore null values in order to make cascading work as expected
+                    if (null === $value) {
+                        continue;
+                    }
+
+                    $propertyMetadata = new PropertyMetadata($metadata, $key);
+                    $propertyMetadata->setValue($metadata, $value);
+
+                    $metadata->addPropertyMetadata($propertyMetadata);
+                }
+            }
+
+            // Collection metadata
+            if ($key === 'collection') {
+                $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+
+                foreach ($values as $key => $value) {
+                    $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
+
+                    // If the value is null, then we reuse the value defined at "resource-level"
+                    if (null === $value && isset($metadata->propertyMetadata[$key])) {
+                        $propertyMetadata->setValue($collectionMetadata, $metadata->propertyMetadata[$key]->getValue($metadata));
+                    } else {
+                        $propertyMetadata->setValue($collectionMetadata, $value);
+                    }
+
+                    $collectionMetadata->addPropertyMetadata($propertyMetadata);
+                }
+
+                $metadata->collectionMetadata = $collectionMetadata;
+            }
         }
     }
 }

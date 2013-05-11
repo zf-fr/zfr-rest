@@ -35,8 +35,8 @@ protected $tweets;
 ### Collection
 
 This annotation is used to define mapping about a collection of a given resource. This annotation basically define
-the same information than Controller, Hydrator and InputFilter annotations, but in a collection context. This annotation
-can be used at class level and property level.
+the same information than Resource annotation, but in a collection context. This annotation can be used at class level
+and property level.
 
 *Required attributes:*
 
@@ -46,15 +46,13 @@ can be used at class level and property level.
 
 * **inputFilter**: FQCN of the input filter to use. If not set, it will reuse the input filter set in the `Resource` annotation.
 * **hydrator** : FQCN of the hydrator to use. If not set, it will reuse the hydrator set in the `Resource` annotation.
-* **paginate**: (default to true) If this attribute is set to true, then the elements are wrapped around a Zend\Paginator instance.
 
 *Example:*
 
 ```php
 /**
  * @REST\Collection(
- *    controller="Application\Controller\UserListController",
- *    paginate=true
+ *    controller="Application\Controller\UserListController"
  * )
  */
 class User
