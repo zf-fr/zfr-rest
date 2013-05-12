@@ -66,13 +66,10 @@ class User
 This annotation is used to define the resource's mapping. This annotation can be used at class level and property
 level.
 
-*Required attributes:*
+*Optional attributes:*
 
 * **controller**: FQCN of the controller to use. The controller must be added to the controllers plugin manager,
 like any other Zend Framework 2 controllers. It must be a subclass of `ZfrRest\Mvc\Controller\AbstractRestfulController`.
-
-*Optional attributes:*
-
 * **inputFilter**: FQCN of the input filter to use. The input filter must be added to the input
 filter plugin manager. This input filter is used to validate data for POST and PUT verbs. Note that this
 attribute is **required** if you activate the *auto_validate* option (which is true by default).

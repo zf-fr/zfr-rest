@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Factory;
 
-use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;

@@ -26,7 +26,6 @@ final class Resource implements AnnotationInterface
 {
     /**
      * @var string
-     * @Required
      */
     public $controller;
 
