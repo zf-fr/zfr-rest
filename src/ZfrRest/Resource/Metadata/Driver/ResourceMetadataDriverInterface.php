@@ -16,32 +16,19 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Driver;
+
+use Metadata\MetadataFactoryInterface;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * Each resource metadata can load other resource metadata. Because a user could define its metadata in different
+ * form (one part using annotation, other using file...) all drivers must implement this interface to allow each
+ * driver to be able to load metadata
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class InputFilter implements AnnotationInterface
+interface ResourceMetadataDriverInterface
 {
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKey()
-    {
-        return 'inputFilter';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return $this->name;
-    }
+    public function setResourceMetadataFactory(MetadataFactoryInterface $metadataFactory);
 }

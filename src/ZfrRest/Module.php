@@ -24,6 +24,7 @@ use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
 
 /**
  * Module
@@ -34,7 +35,8 @@ class Module implements
     BootstrapListenerInterface,
     ConfigProviderInterface,
     ConsoleBannerProviderInterface,
-    ConsoleUsageProviderInterface
+    ConsoleUsageProviderInterface,
+    DependencyIndicatorInterface
 {
     /**
      * {@inheritDoc}
@@ -89,8 +91,16 @@ class Module implements
     {
         return array(
             'Usage:',
-            'rest clear metadata cache'     => 'Clear all resource metadata cache',
-            'rest ensure production settings' => 'Verify that ZfrRest is configured for a production environment'
+
+            'rest clear metadata cache' => 'Clear all resource metadata cache'
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getModuleDependencies()
+    {
+        return array('DoctrineModule');
     }
 }

@@ -29,7 +29,7 @@ use Metadata\ClassMetadata;
 class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
 {
     /**
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @var ClassMetadata
      */
     public $classMetadata;
 
@@ -56,7 +56,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * @var CollectionResourceMetadataInterface
      */
-    public $collection;
+    public $collectionMetadata;
 
 
     /**
@@ -120,6 +120,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getCollectionMetadata()
     {
-        return $this->collection;
+        return $this->collectionMetadata;
     }
 }

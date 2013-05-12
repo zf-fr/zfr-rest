@@ -20,21 +20,21 @@ namespace ZfrRest\Resource\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target({"ANNOTATION"})
  */
-final class Controller implements AnnotationInterface
+class Paginator implements AnnotationInterface
 {
     /**
      * @var string
      */
-    public $name;
+    public $class = 'Zend\Paginator\Paginator';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'controller';
+        return 'paginator';
     }
 
     /**
@@ -42,6 +42,8 @@ final class Controller implements AnnotationInterface
      */
     public function getValue()
     {
-        return $this->name;
+        return array(
+            'class' => $this->class
+        );
     }
 }

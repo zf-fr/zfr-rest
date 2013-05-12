@@ -22,19 +22,29 @@ namespace ZfrRest\Resource\Annotation;
  * @Annotation
  * @Target({"CLASS", "PROPERTY"})
  */
-final class Hydrator implements AnnotationInterface
+final class Resource implements AnnotationInterface
 {
     /**
      * @var string
      */
-    public $name;
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'hydrator';
+        return 'resource';
     }
 
     /**
@@ -42,6 +52,10 @@ final class Hydrator implements AnnotationInterface
      */
     public function getValue()
     {
-        return $this->name;
+        return array(
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator
+        );
     }
 }

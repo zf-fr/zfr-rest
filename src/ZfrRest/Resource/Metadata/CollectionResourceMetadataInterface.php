@@ -48,9 +48,9 @@ interface CollectionResourceMetadataInterface
     public function getHydratorName();
 
     /**
-     * Return true if the resource should be paginated if it is a collection
+     * Get paginator metadata
      *
-     * @return bool
+     * @return array
      */
-    public function shouldPaginate();
+    public function getPaginatorMetadata();
 }

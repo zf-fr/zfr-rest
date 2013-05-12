@@ -47,16 +47,6 @@ return array(
                         )
                     ),
                 ),
-                'ensure-production-settings' => array(
-                    'type'    => 'Simple',
-                    'options' => array(
-                        'route'    => 'rest ensure production settings',
-                        'defaults' => array(
-                            'controller' => 'ZfrRest\Controller\Other',
-                            'action'     => 'ensure-production-settings'
-                        )
-                    )
-                )
             )
         )
     ),
@@ -64,13 +54,15 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController',
-            'ZfrRest\Controller\Other' => 'ZfrRest\Controller\OtherController'
         )
     ),
 
     'hydrators' => array(
         'factories' => array(
             'ZfrRest\Stdlib\Hydrator\ResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory'
+        ),
+        'aliases' => array(
+            'ResourceHydrator' => 'ZfrRest\Stdlib\Hydrator\ResourceHydrator'
         )
     ),
 
