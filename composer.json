@@ -10,7 +10,7 @@
         "restful",
         "api"
     ],
-    "homepage": "https://github.com/zf-fr/ZfrRest",
+    "homepage": "https://github.com/zf-fr/zfr-rest",
     "authors": [
         {
             "name": "Michaël Gallego",
