@@ -1,6 +1,8 @@
 ZfrRest
 =======
 
+**[READ MORE ABOUT CURRENT STATUS](https://github.com/zf-fr/ZfrRest/issues/41)**
+
 THE DOCUMENTATION IS NOT UP-TO-DATE WITH CURRENT MASTER BRANCH (as of 26th april 2013).
 
 > Please note that this module is not ready for use. The API will change until we are all happy with it. I didn't
