@@ -23,12 +23,11 @@ use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
-use Traversable;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\Paginator\ResourcePaginator;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -218,7 +217,8 @@ class ResourceGraphRoute implements RouteInterface
      * optional filtering by query
      *
      * @param  ResourceInterface $resource
-     * @param  string            $path
+     * @param  string           $path
+     * @throws Exception\RuntimeException
      * @return RouteMatch
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
@@ -237,14 +237,21 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            // @TODO: for now, collection is always wrapped around a Zend\Paginator\Paginator, but the goal is to make this configurable
-            $data = new Paginator(new SelectableAdapter($data, $criteria));
+            // @TODO: for now, collection is always wrapped around a ResourcePaginator, but the goal is to make this configurable
+            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
 
             $resource = new Resource($data, $resourceMetadata);
         }
 
-        // If returned $data is a Traversable, then we use the controller specified in Collection mapping
+        // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
+            if (null === $collectionMetadata) {
+                throw new Exception\RuntimeException(sprintf(
+                    'Collection metadata is not found. Do you have a @Collection annotation or PHP config for the resource %s?',
+                    $classMetadata->getName()
+                ));
+            }
+
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $resourceMetadata->getControllerName();

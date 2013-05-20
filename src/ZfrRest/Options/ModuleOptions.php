@@ -34,6 +34,13 @@ class ModuleOptions extends AbstractOptions
     protected $__strictMode__ = false;
 
     /**
+     * Key of the object manager fetched from the service locator
+     *
+     * @var string
+     */
+    protected $objectManager;
+
+    /**
      * Listeners options (allow to activate/deactive listeners)
      *
      * @var ListenersOptions
@@ -53,6 +60,23 @@ class ModuleOptions extends AbstractOptions
      * @var ResourceMetadataOptions
      */
     protected $resourceMetadataOptions;
+
+    /**
+     * @param string $objectManager
+     * @return void
+     */
+    public function setObjectManager($objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectManager()
+    {
+        return $this->objectManager;
+    }
 
     /**
      * @param  array $options

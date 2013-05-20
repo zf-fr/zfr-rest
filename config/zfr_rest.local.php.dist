@@ -8,6 +8,12 @@
 return array(
     'zfr_rest' => array(
         /**
+         * The key of the object manager instance. It is retrieved from the service manager. For instance, if you
+         * are using Doctrine ORM Module, this value may be "doctrine.entitymanager.orm_default"
+         */
+        // 'object_manager' => '',
+
+        /**
          * Listeners options
          */
         'listeners' => array(

@@ -81,12 +81,6 @@ class ResourceMetadataOptions extends AbstractOptions
      */
     public function setDrivers(array $drivers)
     {
-        if (empty($drivers)) {
-            throw new Exception\RuntimeException(
-                'No drivers were set for the resource metadata'
-            );
-        }
-
         foreach ($drivers as $driver) {
             if (!is_subclass_of($driver['class'], 'Metadata\Driver\DriverInterface')) {
                 throw new Exception\RuntimeException(sprintf(

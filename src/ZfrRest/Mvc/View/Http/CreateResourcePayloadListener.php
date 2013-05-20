@@ -79,6 +79,6 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
             $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
         }
 
-        $e->setResult($hydrator->extract($resource));
+        $e->setResult($hydrator->extract($resource->getData()));
     }
 }

@@ -16,32 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata\Annotation;
+namespace ZfrRest\Paginator;
+
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * @Annotation
- * @Target({"PROPERTY"})
+ * A Paginator in ZfrRest must implement this interface to retrieve the metadata of the underlying object
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Association implements AnnotationInterface
+interface ResourcePaginatorInterface
 {
     /**
-     * @var bool
+     * Get the resource metadata of the underlying object
+     *
+     * @return ResourceMetadataInterface
      */
-    public $allowTraversal = false;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKey()
-    {
-        return 'association';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return true;
-    }
+    public function getResourceMetadata();
 }

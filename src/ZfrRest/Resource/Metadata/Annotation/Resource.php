@@ -37,7 +37,7 @@ final class Resource implements AnnotationInterface
     /**
      * @var string
      */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
+    public $hydrator;
 
     /**
      * {@inheritDoc}

@@ -46,7 +46,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * @var string
      */
-    public $hydrator;
+    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
 
     /**
      * @var ResourceMetadataInterface[]|array
