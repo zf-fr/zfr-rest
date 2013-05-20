@@ -29,7 +29,7 @@
         "symfony/serializer": ">=2.1",
         "jms/metadata": ">=1.3",
         "zendframework/zendframework": ">=2.2",
-        "doctrine/common": ">=2.4",
+        "doctrine/common": ">=2.3",
         "doctrine/doctrine-module": "dev-master"
     },
     "autoload": {
