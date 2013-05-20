@@ -141,7 +141,7 @@ abstract class AbstractRestfulController extends AbstractController
         $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, $singleResource);
 
-        $this->post($data, $metadata, $resource);
+        $data = $this->post($data, $metadata, $resource);
 
         // Set the Location header with the URL to the newly created resource
         if (is_object($data)) {
@@ -154,7 +154,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         $this->response->setStatusCode(201);
 
-        return $this->response;
+        return $data;
     }
 
     /**

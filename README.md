@@ -1,32 +1,51 @@
 ZfrRest
 =======
 
+Version 0.1.0 ([changelog](/CHANGELOG.md))
+
 **[READ MORE ABOUT CURRENT STATUS](https://github.com/zf-fr/ZfrRest/issues/41)**
 
-THE DOCUMENTATION IS NOT UP-TO-DATE WITH CURRENT MASTER BRANCH (as of 26th april 2013).
+## Is ZfrRest usable ?
 
-> Please note that this module is not ready for use. The API will change until we are all happy with it. I didn't
-write tests yet, but I will.
+Current features of ZfrRest work well and ZfrRest is definitely usable for simple cases. However, please note that
+we have many more features to come for more complex applications. Those changes may (well, for sure they will) break
+the API at some point, but we will keep track of all the changes in the [UPGRADE](UPGRADE.md) guide.
 
-## TODO:
+Ultimately, you are strongly encouraged to test the module and report feedbacks, PR...
 
-- Update the PHP file driver to latest metadata mapping
+## Roadmap
 
-## How you can help ?
+Here is a basic roadmap of ZfrRest, by priority:
 
-I really need help with this module, as I lack some architecture skills. Here are some things that you can do:
+1. Finish the work on the ResourceGraphRoute, especially the assemble method.
+2. Better architecture for extracting/hydrating data, to especially allow to configure key names, payload structure...
+(so that integrate ZfrRest with a MVC framework that has specific conventions to be as easy as write an adapter).
+3. Add support for HATEOAS links.
+4. Improve the performance (using proxy maybe useful in some places)
+5. Cleanup the code
 
-* Review the existing codebase, especially the ZfrRest\Mvc namespace
-* Find a nice architecture to allow HATEOAS links and output. For instance, when you return Paginator instances
-from controller, I'd expect to run some kind of "view helpers" to output items, current page... I'm not sure yet
-about where and when should this happen, and how to make it flexible.
-* Find the best way to handle output of resources. What we'd like to support is a way to version API too. Currently,
-the metadata contains hydrators, encoders and decoders, but I'm not satisfied with this approach.
-* Add output strategy (for instance, EmberJS MVC framework expects output/input to be formatted a specific way, and
-we should be able to swap libraries with minimal amount of work, typically by changing the NamingStrategy).
-* Tests, tests, tests once we are happy with the code base !
+## Installation
 
-EDIT: may be interesting to see if we cannot do anything with this concept: http://nicksda.apotomo.de/2011/12/ruby-on-rest-introducing-the-representer-pattern/
+Add the following code to your `composer.json` file and update your dependencies:
+
+```json
+{
+    require: {
+        "zfr/zfr-rest": "0.1.*"
+    }
+}
+```
+
+Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
+`zfr_rest.local.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!). For
+more details about how to use ZfrRest, please follow the [quick start]((/docs/quick-start.md)).
+
+## Documentation
+
+* [Quick Start](/docs/quick-start.md)
+* [Annotation mapping reference](/docs/annotation-mapping-reference.md)
+* [PHP mapping reference](/docs/php-mapping-reference.md)
+* [Cook book](/docs/cook-book.md)
 
 ## Quick Start
 

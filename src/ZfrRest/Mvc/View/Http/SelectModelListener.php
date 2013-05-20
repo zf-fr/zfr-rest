@@ -81,8 +81,8 @@ class SelectModelListener extends AbstractListenerAggregate
             return;
         }
 
-        $contentType = $this->getContentType($request);
-        $model       = $this->modelPluginManager->create($contentType);
+        $acceptType = $this->getAcceptType($request);
+        $model      = $this->modelPluginManager->create($acceptType);
 
         if ($result !== null) {
             $model->setVariables($result);
@@ -123,12 +123,12 @@ class SelectModelListener extends AbstractListenerAggregate
     }
 
     /**
-     * Get the content type with higher priority in the request
+     * Get the Accept type with higher priority in the request
      *
      * @param  HttpRequest $request
      * @return string|null
      */
-    protected function getContentType(HttpRequest $request)
+    protected function getAcceptType(HttpRequest $request)
     {
         /** @var $acceptHeader \Zend\Http\Header\Accept */
         $acceptHeader = $request->getHeader('Accept', null);
