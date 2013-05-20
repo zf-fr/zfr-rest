@@ -16,41 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
  * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * @Target({"PROPERTY"})
  */
-final class Collection implements AnnotationInterface
+final class Association implements AnnotationInterface
 {
     /**
-     * @var string
-     * @Required
+     * @var bool
      */
-    public $controller;
+    public $allowTraversal = false;
 
     /**
      * @var string
+     * @Enum({"IDENTIFIERS", "LOAD", "NONE"})
      */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
-     * @var Paginator
-     */
-    public $paginator;
+    public $serializationStrategy = 'IDENTIFIERS';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'collection';
+        return 'association';
     }
 
     /**
@@ -58,11 +48,6 @@ final class Collection implements AnnotationInterface
      */
     public function getValue()
     {
-        return array(
-            'controller'  => $this->controller,
-            'inputFilter' => $this->inputFilter,
-            'hydrator'    => $this->hydrator,
-            'paginator'   => ($this->paginator !== null ? $this->paginator->getValue() : null)
-        );
+        return true;
     }
 }

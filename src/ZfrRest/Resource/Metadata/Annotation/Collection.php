@@ -16,25 +16,46 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-interface AnnotationInterface
+final class Collection implements AnnotationInterface
 {
     /**
-     * Get the key of the annotation
-     *
-     * @return string
+     * @var string
      */
-    public function getKey();
+    public $controller;
 
     /**
-     * Get the value of the annotation
-     *
-     * @return mixed
+     * @var string
      */
-    public function getValue();
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'collection';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator
+        );
+    }
 }

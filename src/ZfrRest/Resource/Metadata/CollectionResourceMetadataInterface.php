@@ -46,11 +46,4 @@ interface CollectionResourceMetadataInterface
      * @return string|null
      */
     public function getHydratorName();
-
-    /**
-     * Get paginator metadata
-     *
-     * @return array
-     */
-    public function getPaginatorMetadata();
 }

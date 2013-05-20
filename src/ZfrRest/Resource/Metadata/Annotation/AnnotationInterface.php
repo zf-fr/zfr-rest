@@ -16,34 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
- * @Annotation
- * @Target({"ANNOTATION"})
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class Paginator implements AnnotationInterface
+interface AnnotationInterface
 {
     /**
-     * @var string
+     * Get the key of the annotation
+     *
+     * @return string
      */
-    public $class = 'Zend\Paginator\Paginator';
+    public function getKey();
 
     /**
-     * {@inheritDoc}
+     * Get the value of the annotation
+     *
+     * @return mixed
      */
-    public function getKey()
-    {
-        return 'paginator';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return array(
-            'class' => $this->class
-        );
-    }
+    public function getValue();
 }

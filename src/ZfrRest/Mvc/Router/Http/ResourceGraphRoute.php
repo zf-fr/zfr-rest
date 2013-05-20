@@ -81,7 +81,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        var_dump($this->resource);
+        // TODO: Implement assemble() method.
     }
 
     /**
@@ -237,11 +237,8 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            if ($collectionMetadata->shouldPaginate()) {
-                $data = new Paginator(new SelectableAdapter($data, $criteria));
-            } else {
-                $data = $data->matching($criteria);
-            }
+            // @TODO: for now, collection is always wrapped around a Zend\Paginator\Paginator, but the goal is to make this configurable
+            $data = new Paginator(new SelectableAdapter($data, $criteria));
 
             $resource = new Resource($data, $resourceMetadata);
         }

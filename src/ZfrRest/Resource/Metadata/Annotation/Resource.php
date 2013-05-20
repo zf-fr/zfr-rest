@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
  * @Annotation

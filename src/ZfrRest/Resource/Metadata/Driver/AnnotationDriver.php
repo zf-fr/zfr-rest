@@ -25,7 +25,7 @@ use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
-use ZfrRest\Resource\Annotation;
+use ZfrRest\Resource\Metadata\Annotation;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
