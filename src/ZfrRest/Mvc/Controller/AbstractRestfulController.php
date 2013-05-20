@@ -22,13 +22,11 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
-use Zend\Paginator\Paginator;
 use Zend\ServiceManager\Exception\ExceptionInterface as ServiceManagerExceptionInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
 use ZfrRest\Http\Exception\Server;
-use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -209,6 +207,7 @@ abstract class AbstractRestfulController extends AbstractController
             ));
         }
 
+        /** @param \Zend\InputFilter\InputFilterInterface $inputFilter */
         $inputFilter->setData($data);
         if (!$inputFilter->isValid()) {
             throw new Client\BadRequestException('', $inputFilter->getMessages());
@@ -248,6 +247,7 @@ abstract class AbstractRestfulController extends AbstractController
             ));
         }
 
+        /** @param \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
         return $hydrator->hydrate($data, $resource->getData());
     }
 

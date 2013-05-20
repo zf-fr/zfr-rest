@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\View\Http;
 
+use Traversable;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
@@ -73,12 +74,12 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
         $resource         = $e->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
 
-        if ($resource->isCollection()) {
+        if (is_array($result) || $result instanceof Traversable) {
             $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getCollectionMetadata()->getHydratorName());
         } else {
             $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
         }
 
-        $e->setResult($hydrator->extract($resource->getData()));
+        $e->setResult($hydrator->extract($result));
     }
 }
