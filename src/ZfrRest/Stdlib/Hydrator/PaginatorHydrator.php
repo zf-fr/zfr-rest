@@ -19,23 +19,52 @@
 namespace ZfrRest\Stdlib\Hydrator;
 
 use Zend\Paginator\Paginator;
-use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\AbstractHydrator;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Paginator\ResourcePaginator;
 
-class PaginatorHydrator implements HydratorInterface
+/**
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class PaginatorHydrator extends AbstractHydrator
 {
+    /**
+     * @var HydratorPluginManager
+     */
+    protected $hydratorManager;
+
+    /**
+     * @param HydratorPluginManager $hydratorManager
+     */
+    public function __construct(HydratorPluginManager $hydratorManager)
+    {
+        $this->hydratorManager = $hydratorManager;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function extract($object)
     {
-        if (!$object instanceof Paginator) {
+        if (!$object instanceof ResourcePaginator) {
             return array();
         }
 
-        return array(
-            'current_page' => $object->getCurrentPageNumber(),
-            'total_count'  => $object->getTotalItemCount()
+        $paginatorData = array(
+            'current_page'   => $object->getCurrentPageNumber(),
+            'count_per_page' => $object->getItemCountPerPage()
         );
+
+        $resourceHydrator = $object->getResourceMetadata()->getHydratorName();
+        $resourceHydrator = $this->hydratorManager->get($resourceHydrator);
+
+        $resourceData = array();
+        foreach ($object as $item) {
+            $resourceData['items'][] = $resourceHydrator->extract($item);
+        }
+
+        return array_merge($paginatorData, $resourceData);
     }
 
     /**

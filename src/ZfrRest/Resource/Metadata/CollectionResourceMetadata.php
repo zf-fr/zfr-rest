@@ -41,12 +41,7 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     /**
      * @var string
      */
-    public $hydrator = 'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator';
-
-    /**
-     * @var array
-     */
-    public $paginator = array();
+    public $hydrator = 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator';
 
     /**
      * {@inheritDoc}
@@ -70,13 +65,5 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     public function getHydratorName()
     {
         return $this->hydrator;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPaginatorMetadata()
-    {
-        return $this->paginator;
     }
 }

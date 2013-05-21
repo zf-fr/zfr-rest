@@ -37,9 +37,6 @@ a multi-dimensional array whose key is the name of the association.
 
 * **allow_traversal**: (default to false) If this attribute is set to true, then the association is exposed by the router,
 hence allowing dispatching to the associated resource.
-* **serialization_strategy**: (default to "IDENTIFIERS") Define how the association is serialized. This value can be
-"IDENTIFIERS" (only identifiers is outputed), "LOAD" (the resources are loaded and sent with the resource) or "NONE"
-(the association is ignored).
 
 *Example:*
 
@@ -47,8 +44,7 @@ hence allowing dispatching to the associated resource.
 return array(
 	'associations' => array(
 		'tweets' => array(
-			'allow_traversal' 		  => false,
-			'serialization_strategy' => 'NONE'
+			'allow_traversal' => false
 		)
 	)
 );

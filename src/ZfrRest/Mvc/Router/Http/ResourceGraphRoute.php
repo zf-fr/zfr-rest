@@ -23,12 +23,11 @@ use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
-use Traversable;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\Paginator\ResourcePaginator;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -81,7 +80,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        var_dump($this->resource);
+        // TODO: Implement assemble() method.
     }
 
     /**
@@ -200,10 +199,10 @@ class ResourceGraphRoute implements RouteInterface
         $reflProperty = $refl->getProperty($associationName);
         $reflProperty->setAccessible(true);
 
-        $resource = $reflProperty->getValue($resource->getData());
+        $data = $reflProperty->getValue($resource->getData());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($resource, $resourceMetadata);
+        $resource         = new Resource($data, $resourceMetadata);
 
         // If empty, we have processed the whole path
         if (empty($chunks)) {
@@ -218,7 +217,8 @@ class ResourceGraphRoute implements RouteInterface
      * optional filtering by query
      *
      * @param  ResourceInterface $resource
-     * @param  string            $path
+     * @param  string           $path
+     * @throws Exception\RuntimeException
      * @return RouteMatch
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
@@ -237,17 +237,21 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            if ($collectionMetadata->shouldPaginate()) {
-                $data = new Paginator(new SelectableAdapter($data, $criteria));
-            } else {
-                $data = $data->matching($criteria);
-            }
+            // @TODO: for now, collection is always wrapped around a ResourcePaginator, but the goal is to make this configurable
+            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
 
             $resource = new Resource($data, $resourceMetadata);
         }
 
-        // If returned $data is a Traversable, then we use the controller specified in Collection mapping
+        // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
+            if (null === $collectionMetadata) {
+                throw new Exception\RuntimeException(sprintf(
+                    'Collection metadata is not found. Do you have a @Collection annotation or PHP config for the resource "%s"?',
+                    $classMetadata->getName()
+                ));
+            }
+
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $resourceMetadata->getControllerName();
@@ -279,6 +283,7 @@ class ResourceGraphRoute implements RouteInterface
      * be anything: an entity, a collection, a Selectable... However, any ResourceInterface object contains both
      * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
      *
+     * @throws Exception\RuntimeException
      * @return void
      */
     private function initializeResource()
@@ -294,8 +299,14 @@ class ResourceGraphRoute implements RouteInterface
 
         if ($resource instanceof ObjectRepository) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource->getClassName());
-        } else {
+        } elseif (is_string($resource)) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource);
+        } else {
+            throw new Exception\RuntimeException(sprintf(
+                '%s is trying to initialize a resource, but this resource is not supported ("%s" given). Either ' .
+                'specify an ObjectRepository instance, or an entity class name',
+                get_class($resource)
+            ));
         }
 
         $this->resource = new Resource($resource, $metadata->getRootClassMetadata());

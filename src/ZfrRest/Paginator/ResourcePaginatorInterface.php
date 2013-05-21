@@ -16,27 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Stdlib\Hydrator;
+namespace ZfrRest\Paginator;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\Stdlib\Hydrator\AggregateHydrator;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * @licence MIT
+ * A Paginator in ZfrRest must implement this interface to retrieve the metadata of the underlying object
+ *
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceHydrator extends AggregateHydrator
+interface ResourcePaginatorInterface
 {
     /**
-     * {@inheritDoc}
+     * Get the resource metadata of the underlying object
+     *
+     * @return ResourceMetadataInterface
      */
-    public function __construct(EventManagerInterface $eventManager)
-    {
-        parent::__construct($eventManager);
-    }
-
-    public function extract($object)
-    {
-        return parent::extract($object);
-    }
+    public function getResourceMetadata();
 }

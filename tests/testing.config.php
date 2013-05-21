@@ -16,25 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+return array(
+    'zfr_rest' => array(
+        'object_manager' => 'doctrine.entitymanager.orm_default',
 
-/**
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-interface AnnotationInterface
-{
-    /**
-     * Get the key of the annotation
-     *
-     * @return string
-     */
-    public function getKey();
+        'resource_metadata' => array(
+            'drivers' => array(
+                'application_driver' => array(
+                    'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+                )
+            )
+        )
+    ),
 
-    /**
-     * Get the value of the annotation
-     *
-     * @return mixed
-     */
-    public function getValue();
-}
+    'doctrine' => array(
+        'driver' => array(
+            'application_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/ZfrRestTest/Asset/Annotation')
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'ZfrRestTest\Asset\Annotation' => 'application_driver'
+                )
+            )
+        ),
+    ),
+);

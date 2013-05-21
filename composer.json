@@ -32,6 +32,9 @@
         "doctrine/common": ">=2.3",
         "doctrine/doctrine-module": "dev-master"
     },
+    "require-dev": {
+        "doctrine/doctrine-orm-module": "dev-master"
+    },
     "autoload": {
         "psr-0": {
             "ZfrRest\\": "src/"

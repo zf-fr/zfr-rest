@@ -16,31 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
  * @Annotation
- * @Target({"PROPERTY"})
+ * @Target({"CLASS", "PROPERTY"})
  */
-final class Association implements AnnotationInterface
+final class Collection implements AnnotationInterface
 {
     /**
-     * @var bool
+     * @var string
      */
-    public $allowTraversal = false;
+    public $controller;
 
     /**
      * @var string
-     * @Enum({"IDENTIFIERS", "LOAD", "NONE"})
      */
-    public $serializationStrategy = 'IDENTIFIERS';
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator = 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator';
 
     /**
      * {@inheritDoc}
      */
     public function getKey()
     {
-        return 'association';
+        return 'collection';
     }
 
     /**
@@ -48,6 +52,10 @@ final class Association implements AnnotationInterface
      */
     public function getValue()
     {
-        return true;
+        return array(
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator
+        );
     }
 }

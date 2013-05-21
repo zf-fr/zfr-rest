@@ -16,30 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource;
-
-use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Resource\ResourceMetadataAbstractFactory;
-use ZfrRest\Resource\ResourceMetadataPluginManager;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
- * Tests for {@see \ZfrRest\Resource\ResourceMetadataPluginManager}
- *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @Annotation
+ * @Target({"PROPERTY"})
  */
-class ResourceMetadataPluginManagerTest extends TestCase
+final class Association implements AnnotationInterface
 {
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadataPluginManager::validatePlugin
+     * @var bool
      */
-    public function testValidatePlugin()
+    public $allowTraversal = false;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
     {
-        $pluginManager = new ResourceMetadataPluginManager();
+        return 'association';
+    }
 
-        $pluginManager->validatePlugin($this->getMock('ZfrRest\\Resource\\ResourceMetadataInterface'));
-
-        $this->setExpectedException('Zend\\ServiceManager\\Exception\\InvalidArgumentException');
-
-        $pluginManager->validatePlugin(new \stdClass());
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return true;
     }
 }

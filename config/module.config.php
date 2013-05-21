@@ -59,10 +59,10 @@ return array(
 
     'hydrators' => array(
         'factories' => array(
-            'ZfrRest\Stdlib\Hydrator\ResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory'
+            'ZfrRest\Stdlib\Hydrator\PaginatorHydrator' => 'ZfrRest\Factory\PaginatorHydratorFactory'
         ),
         'aliases' => array(
-            'ResourceHydrator' => 'ZfrRest\Stdlib\Hydrator\ResourceHydrator'
+            'PaginatorHydrator' => 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator'
         )
     ),
 

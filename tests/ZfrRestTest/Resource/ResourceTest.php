@@ -49,7 +49,7 @@ class ResourceTest extends TestCase
 
         $resource = new Resource($instance, $metadata);
 
-        $this->assertSame($instance, $resource->getResource());
+        $this->assertSame($instance, $resource->getData());
         $this->assertSame($metadata, $resource->getMetadata());
         $this->assertSame($isCollection, $resource->isCollection());
     }
@@ -69,7 +69,7 @@ class ResourceTest extends TestCase
             ->method('isInstance')
             ->will($this->returnValue(false));
 
-        $this->setExpectedException('ZfrRest\\Exception\\InvalidResourceException');
+        $this->setExpectedException('ZfrRest\\Resource\\Exception\\InvalidResourceException');
 
         new Resource(new \stdClass(), $metadata);
     }
@@ -91,11 +91,11 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\ZfrRest\Resource\ResourceMetadataInterface
+     * @return \PHPUnit_Framework_MockObject_MockObject|\ZfrRest\Resource\Metadata\ResourceMetadataInterface
      */
     private function createMetadata()
     {
-        $resourceMetadata = $this->getMock('ZfrRest\\Resource\\ResourceMetadataInterface');
+        $resourceMetadata = $this->getMock('ZfrRest\\Resource\\Metadata\\ResourceMetadataInterface');
         $metadata         = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $reflectionClass  = $this->getMock('ReflectionClass', array(), array(), '', false);
 

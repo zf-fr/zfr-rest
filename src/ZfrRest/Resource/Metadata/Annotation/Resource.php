@@ -16,4 +16,46 @@
  * and is licensed under the MIT license.
  */
 
-return array();
+namespace ZfrRest\Resource\Metadata\Annotation;
+
+/**
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
+ */
+final class Resource implements AnnotationInterface
+{
+    /**
+     * @var string
+     */
+    public $controller;
+
+    /**
+     * @var string
+     */
+    public $inputFilter;
+
+    /**
+     * @var string
+     */
+    public $hydrator;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getKey()
+    {
+        return 'resource';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getValue()
+    {
+        return array(
+            'controller'  => $this->controller,
+            'inputFilter' => $this->inputFilter,
+            'hydrator'    => $this->hydrator
+        );
+    }
+}

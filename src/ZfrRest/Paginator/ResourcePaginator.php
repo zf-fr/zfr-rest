@@ -16,53 +16,38 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Paginator;
+
+use Zend\Paginator\Paginator;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * ResourcePaginator
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Collection implements AnnotationInterface
+class ResourcePaginator extends Paginator implements ResourcePaginatorInterface
 {
     /**
-     * @var string
-     * @Required
+     * @var ResourceMetadataInterface
      */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
-     * @var Paginator
-     */
-    public $paginator;
+    protected $resourceMetadata;
 
     /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function __construct(ResourceMetadataInterface $resourceMetadata, $adapter)
     {
-        return 'collection';
+        $this->resourceMetadata = $resourceMetadata;
+        parent::__construct($adapter);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getValue()
+    public function getResourceMetadata()
     {
-        return array(
-            'controller'  => $this->controller,
-            'inputFilter' => $this->inputFilter,
-            'hydrator'    => $this->hydrator,
-            'paginator'   => ($this->paginator !== null ? $this->paginator->getValue() : null)
-        );
+        return $this->resourceMetadata;
     }
 }

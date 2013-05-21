@@ -16,46 +16,25 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Annotation;
+namespace ZfrRest\Factory;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Stdlib\Hydrator\PaginatorHydrator;
 
 /**
- * @Annotation
- * @Target({"CLASS", "PROPERTY"})
+ * PaginatorHydratorFactory
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-final class Resource implements AnnotationInterface
+class PaginatorHydratorFactory implements FactoryInterface
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
-
-    /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return 'resource';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
-    {
-        return array(
-            'controller'  => $this->controller,
-            'inputFilter' => $this->inputFilter,
-            'hydrator'    => $this->hydrator
-        );
+        return new PaginatorHydrator($serviceLocator);
     }
 }
