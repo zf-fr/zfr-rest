@@ -19,6 +19,8 @@
 namespace ZfrRest\Resource\Metadata;
 
 use Metadata\ClassMetadata;
+use ZfrRest\Resource\Exception;
+use ZfrRest\Resource\Resource;
 
 /**
  * ResourceMetadata
@@ -58,6 +60,21 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public $collectionMetadata;
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createResource()
+    {
+        if (!class_exists($this->name)) {
+            throw new Exception\RuntimeException(sprintf(
+                'Impossible to create a new resource because the class "%s" does not exist',
+                $this->name
+            ));
+        }
+
+        return new Resource(new $this->name, $this);
+    }
 
     /**
      * {@inheritDoc}

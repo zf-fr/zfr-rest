@@ -27,7 +27,6 @@ use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
 use ZfrRest\Http\Exception\Server;
-use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -123,7 +122,7 @@ abstract class AbstractRestfulController extends AbstractController
      * As you can see, the post method have three arguments: the object that is inserted, the resource metadata and
      * the resource itself (which is the Collection where the object is added)
      *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
+     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
      * do nothing
      *
      * @param  ResourceInterface $resource
@@ -133,8 +132,7 @@ abstract class AbstractRestfulController extends AbstractController
     protected function handlePostMethod(ResourceInterface $resource)
     {
         $metadata       = $resource->getMetadata();
-        $className      = $metadata->getClassName();
-        $singleResource = new Resource(new $className, $metadata);
+        $singleResource = $metadata->createResource();
 
         $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
         $data = $this->hydrateData($metadata->getHydratorName(), $data, $singleResource);
@@ -143,7 +141,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         // Set the Location header with the URL to the newly created resource
         if (is_object($data)) {
-            // TODO: use Router for that
+            // @FIXME: use Router for that
             $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($data));
             $url             = '/' . trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
 
@@ -161,7 +159,7 @@ abstract class AbstractRestfulController extends AbstractController
      *      - we hydrate valid data to update existing resource
      *      - we pass the object to the put method of the controller
      *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps won't
+     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
      * do nothing
      *
      * @param ResourceInterface $resource

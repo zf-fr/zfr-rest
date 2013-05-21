@@ -199,10 +199,10 @@ class ResourceGraphRoute implements RouteInterface
         $reflProperty = $refl->getProperty($associationName);
         $reflProperty->setAccessible(true);
 
-        $resource = $reflProperty->getValue($resource->getData());
+        $data = $reflProperty->getValue($resource->getData());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($resource, $resourceMetadata);
+        $resource         = new Resource($data, $resourceMetadata);
 
         // If empty, we have processed the whole path
         if (empty($chunks)) {
@@ -247,7 +247,7 @@ class ResourceGraphRoute implements RouteInterface
         if ($resource->isCollection()) {
             if (null === $collectionMetadata) {
                 throw new Exception\RuntimeException(sprintf(
-                    'Collection metadata is not found. Do you have a @Collection annotation or PHP config for the resource %s?',
+                    'Collection metadata is not found. Do you have a @Collection annotation or PHP config for the resource "%s"?',
                     $classMetadata->getName()
                 ));
             }
@@ -283,6 +283,7 @@ class ResourceGraphRoute implements RouteInterface
      * be anything: an entity, a collection, a Selectable... However, any ResourceInterface object contains both
      * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
      *
+     * @throws Exception\RuntimeException
      * @return void
      */
     private function initializeResource()
@@ -298,8 +299,14 @@ class ResourceGraphRoute implements RouteInterface
 
         if ($resource instanceof ObjectRepository) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource->getClassName());
-        } else {
+        } elseif (is_string($resource)) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource);
+        } else {
+            throw new Exception\RuntimeException(sprintf(
+                '%s is trying to initialize a resource, but this resource is not supported ("%s" given). Either ' .
+                'specify an ObjectRepository instance, or an entity class name',
+                get_class($resource)
+            ));
         }
 
         $this->resource = new Resource($resource, $metadata->getRootClassMetadata());

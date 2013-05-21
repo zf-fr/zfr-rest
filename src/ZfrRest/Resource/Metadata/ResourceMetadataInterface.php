@@ -26,7 +26,14 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
-     * Get the class name
+     * Create a new resource whose type is equals to class name
+     *
+     * @return \ZfrRest\Resource\ResourceInterface
+     */
+    public function createResource();
+
+    /**
+     * Get the class name (this is a shortcut of retrieving it using class metadata)
      *
      * @return string
      */
