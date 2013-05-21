@@ -5,18 +5,10 @@ php:
   - 5.4
 
 before_script:
-  - cd ..
-  - git clone git://github.com/zendframework/ZendSkeletonApplication.git
-  - cd ZendSkeletonApplication
-  - cp ../ZfrRest/.travis/composer.json ./
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --prefer-source
-  - rm -rf vendor/zfr/zfr-rest
-  - cp -r ../ZfrRest vendor/zfr/zfr-rest
-  - rm config/application.config.php && cp ../ZfrRest/.travis/application.config.php config/
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install
 
 script:
-  - cd vendor/zfr/zfr-rest
   - phpunit
 
 notifications:
