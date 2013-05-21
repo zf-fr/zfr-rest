@@ -17,6 +17,8 @@
  */
 return array(
     'modules' => array(
+        'DoctrineModule',
+        'DoctrineORMModule',
         'ZfrRest',
     ),
     'module_listener_options' => array(

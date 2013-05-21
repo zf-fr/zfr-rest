@@ -16,50 +16,47 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource;
+namespace ZfrRestTest\Resource\Metadata;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Resource\ResourceMetadata;
+use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 
 /**
- * Tests for {@see \ZfrRest\Resource\ResourceMetadata}
+ * Tests for {@see \ZfrRest\Resource\Metadata\ResourceMetadata}
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-class ResourceMetadataTest extends TestCase
+class CollectionResourceMetadataTest extends TestCase
 {
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\CollectionResourceMetadata
      */
     public function testResourceMetadata()
     {
-        $metadata         = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $resourceMetadata = new ResourceMetadata($metadata);
+        $resourceMetadata = new CollectionResourceMetadata('stdClass');
 
-        $this->assertSame($metadata, $resourceMetadata->getClassMetadata());
-
-        $resourceMetadata->setControllerName('test');
+        $resourceMetadata->controller = 'test';
         $this->assertSame('test', $resourceMetadata->getControllerName());
-        $resourceMetadata->setControllerName(null);
+        $resourceMetadata->controller = null;
         $this->assertSame(null, $resourceMetadata->getControllerName());
 
-        $resourceMetadata->setInputFilterName('test');
+        $resourceMetadata->inputFilter = 'test';
         $this->assertSame('test', $resourceMetadata->getInputFilterName());
-        $resourceMetadata->setInputFilterName(null);
+        $resourceMetadata->inputFilter = null;
         $this->assertSame(null, $resourceMetadata->getInputFilterName());
 
-        $resourceMetadata->setHydratorName('test');
+        $resourceMetadata->hydrator = 'test';
         $this->assertSame('test', $resourceMetadata->getHydratorName());
-        $resourceMetadata->setHydratorName(null);
+        $resourceMetadata->hydrator = null;
         $this->assertSame(null, $resourceMetadata->getHydratorName());
+    }
 
-        $resourceMetadata->setEncoderNames(array('name' => 'encoder'));
-        $this->assertSame(array('name' => 'encoder'), $resourceMetadata->getEncoderNames());
-
-        $resourceMetadata->setDecoderNames(array('name' => 'decoder'));
-        $this->assertSame(array('name' => 'decoder'), $resourceMetadata->getDecoderNames());
-
-        $resourceMetadata->setAssociations(array('association'));
-        $this->assertSame(array('association'), $resourceMetadata->getAssociations());
+    /**
+     * @covers \ZfrRest\Resource\CollectionResourceMetadata
+     */
+    public function testAssertHasDefaultHydrator()
+    {
+        $resourceMetadata = new CollectionResourceMetadata('stdClass');
+        $this->assertSame('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', $resourceMetadata->getHydratorName());
     }
 }

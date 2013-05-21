@@ -16,30 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource;
+return array(
+    'zfr_rest' => array(
+        'object_manager' => 'doctrine.entitymanager.orm_default',
 
-use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Resource\ResourceMetadataAbstractFactory;
-use ZfrRest\Resource\ResourceMetadataPluginManager;
+        'resource_metadata' => array(
+            'drivers' => array(
+                'application_driver' => array(
+                    'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+                )
+            )
+        )
+    ),
 
-/**
- * Tests for {@see \ZfrRest\Resource\ResourceMetadataPluginManager}
- *
- * @author Marco Pivetta <ocramius@gmail.com>
- */
-class ResourceMetadataPluginManagerTest extends TestCase
-{
-    /**
-     * @covers \ZfrRest\Resource\ResourceMetadataPluginManager::validatePlugin
-     */
-    public function testValidatePlugin()
-    {
-        $pluginManager = new ResourceMetadataPluginManager();
-
-        $pluginManager->validatePlugin($this->getMock('ZfrRest\\Resource\\ResourceMetadataInterface'));
-
-        $this->setExpectedException('Zend\\ServiceManager\\Exception\\InvalidArgumentException');
-
-        $pluginManager->validatePlugin(new \stdClass());
-    }
-}
+    'doctrine' => array(
+        'driver' => array(
+            'application_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/ZfrRestTest/Asset/Annotation')
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'ZfrRestTest\Asset\Annotation' => 'application_driver'
+                )
+            )
+        ),
+    ),
+);
