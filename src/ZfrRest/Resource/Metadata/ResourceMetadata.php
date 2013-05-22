@@ -75,12 +75,10 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
         }
 
         if (func_num_args() === 0) {
-            return new Resource(new $this->name, $this);
+            return new Resource($this->reflection->newInstance(), $this);
         }
 
-        $data = $this->classMetadata->getReflectionClass()->newInstanceArgs(func_get_args());
-        
-        return new Resource($data, $this);
+        return new Resource($this->reflection->newInstanceArgs(func_get_args()), $this);
     }
 
     /**
