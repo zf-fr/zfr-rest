@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
 use Metadata\ClassMetadata;
 use ZfrRest\Resource\Exception;
 use ZfrRest\Resource\Resource;
@@ -31,7 +32,7 @@ use ZfrRest\Resource\Resource;
 class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
 {
     /**
-     * @var ClassMetadata
+     * @var DoctrineClassMetadata
      */
     public $classMetadata;
 
@@ -73,8 +74,13 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
             ));
         }
 
-        // @TODO: handle the case where the constructor has required arguments
-        return new Resource(new $this->name, $this);
+        if (func_num_args() === 0) {
+            return new Resource(new $this->name, $this);
+        }
+
+        $data = $this->classMetadata->getReflectionClass()->newInstanceArgs(func_get_args());
+        
+        return new Resource($data, $this);
     }
 
     /**
