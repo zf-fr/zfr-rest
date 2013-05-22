@@ -74,11 +74,13 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
             ));
         }
 
-        if (func_num_args() === 0) {
+        $args = func_get_args();
+
+        if (empty($args)) {
             return new Resource($this->reflection->newInstance(), $this);
         }
 
-        return new Resource($this->reflection->newInstanceArgs(func_get_args()), $this);
+        return new Resource($this->reflection->newInstanceArgs($args), $this);
     }
 
     /**
