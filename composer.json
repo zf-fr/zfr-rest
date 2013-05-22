@@ -30,10 +30,10 @@
         "jms/metadata": ">=1.3",
         "zendframework/zendframework": ">=2.2",
         "doctrine/common": ">=2.3",
-        "doctrine/doctrine-module": "dev-master"
+        "doctrine/doctrine-module": "~0.8"
     },
     "require-dev": {
-        "doctrine/doctrine-orm-module": "dev-master"
+        "doctrine/doctrine-orm-module": "~0.8"
     },
     "autoload": {
         "psr-0": {

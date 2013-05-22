@@ -22,7 +22,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\Exception\ExceptionInterface as ServiceManagerExceptionInterface;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
@@ -180,9 +180,9 @@ abstract class AbstractRestfulController extends AbstractController
      * Automatically create an InputFilter object, and validate data against it.
      *
      * @param  string $inputFilterClass
-     * @param  array  $data
-     * @throws Server\InternalServerErrorException
-     * @throws Client\BadRequestException
+     * @param  array $data
+     * @throws Server\InternalServerErrorException If the input filter class is not valid
+     * @throws Client\BadRequestException If input filter create validation errors
      * @return array
      */
     protected function validateData($inputFilterClass, array $data)
@@ -195,13 +195,19 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
+        if (empty($inputFilterClass)) {
+            throw new Server\InternalServerErrorException(sprintf(
+                'No input filter class was given, although controller is configured to auto validate'
+            ));
+        }
+
         try {
             $inputFilterManager = $this->serviceLocator->get('InputFilterManager');
             $inputFilter        = $inputFilterManager->get($inputFilterClass);
-        } catch (ServiceManagerExceptionInterface $e) {
+        } catch (ServiceNotFoundException $e) {
             throw new Server\InternalServerErrorException(sprintf(
                 'An invalid input filter class name was given when validating data ("%s" given)',
-                null === $inputFilterClass ? 'null' : $inputFilterClass
+                (string) $inputFilterClass
             ));
         }
 
@@ -235,13 +241,19 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
+        if (empty($hydratorClass)) {
+            throw new Server\InternalServerErrorException(sprintf(
+                'No hydrator class was given, although controller is configured to auto hydrate'
+            ));
+        }
+
         try {
             $hydratorManager = $this->serviceLocator->get('HydratorManager');
             $hydrator        = $hydratorManager->get($hydratorClass);
-        } catch (ServiceManagerExceptionInterface $e) {
+        } catch (ServiceNotFoundException $e) {
             throw new Server\InternalServerErrorException(sprintf(
                 'An invalid hydrator class name was given when hydrating data ("%s" given)',
-                null === $hydratorClass ? 'null' : $hydratorClass
+                (string) $hydratorClass
             ));
         }
 

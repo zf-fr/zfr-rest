@@ -67,7 +67,7 @@ class ModuleOptions extends AbstractOptions
      */
     public function setObjectManager($objectManager)
     {
-        $this->objectManager = $objectManager;
+        $this->objectManager = (string) $objectManager;
     }
 
     /**

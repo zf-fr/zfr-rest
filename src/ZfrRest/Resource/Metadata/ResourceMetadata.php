@@ -73,6 +73,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
             ));
         }
 
+        // @TODO: handle the case where the constructor has required arguments
         return new Resource(new $this->name, $this);
     }
 

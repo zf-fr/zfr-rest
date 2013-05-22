@@ -51,7 +51,7 @@ class PaginatorHydrator extends AbstractHydrator
             return array();
         }
 
-        $paginatorData = array(
+        $payload = array(
             'current_page'   => $object->getCurrentPageNumber(),
             'count_per_page' => $object->getItemCountPerPage()
         );
@@ -59,12 +59,11 @@ class PaginatorHydrator extends AbstractHydrator
         $resourceHydrator = $object->getResourceMetadata()->getHydratorName();
         $resourceHydrator = $this->hydratorManager->get($resourceHydrator);
 
-        $resourceData = array();
         foreach ($object as $item) {
-            $resourceData['items'][] = $resourceHydrator->extract($item);
+            $payload['items'][] = $resourceHydrator->extract($item);
         }
 
-        return array_merge($paginatorData, $resourceData);
+        return $payload;
     }
 
     /**

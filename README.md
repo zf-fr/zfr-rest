@@ -13,7 +13,7 @@ the API at some point, but we will keep track of all the changes in the [UPGRADE
 
 Ultimately, you are strongly encouraged to test the module and report feedbacks, PR...
 
-## Roadmap
+## Milestone
 
 Here is a basic roadmap of ZfrRest, by priority:
 
@@ -26,15 +26,9 @@ Here is a basic roadmap of ZfrRest, by priority:
 
 ## Installation
 
-Add the following code to your `composer.json` file and update your dependencies:
+Install the module by typing (or add it to your `composer.json` file):
 
-```json
-{
-    require: {
-        "zfr/zfr-rest": "0.1.*"
-    }
-}
-```
+`php composer.phar require zf-fr/zfr-rest`
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
 `zfr_rest.local.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!). For
@@ -42,7 +36,7 @@ more details about how to use ZfrRest, please follow the [quick start]((/docs/qu
 
 ## Documentation
 
-* [Quick Start](/docs/quick-start.md)
+* [Quick Start](/docs/quick-start/01-introduction.md)
 * [Annotation mapping reference](/docs/annotation-mapping-reference.md)
 * [PHP mapping reference](/docs/php-mapping-reference.md)
 * [Cook book](/docs/cook-book.md)
