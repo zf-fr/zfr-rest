@@ -35,4 +35,4 @@ return array(
 Users that are not using Doctrine can [learn more in the cook-book](/../cook-book.md) about how to use with other
 persistence layer like Zend\Db.
 
-[In next part](/02-define-entity.md), you are going to define your entity.
+[In next part](02-define-entity.md), you are going to define your entity.
