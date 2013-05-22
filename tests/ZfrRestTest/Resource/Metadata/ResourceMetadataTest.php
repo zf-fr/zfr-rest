@@ -90,4 +90,23 @@ class ResourceMetadataTest extends TestCase
         $this->assertSame($resource->getMetadata(), $resourceMetadata);
         $this->assertInstanceOf('stdClass', $resource->getData());
     }
+
+    /**
+     * @covers \ZfrRest\Resource\ResourceMetadata
+     */
+    public function testCanCreateEmptyResourceWithParameter()
+    {
+        $resourceMetadata = new ResourceMetadata('ReflectionFunction');
+        $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
+        $resourceMetadata->classMetadata = $metadata;
+
+        $reflectionClass  = new \ReflectionClass('ReflectionFunction');
+        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
+
+        $resource = $resourceMetadata->createResource('substr');
+
+        $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $resource);
+        $this->assertSame($resource->getMetadata(), $resourceMetadata);
+        $this->assertInstanceOf('ReflectionFunction', $resource->getData());
+    }
 }
