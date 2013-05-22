@@ -86,6 +86,14 @@ class PhpDriver extends AbstractFileDriver implements ResourceMetadataDriverInte
                 // at the association level so that the user can override some properties
                 $resourceAssociationMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass)->getRootClassMetadata();
 
+                if (isset($associationConfig['allow_traversal'])) {
+                    $resourceAssociationMetadata->allowTraversal = $associationConfig['allow_traversal'];
+                }
+
+                if (isset($associationConfig['serialization_strategy'])) {
+                    $resourceAssociationMetadata->serializationStrategy = $associationConfig['serialization_strategy'];
+                }
+
                 $this->processMetadata($resourceAssociationMetadata, $associationConfig);
                 $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
             }

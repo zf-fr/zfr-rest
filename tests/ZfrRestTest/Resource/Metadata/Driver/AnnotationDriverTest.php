@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Resource\Metadata\Driver;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
 class AnnotationDriverTest extends TestCase
@@ -35,11 +36,12 @@ class AnnotationDriverTest extends TestCase
         $this->assertEquals('Application\Controller\UserController', $resourceMetadata->getControllerName());
         $this->assertSame('Application\InputFilter\UserInputFilter', $resourceMetadata->getInputFilterName());
         $this->assertSame('Application\Hydrator\UserHydrator', $resourceMetadata->getHydratorName());
+        $this->assertFalse($resourceMetadata->allowTraversal());
 
         $collectionMetadata = $resourceMetadata->getCollectionMetadata();
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $collectionMetadata);
         $this->assertEquals('Application\Controller\UserListController', $collectionMetadata->getControllerName());
-        $this->assertSame('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', $collectionMetadata->getHydratorName());
+        $this->assertSame('Application\Hydrator\UserHydrator', $collectionMetadata->getHydratorName());
 
         // Should reuse the input filter from Resource annotation as none is defined at collection level
         $this->assertSame('Application\InputFilter\UserInputFilter', $collectionMetadata->getInputFilterName());
@@ -54,6 +56,8 @@ class AnnotationDriverTest extends TestCase
         $this->assertEquals('Application\Controller\TweetController', $tweetMetadata->getControllerName());
         $this->assertEquals('Application\InputFilter\TweetInputFilter', $tweetMetadata->getInputFilterName());
         $this->assertEquals('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $tweetMetadata->getHydratorName());
+        $this->assertTrue($tweetMetadata->allowTraversal());
+        $this->assertEquals(ResourceMetadataInterface::SERIALIZATION_STRATEGY_LOAD, $tweetMetadata->getSerializationStrategy());
 
         // Note that this one has been overriden by the User class at the association level
         $this->assertEquals('Application\Controller\UserTweetListController', $tweetMetadata->getCollectionMetadata()->getControllerName());

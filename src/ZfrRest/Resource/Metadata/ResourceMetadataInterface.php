@@ -26,6 +26,12 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
+     * Constants used for decide how associations must be serialized when outputted
+     */
+    const SERIALIZATION_STRATEGY_IDENTIFIERS = 'IDENTIFIERS';
+    const SERIALIZATION_STRATEGY_LOAD        = 'LOAD';
+
+    /**
      * Create a new resource whose type is equals to class name
      *
      * @return \ZfrRest\Resource\ResourceInterface
@@ -82,6 +88,20 @@ interface ResourceMetadataInterface
      * @return bool
      */
     public function hasAssociation($association);
+
+    /**
+     * Used in context of an association, it returns if the resource can be traversed from its parent resource
+     *
+     * @return bool
+     */
+    public function allowTraversal();
+
+    /**
+     * Get the serialization strategy when this resource is outputted as an association of its parent resource
+     *
+     * @return string
+     */
+    public function getSerializationStrategy();
 
     /**
      * Get metadata to use in case the resource is a collection of item

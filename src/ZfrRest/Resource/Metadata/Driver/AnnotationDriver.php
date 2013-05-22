@@ -104,6 +104,9 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
                     // at the association level so that the user can override some properties
                     $resourceAssociationMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass)->getRootClassMetadata();
 
+                    $resourceAssociationMetadata->allowTraversal        = $propertyAnnotation->allowTraversal;
+                    $resourceAssociationMetadata->serializationStrategy = $propertyAnnotation->serializationStrategy;
+
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
 

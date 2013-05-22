@@ -54,7 +54,7 @@ class User
      * @var Array
      *
      * @ORM\OneToMany(targetEntity="Tweet", mappedBy="user")
-     * @REST\Association
+     * @REST\Association(allowTraversal=true, serializationStrategy="LOAD")
      * @REST\Collection(controller="Application\Controller\UserTweetListController")
      */
     protected $tweets;

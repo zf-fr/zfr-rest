@@ -201,8 +201,13 @@ class ResourceGraphRoute implements RouteInterface
 
         $data = $reflProperty->getValue($resource->getData());
 
-        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($data, $resourceMetadata);
+        $associationResourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
+
+        if (!$associationResourceMetadata->allowTraversal()) {
+            return null;
+        }
+
+        $resource = new Resource($data, $associationResourceMetadata);
 
         // If empty, we have processed the whole path
         if (empty($chunks)) {

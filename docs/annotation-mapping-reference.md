@@ -18,13 +18,15 @@ This annotation is used to mark an association between two resources. This annot
 
 * **allowTraversal**: (default to false) If this attribute is set to true, then the association is exposed by the router,
 hence allowing dispatching to the associated resource.
+* **serializationStrategy**: (default to IDENTIFIERS) Define how the association is serialized when the parent resource
+is outputted. Can be "IDENTIFIERS" (only output ids) or "LOAD" (load the associated records).
 
 *Example:*
 
 ```php
 /**
  * @var Collection
- * @REST\Association(allowTraversal=true, serializationStrategy="NONE")
+ * @REST\Association(allowTraversal=true, serializationStrategy="IDENTIFIERS")
  */
 protected $tweets;
 ```
@@ -129,7 +131,7 @@ class User
     * will reuse the mapping defined in the associated class (in this case, Tweet entity), but you may want to override
     * some attributes based on the context
     *
-    * @REST\Assocation(allowTraversal=true, serializationStrategy="NONE")
+    * @REST\Assocation(allowTraversal=true, serializationStrategy="IDENTIFIERS")
     * @REST\Resource(
     *     controller="Application\Controller\UserTweetController")
     * )
