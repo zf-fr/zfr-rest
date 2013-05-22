@@ -32,7 +32,6 @@ class RestAggregateHydrator extends AggregateHydrator
      */
     const PAGINATOR_KEY    = '__paginator__';
     const RESOURCE_KEY     = '__resource__';
-    const ASSOCIATIONS_KEY = '__associations__';
 
     /**
      * @var HydratorPluginManager

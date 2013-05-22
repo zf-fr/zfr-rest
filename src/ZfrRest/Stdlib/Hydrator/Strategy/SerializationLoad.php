@@ -47,8 +47,14 @@ class SerializationLoad extends AbstractCollectionStrategy
     {
         $result = array();
 
+        // This need to be done better, through a strategy maybe?
+        $fieldToIgnore = $this->metadata->getAssociationMappedByTargetField($this->collectionName);
+
         foreach ($value as $object) {
-            $result[] = $this->associationHydrator->extract($object);
+            $data = $this->associationHydrator->extract($object);
+            unset($data[$fieldToIgnore]);
+
+            $result[] = $data;
         }
 
         return $result;

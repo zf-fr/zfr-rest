@@ -79,8 +79,10 @@ class ResourceHydrator implements HydratorInterface
             }
         }
 
+        $result = $resourceHydrator->extract($object->getData());
+
         return array(
-            RestAggregateHydrator::RESOURCE_KEY => array_filter($resourceHydrator->extract($object->getData()))
+            RestAggregateHydrator::RESOURCE_KEY => array_filter($result)
         );
     }
 
