@@ -5,8 +5,8 @@ php:
   - 5.4
 
 before_script:
-  - php composer.phar self-update
-  - php composer.phar install
+  - composer self-update
+  - composer install
 
 script:
   - phpunit
