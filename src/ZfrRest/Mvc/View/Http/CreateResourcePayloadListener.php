@@ -80,7 +80,7 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
         // a controller is, most of the time, a single item of the collection. The "resource" is therefore changed
         // semantically, that's why we need to create a new resource (although most of the time it's not needed)
         if ($resource->getData() !== $result) {
-            $resource = new Resource($resource, $resource->getMetadata());
+            $resource = new Resource($result, $resource->getMetadata());
         }
 
         $e->setResult($hydrator->extract($resource));
