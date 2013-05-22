@@ -166,4 +166,4 @@ public function get(User $user)
 
 ZfrRest has built-in exceptions for the most common `4xx` and `5xx` HTTP response codes.
 
-[In next part](/05-associations.md), you are going to learn how to use associations with ZfrRest.
+[In next part](05-associations.md), you are going to learn how to use associations with ZfrRest.

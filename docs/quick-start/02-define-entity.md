@@ -112,4 +112,4 @@ return array(
 "global" to the whole application. However, PHP mapping is a bit more verbose as you need to set paths. More
 information can be found [in the PHP mapping reference](/../php-mapping-reference.md).
 
-[In next part](/03-configuring-router.md), you are going to configure the router.
+[In next part](03-configuring-router.md), you are going to configure the router.

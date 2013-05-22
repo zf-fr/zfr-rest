@@ -47,9 +47,9 @@ If writing a factory for each repository is too tiring, you can always write an 
 
 Now, let's type "/users" in our browser. Here is what happen:
 
-![ZfrRest](/../img/zfr-rest-error-access-resource.png)
+![ZfrRest](../img/zfr-rest-error-access-resource.png)
 
 It throws an exception, which is normal. This is because we didn't write our controller. We are going to do that
 in next part.
 
-[In next part](/04-creating-controller.md), you are going to create the controllers.
+[In next part](04-creating-controller.md), you are going to create the controllers.
