@@ -16,54 +16,38 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Stdlib\Hydrator;
 
-use Metadata\ClassMetadata;
+use Zend\Stdlib\Hydrator\Aggregate\AggregateHydrator;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 
 /**
- * ResourceMetadata
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class RestAggregateHydrator extends AggregateHydrator
 {
     /**
-     * @var string
+     * Constants for schema
      */
-    public $controller;
+    const PAGINATOR_KEY    = '__paginator__';
+    const RESOURCE_KEY     = '__resource__';
+    const ASSOCIATIONS_KEY = '__associations__';
 
     /**
-     * @var string
+     * @var HydratorPluginManager
      */
-    public $inputFilter;
+    protected $hydratorManager;
 
     /**
-     * @var string
+     * @param HydratorPluginManager $hydratorManager
      */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getControllerName()
+    public function __construct(HydratorPluginManager $hydratorManager)
     {
-        return $this->controller;
-    }
+        $this->hydratorManager = $hydratorManager;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getInputFilterName()
-    {
-        return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->hydrator;
+        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', 100));
+        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\ResourceHydrator', 80));
+        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator', 80));
     }
 }

@@ -58,11 +58,18 @@ return array(
     ),
 
     'hydrators' => array(
+        'invokables' => array(
+            'ZfrRest\Stdlib\Hydrator\PaginatorHydrator' => 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator',
+        ),
         'factories' => array(
-            'ZfrRest\Stdlib\Hydrator\PaginatorHydrator' => 'ZfrRest\Factory\PaginatorHydratorFactory'
+            'ZfrRest\Stdlib\Hydrator\ResourceHydrator'           => 'ZfrRest\Factory\ResourceHydratorFactory',
+            'ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator' => 'ZfrRest\Factory\ResourceHydratorFactory',
+            'ZfrRest\Stdlib\Hydrator\RestAggregateHydrator'      => 'ZfrRest\Factory\RestAggregateHydratorFactory'
         ),
         'aliases' => array(
-            'PaginatorHydrator' => 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator'
+            'PaginatorHydrator'     => 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator',
+            'ResourceHydrator'      => 'ZfrRest\Stdlib\Hydrator\ResourceHydrator',
+            'RestAggregateHydrator' => 'ZfrRest\Stdlib\Hydrator\RestAggregateHydrator'
         )
     ),
 

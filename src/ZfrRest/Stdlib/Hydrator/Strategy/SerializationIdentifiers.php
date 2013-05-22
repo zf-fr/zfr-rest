@@ -16,33 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRest\Stdlib\Hydrator\Strategy;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use ZfrRest\Stdlib\Hydrator\PaginatorHydrator;
+use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
- * PaginatorHydratorFactory
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class PaginatorHydratorFactory implements FactoryInterface
+class SerializationIdentifiers extends AbstractCollectionStrategy
 {
     /**
      * {@inheritDoc}
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function extract($value)
     {
-        if (!$serviceLocator instanceof HydratorPluginManager) {
-            throw new Exception\RuntimeException(sprintf(
-                'A hydrator plugin manager was expected, but "%s" was given',
-                get_class($serviceLocator)
-            ));
+        $result = array();
+
+        foreach ($value as $object) {
+            $result[] = $object->getId();
         }
 
-        return new PaginatorHydrator($serviceLocator);
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hydrate($value)
+    {
+        return $value;
     }
 }

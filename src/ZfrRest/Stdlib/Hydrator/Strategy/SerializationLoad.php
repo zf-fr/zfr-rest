@@ -16,22 +16,49 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Paginator;
+namespace ZfrRest\Stdlib\Hydrator\Strategy;
 
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
+use Zend\Stdlib\Hydrator\HydratorInterface;
 
 /**
- * A Paginator in ZfrRest must implement this interface to retrieve the metadata of the underlying object
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-interface ResourcePaginatorInterface
+class SerializationLoad extends AbstractCollectionStrategy
 {
     /**
-     * Get the resource metadata of the underlying object
-     *
-     * @return ResourceMetadataInterface
+     * @var HydratorInterface
      */
-    public function getResourceMetadata();
+    protected $associationHydrator;
+
+    /**
+     * @param HydratorInterface $associationHydrator
+     */
+    public function __construct(HydratorInterface $associationHydrator)
+    {
+        $this->associationHydrator = $associationHydrator;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function extract($value)
+    {
+        $result = array();
+
+        foreach ($value as $object) {
+            $result[] = $this->associationHydrator->extract($object);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hydrate($value)
+    {
+        return $value;
+    }
 }

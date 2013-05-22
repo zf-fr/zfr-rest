@@ -34,14 +34,14 @@ interface CollectionResourceMetadataInterface
     public function getControllerName();
 
     /**
-     * Get the input filter's FQCN to be used for this resource
+     * Get the input filter's FQCN to be used for the resource represented in the collection
      *
      * @return string|null
      */
     public function getInputFilterName();
 
     /**
-     * Get the hydrator's FQCN to be used for this resource
+     * Get the hydrator's FQCN to be used for the resource represented in the collection
      *
      * @return string|null
      */

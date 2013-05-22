@@ -75,6 +75,13 @@ interface ResourceMetadataInterface
     public function getHydratorName();
 
     /**
+     * Get the metadata for all associations
+     *
+     * @return ResourceMetadataInterface[]
+     */
+    public function getAssociationsMetadata();
+
+    /**
      * Get the metadata to a given association
      *
      * @param  string $association

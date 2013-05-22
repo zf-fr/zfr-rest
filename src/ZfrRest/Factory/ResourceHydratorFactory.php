@@ -16,54 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Factory;
 
-use Metadata\ClassMetadata;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Stdlib\Hydrator\ResourceHydrator;
 
 /**
- * ResourceMetadata
+ * ResourceHydratorFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class ResourceHydratorFactory implements FactoryInterface
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
-
-    /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return $this->controller;
-    }
+        if (!$serviceLocator instanceof HydratorPluginManager) {
+            throw new Exception\RuntimeException(sprintf(
+                'A hydrator plugin manager was expected, but "%s" was given',
+                get_class($serviceLocator)
+            ));
+        }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getInputFilterName()
-    {
-        return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->hydrator;
+        return new ResourceHydrator($serviceLocator);
     }
 }

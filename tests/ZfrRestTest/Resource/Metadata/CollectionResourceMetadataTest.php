@@ -57,6 +57,6 @@ class CollectionResourceMetadataTest extends TestCase
     public function testAssertHasDefaultHydrator()
     {
         $resourceMetadata = new CollectionResourceMetadata('stdClass');
-        $this->assertSame('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', $resourceMetadata->getHydratorName());
+        $this->assertSame('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $resourceMetadata->getHydratorName());
     }
 }

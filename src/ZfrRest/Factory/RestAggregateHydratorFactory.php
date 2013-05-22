@@ -16,38 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Paginator;
+namespace ZfrRest\Factory;
 
-use Zend\Paginator\Paginator;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Stdlib\Hydrator\RestAggregateHydrator;
 
 /**
- * ResourcePaginator
+ * RestAggregateHydratorFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourcePaginator extends Paginator implements ResourcePaginatorInterface
+class RestAggregateHydratorFactory implements FactoryInterface
 {
     /**
-     * @var ResourceMetadataInterface
-     */
-    protected $resourceMetadata;
-
-    /**
      * {@inheritDoc}
      */
-    public function __construct(ResourceMetadataInterface $resourceMetadata, $adapter)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $this->resourceMetadata = $resourceMetadata;
-        parent::__construct($adapter);
-    }
+        if (!$serviceLocator instanceof HydratorPluginManager) {
+            throw new Exception\RuntimeException(sprintf(
+                'A hydrator plugin manager was expected, but "%s" was given',
+                get_class($serviceLocator)
+            ));
+        }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getResourceMetadata()
-    {
-        return $this->resourceMetadata;
+        return new RestAggregateHydrator($serviceLocator);
     }
 }

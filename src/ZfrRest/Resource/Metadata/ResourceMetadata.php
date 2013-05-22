@@ -130,6 +130,14 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * {@inheritDoc}
      */
+    public function getAssociationsMetadata()
+    {
+        return $this->associations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAssociationMetadata($association)
     {
         return $this->associations[$association];

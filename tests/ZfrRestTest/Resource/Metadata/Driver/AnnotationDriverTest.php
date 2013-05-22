@@ -41,7 +41,7 @@ class AnnotationDriverTest extends TestCase
         $collectionMetadata = $resourceMetadata->getCollectionMetadata();
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $collectionMetadata);
         $this->assertEquals('Application\Controller\UserListController', $collectionMetadata->getControllerName());
-        $this->assertSame('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', $collectionMetadata->getHydratorName());
+        $this->assertSame('Application\Hydrator\UserHydrator', $collectionMetadata->getHydratorName());
 
         // Should reuse the input filter from Resource annotation as none is defined at collection level
         $this->assertSame('Application\InputFilter\UserInputFilter', $collectionMetadata->getInputFilterName());

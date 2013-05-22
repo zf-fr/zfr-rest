@@ -16,54 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Stdlib\Hydrator\Strategy;
 
-use Metadata\ClassMetadata;
+use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
- * ResourceMetadata
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class SerializationNone extends AbstractCollectionStrategy
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
-
-    /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function extract($value)
     {
-        return $this->controller;
+        return array();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function hydrate($value)
     {
-        return $this->inputFilter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->hydrator;
+        return $value;
     }
 }
