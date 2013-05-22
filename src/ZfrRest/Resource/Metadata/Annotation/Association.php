@@ -32,7 +32,7 @@ final class Association implements AnnotationInterface
     /**
      * @var string
      *
-     * @Enum({"IDENTIFIERS", "LOAD"})
+     * @Enum({"IDENTIFIERS", "LOAD", "NONE"})
      */
     public $serializationStrategy;
 

@@ -30,6 +30,7 @@ interface ResourceMetadataInterface
      */
     const SERIALIZATION_STRATEGY_IDENTIFIERS = 'IDENTIFIERS';
     const SERIALIZATION_STRATEGY_LOAD        = 'LOAD';
+    const SERIALIZATION_STRATEGY_NONE        = 'NONE';
 
     /**
      * Create a new resource whose type is equals to class name

@@ -38,8 +38,8 @@ a multi-dimensional array whose key is the name of the association.
 * **allow_traversal**: (default to false) If this attribute is set to true, then the association is exposed by the router,
 hence allowing dispatching to the associated resource.
 * **serialization_strategy**: (default to IDENTIFIERS) Define how the association is serialized when the parent resource
-is outputted. Can be "IDENTIFIERS" (only output ids) or "LOAD" (load the associated records). For avoiding any BC, please
-use the ResourceMetadataInterface constants instead, as shown below:
+is outputted. Can be "IDENTIFIERS" (only output ids), "LOAD" (load the associated records) or "NONE" (don't output
+anything). For avoiding any BC, please use the ResourceMetadataInterface constants instead, as shown below:
 
 *Example:*
 

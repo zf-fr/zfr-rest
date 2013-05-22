@@ -19,7 +19,7 @@ This annotation is used to mark an association between two resources. This annot
 * **allowTraversal**: (default to false) If this attribute is set to true, then the association is exposed by the router,
 hence allowing dispatching to the associated resource.
 * **serializationStrategy**: (default to IDENTIFIERS) Define how the association is serialized when the parent resource
-is outputted. Can be "IDENTIFIERS" (only output ids) or "LOAD" (load the associated records).
+is outputted. Can be "IDENTIFIERS" (only output ids), "LOAD" (load the associated records) or "NONE" (don't output anything).
 
 *Example:*
 
