@@ -49,7 +49,14 @@ class SimpleNormalizer implements OutputNormalizerInterface
      */
     public function normalizeResourceData(array $data, ResourceInterface $resource)
     {
-        return $data;
+        $normalizedData = array();
+        foreach ($data as $key => $value) {
+            $normalizedData[Inflector::tableize($key)] = $value;
+        }
+
+        return array(
+            'users' => array($normalizedData)
+        );
     }
 
     /**

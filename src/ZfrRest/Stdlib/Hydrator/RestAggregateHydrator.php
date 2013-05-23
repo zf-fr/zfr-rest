@@ -37,6 +37,7 @@ class RestAggregateHydrator extends AggregateHydrator
      * Hydrators are runned in a specific order to allow pre-process at each step
      */
     const PAGINATOR_PRIORITY = 500;
+    const RESOURCE_PRIORITY  = 400;
 
     /**
      * @var HydratorPluginManager
@@ -55,9 +56,12 @@ class RestAggregateHydrator extends AggregateHydrator
     public function __construct(HydratorPluginManager $hydratorManager, OutputNormalizerInterface $normalizer = null)
     {
         $this->hydratorManager = $hydratorManager;
+
         $this->outputNormalizer = new SimpleNormalizer();
+
         $eventManager = $this->getEventManager();
         $eventManager->attach(ExtractEvent::EVENT_EXTRACT, array($this, 'extractPaginatorData'), self::PAGINATOR_PRIORITY);
+        $eventManager->attach(ExtractEvent::EVENT_EXTRACT, array($this, 'extractResourceData'), self::RESOURCE_PRIORITY);
     }
 
     /**
@@ -70,6 +74,29 @@ class RestAggregateHydrator extends AggregateHydrator
         $paginatorHydrator = $this->hydratorManager->get('ZfrRest\Stdlib\Hydrator\PaginatorHydrator');
         $data              = $paginatorHydrator->extract($event->getExtractionObject());
         $normalizedData    = $this->outputNormalizer->normalizePaginatorData($data, $event->getExtractionObject());
+
+        $event->mergeExtractedData($normalizedData);
+    }
+
+    /**
+     * Extract data from a Resource using the hydrator bound to it
+     *
+     * @param ExtractEvent $event
+     */
+    public function extractResourceData(ExtractEvent $event)
+    {
+        /*$paginatorHydrator = $this->hydratorManager->get('ZfrRest\Stdlib\Hydrator\PaginatorHydrator');
+        $data              = $paginatorHydrator->extract($event->getExtractionObject());
+        $normalizedData    = $this->outputNormalizer->normalizePaginatorData($data, $event->getExtractionObject());
+
+        $event->mergeExtractedData($normalizedData);*/
+
+        /** @var \ZfrRest\Resource\ResourceInterface $resource */
+        $resource = $event->getExtractionObject();
+
+        $resourceHydrator = $this->hydratorManager->get($resource->getMetadata()->getHydratorName());
+        $data             = $resourceHydrator->extract($resource->getData());
+        $normalizedData   = $this->outputNormalizer->normalizeResourceData($data, $resource);
 
         $event->mergeExtractedData($normalizedData);
     }
