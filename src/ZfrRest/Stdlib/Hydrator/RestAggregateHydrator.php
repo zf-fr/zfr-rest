@@ -19,19 +19,24 @@
 namespace ZfrRest\Stdlib\Hydrator;
 
 use Zend\Stdlib\Hydrator\Aggregate\AggregateHydrator;
+use Zend\Stdlib\Hydrator\Aggregate\ExtractEvent;
+use Zend\Stdlib\Hydrator\Aggregate\HydratorListener;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Stdlib\Hydrator\Normalizer\OutputNormalizerInterface;
 
 /**
+ * The RestAggregateHydrator is an aggregate hydrator that is mainly used for extraction purpose, when outputting
+ * data.
+ *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
 class RestAggregateHydrator extends AggregateHydrator
 {
     /**
-     * Constants for schema
+     * Hydrators are runned in a specific order to allow pre-process at each step
      */
-    const PAGINATOR_KEY    = '__paginator__';
-    const RESOURCE_KEY     = '__resource__';
+    const PAGINATOR_PRIORITY = 500;
 
     /**
      * @var HydratorPluginManager
@@ -39,14 +44,33 @@ class RestAggregateHydrator extends AggregateHydrator
     protected $hydratorManager;
 
     /**
-     * @param HydratorPluginManager $hydratorManager
+     * @var OutputNormalizerInterface
      */
-    public function __construct(HydratorPluginManager $hydratorManager)
+    protected $outputNormalizer;
+
+    /**
+     * @param HydratorPluginManager     $hydratorManager
+     * @param OutputNormalizerInterface $normalizer
+     */
+    public function __construct(HydratorPluginManager $hydratorManager, OutputNormalizerInterface $normalizer)
     {
         $this->hydratorManager = $hydratorManager;
 
-        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', 100));
-        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\ResourceHydrator', 80));
-        $this->add($hydratorManager->get('ZfrRest\Stdlib\Hydrator\CollectionResourceHydrator', 80));
+        $eventManager = $this->getEventManager();
+        $eventManager->attach(ExtractEvent::EVENT_EXTRACT, array($this, 'extractPaginatorData'), self::PAGINATOR_PRIORITY);
+    }
+
+    /**
+     * Extract data from a Paginator instance, and normalize it using the normalizer attached
+     *
+     * @param ExtractEvent $event
+     */
+    public function extractPaginatorData(ExtractEvent $event)
+    {
+        $paginatorHydrator = $this->hydratorManager->get('ZfrRest\Stdlib\Hydrator\PaginatorHydrator');
+        $data              = $paginatorHydrator->extract($event->getExtractionObject());
+        $normalizedData    = $this->outputNormalizer->normalizePaginatorData($data, $event->getExtractionObject());
+
+        $event->mergeExtractedData($normalizedData);
     }
 }

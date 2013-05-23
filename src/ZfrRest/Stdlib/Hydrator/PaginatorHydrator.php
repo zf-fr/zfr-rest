@@ -37,17 +37,15 @@ class PaginatorHydrator implements HydratorInterface
             return array();
         }
 
-        $resourceData = $object->getData();
+        $data = $object->getData();
 
-        if (!$resourceData instanceof Paginator) {
+        if (!$data instanceof Paginator) {
             return array();
         }
 
         return array(
-            RestAggregateHydrator::PAGINATOR_KEY => array(
-                'current_page'   => $resourceData->getCurrentPageNumber(),
-                'count_per_page' => $resourceData->getItemCountPerPage()
-            )
+            'current_page'   => $data->getCurrentPageNumber(),
+            'count_per_page' => $data->getItemCountPerPage()
         );
     }
 
@@ -56,6 +54,6 @@ class PaginatorHydrator implements HydratorInterface
      */
     public function hydrate(array $data, $object)
     {
-        return array();
+        return $object;
     }
 }
