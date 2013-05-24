@@ -309,6 +309,6 @@ class ResourceGraphRoute implements RouteInterface
             ));
         }
 
-        $this->resource = new Resource($resource, $metadata->getRootClassMetadata());
+        $this->resource = new Resource($resource, $metadata->getOutsideClassMetadata());
     }
 }
