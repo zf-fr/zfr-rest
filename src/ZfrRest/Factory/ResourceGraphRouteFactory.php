@@ -19,25 +19,17 @@
 namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\MutableCreationOptionsInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;
 use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
 
-class ResourceGraphRouteFactory implements FactoryInterface
+class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOptionsInterface
 {
     /**
      * @var array
      */
     protected $creationOptions;
-
-    /**
-     * @param  array $creationOptions
-     * @throws Exception\RuntimeException
-     */
-    public function __construct(array $creationOptions)
-    {
-        $this->setCreationOptions($creationOptions);
-    }
 
     /**
      * @param  array $creationOptions
