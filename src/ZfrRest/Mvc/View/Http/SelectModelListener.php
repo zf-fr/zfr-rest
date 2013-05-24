@@ -72,7 +72,14 @@ class SelectModelListener extends AbstractListenerAggregate
     public function selectModel(MvcEvent $e)
     {
         $result = $e->getResult();
-        if ($result instanceof ModelInterface || $result instanceof ResponseInterface) {
+
+        // If a view model was already set, or if the application errored with no produced result, no
+        // view model replacement should happen
+        if (
+            $result instanceof ModelInterface
+            || $result instanceof ResponseInterface
+            || (!isset($result) && $e->getError())
+        ) {
             return;
         }
 
