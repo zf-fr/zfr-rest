@@ -71,7 +71,7 @@ class ResourceGraphRoute implements RouteInterface
     public function __construct(MetadataFactory $metadataFactory, $resource, $route)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->route           = trim($route, '/');
+        $this->route           = (string) $route;
         $this->resource        = $resource;
     }
 
@@ -110,7 +110,7 @@ class ResourceGraphRoute implements RouteInterface
 
         /* @var $request \Zend\Http\Request */
         $uri  = $request->getUri();
-        $path = trim($uri->getPath(), '/');
+        $path = $uri->getPath();
 
         // Save the query part (GET parameters) to optionally filter the result at the end
         $this->query = $uri->getQueryAsArray();
