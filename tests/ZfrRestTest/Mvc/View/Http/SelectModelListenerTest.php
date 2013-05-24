@@ -134,4 +134,15 @@ class SelectModelListenerTest extends TestCase
             $this->assertTrue($this->event->propagationIsStopped());
         }
     }
+
+    public function testDoesNotInterceptErrorApplicationResponse()
+    {
+        // typical application scenario - no result and the application has exited
+        $this->event->setError('application-hates-you');
+        $this->event->setResult(null);
+
+        $this->selectModelListener->selectModel($this->event);
+
+        $this->assertNull($this->event->getResult());
+    }
 }
