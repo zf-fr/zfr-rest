@@ -34,6 +34,7 @@ class ModelPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $invokableClasses = array(
+        '*/*'                    => 'Zend\View\Model\ViewModel',
         'text/html'              => 'Zend\View\Model\ViewModel',
         'application/xhtml+xml'  => 'Zend\View\Model\ViewModel',
         'application/json'       => 'Zend\View\Model\JsonModel',
