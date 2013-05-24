@@ -27,7 +27,14 @@ final class Association implements AnnotationInterface
     /**
      * @var bool
      */
-    public $allowTraversal = false;
+    public $allowTraversal;
+
+    /**
+     * @var string
+     *
+     * @Enum({"IDENTIFIERS", "LOAD", "NONE"})
+     */
+    public $serializationStrategy;
 
     /**
      * {@inheritDoc}
@@ -42,6 +49,9 @@ final class Association implements AnnotationInterface
      */
     public function getValue()
     {
-        return true;
+        return array(
+            'allowTraversal'        => $this->allowTraversal,
+            'serializationStrategy' => $this->serializationStrategy
+        );
     }
 }

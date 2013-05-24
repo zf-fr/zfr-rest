@@ -25,6 +25,8 @@ use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\Resource;
 
 /**
  * CreateResourceRepresentationListener. This listener is used to extract data from a resource
@@ -71,15 +73,16 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource         = $e->getRouteMatch()->getParam('resource');
-        $resourceMetadata = $resource->getMetadata();
+        $resource = $e->getRouteMatch()->getParam('resource');
+        $hydrator = $this->hydratorPluginManager->get('ZfrRest\Stdlib\Hydrator\RestAggregateHydrator');
 
-        if (is_array($result) || $result instanceof Traversable) {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getCollectionMetadata()->getHydratorName());
-        } else {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+        // In some cases, for instance in POST methods, the resource is a collection, while what is returned from
+        // a controller is, most of the time, a single item of the collection. The "resource" is therefore changed
+        // semantically, that's why we need to create a new resource (although most of the time it's not needed)
+        if ($resource->getData() !== $result) {
+            $resource = new Resource($result, $resource->getMetadata());
         }
 
-        $e->setResult($hydrator->extract($result));
+        $e->setResult($hydrator->extract($resource));
     }
 }

@@ -19,51 +19,34 @@
 namespace ZfrRest\Stdlib\Hydrator;
 
 use Zend\Paginator\Paginator;
-use Zend\Stdlib\Hydrator\AbstractHydrator;
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use ZfrRest\Paginator\ResourcePaginator;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class PaginatorHydrator extends AbstractHydrator
+class PaginatorHydrator implements HydratorInterface
 {
-    /**
-     * @var HydratorPluginManager
-     */
-    protected $hydratorManager;
-
-    /**
-     * @param HydratorPluginManager $hydratorManager
-     */
-    public function __construct(HydratorPluginManager $hydratorManager)
-    {
-        $this->hydratorManager = $hydratorManager;
-    }
-
     /**
      * {@inheritDoc}
      */
     public function extract($object)
     {
-        if (!$object instanceof ResourcePaginator) {
+        if (!$object instanceof ResourceInterface) {
             return array();
         }
 
-        $payload = array(
-            'current_page'   => $object->getCurrentPageNumber(),
-            'count_per_page' => $object->getItemCountPerPage()
-        );
+        $data = $object->getData();
 
-        $resourceHydrator = $object->getResourceMetadata()->getHydratorName();
-        $resourceHydrator = $this->hydratorManager->get($resourceHydrator);
-
-        foreach ($object as $item) {
-            $payload['items'][] = $resourceHydrator->extract($item);
+        if (!$data instanceof Paginator) {
+            return array();
         }
 
-        return $payload;
+        return array(
+            'current_page'   => $data->getCurrentPageNumber(),
+            'count_per_page' => $data->getItemCountPerPage()
+        );
     }
 
     /**
@@ -71,6 +54,6 @@ class PaginatorHydrator extends AbstractHydrator
      */
     public function hydrate(array $data, $object)
     {
-        // TODO: Implement hydrate() method.
+        return $object;
     }
 }

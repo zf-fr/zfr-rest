@@ -21,15 +21,15 @@ namespace ZfrRest\Factory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use ZfrRest\Stdlib\Hydrator\PaginatorHydrator;
+use ZfrRest\Stdlib\Hydrator\ResourceHydrator;
 
 /**
- * PaginatorHydratorFactory
+ * ResourceHydratorFactory
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class PaginatorHydratorFactory implements FactoryInterface
+class ResourceHydratorFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -43,6 +43,6 @@ class PaginatorHydratorFactory implements FactoryInterface
             ));
         }
 
-        return new PaginatorHydrator($serviceLocator);
+        return new ResourceHydrator($serviceLocator);
     }
 }

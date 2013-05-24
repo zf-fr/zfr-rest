@@ -25,9 +25,9 @@ use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
-use ZfrRest\Paginator\ResourcePaginator;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -201,8 +201,13 @@ class ResourceGraphRoute implements RouteInterface
 
         $data = $reflProperty->getValue($resource->getData());
 
-        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($data, $resourceMetadata);
+        $associationResourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
+
+        if (!$associationResourceMetadata->allowTraversal()) {
+            return null;
+        }
+
+        $resource = new Resource($data, $associationResourceMetadata);
 
         // If empty, we have processed the whole path
         if (empty($chunks)) {
@@ -237,8 +242,7 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            // @TODO: for now, collection is always wrapped around a ResourcePaginator, but the goal is to make this configurable
-            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
+            $data = new Paginator(new SelectableAdapter($data, $criteria));
 
             $resource = new Resource($data, $resourceMetadata);
         }

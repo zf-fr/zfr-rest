@@ -16,54 +16,54 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRest\Stdlib\Hydrator\Normalizer;
 
-use Metadata\ClassMetadata;
+use Doctrine\Common\Inflector\Inflector;
+use ZfrRest\Resource\ResourceInterface;
 
-/**
- * ResourceMetadata
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class SimpleNormalizer implements OutputNormalizerInterface
 {
     /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string
-     */
-    public $inputFilter;
-
-    /**
-     * @var string
-     */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
-
-    /**
      * {@inheritDoc}
      */
-    public function getControllerName()
+    public function normalizeLinksData(array $data, ResourceInterface $resource)
     {
-        return $this->controller;
+        return $data;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function normalizePaginatorData(array $data, ResourceInterface $resource)
     {
-        return $this->inputFilter;
+        $normalizedData = array();
+        foreach ($data as $key => $value) {
+            $normalizedData[Inflector::tableize($key)] = $value;
+        }
+
+        return $normalizedData;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getHydratorName()
+    public function normalizeResourceData(array $data, ResourceInterface $resource)
     {
-        return $this->hydrator;
+        $normalizedData = array();
+        foreach ($data as $key => $value) {
+            $normalizedData[Inflector::tableize($key)] = $value;
+        }
+
+        return array(
+            'users' => array($normalizedData)
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function normalizeCollectionResourceData(array $data, ResourceInterface $resource)
+    {
+        return $data;
     }
 }

@@ -57,6 +57,16 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public $associations;
 
     /**
+     * @var bool
+     */
+    public $allowTraversal = false;
+
+    /**
+     * @var string
+     */
+    public $serializationStrategy = self::SERIALIZATION_STRATEGY_IDENTIFIERS;
+
+    /**
      * @var CollectionResourceMetadataInterface
      */
     public $collectionMetadata;
@@ -126,6 +136,14 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * {@inheritDoc}
      */
+    public function getAssociationsMetadata()
+    {
+        return $this->associations;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAssociationMetadata($association)
     {
         return $this->associations[$association];
@@ -137,6 +155,22 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public function hasAssociation($association)
     {
         return isset($this->associations[$association]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function allowTraversal()
+    {
+        return $this->allowTraversal;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSerializationStrategy()
+    {
+        return $this->serializationStrategy;
     }
 
     /**
