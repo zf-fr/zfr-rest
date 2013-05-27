@@ -109,21 +109,22 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         /* @var $request \Zend\Http\Request */
-        $uri  = $request->getUri();
-        $path = $uri->getPath();
+        $uri         = $request->getUri();
+        $path        = $uri->getPath();
+        $matchedPath = rtrim($path, '/');
 
         // Save the query part (GET parameters) to optionally filter the result at the end
         $this->query = $uri->getQueryAsArray();
 
         // If the route is not even contained within the URI, this means we can return early...
-        if (strpos($path, $this->route) === false) {
+        if (strpos($matchedPath, $this->route) === false && strpos($path, $this->route) === false) {
             return null;
         }
 
         // ...and we can now initialize the resource
         $this->initializeResource();
 
-        if ($path === $this->route) {
+        if ($matchedPath === $this->route || $path === $this->route) {
             return $this->buildRouteMatch($this->resource, $path);
         }
 
