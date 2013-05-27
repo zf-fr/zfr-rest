@@ -116,6 +116,7 @@ class ResourceGraphRoute implements RouteInterface
         // Save the query part (GET parameters) to optionally filter the result at the end
         $this->query = $uri->getQueryAsArray();
 
+        // @todo consider using a segment/part route to handle this logic instead
         // If the route is not even contained within the URI, this means we can return early...
         if (strpos($matchedPath, $this->route) === false && strpos($path, $this->route) === false) {
             return null;
