@@ -129,11 +129,13 @@ class ResourceGraphRoute implements RouteInterface
             return $this->buildRouteMatch($this->resource, $path);
         }
 
-        if (!$this->resource->isCollection()) {
+        $identifierPath = substr($path, strlen(rtrim($this->route, '/')));
+
+        if (0 !== strpos($identifierPath, '/') || ! $this->resource->isCollection()) {
             return null;
         }
 
-        return $this->matchIdentifier($this->resource, substr($path, strpos($path, '/')));
+        return $this->matchIdentifier($this->resource, $identifierPath);
     }
 
     /**
