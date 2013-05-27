@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Controller;
 
+use Zend\Http\Header\Accept;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Exception;
@@ -142,8 +143,9 @@ abstract class AbstractRestfulController extends AbstractController
         // Set the Location header with the URL to the newly created resource
         if (is_object($data)) {
             // @FIXME: use Router for that
-            $identifierValue = reset($metadata->getClassMetadata()->getIdentifierValues($data));
-            $url             = '/' . trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
+            $identifierValues = $metadata->getClassMetadata()->getIdentifierValues($data);
+            $identifierValue  = reset($identifierValues);
+            $url              = '/' . trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
 
             $this->response->getHeaders()->addHeaderLine('Location', $url);
         }
@@ -282,12 +284,19 @@ abstract class AbstractRestfulController extends AbstractController
         /** @var $decoderPluginManager \ZfrRest\Serializer\DecoderPluginManager */
         $decoderPluginManager = $this->serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager');
 
-        $header = $this->request->getHeader('Content-Type', null);
-        if (null === $header) {
+        /* @var $request \Zend\Http\Request */
+        $request = $this->getRequest();
+        /* @var $header \Zend\Http\Header\ContentType */
+        $header = $request->getHeader('Content-Type');
+
+        if (!$header) {
             return null;
         }
 
-        $mimeType = $header->getFieldValue();
+        $contentTypes = Accept::fromString('Accept: ' . $header->getFieldValue())->getPrioritized();
+        /* @var $contentType \Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart */
+        $contentType  = reset($contentTypes);
+        $mimeType     = $contentType->getTypeString();
 
         return $decoderPluginManager->get($mimeType)->decode($content, '');
     }
