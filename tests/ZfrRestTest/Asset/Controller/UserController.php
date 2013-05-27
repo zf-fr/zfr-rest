@@ -16,37 +16,22 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Mvc\Asset;
+namespace ZfrRestTest\Asset\Controller;
 
 use Zend\View\Model\ViewModel;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\ResourceInterface;
 
-class DummyController extends AbstractRestfulController
+/**
+ * Test asset controller
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ */
+class UserController extends AbstractRestfulController
 {
-    /**
-     * @param  mixed $resource
-     * @return \Zend\View\Model\ViewModel
-     */
-    public function get($resource)
-    {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
-    }
-
-    /**
-     * @param mixed                     $data
-     * @param ResourceMetadataInterface $metadata
-     * @param ResourceInterface         $resource
-     *
-     * @return ViewModel
-     */
     public function post($data, ResourceMetadataInterface $metadata, ResourceInterface $resource)
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        return new ViewModel(array('data' => $data, 'metadata' => $metadata, 'resource' => $resource));
     }
 }
