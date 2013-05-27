@@ -90,4 +90,42 @@ class ResourceGraphRouteTest extends TestCase
 
         $this->markTestIncomplete('Should not mock the resource graph route itself');
     }
+
+    /**
+     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
+     */
+    public function testDoesNotMatchCollectionItemsWithoutSlashSeparator()
+    {
+        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
+        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
+        $request         = new Request();
+        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
+        $route           = $this->getMock(
+            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
+            array('buildRouteMatch', 'matchIdentifier'),
+            array($metadataFactory, $resource, '/foo/bar')
+        );
+
+        $resource->expects($this->any())->method('isCollection')->will($this->returnValue(true));
+        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
+        $route
+            ->expects($this->any())
+            ->method('matchIdentifier')
+            ->with($resource, '/123')
+            ->will($this->returnValue($routeMatch));
+
+        $request->setUri('/foo/bar');
+        $this->assertSame($routeMatch, $route->match($request));
+
+        $request->setUri('/foo/bar/');
+        $this->assertSame($routeMatch, $route->match($request));
+
+        $request->setUri('/foo/bar/123');
+        $this->assertSame($routeMatch, $route->match($request));
+
+        $request->setUri('/foo/barbaz');
+        $this->assertNull($route->match($request));
+
+        $this->markTestIncomplete('Should not mock the resource graph route itself');
+    }
 }
