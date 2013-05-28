@@ -35,6 +35,9 @@ class SelectModelListenerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new SelectModelListener($serviceLocator->get('ZfrRest\View\Model\ModelPluginManager'));
+        /* @var $modelPluginManager \ZfrRest\View\Model\ModelPluginManager */
+        $modelPluginManager = $serviceLocator->get('ZfrRest\View\Model\ModelPluginManager');
+
+        return new SelectModelListener($modelPluginManager);
     }
 }

@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
-use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
@@ -40,7 +40,7 @@ use ZfrRest\Resource\ResourceInterface;
 class ResourceGraphRoute implements RouteInterface
 {
     /**
-     * @var MetadataFactory
+     * @var MetadataFactoryInterface
      */
     protected $metadataFactory;
 
@@ -65,11 +65,11 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @param MetadataFactory $metadataFactory
-     * @param mixed           $resource
-     * @param string          $route
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param mixed                    $resource
+     * @param string                   $route
      */
-    public function __construct(MetadataFactory $metadataFactory, $resource, $route)
+    public function __construct(MetadataFactoryInterface $metadataFactory, $resource, $route)
     {
         $this->metadataFactory = $metadataFactory;
         $this->route           = (string) $route;
@@ -200,11 +200,12 @@ class ResourceGraphRoute implements RouteInterface
             return null;
         }
 
-        $refl         = $classMetadata->getReflectionClass();
-        $reflProperty = $refl->getProperty($associationName);
-        $reflProperty->setAccessible(true);
+        $reflectionClass    = $classMetadata->getReflectionClass();
+        $reflectionProperty = $reflectionClass->getProperty($associationName);
 
-        $data = $reflProperty->getValue($resource->getData());
+        $reflectionProperty->setAccessible(true);
+
+        $data = $reflectionProperty->getValue($resource->getData());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
         $resource         = new Resource($data, $resourceMetadata);

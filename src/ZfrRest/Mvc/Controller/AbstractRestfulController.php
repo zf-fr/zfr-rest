@@ -33,7 +33,7 @@ use ZfrRest\Http\Exception\Server\InternalServerErrorException;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
- * Abstract RESTful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
+ * Abstract REST-ful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
  * exception if the method is not implemented.
  *
  * By default, AbstractRestfulController handles the "big four" methods (GET, DELETE, PUT and POST). You can add

@@ -21,7 +21,6 @@ namespace ZfrRest\Resource\Metadata\Driver;
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader as AnnotationReader;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
-use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
