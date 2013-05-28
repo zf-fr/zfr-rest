@@ -16,37 +16,41 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Mvc\Asset;
+namespace ZfrRestTest\Asset\Hydrator;
 
-use Zend\View\Model\ViewModel;
-use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
-use ZfrRest\Resource\ResourceInterface;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use ZfrRestTest\Asset\Annotation\User;
 
-class DummyController extends AbstractRestfulController
+/**
+ * Test asset hydrator
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ */
+class UserHydrator implements HydratorInterface
 {
     /**
-     * @param  mixed $resource
-     * @return \Zend\View\Model\ViewModel
+     * {@inheritDoc}
      */
-    public function get($resource)
+    public function extract($object)
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        if (! $object instanceof User) {
+            return array();
+        }
+
+        return array('name' => $object->getName());
     }
 
     /**
-     * @param mixed                     $data
-     * @param ResourceMetadataInterface $metadata
-     * @param ResourceInterface         $resource
-     *
-     * @return ViewModel
+     * {@inheritDoc}
      */
-    public function post($data, ResourceMetadataInterface $metadata, ResourceInterface $resource)
+    public function hydrate(array $data, $object)
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        if (! $object instanceof User) {
+            return $object;
+        }
+
+        $object->setName($data['name']);
+
+        return $object;
     }
 }

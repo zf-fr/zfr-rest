@@ -16,6 +16,8 @@
  * and is licensed under the MIT license.
  */
 
+namespace ZfrRestTest\Mvc\Controller;
+
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\EventManager\EventManager;

@@ -32,9 +32,9 @@ class AnnotationDriverTest extends TestCase
         $resourceMetadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Annotation\User')->getRootClassMetadata();
 
         $this->assertEquals('ZfrRestTest\Asset\Annotation\User', $resourceMetadata->getClassName());
-        $this->assertEquals('Application\Controller\UserController', $resourceMetadata->getControllerName());
-        $this->assertSame('Application\InputFilter\UserInputFilter', $resourceMetadata->getInputFilterName());
-        $this->assertSame('Application\Hydrator\UserHydrator', $resourceMetadata->getHydratorName());
+        $this->assertEquals('ZfrRestTest\Asset\Controller\UserController', $resourceMetadata->getControllerName());
+        $this->assertSame('ZfrRestTest\Asset\\InputFilter\UserInputFilter', $resourceMetadata->getInputFilterName());
+        $this->assertSame('ZfrRestTest\Asset\\Hydrator\UserHydrator', $resourceMetadata->getHydratorName());
 
         $collectionMetadata = $resourceMetadata->getCollectionMetadata();
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $collectionMetadata);
@@ -42,7 +42,7 @@ class AnnotationDriverTest extends TestCase
         $this->assertSame('ZfrRest\Stdlib\Hydrator\PaginatorHydrator', $collectionMetadata->getHydratorName());
 
         // Should reuse the input filter from Resource annotation as none is defined at collection level
-        $this->assertSame('Application\InputFilter\UserInputFilter', $collectionMetadata->getInputFilterName());
+        $this->assertSame('ZfrRestTest\Asset\\InputFilter\UserInputFilter', $collectionMetadata->getInputFilterName());
 
         $this->assertTrue($resourceMetadata->hasAssociation('tweets'));
         $this->assertFalse($resourceMetadata->hasAssociation('posts'));
