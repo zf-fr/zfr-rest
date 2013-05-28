@@ -36,10 +36,10 @@ class ModelPluginManagerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Config');
-        $config = $config['zfr_rest']['models'];
+        /* @var $options \ZfrRest\Options\ModuleOptions */
+        $options = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
 
-        $modelPluginManager = new ModelPluginManager(new Config($config));
+        $modelPluginManager = new ModelPluginManager(new Config($options->getModels()));
         $modelPluginManager->setServiceLocator($serviceLocator);
 
         return $modelPluginManager;

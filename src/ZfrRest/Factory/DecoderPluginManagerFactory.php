@@ -36,10 +36,10 @@ class DecoderPluginManagerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Config');
-        $config = $config['zfr_rest']['decoders'];
+        /* @var $options \ZfrRest\Options\ModuleOptions */
+        $options = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
 
-        $decoderPluginManager = new DecoderPluginManager(new Config($config));
+        $decoderPluginManager = new DecoderPluginManager(new Config($options->getDecoders()));
         $decoderPluginManager->setServiceLocator($serviceLocator);
 
         return $decoderPluginManager;
