@@ -45,7 +45,7 @@ class ResourceTest extends TestCase
             ->getReflectionClass()
             ->expects($this->any())
             ->method('isInstance')
-            ->will($this->returnValue( ! $isCollection));
+            ->will($this->returnValue(! $isCollection));
 
         $resource = new Resource($instance, $metadata);
 

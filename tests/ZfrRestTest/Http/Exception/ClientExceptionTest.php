@@ -23,26 +23,30 @@ use ZfrRest\Http\Exception;
 
 class ClientExceptionTest extends TestCase
 {
-    public function testThrowExceptionIfStatusCodeIsNotInRange()
+    public function testThrowExceptionIfStatusCodeIsOverRange()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             'Status code for client errors must be between 400 and 499, 500 given'
         );
 
-        $exception = new Exception\ClientException(500);
+        new Exception\ClientException(500);
+    }
 
+    public function testThrowExceptionIfStatusCodeIsBelowRange()
+    {
         $this->setExpectedException(
             'InvalidArgumentException',
             'Status code for client errors must be between 400 and 499, 399 given'
         );
 
-        $exception = new Exception\ClientException(399);
+        new Exception\ClientException(399);
     }
 
     public function testAlwaysContainDefaultMessage()
     {
         $exception = new Exception\ClientException(401);
+
         $this->assertContains('A client error occurred', $exception->getMessage());
     }
 }

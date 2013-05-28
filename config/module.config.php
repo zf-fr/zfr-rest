@@ -25,12 +25,13 @@ return array(
 
         'factories' => array(
             'ZfrRest\Mvc\View\Http\SelectModelListener'           => 'ZfrRest\Factory\SelectModelListenerFactory',
-            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener' => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
             'ZfrRest\Options\ModuleOptions'                       => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Resource\Metadata\CacheProvider'             => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
             'ZfrRest\Resource\Metadata\MetadataFactory'           => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
             'ZfrRest\Serializer\DecoderPluginManager'             => 'ZfrRest\Factory\DecoderPluginManagerFactory',
             'ZfrRest\View\Model\ModelPluginManager'               => 'ZfrRest\Factory\ModelPluginManagerFactory',
+            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'
+                => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
         )
     ),
 

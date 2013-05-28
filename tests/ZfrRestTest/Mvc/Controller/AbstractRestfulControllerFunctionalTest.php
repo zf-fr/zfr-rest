@@ -19,11 +19,7 @@
 namespace ZfrRestTest\Mvc\Controller;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Console\Request as ConsoleRequest;
-use Zend\EventManager\EventManager;
 use Zend\Http\Request as HttpRequest;
-use Zend\Mvc\MvcEvent;
-use ZfrRestTest\Mvc\Asset\DummyController;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**

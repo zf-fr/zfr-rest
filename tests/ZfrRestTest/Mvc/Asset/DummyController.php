@@ -31,9 +31,7 @@ class DummyController extends AbstractRestfulController
      */
     public function get($resource)
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        return new ViewModel(array('resource' => $resource));
     }
 
     /**
@@ -45,8 +43,6 @@ class DummyController extends AbstractRestfulController
      */
     public function post($data, ResourceMetadataInterface $metadata, ResourceInterface $resource)
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        return new ViewModel(array('resource' => $resource));
     }
 }

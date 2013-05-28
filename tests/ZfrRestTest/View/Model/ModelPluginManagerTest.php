@@ -49,19 +49,18 @@ class ModelPluginManagerTest extends TestCase
     public function testCanRetrievePluginManagerWithServiceManager()
     {
         $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'ModelPluginManager' => 'ZfrRest\Factory\ModelPluginManagerFactory',
+            new ServiceManagerConfig(
+                array(
+                    'factories' => array(
+                        'ModelPluginManager' => 'ZfrRest\Factory\ModelPluginManagerFactory',
+                    )
                 )
-            ))
-        );
-        $serviceManager->setService('Config', array(
-            'zfr_rest' => array(
-                'models' => array()
             )
-        ));
+        );
+        $serviceManager->setService('Config', array('zfr_rest' => array('models' => array())));
 
         $modelPluginManager = $serviceManager->get('ModelPluginManager');
+
         $this->assertInstanceOf('ZfrRest\View\Model\ModelPluginManager', $modelPluginManager);
     }
 }

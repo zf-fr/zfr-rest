@@ -51,19 +51,18 @@ class DecoderPluginManagerTest extends TestCase
     public function testCanRetrievePluginManagerWithServiceManager()
     {
         $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory',
-                ),
-            ))
-        );
-        $serviceManager->setService('Config', array(
-            'zfr_rest' => array(
-                'decoders' => array()
+            new ServiceManagerConfig(
+                array(
+                    'factories' => array(
+                        'DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory',
+                    ),
+                )
             )
-        ));
+        );
+        $serviceManager->setService('Config', array('zfr_rest' => array('decoders' => array())));
 
         $decoderPluginManager = $serviceManager->get('DecoderPluginManager');
+
         $this->assertInstanceOf('ZfrRest\Serializer\DecoderPluginManager', $decoderPluginManager);
     }
 }
