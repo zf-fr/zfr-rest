@@ -40,5 +40,4 @@ more details about how to use ZfrRest, please follow the [quick start]((/docs/qu
 
 * [Quick Start](/docs/quick-start/01-introduction.md)
 * [Annotation mapping reference](/docs/annotation-mapping-reference.md)
-* [PHP mapping reference](/docs/php-mapping-reference.md)
 * [Cook book](/docs/cook-book.md)
