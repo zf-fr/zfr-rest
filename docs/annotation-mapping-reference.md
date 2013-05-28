@@ -3,7 +3,7 @@
 In this chapter a reference of ZfrRest annotations is given. For the examples to work, you must import a namespace:
 
 ```php
-use ZfrRest\Resource\Annotation as REST;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 ```
 
 ## Index
@@ -31,8 +31,8 @@ protected $tweets;
 
 ### Collection
 
-This annotation is used to define mapping about a collection of a given resource. This annotation basically define
-the same information than Resource annotation, but in a collection context. This annotation can be used at class level
+This annotation is used to define mapping about a collection of a given resource. This annotation basically defines
+the same information as a Resource annotation, but in a collection context. This annotation can be used at class level
 and property level.
 
 *Required attributes:*
