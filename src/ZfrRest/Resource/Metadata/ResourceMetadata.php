@@ -67,13 +67,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function createResource()
     {
-        if (!class_exists($this->name)) {
-            throw new Exception\RuntimeException(sprintf(
-                'Impossible to create a new resource because the class "%s" does not exist',
-                $this->name
-            ));
-        }
-
         $args = func_get_args();
 
         if (empty($args)) {

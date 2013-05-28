@@ -79,6 +79,8 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
                         $doctrineMetadataFactory
                     );
                     break;
+                default:
+                    throw RuntimeException::invalidDriverClass($driverOptions['class']);
             }
         }
 

@@ -60,7 +60,12 @@ class SelectModelListener extends AbstractListenerAggregate
         $sharedManager = $events->getSharedManager();
 
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectErrorModel'), 80);
-        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'selectModel'), -60);
+        $sharedManager->attach(
+            'Zend\Stdlib\DispatchableInterface',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'selectModel'),
+            -60
+        );
     }
 
     /**

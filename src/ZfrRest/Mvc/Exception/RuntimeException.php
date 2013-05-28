@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Exception;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use RuntimeException as BaseRuntimeException;
 use ZfrRest\Exception\ExceptionInterface;
 
@@ -29,4 +30,33 @@ use ZfrRest\Exception\ExceptionInterface;
  */
 class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
+    /**
+     * @param ClassMetadata $classMetadata
+     *
+     * @return self
+     */
+    public static function missingCollectionMetadata(ClassMetadata $classMetadata)
+    {
+        return new self(
+            sprintf(
+                'Collection metadata not found. Do you have a @Collection annotation for the resource "%s"?',
+                $classMetadata->getName()
+            )
+        );
+    }
+
+    /**
+     * @param mixed $resource
+     *
+     * @return self
+     */
+    public static function unsupportedResourceType($resource)
+    {
+        return new self(
+            sprintf(
+                'Resource "%s" is not supported: either specify an ObjectRepository instance, or an entity class name',
+                is_object($resource) ? get_class($resource) : gettype($resource)
+            )
+        );
+    }
 }

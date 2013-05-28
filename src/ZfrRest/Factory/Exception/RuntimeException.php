@@ -98,4 +98,16 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
             )
         );
     }
+
+    /**
+     * @param string $driverClass
+     *
+     * @return self
+     */
+    public static function invalidDriverClass($driverClass)
+    {
+        return new self(
+            sprintf('Unrecognized driver class "%s" given', $driverClass)
+        );
+    }
 }

@@ -53,7 +53,13 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
     public function attach(EventManagerInterface $events)
     {
         $sharedManager = $events->getSharedManager();
-        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'createPayload'), -40);
+
+        $sharedManager->attach(
+            'Zend\Stdlib\DispatchableInterface',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'createPayload'),
+            -40
+        );
     }
 
     /**
@@ -74,11 +80,13 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
         $resource         = $e->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
 
-        if (is_array($result) || $result instanceof Traversable) {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getCollectionMetadata()->getHydratorName());
+        if ($result instanceof Traversable || is_array($result)) {
+            $hydratorName = $resourceMetadata->getCollectionMetadata()->getHydratorName();
         } else {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+            $hydratorName = $resourceMetadata->getHydratorName();
         }
+
+        $hydrator = $this->hydratorPluginManager->get($hydratorName);
 
         $e->setResult($hydrator->extract($result));
     }

@@ -102,7 +102,10 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
-                    $resourceAssociationMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass)->getRootClassMetadata();
+                    $resourceAssociationMetadata = $this
+                        ->resourceMetadataFactory
+                        ->getMetadataForClass($targetClass)
+                        ->getRootClassMetadata();
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
@@ -153,7 +156,10 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
 
                     // If the value is null, then we reuse the value defined at "resource-level"
                     if (null === $value && isset($metadata->propertyMetadata[$key])) {
-                        $propertyMetadata->setValue($collectionMetadata, $metadata->propertyMetadata[$key]->getValue($metadata));
+                        $propertyMetadata->setValue(
+                            $collectionMetadata,
+                            $metadata->propertyMetadata[$key]->getValue($metadata)
+                        );
                     } else {
                         $propertyMetadata->setValue($collectionMetadata, $value);
                     }
