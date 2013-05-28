@@ -29,4 +29,18 @@ use ZfrRest\Exception\ExceptionInterface;
  */
 class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
+    /**
+     * @param  mixed $plugin
+     *
+     * @return self
+     */
+    public static function invalidViewModelPlugin($plugin)
+    {
+        return new self(
+            sprintf(
+                'Plugin of type %s is invalid; must implement Zend\View\ViewModel',
+                (is_object($plugin) ? get_class($plugin) : gettype($plugin))
+            )
+        );
+    }
 }

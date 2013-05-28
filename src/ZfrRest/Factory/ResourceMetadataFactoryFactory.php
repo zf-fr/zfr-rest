@@ -96,11 +96,10 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         // Also add a cache if one is set
         $cache = $serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
 
-        if (! $cache instanceof CacheInterface) {
-            throw RuntimeException::invalidCache('ZfrRest\Resource\Metadata\CacheProvider', $cache);
+        if ($cache instanceof CacheInterface) {
+            $resourceMetadataFactory->setCache($cache);
         }
 
-        $resourceMetadataFactory->setCache($cache);
 
         return $resourceMetadataFactory;
     }
