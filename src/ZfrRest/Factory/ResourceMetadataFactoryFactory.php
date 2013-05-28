@@ -30,7 +30,6 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\Driver\AnnotationDriver;
-use ZfrRest\Resource\Metadata\Driver\PhpDriver;
 use ZfrRest\Resource\Metadata\Driver\ResourceMetadataDriverInterface;
 
 /**
@@ -72,12 +71,6 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
                 case 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver':
                     //AnnotationRegistry::registerAutoloadNamespace('ZfrRest\Resource\Annotation', __DIR__ . '/../..');
                     $metadataDrivers[] = new AnnotationDriver(new AnnotationReader(), $doctrineMetadataFactory);
-                    break;
-                case 'ZfrRest\Resource\Metadata\Driver\PhpDriver':
-                    $metadataDrivers[] = new PhpDriver(
-                        new FileLocator($driverOptions['paths']),
-                        $doctrineMetadataFactory
-                    );
                     break;
                 default:
                     throw RuntimeException::invalidDriverClass($driverOptions['class']);
