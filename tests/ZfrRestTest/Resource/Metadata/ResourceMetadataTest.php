@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Resource\Metadata;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\Server\Reflection\ReflectionClass;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -79,9 +80,8 @@ class ResourceMetadataTest extends TestCase
         $resourceMetadata = new ResourceMetadata('stdClass');
         $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $resourceMetadata->classMetadata = $metadata;
+        $reflectionClass                 = new ReflectionClass('stdClass');
 
-        $reflectionClass  = $this->getMock('ReflectionClass', array(), array(), '', false);
-        $reflectionClass->expects($this->any())->method('isInstance')->will($this->returnValue(true));
         $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
 
         $resource = $resourceMetadata->createResource();

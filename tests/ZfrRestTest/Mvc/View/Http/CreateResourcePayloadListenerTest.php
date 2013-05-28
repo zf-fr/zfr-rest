@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Mvc\View\Http;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionClass;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
@@ -65,15 +66,15 @@ class CreateResourcePayloadListenerTest extends TestCase
 
         $classMetadata    = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $resourceMetadata = new ResourceMetadata('stdClass');
+        $reflectionClass = new ReflectionClass($data);
+
         $resourceMetadata->hydrator = 'Zend\Stdlib\Hydrator\ObjectProperty';
         $resourceMetadata->classMetadata = $classMetadata;
 
-        $reflectionClass  = $this->getMock('ReflectionClass', array(), array(), '', false);
-        $reflectionClass->expects($this->any())->method('isInstance')->will($this->returnValue(true));
+
         $classMetadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
 
         $resource   = new Resource($data, $resourceMetadata);
-
         $routeMatch = new RouteMatch(array('resource' => $resource));
 
         $this->event->setRouteMatch($routeMatch);
