@@ -30,7 +30,7 @@ class ResourceTest extends TestCase
 {
     /**
      * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Resource\Resource::getResource
+     * @covers \ZfrRest\Resource\Resource::getData
      * @covers \ZfrRest\Resource\Resource::getMetadata
      * @covers \ZfrRest\Resource\Resource::isCollection
      *
@@ -56,7 +56,7 @@ class ResourceTest extends TestCase
 
     /**
      * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Exception\InvalidResourceException::invalidResourceProvided
+     * @covers \ZfrRest\Resource\Exception\InvalidResourceException::invalidResourceProvided
      */
     public function testDisallowsInvalidResource()
     {

@@ -29,7 +29,7 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
 class ResourceMetadataTest extends TestCase
 {
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testResourceMetadata()
     {
@@ -63,7 +63,7 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testAssertHasDefaultHydrator()
     {
@@ -72,7 +72,7 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testCanCreateEmptyResource()
     {
@@ -92,7 +92,7 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testCanCreateEmptyResourceWithParameter()
     {
