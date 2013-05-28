@@ -34,6 +34,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-orm-module": "~0.8",
+        "phpunit/phpunit": "~3.7",
         "squizlabs/php_codesniffer": "1.4.*",
         "satooshi/php-coveralls": "~0.6"
     },
