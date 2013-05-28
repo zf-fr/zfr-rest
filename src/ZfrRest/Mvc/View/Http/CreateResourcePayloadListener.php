@@ -66,18 +66,19 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
      * The logic is as follow: extract the resource metadata, use the bound hydrator to extract data, and set the
      * data as new result
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function createPayload(MvcEvent $e)
+    public function createPayload(MvcEvent $event)
     {
-        $result = $e->getResult();
+        $result = $event->getResult();
+
         if ($result instanceof ModelInterface || $result instanceof ResponseInterface || empty($result)) {
             return;
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource         = $e->getRouteMatch()->getParam('resource');
+        $resource         = $event->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
 
         if ($result instanceof Traversable || is_array($result)) {
@@ -88,6 +89,6 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
 
         $hydrator = $this->hydratorPluginManager->get($hydratorName);
 
-        $e->setResult($hydrator->extract($result));
+        $event->setResult($hydrator->extract($result));
     }
 }

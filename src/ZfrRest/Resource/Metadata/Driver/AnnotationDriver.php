@@ -26,6 +26,9 @@ use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Metadata\Annotation;
+use ZfrRest\Resource\Metadata\Annotation\AnnotationInterface;
+use ZfrRest\Resource\Metadata\Annotation\Resource;
+use ZfrRest\Resource\Metadata\Annotation\Collection;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
@@ -119,56 +122,74 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
     }
 
     /**
-     * @param ClassMetadata                    $metadata
-     * @param Annotation\AnnotationInterface[] $annotations
+     * @param ResourceMetadata      $metadata
+     * @param AnnotationInterface[] $annotations
      */
-    private function processMetadata(ClassMetadata $metadata, array $annotations)
+    private function processMetadata(ResourceMetadata $metadata, array $annotations)
     {
         foreach ($annotations as $annotation) {
-            if (!($annotation instanceof Annotation\AnnotationInterface)) {
+            if (!($annotation instanceof AnnotationInterface)) {
                 continue;
             }
 
             // Resource annotation
-            if ($annotation instanceof Annotation\Resource) {
-                $values = $annotation->getValue();
-
-                foreach ($values as $key => $value) {
-                    // Ignore null values in order to make cascading work as expected
-                    if (null === $value) {
-                        continue;
-                    }
-
-                    $propertyMetadata = new PropertyMetadata($metadata, $key);
-                    $propertyMetadata->setValue($metadata, $value);
-
-                    $metadata->addPropertyMetadata($propertyMetadata);
-                }
+            if ($annotation instanceof Resource) {
+                $this->processResourceMetadata($metadata, $annotation);
             }
 
             // Collection annotation
-            if ($annotation instanceof Annotation\Collection) {
-                $values             = $annotation->getValue();
-                $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
-
-                foreach ($values as $key => $value) {
-                    $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
-
-                    // If the value is null, then we reuse the value defined at "resource-level"
-                    if (null === $value && isset($metadata->propertyMetadata[$key])) {
-                        $propertyMetadata->setValue(
-                            $collectionMetadata,
-                            $metadata->propertyMetadata[$key]->getValue($metadata)
-                        );
-                    } else {
-                        $propertyMetadata->setValue($collectionMetadata, $value);
-                    }
-
-                    $collectionMetadata->addPropertyMetadata($propertyMetadata);
-                }
-
-                $metadata->collectionMetadata = $collectionMetadata;
+            if ($annotation instanceof Collection) {
+                $this->processCollectionMetadata($metadata, $annotation);
             }
         }
+    }
+
+    /**
+     * @param ResourceMetadata $metadata
+     * @param Resource         $annotation
+     */
+    private function processResourceMetadata(ResourceMetadata $metadata, Resource $annotation)
+    {
+        $values = $annotation->getValue();
+
+        foreach ($values as $key => $value) {
+            // Ignore null values in order to make cascading work as expected
+            if (null === $value) {
+                continue;
+            }
+
+            $propertyMetadata = new PropertyMetadata($metadata, $key);
+            $propertyMetadata->setValue($metadata, $value);
+
+            $metadata->addPropertyMetadata($propertyMetadata);
+        }
+    }
+
+    /**
+     * @param ResourceMetadata $metadata
+     * @param Collection       $annotation
+     */
+    private function processCollectionMetadata(ResourceMetadata $metadata, Collection $annotation)
+    {
+        $values             = $annotation->getValue();
+        $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+
+        foreach ($values as $key => $value) {
+            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
+
+            // If the value is null, then we reuse the value defined at "resource-level"
+            if (null === $value && isset($metadata->propertyMetadata[$key])) {
+                $propertyMetadata->setValue(
+                    $collectionMetadata,
+                    $metadata->propertyMetadata[$key]->getValue($metadata)
+                );
+            } else {
+                $propertyMetadata->setValue($collectionMetadata, $value);
+            }
+
+            $collectionMetadata->addPropertyMetadata($propertyMetadata);
+        }
+
+        $metadata->collectionMetadata = $collectionMetadata;
     }
 }

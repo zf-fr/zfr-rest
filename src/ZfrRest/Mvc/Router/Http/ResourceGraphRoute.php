@@ -260,7 +260,7 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         return new RouteMatch(
-                array(
+            array(
                 'resource'   => $resource,
                 'controller' => $controllerName
             ),

@@ -26,6 +26,9 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;
 use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
 
+/**
+ * Factory responsible of instantiating an {@see \ZfrRest\Mvc\Router\Http\ResourceGraphRoute}
+ */
 class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOptionsInterface
 {
     /**

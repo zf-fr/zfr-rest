@@ -61,12 +61,12 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * Execute the request. Try to match the HTTP verb to an action
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return mixed
      * @throws Client\NotFoundException If the resource cannot be found
      * @throws Client\MethodNotAllowedException If the method to handle the request is not implemented
      */
-    public function onDispatch(MvcEvent $e)
+    public function onDispatch(MvcEvent $event)
     {
         $method  = strtolower($this->getRequest()->getMethod());
         $handler = 'handle' . ucfirst($method) . 'Method';
@@ -76,7 +76,7 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource = $e->getRouteMatch()->getParam('resource', null);
+        $resource = $event->getRouteMatch()->getParam('resource', null);
 
         // We should always have a resource, otherwise throw an 404 exception
         if (null === $resource) {
@@ -85,7 +85,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         $return = $this->$handler($resource);
 
-        $e->setResult($return);
+        $event->setResult($return);
 
         return $return;
     }
@@ -225,7 +225,7 @@ abstract class AbstractRestfulController extends AbstractController
      * Automatically create a Hydrator object, and hydrate object. If ZfrRest was configured to not hydrate
      * automatically, then this method only returns untouched data as array
      *
-     * @param  string            $hydratorClass
+     * @param  string            $hydratorName
      * @param  array             $data
      * @param  ResourceInterface $resource
      * @throws Server\InternalServerErrorException
