@@ -43,4 +43,22 @@ return array(
             )
         ),
     ),
+
+    'controllers' => array(
+        'invokables' => array(
+            'ZfrRestTest\Asset\Controller\UserController' => 'ZfrRestTest\Asset\Controller\UserController',
+        ),
+    ),
+
+    'input_filters' => array(
+        'invokables' => array(
+            'ZfrRestTest\Asset\InputFilter\UserInputFilter' => 'ZfrRestTest\Asset\InputFilter\UserInputFilter',
+        ),
+    ),
+
+    'hydrators' => array(
+        'invokables' => array(
+            'ZfrRestTest\Asset\Hydrator\UserHydrator' => 'ZfrRestTest\Asset\Hydrator\UserHydrator',
+        ),
+    ),
 );

@@ -16,37 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Mvc\Asset;
+namespace ZfrRestTest\Asset\InputFilter;
 
-use Zend\View\Model\ViewModel;
-use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
-use ZfrRest\Resource\ResourceInterface;
+use Zend\InputFilter\BaseInputFilter;
+use Zend\InputFilter\Input;
 
-class DummyController extends AbstractRestfulController
+/**
+ * Test asset input filter
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ */
+class UserInputFilter extends BaseInputFilter
 {
     /**
-     * @param  mixed $resource
-     * @return \Zend\View\Model\ViewModel
+     * Constructor
      */
-    public function get($resource)
+    public function __construct()
     {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
-    }
-
-    /**
-     * @param mixed                     $data
-     * @param ResourceMetadataInterface $metadata
-     * @param ResourceInterface         $resource
-     *
-     * @return ViewModel
-     */
-    public function post($data, ResourceMetadataInterface $metadata, ResourceInterface $resource)
-    {
-        return new ViewModel(array(
-            'resource' => $resource
-        ));
+        $this->add(new Input('name'));
     }
 }

@@ -26,9 +26,9 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
  * @ORM\Entity
  * @ORM\Table(name="Users")
  * @REST\Resource(
- *      controller="Application\Controller\UserController",
- *      inputFilter="Application\InputFilter\UserInputFilter",
- *      hydrator="Application\Hydrator\UserHydrator"
+ *      controller="ZfrRestTest\Asset\Controller\UserController",
+ *      inputFilter="ZfrRestTest\Asset\InputFilter\UserInputFilter",
+ *      hydrator="ZfrRestTest\Asset\Hydrator\UserHydrator"
  * )
  * @REST\Collection(controller="Application\Controller\UserListController")
  */
