@@ -1,6 +1,8 @@
 ZfrRest
 =======
 
+[![Build Status](https://travis-ci.org/zf-fr/zfr-rest.png?branch=master)](https://travis-ci.org/zf-fr/zfr-rest) [![Coverage Status](https://coveralls.io/repos/zf-fr/zfr-rest/badge.png?branch=master)](https://coveralls.io/r/zf-fr/zfr-rest?branch=master) [![Dependency Status](https://www.versioneye.com/package/php--zfr--zfr-rest/badge.png)](https://www.versioneye.com/package/php--zfr--zfr-rest)
+
 Version 0.1.0 ([changelog](/CHANGELOG.md))
 
 **[READ MORE ABOUT CURRENT STATUS](https://github.com/zf-fr/ZfrRest/issues/41)**
