@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Http\Exception\Client;
 
+use Zend\InputFilter\InputFilterInterface;
 use ZfrRest\Http\Exception\ClientException;
 
 /**
@@ -41,5 +42,15 @@ class BadRequestException extends ClientException
     public function __construct($message = '', $errors = '')
     {
         parent::__construct(400, $message, $errors);
+    }
+
+    /**
+     * @param  InputFilterInterface $inputFilter
+     *
+     * @return self
+     */
+    public static function invalidInput(InputFilterInterface $inputFilter)
+    {
+        return new self('Invalid data provided', $inputFilter->getMessages());
     }
 }

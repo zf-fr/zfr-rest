@@ -44,10 +44,9 @@ class ServerException extends AbstractHttpException
     {
         // Server errors code are 5xx
         if ($statusCode < 500 || $statusCode > 599) {
-            throw new InvalidArgumentException(sprintf(
-                'Status code for server errors must be between 500 and 599, %s given',
-                $statusCode
-            ));
+            throw new InvalidArgumentException(
+                sprintf('Status code for server errors must be between 500 and 599, %s given', $statusCode)
+            );
         }
 
         parent::__construct($statusCode, $message, $errors);

@@ -60,30 +60,34 @@ class SelectModelListener extends AbstractListenerAggregate
         $sharedManager = $events->getSharedManager();
 
         $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectErrorModel'), 80);
-        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'selectModel'), -60);
+        $sharedManager->attach(
+            'Zend\Stdlib\DispatchableInterface',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'selectModel'),
+            -60
+        );
     }
 
     /**
      * Select the correct ModelInterface instance by matching the values of the Accept header to a ModelInterface
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function selectModel(MvcEvent $e)
+    public function selectModel(MvcEvent $event)
     {
-        $result = $e->getResult();
+        $result = $event->getResult();
 
         // If a view model was already set, or if the application errored with no produced result, no
         // view model replacement should happen
-        if (
-            $result instanceof ModelInterface
+        if ($result instanceof ModelInterface
             || $result instanceof ResponseInterface
-            || (!isset($result) && $e->getError())
+            || (!isset($result) && $event->getError())
         ) {
             return;
         }
 
-        $request = $e->getRequest();
+        $request = $event->getRequest();
         if (!$request instanceof HttpRequest) {
             return;
         }
@@ -95,7 +99,7 @@ class SelectModelListener extends AbstractListenerAggregate
             $model->setVariables($result);
         }
 
-        $e->setResult($model);
+        $event->setResult($model);
     }
 
     /**
@@ -106,14 +110,14 @@ class SelectModelListener extends AbstractListenerAggregate
      * Otherwise (if we have a JsonModel or FeedModel or anything else...) we just set the view model and stop
      * propagation so that the response only contains the error message and status code
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function injectErrorModel(MvcEvent $e)
+    public function injectErrorModel(MvcEvent $event)
     {
-        $this->selectModel($e);
+        $this->selectModel($event);
 
-        $result = $e->getResult();
+        $result = $event->getResult();
         if (!$result instanceof ModelInterface) {
             return;
         }
@@ -125,8 +129,8 @@ class SelectModelListener extends AbstractListenerAggregate
         }
 
         // Otherwise, we stop propagation and set the view model
-        $e->setViewModel($result);
-        $e->stopPropagation();
+        $event->setViewModel($result);
+        $event->stopPropagation();
     }
 
     /**

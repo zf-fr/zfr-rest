@@ -21,6 +21,9 @@ namespace ZfrRest\Factory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * Factory responsible of instantiating a doctrine cache for metadata
+ */
 class ResourceMetadataCacheFactory implements FactoryInterface
 {
     /**

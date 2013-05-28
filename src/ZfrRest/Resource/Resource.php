@@ -49,8 +49,9 @@ class Resource implements ResourceInterface
         $this->data     = $data;
         $this->metadata = $metadata;
 
-        $refl = $metadata->getClassMetadata()->getReflectionClass();
-        if (!$this->isCollection() && !$refl->isInstance($data)) {
+        $reflectionClass = $metadata->getClassMetadata()->getReflectionClass();
+
+        if (!$this->isCollection() && ! $reflectionClass->isInstance($data)) {
             throw InvalidResourceException::invalidResourceProvided($data, $metadata);
         }
     }
