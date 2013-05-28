@@ -39,11 +39,11 @@ class CacheController extends AbstractActionController
         try {
             /** @var $cache \Doctrine\Common\Cache\CacheProvider */
             $cache = $this->serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return "\nNo cache to clear. Are you sure you set ZfrRest cache correctly?\n\n";
         }
 
-        if($cache->flushAll()) {
+        if ($cache->flushAll()) {
             return "\nThe cache were successfully cleared\n\n";
         }
 

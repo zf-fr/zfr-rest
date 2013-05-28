@@ -18,6 +18,8 @@
 
 namespace ZfrRest\Factory;
 
+use Zend\ServiceManager\AbstractPluginManager;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\MutableCreationOptionsInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -50,23 +52,28 @@ class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOpti
 
     /**
      * {@inheritDoc}
+     *
+     * @return ResourceGraphRoute
+     *
+     * @throws RuntimeException
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /** @var $parentLocator \Zend\ServiceManager\ServiceManager */
-        $parentLocator = $serviceLocator->getServiceLocator();
-
-        if (!$parentLocator->has($this->creationOptions['resource'])) {
-            throw new RuntimeException(sprintf(
-                'Resource "%s" cannot be found from service locator',
-                $this->creationOptions['resource']
-            ));
+        if (! $serviceLocator instanceof AbstractPluginManager) {
+            throw RuntimeException::pluginManagerExpected($serviceLocator);
         }
 
-        return new ResourceGraphRoute(
-            $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory'),
-            $parentLocator->get($this->creationOptions['resource']),
-            $this->creationOptions['route']
-        );
+        $parentLocator = $serviceLocator->getServiceLocator();
+
+        try {
+            $resource = $parentLocator->get($this->creationOptions['resource']);
+        } catch (ServiceNotFoundException $exception) {
+            throw RuntimeException::missingResource($this->creationOptions['resource'], $exception);
+        }
+
+        /* @var $metadataFactory \Metadata\MetadataFactoryInterface */
+        $metadataFactory = $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory');
+
+        return new ResourceGraphRoute($metadataFactory, $resource, $this->creationOptions['route']);
     }
 }

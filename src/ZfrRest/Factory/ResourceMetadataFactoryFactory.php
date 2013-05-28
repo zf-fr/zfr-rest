@@ -20,13 +20,16 @@ namespace ZfrRest\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Persistence\ObjectManager;
 use Metadata\Cache\CacheInterface;
 use Metadata\Driver\DriverChain;
 use Metadata\Driver\FileLocator;
 use Metadata\MetadataFactory;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\Exception\RuntimeException;
+use ZfrRest\Resource\Metadata\Driver\AnnotationDriver;
 use ZfrRest\Resource\Metadata\Driver\PhpDriver;
 use ZfrRest\Resource\Metadata\Driver\ResourceMetadataDriverInterface;
 
@@ -47,55 +50,43 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         $moduleOptions   = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
         $resourceOptions = $moduleOptions->getResourceMetadata();
 
-        $objectManager = $moduleOptions->getObjectManager();
-        if (!$serviceLocator->has($objectManager)) {
-            throw new RuntimeException(sprintf(
-                'The object manager key is not valid, %s given',
-                $objectManager
-            ));
+        try {
+            /* @var $objectManager \Doctrine\Common\Persistence\ObjectManager */
+            $objectManager = $serviceLocator->get($moduleOptions->getObjectManager());
+        } catch (ServiceNotFoundException $exception) {
+            throw RuntimeException::missingObjectManager($moduleOptions->getObjectManager(), $exception);
         }
 
-        $doctrineMetadataFactory = $serviceLocator->get($objectManager)->getMetadataFactory();
+        if (! $objectManager instanceof ObjectManager) {
+            throw RuntimeException::invalidObjectManager($moduleOptions->getObjectManager(), $objectManager);
+        }
+
+        $doctrineMetadataFactory = $objectManager->getMetadataFactory();
         $driversOptions          = $resourceOptions->getDrivers();
+        /* @var $metadataDrivers ResourceMetadataDriverInterface[] */
         $metadataDrivers         = array();
 
         // The annotation driver does not need to be added twice
         foreach ($driversOptions as $driverOptions) {
-            $class = $driverOptions['class'];
-
-            if ($class === 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver') {
-                // Add the path to the annotations
-                AnnotationRegistry::registerAutoloadNamespace(
-                    'ZfrRest\Resource\Annotation',
-                    __DIR__ . '/../..'
-                );
-
-                $metadataDrivers[] = new $class(new AnnotationReader(), $doctrineMetadataFactory);
-
-                break;
+            switch ($driverOptions['class']) {
+                case 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver':
+                    //AnnotationRegistry::registerAutoloadNamespace('ZfrRest\Resource\Annotation', __DIR__ . '/../..');
+                    $metadataDrivers[] = new AnnotationDriver(new AnnotationReader(), $doctrineMetadataFactory);
+                    break;
+                case 'ZfrRest\Resource\Metadata\Driver\PhpDriver':
+                    $metadataDrivers[] = new PhpDriver(
+                        new FileLocator($driverOptions['paths']),
+                        $doctrineMetadataFactory
+                    );
+                    break;
             }
-        }
-
-
-        // We need to handle both drivers differently, as the FileDriver needs all the paths to work properly
-        $filePaths = array();
-
-        foreach ($driversOptions as $driverOptions) {
-            $class = $driverOptions['class'];
-
-            if ($class === 'ZfrRest\Resource\Metadata\Driver\PhpDriver') {
-                $filePaths = array_merge($filePaths, $driverOptions['paths']);
-            }
-        }
-
-        if (!empty($filePaths)) {
-            $metadataDrivers[] = new PhpDriver(new FileLocator($filePaths), $doctrineMetadataFactory);
         }
 
         $resourceMetadataFactory = new MetadataFactory(new DriverChain($metadataDrivers));
 
         // We need to inject the resource metadata factory into each driver to allow them to retrieve
         // metadata from one driver to another
+        // @todo this part should be removed
         foreach ($metadataDrivers as $metadataDriver) {
             if ($metadataDriver instanceof ResourceMetadataDriverInterface) {
                 $metadataDriver->setResourceMetadataFactory($resourceMetadataFactory);
@@ -105,9 +96,11 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         // Also add a cache if one is set
         $cache = $serviceLocator->get('ZfrRest\Resource\Metadata\CacheProvider');
 
-        if ($cache instanceof CacheInterface) {
-            $resourceMetadataFactory->setCache($cache);
+        if (! $cache instanceof CacheInterface) {
+            throw RuntimeException::invalidCache('ZfrRest\Resource\Metadata\CacheProvider', $cache);
         }
+
+        $resourceMetadataFactory->setCache($cache);
 
         return $resourceMetadataFactory;
     }

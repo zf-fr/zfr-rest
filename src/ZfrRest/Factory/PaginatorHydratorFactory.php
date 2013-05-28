@@ -18,10 +18,11 @@
 
 namespace ZfrRest\Factory;
 
+use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Stdlib\Hydrator\PaginatorHydrator;
+use ZfrRest\Factory\Exception\RuntimeException;
 
 /**
  * PaginatorHydratorFactory
@@ -33,14 +34,15 @@ class PaginatorHydratorFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
+     *
+     * @return PaginatorHydrator
+     *
+     * @throws RuntimeException
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        if (!$serviceLocator instanceof HydratorPluginManager) {
-            throw new Exception\RuntimeException(sprintf(
-                'A hydrator plugin manager was expected, but "%s" was given',
-                get_class($serviceLocator)
-            ));
+        if (! $serviceLocator instanceof AbstractPluginManager) {
+            throw RuntimeException::pluginManagerExpected($serviceLocator);
         }
 
         return new PaginatorHydrator($serviceLocator);

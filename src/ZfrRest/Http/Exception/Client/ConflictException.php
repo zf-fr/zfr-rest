@@ -31,7 +31,8 @@ class ConflictException extends ClientException
     /**
      * @var string
      */
-    protected $message = 'The request could not be processed because of conflict in the request, such as an edit conflict';
+    protected $message =
+'The request could not be processed because of conflict in the request, such as an edit conflict';
 
 
     /**

@@ -18,7 +18,9 @@
 
 namespace ZfrRest\Factory\Exception;
 
+use Exception;
 use RuntimeException as BaseRuntimeException;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Exception\ExceptionInterface;
 
 /**
@@ -29,4 +31,71 @@ use ZfrRest\Exception\ExceptionInterface;
  */
 class RuntimeException extends BaseRuntimeException implements ExceptionInterface
 {
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     *
+     * @return self
+     */
+    public static function pluginManagerExpected(ServiceLocatorInterface $serviceLocator)
+    {
+        return new self(
+            sprintf('A hydrator plugin manager was expected, but "%s" was given', get_class($serviceLocator))
+        );
+    }
+
+    /**
+     * @param string $resourceName
+     * @param Exception|null $previous
+     *
+     * @return self
+     */
+    public static function missingResource($resourceName, Exception $previous = null)
+    {
+        return new self(sprintf('Resource "%s" cannot be found in the service locator', $resourceName), 0, $previous);
+    }
+
+    /**
+     * @param string $serviceName
+     * @param Exception|null $previous
+     *
+     * @return self
+     */
+    public static function missingObjectManager($serviceName, Exception $previous = null)
+    {
+        return new self(sprintf('The object manager key is not valid, "%s" given', $serviceName), 0, $previous);
+    }
+
+    /**
+     * @param string $serviceName
+     * @param mixed  $objectManager
+     *
+     * @return self
+     */
+    public static function invalidObjectManager($serviceName, $objectManager)
+    {
+        return new self(
+            sprintf(
+                'Invalid ObjectManager retrieved for service "%s", instance of "%s" found',
+                $serviceName,
+                is_object($objectManager) ? get_class($objectManager) : gettype($objectManager)
+            )
+        );
+    }
+
+    /**
+     * @param string $serviceName
+     * @param mixed  $cache
+     *
+     * @return self
+     */
+    public static function invalidCache($serviceName, $cache)
+    {
+        return new self(
+            sprintf(
+                'Invalid CacheInterface retrieved for service "%s", instance of "%s" found',
+                $serviceName,
+                is_object($cache) ? get_class($cache) : gettype($cache)
+            )
+        );
+    }
 }
