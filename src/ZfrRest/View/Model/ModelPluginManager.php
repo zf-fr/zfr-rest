@@ -20,7 +20,7 @@ namespace ZfrRest\View\Model;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\View\Model\ModelInterface;
-use ZfrRest\View\Exception;
+use ZfrRest\View\Exception\RuntimeException;
 
 /**
  * ModelPluginManager. It allows to retrieve a view model from a format.
@@ -47,14 +47,9 @@ class ModelPluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if ($plugin instanceof ModelInterface) {
-            return;
+        if (! $plugin instanceof ModelInterface) {
+            throw RuntimeException::invalidViewModelPlugin($plugin);
         }
-
-        throw new Exception\RuntimeException(sprintf(
-            'Plugin of type %s is invalid; must implement Zend\View\ViewModel',
-            (is_object($plugin) ? get_class($plugin) : gettype($plugin))
-        ));
     }
 
     /**

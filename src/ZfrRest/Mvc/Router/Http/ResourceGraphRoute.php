@@ -22,11 +22,12 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
-use Metadata\MetadataFactory;
+use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface as Request;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Paginator\ResourcePaginator;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
@@ -39,7 +40,7 @@ use ZfrRest\Resource\ResourceInterface;
 class ResourceGraphRoute implements RouteInterface
 {
     /**
-     * @var MetadataFactory
+     * @var MetadataFactoryInterface
      */
     protected $metadataFactory;
 
@@ -64,11 +65,11 @@ class ResourceGraphRoute implements RouteInterface
 
 
     /**
-     * @param MetadataFactory $metadataFactory
-     * @param mixed           $resource
-     * @param string          $route
+     * @param MetadataFactoryInterface $metadataFactory
+     * @param mixed                    $resource
+     * @param string                   $route
      */
-    public function __construct(MetadataFactory $metadataFactory, $resource, $route)
+    public function __construct(MetadataFactoryInterface $metadataFactory, $resource, $route)
     {
         $this->metadataFactory = $metadataFactory;
         $this->route           = (string) $route;
@@ -199,11 +200,12 @@ class ResourceGraphRoute implements RouteInterface
             return null;
         }
 
-        $refl         = $classMetadata->getReflectionClass();
-        $reflProperty = $refl->getProperty($associationName);
-        $reflProperty->setAccessible(true);
+        $reflectionClass    = $classMetadata->getReflectionClass();
+        $reflectionProperty = $reflectionClass->getProperty($associationName);
 
-        $data = $reflProperty->getValue($resource->getData());
+        $reflectionProperty->setAccessible(true);
+
+        $data = $reflectionProperty->getValue($resource->getData());
 
         $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
         $resource         = new Resource($data, $resourceMetadata);
@@ -241,7 +243,7 @@ class ResourceGraphRoute implements RouteInterface
                 }
             }
 
-            // @TODO: for now, collection is always wrapped around a ResourcePaginator, but the goal is to make this configurable
+            // @TODO: for now, collection is always wrapped around a ResourcePaginator, should instead be configurable
             $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
 
             $resource = new Resource($data, $resourceMetadata);
@@ -250,10 +252,7 @@ class ResourceGraphRoute implements RouteInterface
         // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
             if (null === $collectionMetadata) {
-                throw new Exception\RuntimeException(sprintf(
-                    'Collection metadata is not found. Do you have a @Collection annotation or PHP config for the resource "%s"?',
-                    $classMetadata->getName()
-                ));
+                throw Exception\RuntimeException::missingCollectionMetadata($classMetadata);
             }
 
             $controllerName = $collectionMetadata->getControllerName();
@@ -261,10 +260,13 @@ class ResourceGraphRoute implements RouteInterface
             $controllerName = $resourceMetadata->getControllerName();
         }
 
-        return new RouteMatch(array(
-            'resource'   => $resource,
-            'controller' => $controllerName
-        ), strlen($path));
+        return new RouteMatch(
+            array(
+                'resource'   => $resource,
+                'controller' => $controllerName
+            ),
+            strlen($path)
+        );
     }
 
     /**
@@ -277,9 +279,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildErrorRouteMatch(ResourceInterface $resource, $path)
     {
-        return new RouteMatch(array(
-            'controller' => $resource->getMetadata()->getControllerName()
-        ), strlen($path));
+        return new RouteMatch(array('controller' => $resource->getMetadata()->getControllerName()), strlen($path));
     }
 
     /**
@@ -306,11 +306,7 @@ class ResourceGraphRoute implements RouteInterface
         } elseif (is_string($resource)) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource);
         } else {
-            throw new Exception\RuntimeException(sprintf(
-                '%s is trying to initialize a resource, but this resource is not supported ("%s" given). Either ' .
-                'specify an ObjectRepository instance, or an entity class name',
-                get_class($resource)
-            ));
+            throw RuntimeException::unsupportedResourceType($resource);
         }
 
         $this->resource = new Resource($resource, $metadata->getOutsideClassMetadata());

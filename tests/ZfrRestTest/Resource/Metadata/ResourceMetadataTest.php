@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Resource\Metadata;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionClass;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -29,7 +30,7 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
 class ResourceMetadataTest extends TestCase
 {
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testResourceMetadata()
     {
@@ -63,7 +64,7 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testAssertHasDefaultHydrator()
     {
@@ -72,16 +73,15 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testCanCreateEmptyResource()
     {
         $resourceMetadata = new ResourceMetadata('stdClass');
         $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
         $resourceMetadata->classMetadata = $metadata;
+        $reflectionClass                 = new ReflectionClass('stdClass');
 
-        $reflectionClass  = $this->getMock('ReflectionClass', array(), array(), '', false);
-        $reflectionClass->expects($this->any())->method('isInstance')->will($this->returnValue(true));
         $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
 
         $resource = $resourceMetadata->createResource();
@@ -92,7 +92,7 @@ class ResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\ResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
      */
     public function testCanCreateEmptyResourceWithParameter()
     {

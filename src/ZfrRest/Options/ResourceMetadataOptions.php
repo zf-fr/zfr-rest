@@ -52,14 +52,7 @@ class ResourceMetadataOptions extends AbstractOptions
      */
     public function setCache($cache)
     {
-        if (!is_subclass_of($cache, 'Doctrine\Common\Cache\Cache')) {
-            throw new Exception\RuntimeException(sprintf(
-                'Cache must implement Doctrine\Common\Cache\Cache, %s given',
-                $cache
-            ));
-        }
-
-        $this->cache = $cache;
+        $this->cache = (string) $cache;
     }
 
     /**
@@ -81,15 +74,6 @@ class ResourceMetadataOptions extends AbstractOptions
      */
     public function setDrivers(array $drivers)
     {
-        foreach ($drivers as $driver) {
-            if (!is_subclass_of($driver['class'], 'Metadata\Driver\DriverInterface')) {
-                throw new Exception\RuntimeException(sprintf(
-                    'Driver class should implements Metadata\Driver\DriverInterface, %s given',
-                    $driver['class']
-                ));
-            }
-        }
-
         $this->drivers = $drivers;
     }
 

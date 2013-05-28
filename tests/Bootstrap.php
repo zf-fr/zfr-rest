@@ -16,18 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-if  (
-    !($loader = @include __DIR__ . '/../vendor/autoload.php')
-    && !($loader = @include __DIR__ . '/../../../autoload.php')
-) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
+use ZfrRestTest\Util\ServiceManagerFactory;
+
+ini_set('error_reporting', E_ALL);
+
+$files = array(__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php');
+
+foreach ($files as $file) {
+    if (file_exists($file)) {
+        $loader = require $file;
+
+        break;
+    }
 }
 
-/* @var $loader \Composer\Autoload\ClassLoader */
+if (! isset($loader)) {
+    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
+}
+
 $loader->add('ZfrRestTest\\', __DIR__);
 
-if (!$config = @include __DIR__ . '/TestConfiguration.php') {
-    $config = require __DIR__ . '/TestConfiguration.php.dist';
+$configFiles = array(__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist');
+
+foreach ($configFiles as $configFile) {
+    if (file_exists($configFile)) {
+        $config = require $configFile;
+
+        break;
+    }
 }
 
-\ZfrRestTest\Util\ServiceManagerFactory::setConfig($config);
+ServiceManagerFactory::setApplicationConfig($config);
+unset($file, $file, $loader, $configFiles, $configFile, $config);

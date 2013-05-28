@@ -29,11 +29,6 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * {@inheritDoc}
-     */
-    protected $__strictMode__ = false;
-
-    /**
      * Key of the object manager fetched from the service locator
      *
      * @var string
@@ -62,7 +57,22 @@ class ModuleOptions extends AbstractOptions
     protected $resourceMetadataOptions;
 
     /**
+     * Plugin manager configuration for the content decoders
+     *
+     * @var array
+     */
+    protected $decoders = array();
+
+    /**
+     * Plugin manager configuration for the view models
+     *
+     * @var array
+     */
+    protected $models = array();
+
+    /**
      * @param string $objectManager
+     *
      * @return void
      */
     public function setObjectManager($objectManager)
@@ -80,6 +90,7 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  array $options
+     *
      * @return void
      */
     public function setListeners(array $options)
@@ -97,6 +108,7 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  array $options
+     *
      * @return void
      */
     public function setControllerBehaviours(array $options)
@@ -114,6 +126,7 @@ class ModuleOptions extends AbstractOptions
 
     /**
      * @param  array $options
+     *
      * @return void
      */
     public function setResourceMetadata(array $options)
@@ -127,5 +140,41 @@ class ModuleOptions extends AbstractOptions
     public function getResourceMetadata()
     {
         return $this->resourceMetadataOptions;
+    }
+
+    /**
+     * @param  array $decoders
+     *
+     * @return void
+     */
+    public function setDecoders(array $decoders)
+    {
+        $this->decoders = $decoders;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDecoders()
+    {
+        return $this->decoders;
+    }
+
+    /**
+     * @param array $models
+     *
+     * @return void
+     */
+    public function setModels(array $models)
+    {
+        $this->models = $models;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModels()
+    {
+        return $this->models;
     }
 }

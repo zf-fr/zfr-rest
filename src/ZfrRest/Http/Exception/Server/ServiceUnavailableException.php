@@ -31,7 +31,8 @@ class ServiceUnavailableException extends ServerException
     /**
      * @var string
      */
-    protected $message = 'The server is currently unavailable (because it is overloaded or down for maintenance). Please try again later';
+    protected $message =
+    'The server is currently unavailable (because it is overloaded or down for maintenance). Please try again later';
 
 
     /**

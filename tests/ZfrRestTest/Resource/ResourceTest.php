@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Resource;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionClass;
 use ZfrRest\Resource\Resource;
 
 /**
@@ -30,23 +31,19 @@ class ResourceTest extends TestCase
 {
     /**
      * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Resource\Resource::getResource
+     * @covers \ZfrRest\Resource\Resource::getData
      * @covers \ZfrRest\Resource\Resource::getMetadata
      * @covers \ZfrRest\Resource\Resource::isCollection
      *
      * @dataProvider collectionResourceProvider
+     *
+     * @param string $className
+     * @param mixed  $instance
+     * @param bool   $isCollection
      */
-    public function testResource($instance, $isCollection)
+    public function testResource($className, $instance, $isCollection)
     {
-        $metadata = $this->createMetadata();
-
-        $metadata
-            ->getClassMetadata()
-            ->getReflectionClass()
-            ->expects($this->any())
-            ->method('isInstance')
-            ->will($this->returnValue( ! $isCollection));
-
+        $metadata = $this->createMetadata(new ReflectionClass($className));
         $resource = new Resource($instance, $metadata);
 
         $this->assertSame($instance, $resource->getData());
@@ -56,18 +53,11 @@ class ResourceTest extends TestCase
 
     /**
      * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Exception\InvalidResourceException::invalidResourceProvided
+     * @covers \ZfrRest\Resource\Exception\InvalidResourceException::invalidResourceProvided
      */
     public function testDisallowsInvalidResource()
     {
-        $metadata = $this->createMetadata();
-
-        $metadata
-            ->getClassMetadata()
-            ->getReflectionClass()
-            ->expects($this->any())
-            ->method('isInstance')
-            ->will($this->returnValue(false));
+        $metadata = $this->createMetadata(new ReflectionClass($this));
 
         $this->setExpectedException('ZfrRest\\Resource\\Exception\\InvalidResourceException');
 
@@ -82,22 +72,23 @@ class ResourceTest extends TestCase
     public function collectionResourceProvider()
     {
         return array(
-            array($this->getMock('Iterator'), true),
-            array($this->getMock('Doctrine\\Common\\Collections\\Selectable'), true),
-            array($this->getMock('Doctrine\\Common\\Collections\\Collection'), true),
-            array(array(), true),
-            array(new \stdClass(), false),
+            array('stdClass', $this->getMock('Iterator'), true),
+            array('stdClass', $this->getMock('Doctrine\\Common\\Collections\\Selectable'), true),
+            array('stdClass', $this->getMock('Doctrine\\Common\\Collections\\Collection'), true),
+            array('stdClass', array(), true),
+            array('stdClass', new \stdClass(), false),
         );
     }
 
     /**
+     * @param ReflectionClass $reflectionClass
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject|\ZfrRest\Resource\Metadata\ResourceMetadataInterface
      */
-    private function createMetadata()
+    private function createMetadata(ReflectionClass $reflectionClass)
     {
         $resourceMetadata = $this->getMock('ZfrRest\\Resource\\Metadata\\ResourceMetadataInterface');
         $metadata         = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $reflectionClass  = $this->getMock('ReflectionClass', array(), array(), '', false);
 
         $resourceMetadata->expects($this->any())->method('getClassMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));

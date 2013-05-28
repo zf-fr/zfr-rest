@@ -20,6 +20,7 @@ namespace ZfrRest\Serializer;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use ZfrRest\Serializer\Exception\RuntimeException;
 
 /**
  * DecoderPluginManager
@@ -52,14 +53,9 @@ class DecoderPluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if ($plugin instanceof DecoderInterface) {
-            return;
+        if (! $plugin instanceof DecoderInterface) {
+            throw RuntimeException::invalidDecoderPlugin($plugin);
         }
-
-        throw new Exception\RuntimeException(sprintf(
-            'Plugin of type %s is invalid; must implement Symfony\Component\Serializer\Encoder\DecoderInterface',
-            (is_object($plugin) ? get_class($plugin) : gettype($plugin))
-        ));
     }
 
     /**

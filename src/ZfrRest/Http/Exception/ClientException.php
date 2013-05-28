@@ -44,10 +44,9 @@ class ClientException extends AbstractHttpException
     {
         // Client errors code are 4xx
         if ($statusCode < 400 || $statusCode > 499) {
-            throw new InvalidArgumentException(sprintf(
-                'Status code for client errors must be between 400 and 499, %s given',
-                $statusCode
-            ));
+            throw new InvalidArgumentException(
+                sprintf('Status code for client errors must be between 400 and 499, %s given', $statusCode)
+            );
         }
 
         parent::__construct($statusCode, $message, $errors);

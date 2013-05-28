@@ -23,40 +23,54 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
 
 /**
- * Utility used to retrieve a freshly bootstrapped application's service manager
+ * Base test case to be used when a new service manager instance is required
  *
  * @license MIT
  * @link    https://github.com/zf-fr/ZfrRest
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-class ServiceManagerFactory
+abstract class ServiceManagerFactory
 {
     /**
      * @var array
      */
-    protected static $config;
+    private static $config = array();
 
     /**
+     * @static
      * @param array $config
      */
-    public static function setConfig(array $config)
+    public static function setApplicationConfig(array $config)
     {
         static::$config = $config;
     }
 
     /**
-     * Builds a new service manager
+     * @static
+     * @return array
      */
-    public static function getServiceManager()
+    public static function getApplicationConfig()
     {
-        $serviceManager = new ServiceManager(new ServiceManagerConfig(
-            isset(static::$config['service_manager']) ? static::$config['service_manager'] : array()
-        ));
-        $serviceManager->setService('ApplicationConfig', static::$config);
-        $serviceManager->setFactory('ServiceListener', 'Zend\Mvc\Service\ServiceListenerFactory');
+        return static::$config;
+    }
 
-        /** @var $moduleManager \Zend\ModuleManager\ModuleManager */
+    /**
+     * @param array|null $config
+     * @return ServiceManager
+     */
+    public static function getServiceManager(array $config = null)
+    {
+        $config = $config ?: static::getApplicationConfig();
+        $serviceManager = new ServiceManager(
+            new ServiceManagerConfig(
+                isset($config['service_manager']) ? $config['service_manager'] : array()
+            )
+        );
+        $serviceManager->setService('ApplicationConfig', $config);
+
+        /* @var $moduleManager \Zend\ModuleManager\ModuleManagerInterface */
         $moduleManager = $serviceManager->get('ModuleManager');
+
         $moduleManager->loadModules();
 
         return $serviceManager;

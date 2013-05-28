@@ -21,6 +21,7 @@ namespace ZfrRestTest\View\Mode;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
+use ZfrRest\Options\ModuleOptions;
 use ZfrRest\View\Model\ModelPluginManager;
 
 class ModelPluginManagerTest extends TestCase
@@ -49,19 +50,18 @@ class ModelPluginManagerTest extends TestCase
     public function testCanRetrievePluginManagerWithServiceManager()
     {
         $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'ModelPluginManager' => 'ZfrRest\Factory\ModelPluginManagerFactory',
+            new ServiceManagerConfig(
+                array(
+                    'factories' => array(
+                        'ModelPluginManager' => 'ZfrRest\Factory\ModelPluginManagerFactory',
+                    )
                 )
-            ))
-        );
-        $serviceManager->setService('Config', array(
-            'zfr_rest' => array(
-                'models' => array()
             )
-        ));
+        );
+        $serviceManager->setService('ZfrRest\Options\ModuleOptions', new ModuleOptions());
 
         $modelPluginManager = $serviceManager->get('ModelPluginManager');
+
         $this->assertInstanceOf('ZfrRest\View\Model\ModelPluginManager', $modelPluginManager);
     }
 }

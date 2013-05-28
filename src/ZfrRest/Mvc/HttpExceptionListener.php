@@ -43,14 +43,14 @@ class HttpExceptionListener extends AbstractListenerAggregate
     /**
      * Get the exception and optionally set status code and reason message
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function onDispatchError(MvcEvent $e)
+    public function onDispatchError(MvcEvent $event)
     {
         /** @var $response HttpResponse */
-        $response  = $e->getResponse();
-        $exception = $e->getParam('exception');
+        $response  = $event->getResponse();
+        $exception = $event->getParam('exception');
 
         // We just deal with our Http error codes here !
         if (!$exception instanceof AbstractHttpException || !$response instanceof HttpResponse) {
@@ -65,6 +65,6 @@ class HttpExceptionListener extends AbstractListenerAggregate
             'errors'      => $exception->getErrors()
         );
 
-        $e->setResult(array_filter($data));
+        $event->setResult(array_filter($data));
     }
 }

@@ -10,4 +10,5 @@ phpunit.xml
 clover.xml
 tmp/
 vendor/
-
+composer.lock
+composer.phar

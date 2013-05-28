@@ -31,8 +31,8 @@ class NotImplementedException extends ServerException
     /**
      * @var string
      */
-    protected $message = 'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
-
+    protected $message =
+    'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
 
     /**
      * @param string $message
