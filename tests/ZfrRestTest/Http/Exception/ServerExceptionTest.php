@@ -23,21 +23,24 @@ use ZfrRest\Http\Exception;
 
 class ServerExceptionTest extends TestCase
 {
-    public function testThrowExceptionIfStatusCodeIsNotInRange()
+    public function testThrowExceptionIfStatusCodeIsOverRange()
     {
         $this->setExpectedException(
             'InvalidArgumentException',
             'Status code for server errors must be between 500 and 599, 600 given'
         );
 
-        $exception = new Exception\ServerException(600);
+        new Exception\ServerException(600);
+    }
 
+    public function testThrowExceptionIfStatusCodeIsBelowRange()
+    {
         $this->setExpectedException(
             'InvalidArgumentException',
             'Status code for server errors must be between 500 and 599, 499 given'
         );
 
-        $exception = new Exception\ServerException(499);
+        new Exception\ServerException(499);
     }
 
     public function testAlwaysContainDefaultMessage()

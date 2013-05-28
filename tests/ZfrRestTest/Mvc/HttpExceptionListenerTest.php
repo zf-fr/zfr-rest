@@ -87,7 +87,10 @@ class HttpExceptionListenerTest extends TestCase
         $this->httpExceptionListener->onDispatchError($this->event);
 
         $this->assertEquals(401, $this->response->getStatusCode());
-        $this->assertEquals('You are not authorized to access to the requested resource', $this->response->getReasonPhrase());
+        $this->assertEquals(
+            'You are not authorized to access to the requested resource',
+            $this->response->getReasonPhrase()
+        );
         $this->assertTrue($this->response->getHeaders()->has('WWWAuthenticate'));
     }
 }

@@ -30,5 +30,10 @@ use Metadata\MetadataFactoryInterface;
  */
 interface ResourceMetadataDriverInterface
 {
+    /**
+     * @param MetadataFactoryInterface $metadataFactory
+     *
+     * @return void
+     */
     public function setResourceMetadataFactory(MetadataFactoryInterface $metadataFactory);
 }

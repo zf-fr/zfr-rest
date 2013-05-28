@@ -46,12 +46,12 @@ class HttpMethodOverrideListener extends AbstractListenerAggregate
     /**
      * Check if the X-HTTP-Method-Override exist in the request, and if so, change the method
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function overrideHttpMethod(MvcEvent $e)
+    public function overrideHttpMethod(MvcEvent $event)
     {
-        $request = $e->getRequest();
+        $request = $event->getRequest();
 
         if (!$request instanceof HttpRequest) {
             return;

@@ -53,33 +53,42 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
     public function attach(EventManagerInterface $events)
     {
         $sharedManager = $events->getSharedManager();
-        $sharedManager->attach('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH, array($this, 'createPayload'), -40);
+
+        $sharedManager->attach(
+            'Zend\Stdlib\DispatchableInterface',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'createPayload'),
+            -40
+        );
     }
 
     /**
      * The logic is as follow: extract the resource metadata, use the bound hydrator to extract data, and set the
      * data as new result
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return void
      */
-    public function createPayload(MvcEvent $e)
+    public function createPayload(MvcEvent $event)
     {
-        $result = $e->getResult();
+        $result = $event->getResult();
+
         if ($result instanceof ModelInterface || $result instanceof ResponseInterface || empty($result)) {
             return;
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource         = $e->getRouteMatch()->getParam('resource');
+        $resource         = $event->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
 
-        if (is_array($result) || $result instanceof Traversable) {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getCollectionMetadata()->getHydratorName());
+        if ($result instanceof Traversable || is_array($result)) {
+            $hydratorName = $resourceMetadata->getCollectionMetadata()->getHydratorName();
         } else {
-            $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+            $hydratorName = $resourceMetadata->getHydratorName();
         }
 
-        $e->setResult($hydrator->extract($result));
+        $hydrator = $this->hydratorPluginManager->get($hydratorName);
+
+        $event->setResult($hydrator->extract($result));
     }
 }

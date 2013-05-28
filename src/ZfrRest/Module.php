@@ -41,9 +41,10 @@ class Module implements
     /**
      * {@inheritDoc}
      */
-    public function onBootstrap(EventInterface $e)
+    public function onBootstrap(EventInterface $event)
     {
-        $application     = $e->getTarget();
+        /* @var $application \Zend\Mvc\Application */
+        $application     = $event->getTarget();
         $serviceManager  = $application->getServiceManager();
         $eventManager    = $application->getEventManager();
 

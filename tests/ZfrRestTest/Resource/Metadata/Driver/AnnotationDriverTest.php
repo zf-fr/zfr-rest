@@ -29,7 +29,9 @@ class AnnotationDriverTest extends TestCase
         $resourceMetadataFactory = $serviceManager->get('ZfrRest\Resource\Metadata\MetadataFactory');
 
         /** @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $resourceMetadata */
-        $resourceMetadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Annotation\User')->getRootClassMetadata();
+        $resourceMetadata = $resourceMetadataFactory
+            ->getMetadataForClass('ZfrRestTest\Asset\Annotation\User')
+            ->getRootClassMetadata();
 
         $this->assertEquals('ZfrRestTest\Asset\Annotation\User', $resourceMetadata->getClassName());
         $this->assertEquals('ZfrRestTest\Asset\Controller\UserController', $resourceMetadata->getControllerName());
@@ -56,6 +58,9 @@ class AnnotationDriverTest extends TestCase
         $this->assertEquals('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $tweetMetadata->getHydratorName());
 
         // Note that this one has been overriden by the User class at the association level
-        $this->assertEquals('Application\Controller\UserTweetListController', $tweetMetadata->getCollectionMetadata()->getControllerName());
+        $this->assertEquals(
+            'Application\Controller\UserTweetListController',
+            $tweetMetadata->getCollectionMetadata()->getControllerName()
+        );
     }
 }

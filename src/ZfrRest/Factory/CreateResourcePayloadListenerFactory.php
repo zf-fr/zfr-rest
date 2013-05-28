@@ -35,6 +35,9 @@ class CreateResourcePayloadListenerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new CreateResourcePayloadListener($serviceLocator->get('HydratorManager'));
+        /* @var $hydratorManager \Zend\Stdlib\Hydrator\HydratorPluginManager */
+        $hydratorManager = $serviceLocator->get('HydratorManager');
+
+        return new CreateResourcePayloadListener($hydratorManager);
     }
 }

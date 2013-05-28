@@ -21,6 +21,7 @@ namespace ZfrRestTest\Serializer;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
+use ZfrRest\Options\ModuleOptions;
 use ZfrRest\Serializer\DecoderPluginManager;
 
 class DecoderPluginManagerTest extends TestCase
@@ -51,19 +52,19 @@ class DecoderPluginManagerTest extends TestCase
     public function testCanRetrievePluginManagerWithServiceManager()
     {
         $serviceManager = new ServiceManager(
-            new ServiceManagerConfig(array(
-                'factories' => array(
-                    'DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory',
-                ),
-            ))
-        );
-        $serviceManager->setService('Config', array(
-            'zfr_rest' => array(
-                'decoders' => array()
+            new ServiceManagerConfig(
+                array(
+                    'factories' => array(
+                        'DecoderPluginManager' => 'ZfrRest\Factory\DecoderPluginManagerFactory',
+                    ),
+                )
             )
-        ));
+        );
+
+        $serviceManager->setService('ZfrRest\Options\ModuleOptions', new ModuleOptions());
 
         $decoderPluginManager = $serviceManager->get('DecoderPluginManager');
+
         $this->assertInstanceOf('ZfrRest\Serializer\DecoderPluginManager', $decoderPluginManager);
     }
 }

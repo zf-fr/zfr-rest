@@ -27,11 +27,13 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client;
+use ZfrRest\Http\Exception\Client\BadRequestException;
 use ZfrRest\Http\Exception\Server;
+use ZfrRest\Http\Exception\Server\InternalServerErrorException;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
- * Abstract RESTful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
+ * Abstract REST-ful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
  * exception if the method is not implemented.
  *
  * By default, AbstractRestfulController handles the "big four" methods (GET, DELETE, PUT and POST). You can add
@@ -59,12 +61,12 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * Execute the request. Try to match the HTTP verb to an action
      *
-     * @param  MvcEvent $e
+     * @param  MvcEvent $event
      * @return mixed
      * @throws Client\NotFoundException If the resource cannot be found
      * @throws Client\MethodNotAllowedException If the method to handle the request is not implemented
      */
-    public function onDispatch(MvcEvent $e)
+    public function onDispatch(MvcEvent $event)
     {
         $method  = strtolower($this->getRequest()->getMethod());
         $handler = 'handle' . ucfirst($method) . 'Method';
@@ -74,7 +76,7 @@ abstract class AbstractRestfulController extends AbstractController
         }
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource = $e->getRouteMatch()->getParam('resource', null);
+        $resource = $event->getRouteMatch()->getParam('resource', null);
 
         // We should always have a resource, otherwise throw an 404 exception
         if (null === $resource) {
@@ -83,7 +85,7 @@ abstract class AbstractRestfulController extends AbstractController
 
         $return = $this->$handler($resource);
 
-        $e->setResult($return);
+        $event->setResult($return);
 
         return $return;
     }
@@ -181,13 +183,13 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * Automatically create an InputFilter object, and validate data against it.
      *
-     * @param  string $inputFilterClass
+     * @param  string $inputFilterName
      * @param  array $data
      * @throws Server\InternalServerErrorException If the input filter class is not valid
      * @throws Client\BadRequestException If input filter create validation errors
      * @return array
      */
-    protected function validateData($inputFilterClass, array $data)
+    protected function validateData($inputFilterName, array $data)
     {
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
@@ -197,26 +199,22 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
-        if (empty($inputFilterClass)) {
-            throw new Server\InternalServerErrorException(sprintf(
-                'No input filter class was given, although controller is configured to auto validate'
-            ));
+        if (empty($inputFilterName)) {
+            throw InternalServerErrorException::missingInputFilter();
         }
 
+        $inputFilterManager = $this->serviceLocator->get('InputFilterManager');
+
         try {
-            $inputFilterManager = $this->serviceLocator->get('InputFilterManager');
-            $inputFilter        = $inputFilterManager->get($inputFilterClass);
-        } catch (ServiceNotFoundException $e) {
-            throw new Server\InternalServerErrorException(sprintf(
-                'An invalid input filter class name was given when validating data ("%s" given)',
-                (string) $inputFilterClass
-            ));
+            $inputFilter = $inputFilterManager->get($inputFilterName);
+        } catch (ServiceNotFoundException $exception) {
+            throw InternalServerErrorException::invalidInputFilter($inputFilterName, $exception);
         }
 
         /** @param \Zend\InputFilter\InputFilterInterface $inputFilter */
         $inputFilter->setData($data);
         if (!$inputFilter->isValid()) {
-            throw new Client\BadRequestException('', $inputFilter->getMessages());
+            throw BadRequestException::invalidInput($inputFilter);
         }
 
         // Return validated and filtered values
@@ -227,13 +225,13 @@ abstract class AbstractRestfulController extends AbstractController
      * Automatically create a Hydrator object, and hydrate object. If ZfrRest was configured to not hydrate
      * automatically, then this method only returns untouched data as array
      *
-     * @param  string            $hydratorClass
+     * @param  string            $hydratorName
      * @param  array             $data
      * @param  ResourceInterface $resource
      * @throws Server\InternalServerErrorException
      * @return array|object
      */
-    public function hydrateData($hydratorClass, array $data, ResourceInterface $resource)
+    public function hydrateData($hydratorName, array $data, ResourceInterface $resource)
     {
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
         $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
@@ -243,20 +241,16 @@ abstract class AbstractRestfulController extends AbstractController
             return $data;
         }
 
-        if (empty($hydratorClass)) {
-            throw new Server\InternalServerErrorException(sprintf(
-                'No hydrator class was given, although controller is configured to auto hydrate'
-            ));
+        if (empty($hydratorName)) {
+            throw InternalServerErrorException::missingHydrator();
         }
 
+        $hydratorManager = $this->serviceLocator->get('HydratorManager');
+
         try {
-            $hydratorManager = $this->serviceLocator->get('HydratorManager');
-            $hydrator        = $hydratorManager->get($hydratorClass);
-        } catch (ServiceNotFoundException $e) {
-            throw new Server\InternalServerErrorException(sprintf(
-                'An invalid hydrator class name was given when hydrating data ("%s" given)',
-                (string) $hydratorClass
-            ));
+            $hydrator = $hydratorManager->get($hydratorName);
+        } catch (ServiceNotFoundException $exception) {
+            throw InternalServerErrorException::invalidHydrator($hydratorName, $exception);
         }
 
         /** @param \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */

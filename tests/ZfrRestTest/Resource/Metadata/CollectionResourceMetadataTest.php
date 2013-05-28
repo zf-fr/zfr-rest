@@ -22,14 +22,14 @@ use PHPUnit_Framework_TestCase as TestCase;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 
 /**
- * Tests for {@see \ZfrRest\Resource\Metadata\ResourceMetadata}
+ * Tests for {@see \ZfrRest\Resource\Metadata\CollectionResourceMetadata}
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
 class CollectionResourceMetadataTest extends TestCase
 {
     /**
-     * @covers \ZfrRest\Resource\CollectionResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
      */
     public function testResourceMetadata()
     {
@@ -52,7 +52,7 @@ class CollectionResourceMetadataTest extends TestCase
     }
 
     /**
-     * @covers \ZfrRest\Resource\CollectionResourceMetadata
+     * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
      */
     public function testAssertHasDefaultHydrator()
     {

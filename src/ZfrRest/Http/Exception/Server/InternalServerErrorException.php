@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Http\Exception\Server;
 
+use Exception;
 use ZfrRest\Http\Exception\ServerException;
 
 /**
@@ -41,5 +42,51 @@ class InternalServerErrorException extends ServerException
     public function __construct($message = '', $errors = '')
     {
         parent::__construct(500, $message, $errors);
+    }
+
+    /**
+     * @return self
+     */
+    public static function missingInputFilter()
+    {
+        return new self('No input filter class was given, although controller is configured to auto validate');
+    }
+
+    /**
+     * @param string    $inputFilterName
+     * @param Exception|null $previous
+     *
+     * @return self
+     *
+     * @todo should handle also $previous exception
+     */
+    public static function invalidInputFilter($inputFilterName, Exception $previous = null)
+    {
+        return new self(
+            sprintf('An invalid input filter class name was given when validating data ("%s" given)', $inputFilterName)
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function missingHydrator()
+    {
+        return new self('No hydrator was given, although controller is configured to auto hydrate');
+    }
+
+    /**
+     * @param string         $hydratorName
+     * @param Exception|null $previous
+     *
+     * @return self
+     *
+     * @todo should handle also $previous exception
+     */
+    public static function invalidHydrator($hydratorName, Exception $previous = null)
+    {
+        return new self(
+            sprintf('An invalid hydrator class name was given when hydrating data ("%s" given)', $hydratorName)
+        );
     }
 }

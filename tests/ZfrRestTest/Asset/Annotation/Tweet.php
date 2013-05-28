@@ -73,16 +73,16 @@ class Tweet
     }
 
     /**
-     * @param \Application\Entity\User $user
+     * @param User|null $user
      * @return void
      */
-    public function setUser($user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
     }
 
     /**
-     * @return \Application\Entity\User
+     * @return User|null
      */
     public function getUser()
     {
