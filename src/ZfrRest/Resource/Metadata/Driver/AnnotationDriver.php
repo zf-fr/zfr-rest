@@ -107,7 +107,7 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
                     $resourceAssociationMetadata = $this
                         ->resourceMetadataFactory
                         ->getMetadataForClass($targetClass)
-                        ->getRootClassMetadata();
+                        ->getOutsideClassMetadata();
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

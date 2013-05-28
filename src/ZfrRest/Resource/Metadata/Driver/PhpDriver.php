@@ -87,7 +87,7 @@ class PhpDriver extends AbstractFileDriver implements ResourceMetadataDriverInte
                 $resourceAssociationMetadata = $this
                     ->resourceMetadataFactory
                     ->getMetadataForClass($targetClass)
-                    ->getRootClassMetadata();
+                    ->getOutsideClassMetadata();
 
                 $this->processMetadata($resourceAssociationMetadata, $associationConfig);
                 $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;

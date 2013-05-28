@@ -31,7 +31,7 @@ class AnnotationDriverTest extends TestCase
         /** @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $resourceMetadata */
         $resourceMetadata = $resourceMetadataFactory
             ->getMetadataForClass('ZfrRestTest\Asset\Annotation\User')
-            ->getRootClassMetadata();
+            ->getOutsideClassMetadata();
 
         $this->assertEquals('ZfrRestTest\Asset\Annotation\User', $resourceMetadata->getClassName());
         $this->assertEquals('ZfrRestTest\Asset\Controller\UserController', $resourceMetadata->getControllerName());
