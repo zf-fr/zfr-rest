@@ -28,6 +28,11 @@ use ZfrRest\Mvc\View\Http\CreateResourcePayloadListener;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 use ZfrRest\Resource\Resource;
 
+/**
+ * Tests for {@see \ZfrRest\Mvc\View\Http\CreateResourcePayloadListener}
+ *
+ * @covers \ZfrRest\Mvc\View\Http\CreateResourcePayloadListener
+ */
 class CreateResourcePayloadListenerTest extends TestCase
 {
     /**
@@ -41,7 +46,7 @@ class CreateResourcePayloadListenerTest extends TestCase
     protected $event;
 
     /**
-     * Set up
+     * {@inheritDoc}
      */
     public function setUp()
     {
@@ -56,9 +61,6 @@ class CreateResourcePayloadListenerTest extends TestCase
         $this->event->setRequest($request);
     }
 
-    /**
-     * @covers
-     */
     public function testCanCreatePayload()
     {
         $data = new \stdClass();
@@ -83,5 +85,29 @@ class CreateResourcePayloadListenerTest extends TestCase
         $this->createResourcePayloadListener->createPayload($this->event);
 
         $this->assertEquals(array('foo' => 'bar'), $this->event->getResult());
+    }
+
+    public function testWillSkipOnMissingRouteMatch()
+    {
+        $data = new \stdClass();
+
+        $this->event->setResult($data);
+
+        $this->createResourcePayloadListener->createPayload($this->event);
+
+        $this->assertSame($data, $this->event->getResult());
+    }
+
+    public function testWillSkipOnMissingResource()
+    {
+        $data       = new \stdClass();
+        $routeMatch = new RouteMatch(array());
+
+        $this->event->setRouteMatch($routeMatch);
+        $this->event->setResult($data);
+
+        $this->createResourcePayloadListener->createPayload($this->event);
+
+        $this->assertSame($data, $this->event->getResult());
     }
 }
