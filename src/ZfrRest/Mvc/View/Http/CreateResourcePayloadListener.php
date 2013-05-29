@@ -25,6 +25,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\ModelInterface;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
  * CreateResourceRepresentationListener. This listener is used to extract data from a resource
@@ -77,8 +78,18 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
             return;
         }
 
-        /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource         = $event->getRouteMatch()->getParam('resource');
+        $routeMatch = $event->getRouteMatch();
+
+        if (! $routeMatch) {
+            return;
+        }
+
+        $resource = $routeMatch->getParam('resource');
+
+        if (! $resource instanceof ResourceInterface) {
+            return;
+        }
+
         $resourceMetadata = $resource->getMetadata();
 
         if ($result instanceof Traversable || is_array($result)) {
