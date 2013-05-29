@@ -90,8 +90,6 @@ class CreateResourcePayloadListener extends AbstractListenerAggregate
             return;
         }
 
-        /** @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource         = $event->getRouteMatch()->getParam('resource');
         $resourceMetadata = $resource->getMetadata();
 
         if ($result instanceof Traversable || is_array($result)) {
