@@ -30,7 +30,7 @@ Here is a basic roadmap of ZfrRest, by priority:
 
 Install the module by typing (or add it to your `composer.json` file):
 
-`php composer.phar require zf-fr/zfr-rest`
+`php composer.phar require zfr/zfr-rest`
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
 `zfr_rest.local.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!). For
