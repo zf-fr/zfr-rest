@@ -109,7 +109,6 @@ return array(
 ```
 
 > In DoctrineORMModule for instance, you need to add one driver per module. In ZfrRest, the annotation driver is
-"global" to the whole application. However, PHP mapping is a bit more verbose as you need to set paths. More
-information can be found [in the PHP mapping reference](/../php-mapping-reference.md).
+"global" to the whole application.
 
 [In next part](03-configuring-router.md), you are going to configure the router.
