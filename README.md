@@ -34,7 +34,7 @@ Install the module by typing (or add it to your `composer.json` file):
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
 `zfr_rest.local.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!). For
-more details about how to use ZfrRest, please follow the [quick start]((/docs/quick-start.md)).
+more details about how to use ZfrRest, please follow the [quick start]((/docs/quick-start/01-introduction.md)).
 
 ## Documentation
 
