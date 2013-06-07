@@ -18,7 +18,7 @@ class UserListController extends AbstractRestfulController
 {
     /**
      * @param  Paginator $users
-     * @return ViewModel
+     * @return Paginator
      */
     public function get(Paginator $users)
     {
