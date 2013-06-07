@@ -91,7 +91,7 @@ abstract class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * GET method is used to retrieve (or read) a representation of a resource. Get method is idempotant, which means
+     * GET method is used to retrieve (or read) a representation of a resource. Get method is idempotent, which means
      * that making multiple identical requests ends up having the same result as a single request. Get requests should
      * not modify any resources
      *
