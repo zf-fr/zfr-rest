@@ -27,7 +27,7 @@ Users of DoctrineMongoODMModule:
 ```php
 return array(
 	'zfr_rest' => array(
-		'object_manager' => 'doctrine.documentmanager.orm_default'
+		'object_manager' => 'doctrine.documentmanager.odm_default'
 	)
 );
 ```
