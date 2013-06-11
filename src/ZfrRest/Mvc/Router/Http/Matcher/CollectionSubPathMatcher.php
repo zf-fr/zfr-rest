@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\Router\Http\Matcher;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
+use Traversable;
 use Zend\Http\Request;
 use Zend\Stdlib\ArrayUtils;
 use ZfrRest\Mvc\Exception;
@@ -36,11 +37,11 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class CollectionSubPathMatcher implements SubPathMatcherInterface
 {
-    public function matchSubPath(
-        ResourceInterface $resource,
-        $subPath,
-        Request $request
-    ) {
+    /**
+     * {@inheritDoc}
+     */
+    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
+    {
         if (! $resource->isCollection()) {
             return null;
         }
@@ -66,35 +67,67 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
         );
     }
 
+    /**
+     * Retrieves a single item in the collection by its identifier
+     *
+     * @param mixed $data
+     * @param array $identifierNames
+     * @param mixed $identifier
+     *
+     * @return mixed|null
+     *
+     * @throws \ZfrRest\Mvc\Exception\RuntimeException on composite identifiers (not yet supported)
+     */
     protected function findItem($data, array $identifierNames, $identifier)
     {
         if (count($identifierNames) > 1) {
-            // @todo Cannot match multiple identifiers for now
-            return null;
+            throw new RuntimeException(get_class($this) . ' is not able to handle composite identifiers');
         }
 
-        if (!$data instanceof Selectable) {
-            if (! ($data instanceof \Traversable || is_array($data))) {
-                // @todo cannot match on non-selectables?
+        if (! $data instanceof Selectable) {
+            if (! ($data instanceof Traversable || is_array($data))) {
+                // Can only match selectable resources
                 return null;
             }
 
             $data = new ArrayCollection(ArrayUtils::iteratorToArray($data));
         }
 
-        if (! $data instanceof Selectable) {
-            // @todo should probably also handle repositories with no Selectable API
-            return null;
-        }
+        $found = $data->matching(new Criteria(Criteria::expr()->eq(current($identifierNames), $identifier)));
 
-        return $data->matching(
-            new Criteria(Criteria::expr()->eq(current($identifierNames), $identifier))
-        )->first();
+        return $found->isEmpty() ? null : $found->first();
     }
 
+    /**
+     * Filters the given resource by using the request object, then return the filtered subset
+     *
+     * @param ResourceInterface $resource
+     * @param Request $request
+     *
+     * @return ResourceInterface
+     */
     protected function filterAssociation(ResourceInterface $resource, Request $request)
     {
-        // @todo add collection filtering via GET parameters
-        return $resource;
+        if (! $resource->isCollection()) {
+            // can only filter collections
+            return $resource;
+        }
+
+        $data = $resource->getMetadata();
+
+        if (! $data instanceof Selectable) {
+            return $resource;
+        }
+
+        $criteria = new Criteria();
+
+        // @todo do we really need this part? This filtering is not safe.
+        foreach ($request->getQuery() as $parameterName => $parameterValue) {
+            if ($resource->getMetadata()->getClassMetadata()->hasField($parameterName)) {
+                $criteria->expr()->eq($parameterName, $parameterValue);
+            }
+        }
+
+        return new Resource($data->matching($criteria), $resource->getMetadata());
     }
 }

@@ -32,12 +32,33 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class SubPathMatch
 {
+    /**
+     * @var string|null
+     */
     public $matchedPath;
+
+    /**
+     * @var ResourceInterface|null
+     */
     public $matchedResource;
 
-    public function __construct(ResourceInterface $matchedResource = null, $matchedPath = null)
-    {
+    /**
+     * @var SubPathMatch|null
+     */
+    public $previousMatch;
+
+    /**
+     * @param ResourceInterface|null $matchedResource
+     * @param string|null $matchedPath
+     * @param SubPathMatch|null $previousMatch
+     */
+    public function __construct(
+        ResourceInterface $matchedResource = null,
+        $matchedPath = null,
+        SubPathMatch $previousMatch = null
+    ) {
         $this->matchedResource = $matchedResource;
         $this->matchedPath     = $matchedPath;
+        $this->previousMatch   = $previousMatch;
     }
 }

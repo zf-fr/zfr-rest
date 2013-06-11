@@ -35,17 +35,30 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class BaseSubPathMatcher implements SubPathMatcherInterface
 {
+    /**
+     * @var CollectionSubPathMatcher
+     */
+    private $collectionMatcher;
+
+    /**
+     * @var AssociationSubPathMatcher
+     */
+    private $associationMatcher;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->collectionMatcher  = new CollectionSubPathMatcher();
         $this->associationMatcher = new AssociationSubPathMatcher();
     }
 
-    public function matchSubPath(
-        ResourceInterface $resource,
-        $subPath,
-        Request $request
-    ) {
+    /**
+     * {@inheritDoc}
+     */
+    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
+    {
         $path = trim($subPath, '/');
 
         if (empty($path)) {
