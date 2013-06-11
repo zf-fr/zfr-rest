@@ -16,28 +16,34 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Router\Http\Matcher;
+namespace ZfrRest\Mvc\Exception;
 
-use Doctrine\Common\Collections\Criteria;
-use Zend\Http\Request;
-use ZfrRest\Mvc\Exception;
-use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Resource\ResourceInterface;
+use UnexpectedValueException as BaseUnexpectedValueException;
+use ZfrRest\Exception\ExceptionInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * Association matcher - builds a resource from a given resource and an association
+ * BadMethodCallException
  *
  * @license MIT
  * @author  Marco Pivetta <ocramius@gmail.com>
  */
-interface SubPathMatcherInterface
+class UnexpectedValueException extends BaseUnexpectedValueException implements ExceptionInterface
 {
     /**
-     * @param ResourceInterface $resource
-     * @param                   $subPath
-     * @param Request           $request
+     * @param ResourceMetadataInterface $metadata
+     * @param mixed $item
      *
-     * @return SubPathMatch|null
+     * @return BadMethodCallException
      */
-    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request);
+    public static function unexpectedResourceType(ResourceMetadataInterface $metadata, $item)
+    {
+        return new self(
+            sprintf(
+                'Unexpected value of type "%s" found, expecting',
+                is_object($item) ? get_class($item) : gettype($item),
+                $metadata->getClassMetadata()->getName()
+            )
+        );
+    }
 }

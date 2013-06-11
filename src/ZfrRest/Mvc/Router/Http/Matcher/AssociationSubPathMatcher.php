@@ -20,8 +20,7 @@ namespace ZfrRest\Mvc\Router\Http\Matcher;
 
 use Doctrine\Common\Collections\Criteria;
 use Zend\Http\Request;
-use ZfrRest\Mvc\Exception;
-use ZfrRest\Mvc\Exception\RuntimeException;
+use ZfrRest\Mvc\Exception\UnexpectedValueException;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -33,19 +32,19 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class AssociationSubPathMatcher implements SubPathMatcherInterface
 {
-    public function matchSubPath(
-        ResourceInterface $resource,
-        $subPath,
-        Request $request
-    ) {
+    /**
+     * {@inheritDoc}
+     */
+    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
+    {
         if ($resource->isCollection()) {
             return null;
         }
 
         $data = $resource->getData();
 
-        // @todo cannot handle non-object resources because of this hardcoding
         if (! is_object($data)) {
+            // unable to handle non-object resources
             return null;
         }
 
@@ -66,9 +65,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
 
         $associationData     = $reflectionProperty->getValue($data);
 
-        // @todo null and scalars won't work as a resource here!
         if (! $associationMetadata->getClassMetadata()->getReflectionClass()->isInstance($associationData)) {
-            return null;
+            throw UnexpectedValueException::unexpectedResourceType($associationMetadata, $associationData);
         }
 
         return new SubPathMatch(
