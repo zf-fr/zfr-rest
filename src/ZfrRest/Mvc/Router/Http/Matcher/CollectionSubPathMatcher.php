@@ -93,7 +93,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
             $data = new ArrayCollection(ArrayUtils::iteratorToArray($data));
         }
 
-        $found = $data->matching(new Criteria(Criteria::expr()->eq(current($identifierNames), $identifier)));
+        $found = $data->matching(new Criteria(Criteria::expr()->eq(reset($identifierNames), $identifier)));
 
         return $found->isEmpty() ? null : $found->first();
     }
