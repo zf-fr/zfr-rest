@@ -119,11 +119,12 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
             return $resource;
         }
 
-        $criteria = new Criteria();
+        $criteria      = new Criteria();
+        $classMetadata = $resource->getMetadata()->getClassMetadata();
 
         // @todo do we really need this part? This filtering is not safe.
         foreach ($request->getQuery() as $parameterName => $parameterValue) {
-            if ($resource->getMetadata()->getClassMetadata()->hasField($parameterName)) {
+            if ($classMetadata->hasField($parameterName)) {
                 $criteria->expr()->eq($parameterName, $parameterValue);
             }
         }
