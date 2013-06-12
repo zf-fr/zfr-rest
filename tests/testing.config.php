@@ -42,6 +42,21 @@ return array(
                 )
             )
         ),
+        'connection' => array(
+            'orm_default' => array(
+                'params' => array(
+                    'host'          => null,
+                    'port'          => null,
+                    'user'          => null,
+                    'password'      => null,
+                    'dbname'        => null,
+                    'driver'        => 'pdo_sqlite',
+                    'driverClass'   => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
+                    'path'          => null,
+                    'memory'        => true,
+                ),
+            ),
+        ),
     ),
 
     'controllers' => array(

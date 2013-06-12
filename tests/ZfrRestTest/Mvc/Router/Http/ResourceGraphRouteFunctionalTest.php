@@ -18,11 +18,13 @@
 
 namespace ZfrRestTest\Mvc;
 
+use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Http\Request;
 use ZfrRest\Factory\ResourceGraphRouteFactory;
 use ZfrRest\Http\Exception;
 use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
+use ZfrRestTest\Asset\Annotation\Tweet;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
@@ -35,6 +37,11 @@ use ZfrRestTest\Util\ServiceManagerFactory;
  */
 class ResourceGraphRouteFunctionalTest extends TestCase
 {
+    /**
+     * @var \Zend\ServiceManager\ServiceManager
+     */
+    protected $serviceManager;
+
     /**
      * @var \Doctrine\Common\Persistence\ObjectManager
      */
@@ -50,23 +57,18 @@ class ResourceGraphRouteFunctionalTest extends TestCase
      */
     protected function setUp()
     {
-        $serviceManager      = ServiceManagerFactory::getServiceManager();
-        $this->objectManager = $serviceManager->get('Doctrine\\ORM\\EntityManager');
-        $routeFactory        = new ResourceGraphRouteFactory();
+        $this->serviceManager = ServiceManagerFactory::getServiceManager();
+        /* @var $objectManager \Doctrine\Common\Persistence\ObjectManager */
+        $objectManager        = $this->serviceManager->get('Doctrine\\ORM\\EntityManager');
 
-        $serviceManager->setService(
+        $this->serviceManager->setService(
             'ZfrRestTest\Asset\Repository\PageRepository',
-            $this->objectManager->getRepository('ZfrRestTest\Asset\Annotation\Page')
+            $objectManager->getRepository('ZfrRestTest\Asset\Annotation\Page')
         );
-
-        $routeFactory->setCreationOptions(
-            array(
-                'route'    => '/foo/bar/',
-                'resource' => 'ZfrRestTest\Asset\Repository\PageRepository',
-            )
+        $this->serviceManager->setService(
+            'ZfrRestTest\Asset\Repository\TweetRepository',
+            $objectManager->getRepository('ZfrRestTest\Asset\Annotation\Tweet')
         );
-
-        $this->router = $routeFactory->createService($serviceManager->get('RoutePluginManager'));
     }
 
     /**
@@ -75,7 +77,7 @@ class ResourceGraphRouteFunctionalTest extends TestCase
      */
     public function testRetrievesChildClassMetadata()
     {
-        $match = $this->router->match($this->createRequest('/foo/bar/'));
+        $match = $this->createRoute()->match($this->createRequest('/foo/bar/'));
 
         $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
 
@@ -96,13 +98,46 @@ class ResourceGraphRouteFunctionalTest extends TestCase
      */
     public function testMatchesSlashes($path, $shouldMatch)
     {
-        $match = $this->router->match($this->createRequest($path));
+        $match = $this->createRoute()->match($this->createRequest($path));
 
         if ($shouldMatch) {
             $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
         } else {
             $this->assertNull($match);
         }
+    }
+
+    /**
+     * Verifying that the resource route is able to find single items in selectables
+     */
+    public function testMatchesSimpleCollectionItem()
+    {
+        $tweet = new Tweet();
+        $tweet->setContent('42!');
+
+        $objectManager = $this->getObjectManager();
+
+        $objectManager->persist($tweet);
+        $objectManager->flush();
+        $objectManager->clear();
+
+        $match = $this
+            ->createRoute('/tweets/', 'ZfrRestTest\Asset\Repository\TweetRepository')
+            ->match($this->createRequest('/tweets/' . $tweet->getId()));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
+
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \ZfrRestTest\Asset\Annotation\Tweet */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $data);
+        $this->assertSame($tweet->getId(), $data->getId());
     }
 
     /**
@@ -122,6 +157,40 @@ class ResourceGraphRouteFunctionalTest extends TestCase
         }
 
         return $request;
+    }
+
+    /**
+     * @param string $path
+     * @param string $serviceName
+     *
+     * @return ResourceGraphRoute
+     */
+    private function createRoute($path = '/foo/bar/', $serviceName = 'ZfrRestTest\Asset\Repository\PageRepository')
+    {
+        $routeFactory = new ResourceGraphRouteFactory();
+
+        $routeFactory->setCreationOptions(
+            array(
+                'route'    => $path,
+                'resource' => $serviceName,
+            )
+        );
+
+        return $routeFactory->createService($this->serviceManager->get('RoutePluginManager'));
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    private function getObjectManager()
+    {
+        /* @var $entityManager \Doctrine\ORM\EntityManager */
+        $entityManager = $this->serviceManager->get('Doctrine\\ORM\\EntityManager');
+        $schemaTool    = new SchemaTool($entityManager);
+
+        $schemaTool->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
+
+        return $entityManager;
     }
 
     /**

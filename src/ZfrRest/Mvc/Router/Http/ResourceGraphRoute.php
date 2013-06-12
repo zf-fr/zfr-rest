@@ -121,18 +121,15 @@ class ResourceGraphRoute implements RouteInterface
 
         $uri         = $request->getUri();
         $path        = $uri->getPath();
-        $matchedPath = rtrim($path, '/');
 
         // If the route is not even contained within the URI, we can return early...
-        if (strpos($matchedPath, $this->route) === false && strpos($path, $this->route) === false) {
+        if (strpos($path, $this->route) === false) {
             return null;
         }
 
-        if ($matchedPath === $this->route || $path === $this->route) {
-            return $this->buildRouteMatch($this->getResource(), $path);
-        }
+        $subPath = substr($path, strlen($this->route));
 
-        if (! $match = $this->subPathMatcher->matchSubPath($this->getResource(), $path, $request)) {
+        if (! $match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;
         }
 

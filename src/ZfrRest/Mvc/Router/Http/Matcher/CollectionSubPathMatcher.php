@@ -99,7 +99,11 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
             $data = new ArrayCollection(ArrayUtils::iteratorToArray($data));
         }
 
-        $found = $data->matching(new Criteria(Criteria::expr()->eq(reset($identifierNames), $identifier)));
+        $criteria = new Criteria();
+
+        $criteria->andWhere($criteria->expr()->eq(reset($identifierNames), $identifier));
+
+        $found = $data->matching($criteria);
 
         return $found->isEmpty() ? null : $found->first();
     }
@@ -128,7 +132,8 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
         $criteria      = new Criteria();
         $classMetadata = $resource->getMetadata()->getClassMetadata();
 
-        // @todo do we really need this part? This filtering is not safe.
+        // @todo do we really need this part? This filtering is not safe by default
+        // @fixme to be removed before merge
         foreach ($request->getQuery() as $parameterName => $parameterValue) {
             if ($classMetadata->hasField($parameterName)) {
                 $criteria->expr()->eq($parameterName, $parameterValue);
