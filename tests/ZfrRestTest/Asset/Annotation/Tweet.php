@@ -45,6 +45,7 @@ class Tweet
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="tweets")
+     * @REST\Association
      */
     protected $user;
 

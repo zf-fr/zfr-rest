@@ -234,6 +234,47 @@ class ResourceGraphRouteFunctionalTest extends TestCase
     }
 
     /**
+     * Verifying that the resource route is able to find single items in selectables
+     */
+    public function testMatchesSimpleAssociation()
+    {
+        $user = new User();
+
+        $user->setName('Deep Thought');
+
+        $tweet = new Tweet();
+
+        $tweet->setContent('42!');
+
+        $user->getTweets()->add($tweet);
+        $tweet->setUser($user);
+
+        $objectManager = $this->getObjectManager();
+
+        $objectManager->persist($user);
+        $objectManager->persist($tweet);
+        $objectManager->flush();
+        $objectManager->clear();
+
+        $match = $this
+            ->createRoute('/tweet/', 'ZfrRestTest\Asset\Repository\TweetRepository')
+            ->match($this->createRequest('/tweet/' . $tweet->getId() . '/user'));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \ZfrRestTest\Asset\Annotation\User */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\User', $data);
+        $this->assertSame($user->getId(), $data->getId());
+    }
+
+    /**
      * @param string $uri
      * @param array  $query
      *
