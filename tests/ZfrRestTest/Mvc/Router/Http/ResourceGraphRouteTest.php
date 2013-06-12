@@ -96,6 +96,7 @@ class ResourceGraphRouteTest extends TestCase
      */
     public function testDoesNotMatchCollectionItemsWithoutSlashSeparator()
     {
+        $this->markTestIncomplete('To be converted into a functional test case');
         $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
         $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
         $request         = new Request();
@@ -108,11 +109,6 @@ class ResourceGraphRouteTest extends TestCase
 
         $resource->expects($this->any())->method('isCollection')->will($this->returnValue(true));
         $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
-        $route
-            ->expects($this->any())
-            ->method('matchIdentifier')
-            ->with($resource, '/123')
-            ->will($this->returnValue($routeMatch));
 
         $request->setUri('/foo/bar');
         $this->assertSame($routeMatch, $route->match($request));
