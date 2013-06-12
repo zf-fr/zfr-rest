@@ -155,14 +155,16 @@ class ResourceGraphRoute implements RouteInterface
         $classMetadata      = $metadata->getClassMetadata();
         $data               = $resource->getData();
 
-        if ($resource->isCollection() && $data instanceof Collection) {
-            $resource = new Resource(new ResourcePaginator($metadata, new CollectionAdapter($data)), $metadata);
-        }
-
         // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
             if (null === $collectionMetadata) {
                 throw Exception\RuntimeException::missingCollectionMetadata($classMetadata);
+            }
+
+            if ($data instanceof Collection) {
+                $resource = new Resource(new ResourcePaginator($metadata, new CollectionAdapter($data)), $metadata);
+            } elseif ($data instanceof Selectable) {
+                $resource = new Resource(new ResourcePaginator($metadata, new SelectableAdapter($data)), $metadata);
             }
 
             $controllerName = $collectionMetadata->getControllerName();
