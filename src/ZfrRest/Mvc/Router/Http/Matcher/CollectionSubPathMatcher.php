@@ -56,7 +56,8 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
             return new SubPathMatch($this->filterAssociation($resource, $request), $subPath);
         }
 
-        $identifier    = array_shift(explode('/', trim($subPath, '/')));
+        $pathChunks    = explode('/', trim($subPath, '/'));
+        $identifier    = array_shift($pathChunks);
         $classMetadata = $resource->getMetadata()->getClassMetadata();
         $data          = $this->findItem($resource->getData(), $classMetadata->getIdentifierFieldNames(), $identifier);
 
