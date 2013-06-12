@@ -18,10 +18,12 @@
 
 namespace ZfrRest\Mvc\Router\Http;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
+use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
@@ -148,26 +150,13 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
     {
-        $resourceMetadata   = $resource->getMetadata();
-        $collectionMetadata = $resourceMetadata->getCollectionMetadata();
-        $classMetadata      = $resourceMetadata->getClassMetadata();
+        $metadata           = $resource->getMetadata();
+        $collectionMetadata = $metadata->getCollectionMetadata();
+        $classMetadata      = $metadata->getClassMetadata();
         $data               = $resource->getData();
 
-        if ($data instanceof Selectable) {
-            $criteria = Criteria::create();
-
-            /*
-            foreach ($this->query as $key => $value) {
-                if ($classMetadata->hasField($key)) {
-                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
-                }
-            }
-            */
-
-            // @TODO: for now, collection is always wrapped around a ResourcePaginator, should instead be configurable
-            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
-
-            $resource = new Resource($data, $resourceMetadata);
+        if ($resource->isCollection() && $data instanceof Collection) {
+            $resource = new Resource(new ResourcePaginator($metadata, new CollectionAdapter($data)), $metadata);
         }
 
         // If returned $data is a collection, then we use the controller specified in Collection mapping
@@ -178,7 +167,7 @@ class ResourceGraphRoute implements RouteInterface
 
             $controllerName = $collectionMetadata->getControllerName();
         } else {
-            $controllerName = $resourceMetadata->getControllerName();
+            $controllerName = $metadata->getControllerName();
         }
 
         return new RouteMatch(
