@@ -53,7 +53,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         }
 
         $resourceMetadata = $resource->getMetadata();
-        $associationName  = array_shift(explode('/', trim($subPath, '/')));
+        $pathChunks       = explode('/', trim($subPath, '/'));
+        $associationName  = array_shift($pathChunks);
 
         if (! $resourceMetadata->hasAssociation($associationName)) {
             return null;
@@ -68,10 +69,6 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $reflectionProperty->setAccessible(true);
 
         $associationData     = $reflectionProperty->getValue($data);
-
-        if (! $associationMetadata->getClassMetadata()->getReflectionClass()->isInstance($associationData)) {
-            throw UnexpectedValueException::unexpectedResourceType($associationMetadata, $associationData);
-        }
 
         return new SubPathMatch(
             new Resource($associationData, $associationMetadata),

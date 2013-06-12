@@ -25,6 +25,7 @@ use ZfrRest\Factory\ResourceGraphRouteFactory;
 use ZfrRest\Http\Exception;
 use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
 use ZfrRestTest\Asset\Annotation\Tweet;
+use ZfrRestTest\Asset\Annotation\User;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
@@ -61,6 +62,10 @@ class ResourceGraphRouteFunctionalTest extends TestCase
         /* @var $objectManager \Doctrine\Common\Persistence\ObjectManager */
         $objectManager        = $this->serviceManager->get('Doctrine\\ORM\\EntityManager');
 
+        $this->serviceManager->setService(
+            'ZfrRestTest\Asset\Repository\UserRepository',
+            $objectManager->getRepository('ZfrRestTest\Asset\Annotation\User')
+        );
         $this->serviceManager->setService(
             'ZfrRestTest\Asset\Repository\PageRepository',
             $objectManager->getRepository('ZfrRestTest\Asset\Annotation\Page')
@@ -122,14 +127,102 @@ class ResourceGraphRouteFunctionalTest extends TestCase
         $objectManager->clear();
 
         $match = $this
-            ->createRoute('/tweets/', 'ZfrRestTest\Asset\Repository\TweetRepository')
-            ->match($this->createRequest('/tweets/' . $tweet->getId()));
+            ->createRoute('/tweet/', 'ZfrRestTest\Asset\Repository\TweetRepository')
+            ->match($this->createRequest('/tweet/' . $tweet->getId()));
 
         $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
 
         /* @var $resource \ZfrRest\Resource\ResourceInterface */
         $resource = $match->getParam('resource');
 
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \ZfrRestTest\Asset\Annotation\Tweet */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $data);
+        $this->assertSame($tweet->getId(), $data->getId());
+    }
+
+    /**
+     * Verifying that the resource route is able to find collection-valued associations
+     */
+    public function testMatchesResourceCollection()
+    {
+        $user = new User();
+
+        $user->setName('Deep Thought');
+
+        $tweet = new Tweet();
+
+        $tweet->setContent('42!');
+
+        $user->getTweets()->add($tweet);
+        $tweet->setUser($user);
+
+        $objectManager = $this->getObjectManager();
+
+        $objectManager->persist($user);
+        $objectManager->persist($tweet);
+        $objectManager->flush();
+        $objectManager->clear();
+
+        $match = $this
+            ->createRoute('/user/', 'ZfrRestTest\Asset\Repository\UserRepository')
+            ->match($this->createRequest('/user/' . $user->getId() . '/tweets'));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \ZfrRest\Paginator\ResourcePaginator */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('ZfrRest\Paginator\ResourcePaginator', $data);
+        $this->assertCount(1, $data);
+
+        /* @var $found \ZfrRestTest\Asset\Annotation\Tweet */
+        $found = $data->getItem(0);
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $found);
+        $this->assertSame($tweet->getId(), $found->getId());
+    }
+
+    /**
+     * Verifying that the resource route is able to find single items in selectables
+     */
+    public function testMatchesResourceCollectionItem()
+    {
+        $user = new User();
+
+        $user->setName('Deep Thought');
+
+        $tweet = new Tweet();
+
+        $tweet->setContent('42!');
+
+        $user->getTweets()->add($tweet);
+        $tweet->setUser($user);
+
+        $objectManager = $this->getObjectManager();
+
+        $objectManager->persist($user);
+        $objectManager->persist($tweet);
+        $objectManager->flush();
+        $objectManager->clear();
+
+        $match = $this
+            ->createRoute('/user/', 'ZfrRestTest\Asset\Repository\UserRepository')
+            ->match($this->createRequest('/user/' . $user->getId() . '/tweets/' . $tweet->getId()));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
 
         $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
 
