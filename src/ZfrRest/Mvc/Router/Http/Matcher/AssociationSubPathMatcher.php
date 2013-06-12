@@ -35,8 +35,12 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
     /**
      * {@inheritDoc}
      */
-    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
-    {
+    public function matchSubPath(
+        ResourceInterface $resource,
+        $subPath,
+        Request $request,
+        SubPathMatch $previousMatch = null
+    ) {
         if ($resource->isCollection()) {
             return null;
         }
@@ -71,7 +75,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
 
         return new SubPathMatch(
             new Resource($associationData, $associationMetadata),
-            substr($subPath, strpos($subPath, $associationName), strlen($associationName))
+            substr($subPath, strpos($subPath, $associationName), strlen($associationName)),
+            $previousMatch
         );
     }
 }

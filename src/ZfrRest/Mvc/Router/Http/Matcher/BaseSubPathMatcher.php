@@ -57,8 +57,12 @@ class BaseSubPathMatcher implements SubPathMatcherInterface
     /**
      * {@inheritDoc}
      */
-    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
-    {
+    public function matchSubPath(
+        ResourceInterface $resource,
+        $subPath,
+        Request $request,
+        SubPathMatch $previousMatch = null
+    ) {
         $path = trim($subPath, '/');
 
         if (empty($path)) {
@@ -78,7 +82,8 @@ class BaseSubPathMatcher implements SubPathMatcherInterface
         return $this->matchSubPath(
             $match->matchedResource,
             substr($path, strlen($match->matchedPath)),
-            $request
+            $request,
+            $match
         );
     }
 }

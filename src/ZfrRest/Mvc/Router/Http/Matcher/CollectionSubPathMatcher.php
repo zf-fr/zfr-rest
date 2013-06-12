@@ -40,8 +40,12 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
     /**
      * {@inheritDoc}
      */
-    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request)
-    {
+    public function matchSubPath(
+        ResourceInterface $resource,
+        $subPath,
+        Request $request,
+        SubPathMatch $previousMatch = null
+    ) {
         if (! $resource->isCollection()) {
             return null;
         }
@@ -63,7 +67,8 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
 
         return new SubPathMatch(
             new Resource($data, $resource->getMetadata()),
-            substr($subPath, strpos($subPath, $identifier), strlen($identifier))
+            substr($subPath, strpos($subPath, $identifier), strlen($identifier)),
+            $previousMatch
         );
     }
 

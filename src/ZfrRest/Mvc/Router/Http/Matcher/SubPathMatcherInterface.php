@@ -36,8 +36,14 @@ interface SubPathMatcherInterface
      * @param ResourceInterface $resource
      * @param                   $subPath
      * @param Request           $request
+     * @param SubPathMatch|null $previousMatch
      *
      * @return SubPathMatch|null
      */
-    public function matchSubPath(ResourceInterface $resource, $subPath, Request $request);
+    public function matchSubPath(
+        ResourceInterface $resource,
+        $subPath,
+        Request $request,
+        SubPathMatch $previousMatch = null
+    );
 }
