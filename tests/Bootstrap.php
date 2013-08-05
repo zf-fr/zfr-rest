@@ -47,4 +47,4 @@ foreach ($configFiles as $configFile) {
 }
 
 ServiceManagerFactory::setApplicationConfig($config);
-unset($file, $file, $loader, $configFiles, $configFile, $config);
+unset($files, $file, $loader, $configFiles, $configFile, $config);
