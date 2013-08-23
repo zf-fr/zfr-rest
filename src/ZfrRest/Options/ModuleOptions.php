@@ -25,6 +25,7 @@ use Zend\Stdlib\AbstractOptions;
  *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author  Florent Blaison <florent.blaison@gmail.com>
  */
 class ModuleOptions extends AbstractOptions
 {
@@ -69,6 +70,13 @@ class ModuleOptions extends AbstractOptions
      * @var array
      */
     protected $models = array();
+
+    /**
+     * Plugin manager configuration for the cors options
+     *
+     * @var CorsOptions
+     */
+    protected $corsOptions;
 
     /**
      * @param string $objectManager
@@ -176,5 +184,23 @@ class ModuleOptions extends AbstractOptions
     public function getModels()
     {
         return $this->models;
+    }
+
+    /**
+     * @param  array $options
+     *
+     * @return void
+     */
+    public function setCors(array $options)
+    {
+        $this->corsOptions = new CorsOptions($options);
+    }
+
+    /**
+     * @return CorsOptions
+     */
+    public function getCors()
+    {
+        return $this->corsOptions;
     }
 }

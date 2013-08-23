@@ -43,6 +43,12 @@ return array(
              * or manually use the AcceptableViewModelSelector to return the right model according to Content-Type
              */
             // 'register_select_model' => true,
+
+            /**
+            * If this listener is registered (it is not by default), it will check before routing any request
+            * if the request is a preflight OPTIONS request to accept or not a CORS request
+            */
+            // 'register_cors_support' => false
         ),
 
         /**
@@ -110,6 +116,44 @@ return array(
          * This configuration allow to add classes to the ModelPluginManager. This works like any other
          * plugin manager
          */
-        'models' => array()
+        'models' => array(),
+
+        /**
+         * This configuration allow to add headers to preflith OPTIONS
+         */
+        'cors' => array(
+
+            /**
+             * Set the list of allowed origins domain.
+             */
+            'origins'             => array(
+                'http://exemple.com',
+            ),
+
+            /**
+             * Set the list of rest method verbs separate by a comma.
+             */
+            // 'allowed_methods'     => 'GET, POST, PUT, DELETE, OPTIONS',
+
+            /**
+             * Set the list of headers separate by a comma.
+             */
+            'allowed_headers'     => 'content-type, accept',
+
+            /**
+             * Set the max age of the authorize request in seconds.
+             */
+            'max_age'             => 10,
+
+            /**
+             * Set the list of exposed headers separate by a comma.
+             */
+            'exposed_headers'     => '',
+
+            /**
+             * Allow cors request with credential.
+             */
+            'allowed_credentials' => false,
+        ),
     )
 );

@@ -32,6 +32,7 @@ return array(
             'ZfrRest\View\Model\ModelPluginManager'               => 'ZfrRest\Factory\ModelPluginManagerFactory',
             'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'
                 => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
+            'ZfrRest\Mvc\CorsListener'                            => 'ZfrRest\Factory\CorsListenerFactory',
         )
     ),
 
@@ -91,7 +92,8 @@ return array(
             'register_http_exception'          => true,
             'register_create_resource_payload' => true,
             'register_select_model'            => true,
-            'register_http_method_override'    => false
+            'register_http_method_override'    => false,
+            'register_cors_support'            => false
         ),
 
         /**
