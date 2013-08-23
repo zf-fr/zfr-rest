@@ -36,16 +36,16 @@ class CorsOptions extends AbstractOptions
     protected $origins;
 
     /**
-     * Set the list of rest method verbs separate by a comma.
+     * Set the list of rest method verbs.
      *
-     * @var string
+     * @var array
      */
     protected $allowedMethods;
 
     /**
-     * Set the list of headers separate by a comma.
+     * Set the list of headers.
      *
-     * @var string
+     * @var array
      */
     protected $allowedHeaders;
 
@@ -57,9 +57,9 @@ class CorsOptions extends AbstractOptions
     protected $maxAge;
 
     /**
-     * Set the list of exposed headers separate by a comma.
+     * Set the list of exposed headers.
      *
-     * @var string
+     * @var array
      */
     protected $exposedHeaders;
 
@@ -88,16 +88,16 @@ class CorsOptions extends AbstractOptions
     }
 
     /**
-     * @param string $allowedMethods
+     * @param array $allowedMethods
      * @return void
      */
-    public function setAllowedMethods($allowedMethods)
+    public function setAllowedMethods(array $allowedMethods)
     {
-        $this->allowedMethods = (string) $allowedMethods;
+        $this->allowedMethods = $allowedMethods;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getAllowedMethods()
     {
@@ -105,16 +105,16 @@ class CorsOptions extends AbstractOptions
     }
 
     /**
-     * @param string $allowedHeaders
+     * @param array $allowedHeaders
      * @return void
      */
-    public function setAllowedHeaders($allowedHeaders)
+    public function setAllowedHeaders(array $allowedHeaders)
     {
-        $this->allowedHeaders = (string) $allowedHeaders;
+        $this->allowedHeaders = $allowedHeaders;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getAllowedHeaders()
     {
@@ -139,16 +139,16 @@ class CorsOptions extends AbstractOptions
     }
 
     /**
-     * @param string $exposedHeaders
+     * @param array $exposedHeaders
      * @return void
      */
-    public function setExposedHeaders($exposedHeaders)
+    public function setExposedHeaders(array $exposedHeaders)
     {
-        $this->exposedHeaders = (string) $exposedHeaders;
+        $this->exposedHeaders = $exposedHeaders;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getExposedHeaders()
     {

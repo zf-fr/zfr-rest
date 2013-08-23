@@ -62,39 +62,39 @@ class CorsListener extends AbstractListenerAggregate
      */
     public function onCors(MvcEvent $event)
     {
-        if ($this->moduleOptions->getListeners()->getRegisterCorsSupport()) {
-            /** @var $request HttpRequest */
-            $request   = $event->getRequest();
-            /** @var $response HttpResponse */
-            $response  = $event->getResponse();
-            $origin    = $request->getHeader('Origin', null);
-            if ($origin !== null) {
-                if (in_array($origin->getFieldValue(), $this->moduleOptions->getCors()->getOrigins())) {
-                    $response->getHeaders()->addHeaderLine('Access-Control-Allow-Origin', $origin->getFieldValue());
-                }
+        /** @var $request HttpRequest */
+        $request   = $event->getRequest();
+        /** @var $response HttpResponse */
+        $response  = $event->getResponse();
+        $origin    = $request->getHeader('Origin', null);
+        if ($origin === null) {
+            return;
+        }
 
-                $method  = strtolower($request->getMethod());
-                if ($method === 'options') {
-                    $requestMethod = $request->getHeader('Access-Control-Request-Method', null);
-                    if ($requestMethod !== null) {
-                        $response->setStatusCode(204);
-                        $response->getHeaders()->addHeaderLine('Access-Control-Allow-Methods',
-                            $this->moduleOptions->getCors()->getAllowedMethods());
-                        $response->getHeaders()->addHeaderLine('Access-Control-Allow-Headers',
-                            $this->moduleOptions->getCors()->getAllowedHeaders());
-                        $response->getHeaders()->addHeaderLine('Access-Control-Max-Age',
-                            $this->moduleOptions->getCors()->getMaxAge());
-                        $response->getHeaders()->addHeaderLine('content-length', 0);
-                        if ($this->moduleOptions->getCors()->getAllowedCredentials()) {
-                            $response->getHeaders()->addHeaderLine('Access-Control-Allow-Credentials',
-                                $this->moduleOptions->getCors()->getAllowedCredentials());
-                        }
+        $headers = $response->getHeaders();
+        $corsOptions = $this->moduleOptions->getCors();
 
-                        $event->setResult($response);
-                        return $response;
-                    }
-                }
+        if (in_array($origin->getFieldValue(), $corsOptions->getOrigins())) {
+            $headers->addHeaderLine('Access-Control-Allow-Origin', $origin->getFieldValue());
+        }
+
+        $method  = strtolower($request->getMethod());
+        if ($method !== 'options') {
+            return;
+        }
+        $requestMethod = $request->getHeader('Access-Control-Request-Method', null);
+        if ($requestMethod !== null) {
+            $response->setStatusCode(204);
+            $headers->addHeaderLine('Access-Control-Allow-Methods', implode(',', $corsOptions->getAllowedMethods()));
+            $headers->addHeaderLine('Access-Control-Allow-Headers', implode(',', $corsOptions->getAllowedHeaders()));
+            $headers->addHeaderLine('Access-Control-Max-Age', $corsOptions->getMaxAge());
+            $headers->addHeaderLine('Content-Length', 0);
+            if ($corsOptions->getAllowedCredentials()) {
+                $headers->addHeaderLine('Access-Control-Allow-Credentials', $corsOptions->getAllowedCredentials());
             }
+
+            $event->setResult($response);
+            return $response;
         }
     }
 }
