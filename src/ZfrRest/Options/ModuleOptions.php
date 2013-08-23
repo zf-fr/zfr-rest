@@ -72,7 +72,7 @@ class ModuleOptions extends AbstractOptions
     protected $models = array();
 
     /**
-     * Plugin manager configuration for the cors options
+     * Configuration for the cors options
      *
      * @var CorsOptions
      */
