@@ -64,14 +64,14 @@ class CorsListener extends AbstractListenerAggregate
     {
         /** @var $request HttpRequest */
         $request   = $event->getRequest();
-        /** @var $response HttpResponse */
-        $response  = $event->getResponse();
         $origin    = $request->getHeader('Origin', null);
         if ($origin === null) {
             return;
         }
 
-        $headers = $response->getHeaders();
+        /** @var $response HttpResponse */
+        $response    = $event->getResponse();
+        $headers     = $response->getHeaders();
         $corsOptions = $this->moduleOptions->getCors();
 
         if (in_array($origin->getFieldValue(), $corsOptions->getOrigins())) {
@@ -82,6 +82,7 @@ class CorsListener extends AbstractListenerAggregate
         if ($method !== 'options') {
             return;
         }
+
         $requestMethod = $request->getHeader('Access-Control-Request-Method', null);
         if ($requestMethod !== null) {
             $response->setStatusCode(204);

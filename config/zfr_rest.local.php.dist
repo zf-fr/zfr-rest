@@ -130,12 +130,12 @@ return array(
             /**
              * Set the list of rest method verbs.
              */
-            // 'allowed_methods' => array('GET, POST, PUT, DELETE, OPTIONS'),
+            // 'allowed_methods' => array('GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'),
 
             /**
              * Set the list of headers.
              */
-            // 'allowed_headers' => array('content-type, accept'),
+            // 'allowed_headers' => array('content-type', 'accept'),
 
             /**
              * Set the max age of the authorize request in seconds.
