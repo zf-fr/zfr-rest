@@ -74,9 +74,11 @@ class CorsListener extends AbstractListenerAggregate
         $headers     = $response->getHeaders();
         $corsOptions = $this->moduleOptions->getCors();
 
-        if (in_array($origin->getFieldValue(), $corsOptions->getOrigins())) {
-            $headers->addHeaderLine('Access-Control-Allow-Origin', $origin->getFieldValue());
+        if (!in_array($origin->getFieldValue(), $corsOptions->getOrigins())) {
+            return;
         }
+
+        $headers->addHeaderLine('Access-Control-Allow-Origin', $origin->getFieldValue());
 
         $method  = strtolower($request->getMethod());
         if ($method !== 'options') {
