@@ -33,42 +33,42 @@ class CorsOptions extends AbstractOptions
      *
      * @var array
      */
-    protected $origins;
+    protected $origins = array();
 
     /**
      * Set the list of rest method verbs.
      *
      * @var array
      */
-    protected $allowedMethods;
+    protected $allowedMethods = array();
 
     /**
      * Set the list of headers.
      *
      * @var array
      */
-    protected $allowedHeaders;
+    protected $allowedHeaders = array();
 
     /**
      * Set the max age of the authorize request in seconds.
      *
      * @var int
      */
-    protected $maxAge;
+    protected $maxAge = 0;
 
     /**
      * Set the list of exposed headers.
      *
      * @var array
      */
-    protected $exposedHeaders;
+    protected $exposedHeaders = array();
 
     /**
      * Allow cors request with credential.
      *
      * @var bool
      */
-    protected $allowedCredentials;
+    protected $allowedCredentials = false;
 
     /**
      * @param  array $origins
