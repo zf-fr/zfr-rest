@@ -96,7 +96,7 @@ class CorsListener extends AbstractListenerAggregate
                 $headers->addHeaderLine('Access-Control-Allow-Credentials', $corsOptions->getAllowedCredentials());
             }
         } else {
-            $response->setStatusCode(401);
+            $response->setStatusCode(403);
         }
 
         $event->setResult($response);

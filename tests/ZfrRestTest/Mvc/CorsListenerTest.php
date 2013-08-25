@@ -158,7 +158,7 @@ class CorsListenerTest extends TestCase
 
         $this->corsListener->onCors($this->event);
 
-        $this->assertEquals(401, $this->event->getResponse()->getStatusCode());
+        $this->assertEquals(403, $this->event->getResponse()->getStatusCode());
     }
 
     public function testIfAccessControlRequestMethodIsInRequest()
