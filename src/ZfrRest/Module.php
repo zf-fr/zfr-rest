@@ -67,6 +67,10 @@ class Module implements
         if ($listenersOptions->getRegisterSelectModel()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
         }
+
+        if ($listenersOptions->getRegisterCorsSupport()) {
+            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\CorsListener'));
+        }
     }
 
     /**

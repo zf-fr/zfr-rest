@@ -64,6 +64,14 @@ class ListenersOptions extends AbstractOptions
     protected $registerSelectModel;
 
     /**
+     * If this listener is registered (it is not by default), it will check before routing any request
+     * if the request is a preflight OPTIONS request to accept or not a CORS request
+     *
+     * @var bool
+     */
+    protected $registerCorsSupport;
+
+    /**
      * @param  bool $registerHttpException
      * @return void
      */
@@ -129,5 +137,22 @@ class ListenersOptions extends AbstractOptions
     public function getRegisterSelectModel()
     {
         return $this->registerSelectModel;
+    }
+
+    /**
+     * @param bool $registerCorsSupport
+     * @return void
+     */
+    public function setRegisterCorsSupport($registerCorsSupport)
+    {
+        $this->registerCorsSupport = (bool) $registerCorsSupport;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRegisterCorsSupport()
+    {
+        return $this->registerCorsSupport;
     }
 }
