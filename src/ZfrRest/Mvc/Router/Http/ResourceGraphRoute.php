@@ -239,6 +239,11 @@ class ResourceGraphRoute implements RouteInterface
 
             foreach ($this->query as $key => $value) {
                 if ($classMetadata->hasField($key)) {
+                    if ($value === 'true') {
+                        $value = true;
+                    } elseif ($value === 'false') {
+                        $value = false;
+                    }
                     $criteria->andWhere(Criteria::expr()->eq($key, $value));
                 }
             }
