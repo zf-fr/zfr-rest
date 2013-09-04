@@ -112,6 +112,12 @@ class ResourceGraphRoute implements RouteInterface
         /* @var $request \Zend\Http\Request */
         $uri         = $request->getUri();
         $path        = $uri->getPath();
+        
+        // we must ommit the basePtah
+        if ($request instanceof \Zend\Http\PhpEnvironment\Request) {
+            $path = substr($path, strlen(rtrim($request->getBasePath(), '/')));
+        }
+
         $matchedPath = rtrim($path, '/');
 
         // Save the query part (GET parameters) to optionally filter the result at the end
