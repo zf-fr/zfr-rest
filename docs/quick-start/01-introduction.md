@@ -7,7 +7,7 @@ Doctrine\Common interfaces. Therefore, people already using Doctrine (ORM, ODMâ€
 
 ## Initial setup
 
-Once you have installed the module and copied the `zfr_rest.local.php` file into your `autoloader` folder, it's start
+Once you have installed the module and copied the `zfr_rest.global.php` file into your `autoloader` folder, it's start
 to configure it. This file contains a lot of options (nearly everything can be configured in ZfrRest!), but we are
 going to update the `object_manager` key. As I said earlier, ZfrRest is based on `Doctrine\Common` interfaces, where
 the object manager is an object that is used as a persistence layer.
