@@ -114,8 +114,8 @@ class ResourceGraphRoute implements RouteInterface
         $path        = $uri->getPath();
         
         // we must ommit the basePtah
-        if ($request instanceof \Zend\Http\PhpEnvironment\Request) {
-            $path = substr($path, strlen(rtrim($request->getBasePath(), '/')));
+        if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
+            $path = substr($path, strlen(rtrim($baseUrl, '/')));
         }
 
         $matchedPath = rtrim($path, '/');
