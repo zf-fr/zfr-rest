@@ -152,7 +152,7 @@ class ResourceGraphRouteTest extends TestCase
             ->with($resource, '/123')
             ->will($this->returnValue($routeMatch));
 
-        $request = new \ZfrRestTest\Util\Request();
+        $request = new \ZfrRestTest\Asset\Request\Request();
         $request->setBaseUrl('/base/');
 
         $request->setUri('/foo/bar');

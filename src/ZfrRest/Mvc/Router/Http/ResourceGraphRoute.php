@@ -113,7 +113,7 @@ class ResourceGraphRoute implements RouteInterface
         $uri         = $request->getUri();
         $path        = $uri->getPath();
         
-        // we must ommit the basePtah
+        // we must ommit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
             $path = substr($path, strlen(rtrim($baseUrl, '/')));
         }
