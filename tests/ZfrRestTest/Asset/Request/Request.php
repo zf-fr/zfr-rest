@@ -4,7 +4,6 @@ namespace ZfrRestTest\Asset\Request;
 use Zend\Http\Request as BaseRequest;
 
 /**
- * Class Request
  * Extends \Zend\Http\Request with baseUrl capabilities.
  * Not using Zend\Http\PhpEnvironment\Request for dependencies matters.
  * @package ZfrRestTest\Asset
