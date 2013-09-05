@@ -128,4 +128,43 @@ class ResourceGraphRouteTest extends TestCase
 
         $this->markTestIncomplete('Should not mock the resource graph route itself');
     }
+
+    /**
+     * Test if route can match when there is a baseUrl for the application
+     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
+     */
+    public function testMatchWithBaseUrl()
+    {
+        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
+        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
+        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
+        $route           = $this->getMock(
+            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
+            array('buildRouteMatch', 'matchIdentifier'),
+            array($metadataFactory, $resource, '/foo/bar')
+        );
+
+        $resource->expects($this->any())->method('isCollection')->will($this->returnValue(true));
+        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
+        $route
+            ->expects($this->any())
+            ->method('matchIdentifier')
+            ->with($resource, '/123')
+            ->will($this->returnValue($routeMatch));
+
+        $request = new \ZfrRestTest\Asset\Request\Request();
+        $request->setBaseUrl('/base/');
+
+        $request->setUri('/foo/bar');
+        $this->assertNull($route->match($request));
+        $request->setUri('/foo/bar/123');
+        $this->assertNull($route->match($request));
+
+        $request->setUri('/base/foo/bar');
+        $this->assertSame($routeMatch, $route->match($request));
+        $request->setUri('/base/foo/bar/123');
+        $this->assertSame($routeMatch, $route->match($request));
+
+        $this->markTestIncomplete('Should not mock the resource graph route itself');
+    }
 }
