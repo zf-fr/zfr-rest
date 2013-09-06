@@ -65,7 +65,7 @@ option `auto_hydrate` and `auto_validate` options in the config file (the keys l
 ## Listeners
 
 ZfrRest registers various listeners that can be activated/deactivated in the config file. Just uncomment specific
-lines in the `zfr_rest.local.php` file.
+lines in the `zfr_rest.global.php` file.
 
 ## How to deal with custom Accept/Content-Type mime types ?
 
