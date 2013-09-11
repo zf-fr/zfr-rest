@@ -84,6 +84,13 @@ interface ResourceMetadataInterface
     public function hasAssociation($association);
 
     /**
+     * Get metadata to use in case the resource has extraction depth for hydrator
+     *
+     * @return  ExtractionDepthResourceMetadataInterface
+     */
+    public function getExtractionDepthMetadata();
+
+    /**
      * Get metadata to use in case the resource is a collection of item
      *
      * @return CollectionResourceMetadataInterface
