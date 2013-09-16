@@ -21,7 +21,10 @@ namespace ZfrRest\Mvc\Router\Http;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
@@ -239,6 +242,7 @@ class ResourceGraphRoute implements RouteInterface
         $collectionMetadata = $resourceMetadata->getCollectionMetadata();
         $classMetadata      = $resourceMetadata->getClassMetadata();
         $data               = $resource->getData();
+        $chunks             = explode('/', $path);
 
         if ($data instanceof Selectable) {
             $criteria = Criteria::create();
@@ -250,7 +254,11 @@ class ResourceGraphRoute implements RouteInterface
             }
 
             // @TODO: for now, collection is always wrapped around a ResourcePaginator, should instead be configurable
-            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
+            if ($data instanceof EntityRepository && class_exists('DoctrineORMModule\Paginator\Adapter\DoctrinePaginator')) {
+                $data = new ResourcePaginator($resourceMetadata, new DoctrineAdapter(new DoctrinePaginator($data->find(array_shift($chunks)))));
+            } else {
+                $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
+            }
 
             $resource = new Resource($data, $resourceMetadata);
         }
