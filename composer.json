@@ -43,7 +43,7 @@
             "ZfrRest\\": "src/"
         },
         "classmap": [
-            "./Module.php"
+            "./"
         ]
     }
 }

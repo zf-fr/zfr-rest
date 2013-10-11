@@ -22,8 +22,6 @@ use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
-use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
 
 /**
@@ -34,8 +32,6 @@ use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
 class Module implements
     BootstrapListenerInterface,
     ConfigProviderInterface,
-    ConsoleBannerProviderInterface,
-    ConsoleUsageProviderInterface,
     DependencyIndicatorInterface
 {
     /**
@@ -49,7 +45,7 @@ class Module implements
         $eventManager    = $application->getEventManager();
 
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
-        $moduleOptions    = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+        /*$moduleOptions    = $serviceManager->get('ZfrRest\Options\ModuleOptions');
         $listenersOptions = $moduleOptions->getListeners();
 
         if ($listenersOptions->getRegisterHttpException()) {
@@ -66,7 +62,7 @@ class Module implements
 
         if ($listenersOptions->getRegisterSelectModel()) {
             $eventManager->attach($serviceManager->get('ZfrRest\Mvc\View\Http\SelectModelListener'));
-        }
+        }*/
     }
 
     /**
@@ -75,26 +71,6 @@ class Module implements
     public function getConfig()
     {
         return include __DIR__ . '/../../config/module.config.php';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConsoleBanner(AdapterInterface $console)
-    {
-        return 'ZfrRest ' . Version::VERSION;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConsoleUsage(AdapterInterface $console)
-    {
-        return array(
-            'Usage:',
-
-            'rest clear metadata cache' => 'Clear all resource metadata cache'
-        );
     }
 
     /**
