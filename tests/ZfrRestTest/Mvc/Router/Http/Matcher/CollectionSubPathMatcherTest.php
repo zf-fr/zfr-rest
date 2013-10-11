@@ -156,4 +156,45 @@ class CollectionSubPathMatcherTest extends TestCase
         $this->assertInstanceOf('ZfrRestTest\Asset\UserAsset', $result->getMatchedResource()->getData());
         $this->assertEquals(1, $result->getMatchedResource()->getData()->getId());
     }
+
+    public function testReturnsNullIfNoItemIsFound()
+    {
+        $data = $this->getMock('Doctrine\Common\Collections\Selectable');
+        $data->expects($this->any())
+             ->method('matching')
+             ->will($this->returnValue(new ArrayCollection()));
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource->expects($this->any())
+                 ->method('isCollection')
+                 ->will($this->returnValue(true));
+
+        $resource->expects($this->any())
+                 ->method('getData')
+                 ->will($this->returnValue($data));
+
+        $resourceMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $resource->expects($this->any())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($resourceMetadata));
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->any())
+                      ->method('getReflectionClass')
+                      ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\UserAsset')));
+
+        $classMetadata->expects($this->any())
+                      ->method('getIdentifierFieldNames')
+                      ->will($this->returnValue(array('id')));
+
+        $resourceMetadata->expects($this->any())
+                         ->method('getClassMetadata')
+                         ->will($this->returnValue($classMetadata));
+
+        $collectionPathMatcher = new CollectionSubPathMatcher();
+
+        $result = $collectionPathMatcher->matchSubPath($resource, '/1', new HttpRequest());
+        $this->assertNull($result);
+    }
 }
