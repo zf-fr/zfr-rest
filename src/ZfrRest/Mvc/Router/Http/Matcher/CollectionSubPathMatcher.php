@@ -70,7 +70,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface, EventManagerA
             return new SubPathMatch($this->filterAssociation($resource, $request), $subPath);
         }
 
-        $pathChunks    = explode('/', trim($subPath, '/'));
+        $pathChunks    = explode('/', $path);
         $identifier    = array_shift($pathChunks);
         $classMetadata = $resource->getMetadata()->getClassMetadata();
         $data          = $this->findItem($resource->getData(), $classMetadata->getIdentifierFieldNames(), $identifier);
