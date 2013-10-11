@@ -51,7 +51,7 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $data             = $resource->getData();
         $resourceMetadata = $resource->getMetadata();
 
-        $pathChunks       = explode('/', trim($subPath, '/'), 2);
+        $pathChunks       = explode('/', trim($subPath, '/'));
         $associationName  = array_shift($pathChunks);
 
         if (!$resourceMetadata->hasAssociation($associationName)) {

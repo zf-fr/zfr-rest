@@ -70,7 +70,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface, EventManagerA
             return new SubPathMatch($this->filterAssociation($resource, $request), $subPath);
         }
 
-        $pathChunks    = explode('/', trim($subPath, '/'), 2);
+        $pathChunks    = explode('/', trim($subPath, '/'));
         $identifier    = array_shift($pathChunks);
         $classMetadata = $resource->getMetadata()->getClassMetadata();
         $data          = $this->findItem($resource->getData(), $classMetadata->getIdentifierFieldNames(), $identifier);
@@ -81,7 +81,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface, EventManagerA
 
         return new SubPathMatch(
             new Resource($data, $resource->getMetadata()),
-            array_shift($pathChunks),
+            $identifier,
             $previousMatch
         );
     }
@@ -143,17 +143,11 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface, EventManagerA
      * Filters the given resource by using the request object, then return the filtered subset
      *
      * @param  ResourceInterface $resource
-     * @param  HttpRequest $request
+     * @param  HttpRequest       $request
      * @return ResourceInterface
      */
     protected function filterAssociation(ResourceInterface $resource, HttpRequest $request)
     {
-        $data = $resource->getData();
-
-        if (!$data instanceof Selectable) {
-            return $resource;
-        }
-
         // Trigger an event to allow custom filtering
         $this->eventManager->trigger(
             CollectionFilteringEvent::EVENT_COLLECTION_FILTERING,
