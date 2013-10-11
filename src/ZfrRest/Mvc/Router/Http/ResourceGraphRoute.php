@@ -32,7 +32,6 @@ use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Exception;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
-use ZfrRest\Paginator\ResourcePaginator;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 

@@ -31,6 +31,14 @@ class TweetAsset
     protected $content;
 
     /**
+     * @param mixed $id
+     */
+    public function __construct($id = null)
+    {
+        $this->id = $id;
+    }
+
+    /**
      * @return int
      */
     public function getId()

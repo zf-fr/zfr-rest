@@ -40,8 +40,9 @@ class UserAsset
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($id = null)
     {
+        $this->id     = $id;
         $this->tweets = new ArrayCollection();
     }
 

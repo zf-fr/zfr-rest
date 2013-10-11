@@ -17,5 +17,18 @@
  */
 
 return array(
-    'service_manager' => array()
+    'service_manager' => array(),
+
+    /**
+     * ROUTE PLUGIN MANAGER
+     */
+    'route_manager' => array(
+        'factories' => array(
+            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
+        ),
+
+        'aliases' => array(
+            'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
+        ),
+    ),
 );

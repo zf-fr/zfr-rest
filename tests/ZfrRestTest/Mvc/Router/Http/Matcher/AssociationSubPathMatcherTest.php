@@ -27,7 +27,7 @@ use ZfrRestTest\Asset\UserAsset;
 /**
  * Tests for {@see \ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher}
  *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @author Michaël Gallego <mic.gallego@gmail.com>
  * @covers \ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher
  */
 class AssociationSubPathMatcherTest extends TestCase
