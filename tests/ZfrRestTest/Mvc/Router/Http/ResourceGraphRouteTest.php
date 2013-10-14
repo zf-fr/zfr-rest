@@ -30,12 +30,17 @@ class ResourceGraphRouteTest extends TestCase
 {
     public function testReturnsNullIfNotHttpRequest()
     {
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->getMock('Metadata\MetadataFactoryInterface'),
-            $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false),
+            $matcher,
             $this->getMock('ZfrRest\Resource\ResourceInterface'),
             'route'
         );
+
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
 
         $request = $this->getMock('Zend\Stdlib\RequestInterface');
 
@@ -44,16 +49,49 @@ class ResourceGraphRouteTest extends TestCase
 
     public function testReturnsNullIfUriPathIsNotInRouteParameter()
     {
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->getMock('Metadata\MetadataFactoryInterface'),
-            $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false),
+            $matcher,
             $this->getMock('ZfrRest\Resource\ResourceInterface'),
             'route'
         );
 
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
+
         $request = new HttpRequest();
         $request->setUri('http://www.example.com/bar');
+        $this->assertNull($resourceGraphRoute->match($request));
 
+        // It must also returns null if the "route" param is after in the URI
+        $request->setUri('http://www.example.com/bar/route');
+        $this->assertNull($resourceGraphRoute->match($request));
+    }
+
+    /**
+     * Test if route can match when there is a baseUrl for the application
+     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
+     */
+    public function testMatchWithBaseUrl()
+    {
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $this->getMock('ZfrRest\Resource\ResourceInterface'),
+            '/foo/bar'
+        );
+
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
+
+        $request = new \ZfrRestTest\Asset\Request();
+        $request->setBaseUrl('/base/');
+
+        $request->setUri('/foo/bar');
         $this->assertNull($resourceGraphRoute->match($request));
     }
 
