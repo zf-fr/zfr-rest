@@ -58,7 +58,6 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
         );
     }
 
-
     /**
      * @param mixed $resource
      * @return self
