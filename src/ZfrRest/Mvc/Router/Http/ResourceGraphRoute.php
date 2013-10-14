@@ -19,7 +19,6 @@
 namespace ZfrRest\Mvc\Router\Http;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
@@ -27,10 +26,10 @@ use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Exception;
-use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
@@ -125,16 +124,15 @@ class ResourceGraphRoute implements RouteInterface
 
         $subPath = substr($path, strlen($this->route));
 
-        if (! $match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
+        if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;
         }
 
-        return $this->buildRouteMatch($match->matchedResource, $path);
+        return $this->buildRouteMatch($match->getMatchedResource(), $path);
     }
 
     /**
-     * Build a route match. This function extract the controller from the resource metadata, and does
-     * optional filtering by query
+     * Build a route match
      *
      * @param  ResourceInterface $resource
      * @param  string           $path
@@ -143,23 +141,30 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
     {
-        $metadata           = $resource->getMetadata();
-        $collectionMetadata = $metadata->getCollectionMetadata();
-        $classMetadata      = $metadata->getClassMetadata();
-        $data               = $resource->getData();
+        $metadata      = $resource->getMetadata();
+        $classMetadata = $metadata->getClassMetadata();
+        $data          = $resource->getData();
 
         // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
-            if (null === $collectionMetadata) {
+            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
                 throw Exception\RuntimeException::missingCollectionMetadata($classMetadata);
             }
 
-            if ($data instanceof Collection) {
-                $resource = new Resource(new ResourcePaginator($metadata, new CollectionAdapter($data)), $metadata);
-            } elseif ($data instanceof Selectable) {
-                $resource = new Resource(new ResourcePaginator($metadata, new SelectableAdapter($data)), $metadata);
+            // We wrap the data around a paginator
+            $paginatorAdapter = null;
+
+            if ($data instanceof Selectable) {
+                $paginatorAdapter = new SelectableAdapter($data);
+            } elseif ($data instanceof Collection) {
+                $paginatorAdapter = new CollectionAdapter($data);
             }
 
+            if (null === $paginatorAdapter) {
+                throw Exception\RuntimeException::noValidPaginatorAdapterFound($data);
+            }
+
+            $resource       = new Resource(new Paginator($paginatorAdapter), $metadata);
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $metadata->getControllerName();
@@ -180,7 +185,6 @@ class ResourceGraphRoute implements RouteInterface
      * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
      *
      * @throws Exception\RuntimeException
-     *
      * @return ResourceInterface
      */
     private function getResource()
@@ -199,7 +203,7 @@ class ResourceGraphRoute implements RouteInterface
         } elseif (is_string($resource)) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource);
         } else {
-            throw RuntimeException::unsupportedResourceType($resource);
+            throw Exception\RuntimeException::unsupportedResourceType($resource);
         }
 
         return $this->resource = new Resource($resource, $metadata->getOutsideClassMetadata());

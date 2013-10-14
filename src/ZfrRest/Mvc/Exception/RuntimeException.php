@@ -32,7 +32,6 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
 {
     /**
      * @param ClassMetadata $classMetadata
-     *
      * @return self
      */
     public static function missingCollectionMetadata(ClassMetadata $classMetadata)
@@ -46,8 +45,22 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
     }
 
     /**
+     * @param  mixed $data
+     * @return self
+     */
+    public static function noValidPaginatorAdapterFound($data)
+    {
+        return new self(
+            sprintf(
+                'No paginator adapter can be matched for the data of type "%s"',
+                is_object($data) ? get_class($data) : gettype($data)
+            )
+        );
+    }
+
+
+    /**
      * @param mixed $resource
-     *
      * @return self
      */
     public static function unsupportedResourceType($resource)

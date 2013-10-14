@@ -16,28 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'service_manager' => array(
-        'factories'  => array(
-            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher' => 'ZfrRest\Factory\BaseSubPathMatcherFactory'
-        ),
+namespace ZfrRest\Factory;
 
-        'invokables' => array(
-            'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher' => 'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher',
-            'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher'  => 'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher',
-        )
-    ),
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
 
+/**
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class BaseSubPathMatcherFactory implements FactoryInterface
+{
     /**
-     * ROUTE PLUGIN MANAGER
+     * {@inheritDoc}
      */
-    'route_manager' => array(
-        'factories' => array(
-            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
-        ),
-
-        'aliases' => array(
-            'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
-        ),
-    ),
-);
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new BaseSubPathMatcher(
+            $serviceLocator->get('ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher'),
+            $serviceLocator->get('ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher')
+        );
+    }
+}
