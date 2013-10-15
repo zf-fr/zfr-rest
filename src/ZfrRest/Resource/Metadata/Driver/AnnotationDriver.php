@@ -26,7 +26,6 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadata
 use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Metadata\Annotation;
-use ZfrRest\Resource\Metadata\Annotation\AnnotationInterface;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
@@ -116,14 +115,14 @@ class AnnotationDriver implements DriverInterface
     }
 
     /**
-     * @param  ResourceMetadata      $metadata
-     * @param  AnnotationInterface[] $annotations
+     * @param  ResourceMetadata                 $metadata
+     * @param  Annotation\AnnotationInterface[] $annotations
      * @return void
      */
     private function processMetadata(ResourceMetadata $metadata, array $annotations)
     {
         foreach ($annotations as $annotation) {
-            if (!($annotation instanceof AnnotationInterface)) {
+            if (!($annotation instanceof Annotation\AnnotationInterface)) {
                 continue;
             }
 
