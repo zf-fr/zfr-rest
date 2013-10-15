@@ -23,7 +23,12 @@ use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
  * @author Michaël Gallego <mic.gallego@gmail.com>
- * @covers \ZfrRest\Resource\Metadata\Driver\AnnotationDriverTest
+ * @covers \ZfrRest\Resource\Metadata\Driver\AnnotationDriver
+ * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
+ * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
+ * @covers \ZfrRest\Resource\Metadata\Annotation\Collection
+ * @covers \ZfrRest\Resource\Metadata\Annotation\ExposeAssociation
+ * @covers \ZfrRest\Resource\Metadata\Annotation\Resource
  */
 class AnnotationDriverFunctionalTest extends TestCase
 {
