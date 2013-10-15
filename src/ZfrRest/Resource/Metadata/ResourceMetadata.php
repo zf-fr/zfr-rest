@@ -130,4 +130,12 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     {
         return $this->collectionMetadata;
     }
+
+    /**
+     * Make sure to clone the collection metadata too
+     */
+    public function __clone()
+    {
+        $this->collectionMetadata = clone $this->collectionMetadata;
+    }
 }

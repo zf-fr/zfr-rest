@@ -169,9 +169,7 @@ class AnnotationDriver implements DriverInterface
     private function processCollectionMetadata(ResourceMetadata $metadata, Annotation\Collection $annotation)
     {
         $values             = $annotation->getValue();
-        $collectionMetadata = $metadata->collectionMetadata
-            ? clone $metadata->collectionMetadata
-            : new CollectionResourceMetadata($metadata->name);
+        $collectionMetadata = $metadata->collectionMetadata ?: new CollectionResourceMetadata($metadata->name);
 
         foreach ($values as $key => $value) {
             // Ignore null values in order to make cascading work as expected
