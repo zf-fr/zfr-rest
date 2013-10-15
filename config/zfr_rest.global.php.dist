@@ -14,102 +14,22 @@ return array(
         'object_manager' => 'doctrine.entitymanager.orm_default',
 
         /**
-         * Listeners options
+         * FQCN of the Metadata cache provider used for caching the mapping. It must returns an instance of
+         * \Metadata\Cache\CacheInterface
          */
-        'listeners' => array(
-            /**
-             * If this listener is registered (it is by default), then any exceptions that could be thrown
-             * in controller is serialized to the proper format extracted from Content-Type header.
-             */
-            // 'register_http_exception' => true,
-
-            /**
-             * If this listener is registered (it is not by default), it will check if the request contains
-             * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
-             * some contexts (for instance, some companies' proxies only allow GET and POST methods)
-             */
-            // 'register_http_method_override' => false,
-
-            /**
-             * If this listener is registered, it allows you to return an object (an entity, for instance) from a
-             * controller's action, and automatically create payload from its content. Please note that if you deactivate
-             * this listener, you MUST NOT return a resource (entity...) from your controller, but an array or Model
-             */
-            // 'register_create_resource_payload' => true,
-
-            /**
-             * If this listener is registered (it is by default), please note that if you deactivate this listener,
-             * then you need to return a concrete ModelInterface object (ViewModel, JsonModel...) from your actions,
-             * or manually use the AcceptableViewModelSelector to return the right model according to Content-Type
-             */
-            // 'register_select_model' => true,
-        ),
+        'cache' => '',
 
         /**
-         * Which behaviours each controller should automatically do for us?
+         *
+         * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
+         * method is supported: annotations.
+         *
+         * To add an annotation driver:
+         *
+         *      'application_driver' => array(
+         *          'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+         *      )
          */
-        'controller_behaviours' => array(
-            /**
-             * If this is set to true (it is by default), then controller will automatically instantiate the
-             * input filter specified in resource metadata (if there is one) - from service locator first, or
-             * directly instantiate it if not found -, and validate data. If data is incorrect, it will return
-             * a 400 HTTP error (Bad Request) with the failed validation messages in it).
-             */
-            // 'auto_validate' => true,
-
-            /**
-             * If this is set to true (it is by default), then controller will automatically instantiate the hydrator
-             * specified in resource metadata (if there is one) - from service locator first, or directly instantiate
-             * it if not found - and hydrate resource object with previously validated data.
-             *
-             * Please note that for security reason, if you activate this option, you SHOULD NOT deactivate auto
-             * validation UNLESS you validate data yourself.
-             */
-            // 'auto_hydrate' => true
-        ),
-
-        /**
-         * Resource metadata options
-         */
-        'resource_metadata' => array(
-            /**
-             * Set the FQCN of the Doctrine cache provider to use. For performance reasons, you should ALWAYS
-             * set an efficient cache that is persistent across requests (like APC or Memcached caches), but for
-             * development purposes you can keep the default array cache
-             */
-            // 'cache' => 'Doctrine\Common\Cache\ArrayCache',
-
-            /**
-             * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently two
-             * methods are supported: PHP files and annotations. In order to keep your code clean, we recommand you
-             * to add your drivers into each module config.
-             *
-             * To add a annotation driver:
-             *
-             *      'application_driver' => array(
-             *          'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver',
-             *          'paths' => array(__DIR__ . '/../src/Application/Entity')
-             *      )
-             *
-             * To add a PHP driver:
-             *
-             *      'application_driver' => array(
-             *          'class' => 'ZfrRest\Resource\Metadata\Driver\PhpDriver',
-             *          'paths' => array(__DIR__ . '/../src/Application/Entity')
-             *      )
-             */
-            // 'drivers' => array()
-        ),
-
-        /**
-         * This configuration allow to add classes to the DecoderPluginManager
-         */
-        'decoders' => array(),
-
-        /**
-         * This configuration allow to add classes to the ModelPluginManager. This works like any other
-         * plugin manager
-         */
-        'models' => array()
+        'drivers' => array(),
     )
 );

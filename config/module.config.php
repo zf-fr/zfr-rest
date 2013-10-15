@@ -17,9 +17,14 @@
  */
 
 return array(
+    /**
+     * SERVICE MANAGER CONFIG
+     */
     'service_manager' => array(
         'factories'  => array(
-            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher' => 'ZfrRest\Factory\BaseSubPathMatcherFactory'
+            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher' => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
+            'ZfrRest\Options\ModuleOptions'                      => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'  => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
         ),
 
         'invokables' => array(
@@ -40,4 +45,9 @@ return array(
             'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
         ),
     ),
+
+    /**
+     * ZFR REST CONFIG
+     */
+    'zfr_rest' => array()
 );
