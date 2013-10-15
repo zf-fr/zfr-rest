@@ -42,14 +42,6 @@ final class Collection implements AnnotationInterface
     /**
      * {@inheritDoc}
      */
-    public function getKey()
-    {
-        return 'collection';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getValue()
     {
         return array(

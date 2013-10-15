@@ -27,14 +27,6 @@ final class ExposeAssociation implements AnnotationInterface
     /**
      * {@inheritDoc}
      */
-    public function getKey()
-    {
-        return 'exposeAssociation';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getValue()
     {
         return true;
