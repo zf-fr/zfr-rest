@@ -61,7 +61,9 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             switch($driverOptions->getClass()) {
                 case 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver':
                     $driver = new AnnotationDriver(
-                        new AnnotationReader(), $resourceMetadataFactory, $doctrineMetadataFactory
+                        new AnnotationReader(),
+                        $resourceMetadataFactory,
+                        $doctrineMetadataFactory
                     );
                     break;
                 default:
