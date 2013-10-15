@@ -36,7 +36,7 @@ return array(
             ),
             'orm_default' => array(
                 'drivers' => array(
-                    'ZfrRestTest/Resource/Metadata/Driver/AnnotationAsset' => 'annotation_driver'
+                    'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset' => 'annotation_driver'
                 )
             )
         ),

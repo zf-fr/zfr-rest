@@ -33,9 +33,65 @@ class AnnotationDriverFunctionalTest extends TestCase
 
         $serviceManager->setAlias('object_manager', 'doctrine.entitymanager.orm_default');
         $serviceManager->setService('array_cache', $this->getMock('Metadata\Cache\CacheInterface'));
-        
+
+        /** @var \Metadata\MetadataFactory $resourceFactory */
         $resourceFactory = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
+        $cityMetadata    = $resourceFactory->getMetadataForClass(
+            'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\City'
+        );
 
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadata $cityMetadata */
+        $cityMetadata = $cityMetadata->getOutsideClassMetadata();
 
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $cityMetadata);
+        $this->assertEquals('ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\City', $cityMetadata->name);
+
+        // Test the resource properties
+        $this->assertEquals('CityController', $cityMetadata->getControllerName());
+        $this->assertEquals('CityInputFilter', $cityMetadata->getInputFilterName());
+        $this->assertEquals('CityHydrator', $cityMetadata->getHydratorName());
+
+        // Test the collection properties
+        $collectionMetadata = $cityMetadata->getCollectionMetadata();
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $collectionMetadata);
+        $this->assertEquals('CityCollController', $collectionMetadata->getControllerName());
+        $this->assertEquals('CityCollInputFilter', $collectionMetadata->getInputFilterName());
+        $this->assertEquals('CityCollHydrator', $collectionMetadata->getHydratorName());
+
+        // Test if it has associated, exposed resources
+        $this->assertTrue($cityMetadata->hasAssociation('country'));
+        $this->assertFalse($cityMetadata->hasAssociation('mayor'));
+
+        // Test that the annotation defined at the association level override the ones defined at the entity level
+        $countryMetadata = $resourceFactory->getMetadataForClass(
+            'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\Country'
+        );
+
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadata $countryMetadata */
+        $countryMetadata = $countryMetadata->getOutsideClassMetadata();
+
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $countryMetadata);
+        $this->assertEquals('ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\Country', $countryMetadata->name);
+
+        $cityCountryMetadata = $cityMetadata->getAssociationMetadata('country');
+
+        $this->assertNotSame($countryMetadata, $cityCountryMetadata);
+        $this->assertEquals('CityCountryController', $cityCountryMetadata->getControllerName(), 'Overriden');
+        $this->assertEquals('CountryController', $countryMetadata->getControllerName(), 'Origin');
+
+        $this->assertEquals($cityCountryMetadata->getHydratorName(), $countryMetadata->getHydratorName());
+        $this->assertEquals($cityCountryMetadata->getInputFilterName(), $countryMetadata->getInputFilterName());
+
+        // Test that override can also work on collection
+
+        $cityCountryCollMetadata = $cityCountryMetadata->getCollectionMetadata();
+        $countryCollMetadata     = $countryMetadata->getCollectionMetadata();
+
+        $this->assertNotSame($cityCountryCollMetadata, $countryCollMetadata);
+        $this->assertEquals('CityCountryCollHydrator', $cityCountryCollMetadata->getHydratorName(), 'Overriden');
+        $this->assertEquals('CountryCollHydrator', $countryCollMetadata->getHydratorName(), 'Origin');
+
+        $this->assertEquals($cityCountryCollMetadata->getControllerName(), $countryCollMetadata->getControllerName());
+        $this->assertEquals($cityCountryCollMetadata->getInputFilterName(), $countryCollMetadata->getInputFilterName());
     }
 }

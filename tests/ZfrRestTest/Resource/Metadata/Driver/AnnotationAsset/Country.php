@@ -18,7 +18,24 @@
 
 namespace ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset;
 
-class Address
-{
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
+/**
+ * @ORM\Entity
+ * @REST\Resource(controller="CountryController", inputFilter="CountryInputFilter", hydrator="CountryHydrator")
+ * @REST\Collection(controller="CountryCollController", inputFilter="CountryCollInputFilter", hydrator="CountryCollHydrator")
+ */
+class Country
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $name;
 }

@@ -18,8 +18,37 @@
 
 namespace ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset;
 
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
+/**
+ * @ORM\Entity
+ * @REST\Resource(controller="CityController", inputFilter="CityInputFilter", hydrator="CityHydrator")
+ * @REST\Collection(controller="CityCollController", inputFilter="CityCollInputFilter", hydrator="CityCollHydrator")
+ */
 class City
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column
+     */
+    protected $id;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $name;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Country")
+     * @REST\ExposeAssociation
+     * @REST\Resource(controller="CityCountryController")
+     * @REST\Collection(hydrator="CityCountryCollHydrator")
+     */
+    protected $country;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Mayor")
+     */
+    protected $mayor;
 }

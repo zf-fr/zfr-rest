@@ -18,8 +18,16 @@
 
 namespace ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset;
 
+use Doctrine\ORM\Mapping as ORM;
 
-class PointOfInterest
+/**
+ * @ORM\Entity
+ */
+class Mayor
 {
-
+    /**
+     * @ORM\Id
+     * @ORM\Column
+     */
+    protected $id;
 }

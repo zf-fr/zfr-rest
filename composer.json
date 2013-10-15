@@ -27,7 +27,7 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/serializer": "~2.2",
-        "jms/metadata": "~1.4",
+        "jms/metadata": "dev-master",
         "zendframework/zendframework": "~2.2",
         "doctrine/common": "~2.4",
         "doctrine/doctrine-module": "~0.8"

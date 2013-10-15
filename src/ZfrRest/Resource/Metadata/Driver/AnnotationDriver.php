@@ -100,9 +100,9 @@ class AnnotationDriver implements DriverInterface
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
-                    $resourceAssociationMetadata = $this->resourceMetadataFactory
-                                                        ->getMetadataForClass($targetClass)
-                                                        ->getOutsideClassMetadata();
+                    $resourceAssociationMetadata = clone $this->resourceMetadataFactory
+                                                              ->getMetadataForClass($targetClass)
+                                                              ->getOutsideClassMetadata();
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
@@ -169,20 +169,18 @@ class AnnotationDriver implements DriverInterface
     private function processCollectionMetadata(ResourceMetadata $metadata, Annotation\Collection $annotation)
     {
         $values             = $annotation->getValue();
-        $collectionMetadata = new CollectionResourceMetadata($metadata->name);
+        $collectionMetadata = $metadata->collectionMetadata
+            ? clone $metadata->collectionMetadata
+            : new CollectionResourceMetadata($metadata->name);
 
         foreach ($values as $key => $value) {
-            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
-
-            // If the value is null, then we reuse the value defined at "resource-level"
-            if (null === $value && isset($metadata->propertyMetadata[$key])) {
-                $propertyMetadata->setValue(
-                    $collectionMetadata,
-                    $metadata->propertyMetadata[$key]->getValue($metadata)
-                );
-            } else {
-                $propertyMetadata->setValue($collectionMetadata, $value);
+            // Ignore null values in order to make cascading work as expected
+            if (null === $value) {
+                continue;
             }
+
+            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
+            $propertyMetadata->setValue($collectionMetadata, $value);
 
             $collectionMetadata->addPropertyMetadata($propertyMetadata);
         }
