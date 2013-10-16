@@ -51,6 +51,7 @@ trait OptionsHandlerTrait
         }
 
         $this->response->getHeaders()->addHeaderLine('Allow', implode(', ', $allowedMethods));
+        $this->response->setContent('');
         $this->response->setStatusCode(200);
 
         return $this->response;
