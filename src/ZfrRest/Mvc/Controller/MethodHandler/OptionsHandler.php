@@ -52,7 +52,7 @@ class OptionsHandler implements MethodHandlerInterface
         if (method_exists($controller, 'options')) {
             $allowedMethods = $controller->options();
         } else {
-            $allowedMethods = $this->options($controller);
+            $allowedMethods = $this->getAllowedMethods($controller);
         }
 
         foreach ($allowedMethods as &$allowedMethod) {
@@ -77,7 +77,7 @@ class OptionsHandler implements MethodHandlerInterface
      * @param  AbstractController $controller
      * @return array
      */
-    protected function options(AbstractController $controller)
+    protected function getAllowedMethods(AbstractController $controller)
     {
         $genericMethods = array('get', 'head', 'put', 'post', 'patch', 'delete', 'options');
         $methods        = array_intersect(get_class_methods($controller), $genericMethods);
