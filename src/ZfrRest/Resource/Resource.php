@@ -24,7 +24,8 @@ use ZfrRest\Resource\Exception\InvalidResourceException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @licence MIT
  */
 class Resource implements ResourceInterface
 {
