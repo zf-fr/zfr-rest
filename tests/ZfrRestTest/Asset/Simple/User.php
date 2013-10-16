@@ -16,11 +16,11 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Asset;
+namespace ZfrRestTest\Asset\Simple;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-class UserAsset
+class User
 {
     /**
      * @var int

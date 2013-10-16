@@ -21,8 +21,8 @@ namespace ZfrRestTest\Mvc\Router\Http\Matcher;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher;
-use ZfrRestTest\Asset\TweetAsset;
-use ZfrRestTest\Asset\UserAsset;
+use ZfrRestTest\Asset\Simple\Tweet;
+use ZfrRestTest\Asset\Simple\User;
 
 /**
  * Tests for {@see \ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher}
@@ -52,7 +52,7 @@ class AssociationSubPathMatcherTest extends TestCase
 
         $resource->expects($this->once())
                  ->method('getData')
-                 ->will($this->returnValue(new UserAsset()));
+                 ->will($this->returnValue(new User()));
 
         $resourceMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $resourceMetadata->expects($this->once())
@@ -70,8 +70,8 @@ class AssociationSubPathMatcherTest extends TestCase
 
     public function testCanMatchAssociation()
     {
-        $user = new UserAsset();
-        $user->setTweets(array(new TweetAsset(), new TweetAsset()));
+        $user = new User();
+        $user->setTweets(array(new Tweet(), new Tweet()));
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $resource->expects($this->any())
@@ -104,7 +104,7 @@ class AssociationSubPathMatcherTest extends TestCase
         $associationClassMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $associationClassMetadata->expects($this->any())
                                  ->method('getReflectionClass')
-                                 ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\TweetAsset')));
+                                 ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\Simple\Tweet')));
 
         $associationMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $associationMetadata->expects($this->any())

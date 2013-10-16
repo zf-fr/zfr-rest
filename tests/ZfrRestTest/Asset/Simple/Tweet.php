@@ -16,9 +16,9 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Asset;
+namespace ZfrRestTest\Asset\Simple;
 
-class TweetAsset
+class Tweet
 {
     /**
      * @var int

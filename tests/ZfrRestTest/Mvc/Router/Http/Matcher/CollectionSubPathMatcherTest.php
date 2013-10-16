@@ -25,7 +25,7 @@ use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Router\Http\Matcher\CollectionFilteringEvent;
 use ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher;
 use ZfrRest\Resource\Resource;
-use ZfrRestTest\Asset\UserAsset;
+use ZfrRestTest\Asset\Simple\User;
 
 /**
  * Tests for {@see \ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher}
@@ -87,7 +87,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $data = $this->getMock('Doctrine\Common\Collections\Selectable');
         $data->expects($this->any())
              ->method('matching')
-             ->will($this->returnValue(new ArrayCollection(array(new UserAsset(1)))));
+             ->will($this->returnValue(new ArrayCollection(array(new User(1)))));
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $resource->expects($this->any())
@@ -107,7 +107,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $classMetadata->expects($this->any())
                       ->method('getReflectionClass')
-                      ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\UserAsset')));
+                      ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\Simple\User')));
 
         $classMetadata->expects($this->any())
                       ->method('getIdentifierFieldNames')
@@ -124,7 +124,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $this->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\SubPathMatch', $result);
         $this->assertNull($result->getPreviousMatch());
         $this->assertEquals('1', $result->getMatchedPath());
-        $this->assertInstanceOf('ZfrRestTest\Asset\UserAsset', $result->getMatchedResource()->getData());
+        $this->assertInstanceOf('ZfrRestTest\Asset\Simple\User', $result->getMatchedResource()->getData());
         $this->assertEquals(1, $result->getMatchedResource()->getData()->getId());
 
         // Simple path with ending /
@@ -132,7 +132,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $this->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\SubPathMatch', $result);
         $this->assertNull($result->getPreviousMatch());
         $this->assertEquals('1', $result->getMatchedPath());
-        $this->assertInstanceOf('ZfrRestTest\Asset\UserAsset', $result->getMatchedResource()->getData());
+        $this->assertInstanceOf('ZfrRestTest\Asset\Simple\User', $result->getMatchedResource()->getData());
         $this->assertEquals(1, $result->getMatchedResource()->getData()->getId());
 
         // Simple path with trailing and ending /
@@ -140,7 +140,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $this->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\SubPathMatch', $result);
         $this->assertNull($result->getPreviousMatch());
         $this->assertEquals('1', $result->getMatchedPath());
-        $this->assertInstanceOf('ZfrRestTest\Asset\UserAsset', $result->getMatchedResource()->getData());
+        $this->assertInstanceOf('ZfrRestTest\Asset\Simple\User', $result->getMatchedResource()->getData());
         $this->assertEquals(1, $result->getMatchedResource()->getData()->getId());
 
         // Simple path with a previous submatch
@@ -153,7 +153,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $this->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\SubPathMatch', $result);
         $this->assertNull($result->getPreviousMatch());
         $this->assertEquals('1', $result->getMatchedPath());
-        $this->assertInstanceOf('ZfrRestTest\Asset\UserAsset', $result->getMatchedResource()->getData());
+        $this->assertInstanceOf('ZfrRestTest\Asset\Simple\User', $result->getMatchedResource()->getData());
         $this->assertEquals(1, $result->getMatchedResource()->getData()->getId());
     }
 
@@ -182,7 +182,7 @@ class CollectionSubPathMatcherTest extends TestCase
         $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $classMetadata->expects($this->any())
                       ->method('getReflectionClass')
-                      ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\UserAsset')));
+                      ->will($this->returnValue(new \ReflectionClass('ZfrRestTest\Asset\Simple\User')));
 
         $classMetadata->expects($this->any())
                       ->method('getIdentifierFieldNames')
