@@ -53,6 +53,13 @@ class ModuleOptions extends AbstractOptions
     protected $drivers;
 
     /**
+     * Config for the method handler plugin manager
+     *
+     * @var array
+     */
+    protected $methodHandlerManager;
+
+    /**
      * Set the object manager key
      *
      * @param  string $objectManager
@@ -125,4 +132,22 @@ class ModuleOptions extends AbstractOptions
     {
         return $this->drivers;
     }
+
+    /**
+     * @param  array $methodHandlerManager
+     * @return void
+     */
+    public function setMethodHandlerManager(array $methodHandlerManager)
+    {
+        $this->methodHandlerManager = $methodHandlerManager;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMethodHandlerManager()
+    {
+        return $this->methodHandlerManager;
+    }
+
 }

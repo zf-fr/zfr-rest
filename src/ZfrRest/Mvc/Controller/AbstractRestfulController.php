@@ -23,9 +23,8 @@ use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use ZfrRest\Mvc\Controller\Method\OptionsHandlerTrait;
+use ZfrRest\Mvc\Controller\Method\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception;
-use ZfrRest\Resource\ResourceInterface;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -33,7 +32,10 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class AbstractRestfulController extends AbstractController
 {
-    use OptionsHandlerTrait;
+    /**
+     * @var MethodHandlerPluginManager
+     */
+    protected $methodHandlerManager;
 
     /**
      * {@inheritDoc}
@@ -50,8 +52,38 @@ class AbstractRestfulController extends AbstractController
     /**
      * {@inheritDoc}
      */
-    public function onDispatch(MvcEvent $e)
+    public function onDispatch(MvcEvent $event)
     {
-        // TODO: Implement onDispatch() method.
+        $method  = strtolower($this->getRequest()->getMethod());
+        $handler = $this->getMethodHandlerManager()->get($method);
+
+        /** @var \ZfrRest\Resource\ResourceInterface $resource */
+        $resource = $event->getRouteMatch()->getParam('resource', null);
+
+        // We should always have a resource, otherwise throw an 404 exception
+        if (null === $resource) {
+            // @TODO: throw exception when we switch to Apigility API Problem
+        }
+
+        $result = $handler->handleMethod($this, $resource);
+        $event->setResult($result);
+
+        return $result;
+    }
+
+    /**
+     * Get the method handler plugin manager
+     *
+     * @return MethodHandlerPluginManager
+     */
+    public function getMethodHandlerManager()
+    {
+        if (null === $this->methodHandlerManager) {
+            $this->methodHandlerManager = $this->serviceLocator->get(
+                'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager'
+            );
+        }
+
+        return $this->methodHandlerManager;
     }
 }

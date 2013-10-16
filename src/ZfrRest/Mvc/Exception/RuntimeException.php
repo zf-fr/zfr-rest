@@ -71,4 +71,18 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
             )
         );
     }
+
+    /**
+     * @param  mixed $methodHandler
+     * @return self
+     */
+    public static function invalidMethodHandler($methodHandler)
+    {
+        return new self(
+            sprintf(
+                'Method handlers must implement ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface, "%s" given',
+                is_object($methodHandler) ? get_class($methodHandler) : gettype($methodHandler)
+            )
+        );
+    }
 }

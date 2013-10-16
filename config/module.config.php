@@ -22,9 +22,10 @@ return array(
      */
     'service_manager' => array(
         'factories'  => array(
-            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher' => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
-            'ZfrRest\Options\ModuleOptions'                      => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'  => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
+            'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
+            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher'              => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
+            'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
         ),
 
         'invokables' => array(
@@ -53,5 +54,8 @@ return array(
     'zfr_rest' => array(
         // Don't register HTTP method override listener by default
         'register_http_method_override_listener' => false,
+
+        // Method handler plugin manager configuration
+        'method_handler_manager' => array()
     )
 );

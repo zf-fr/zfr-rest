@@ -18,7 +18,9 @@
 
 namespace ZfrRest\Mvc\Controller\Method;
 
+use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
+use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -31,7 +33,7 @@ use ZfrRest\Resource\ResourceInterface;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-trait OptionsHandlerTrait
+class OptionsHandler implements MethodHandlerInterface
 {
     /**
      * Handler for OPTIONS method
@@ -39,20 +41,29 @@ trait OptionsHandlerTrait
      * OPTIONS handler returns all the available HTTP methods for a given resource, and return
      * a 200 OK status code
      *
+     * @param  AbstractController $controller
      * @param  ResourceInterface $resource
      * @return ResponseInterface
      */
-    public function handleOptionsMethod(ResourceInterface $resource)
+    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
     {
-        $allowedMethods = $this->options();
+        // For the OPTIONS verb, we have an out-of-the box implementation, but if it is
+        // defined in the controller we use the user-land method instead
+        if (method_exists($controller, 'options')) {
+            $allowedMethods = $controller->options();
+        } else {
+            $allowedMethods = $this->options($controller);
+        }
 
         foreach ($allowedMethods as &$allowedMethod) {
             $allowedMethod = strtoupper($allowedMethod);
         }
 
-        $this->response->getHeaders()->addHeaderLine('Allow', implode(', ', $allowedMethods));
-        $this->response->setContent('');
-        $this->response->setStatusCode(200);
+        $response = $controller->getResponse();
+
+        $response->getHeaders()->addHeaderLine('Allow', implode(', ', $allowedMethods));
+        $response->setContent('');
+        $response->setStatusCode(200);
 
         return $this->response;
     }
@@ -63,12 +74,13 @@ trait OptionsHandlerTrait
      * By default, it will automatically returns the HTTP methods that are implemented. If you
      * are using custom HTTP verbs, you can override this method and return your own verbs
      *
+     * @param  AbstractController $controller
      * @return array
      */
-    public function options()
+    protected function options(AbstractController $controller)
     {
         $genericMethods = array('get', 'head', 'put', 'post', 'patch', 'delete', 'options');
-        $methods        = array_intersect(get_class_methods($this), $genericMethods);
+        $methods        = array_intersect(get_class_methods($controller), $genericMethods);
 
         return $methods;
     }

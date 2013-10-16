@@ -27,7 +27,6 @@ return array(
         'register_http_method_override_listener' => false,
 
         /**
-         *
          * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
          * method is supported: annotations.
          *
@@ -38,5 +37,16 @@ return array(
          *      )
          */
         'drivers' => array(),
+
+        /**
+         * Allow to register new method handler (or override existing ones).
+         *
+         * You must specify a service manager compliant config, and the key must be the HTTP method:
+         *
+         *      'invokables' => array(
+         *          'patch' => 'My\PatchHandler'
+         *      )
+         */
+        'method_handler_manager' => array()
     )
 );
