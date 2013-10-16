@@ -28,11 +28,16 @@
         "php": ">=5.3.3",
         "symfony/serializer": "~2.2",
         "jms/metadata": "dev-master",
-        "zendframework/zendframework": "~2.2",
+        "zendframework/zend-http": "~2.2",
+        "zendframework/zend-inputfilter": "~2.2",
+        "zendframework/zend-mvc": "~2.2",
+        "zendframework/zend-servicemanager": "~2.2",
+        "zendframework/zend-stdlib": "~2.2",
         "doctrine/common": "~2.4",
         "doctrine/doctrine-module": "~0.8"
     },
     "require-dev": {
+        "zendframework/zendframework": "~2.2",
         "doctrine/doctrine-orm-module": "~0.8",
         "phpunit/phpunit": "~3.7",
         "squizlabs/php_codesniffer": "1.4.*",
