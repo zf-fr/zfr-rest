@@ -41,6 +41,11 @@ class ModuleOptions extends AbstractOptions
     protected $cache;
 
     /**
+     * @var bool
+     */
+    protected $registerHttpMethodOverrideListener;
+
+    /**
      * Options for all drivers
      *
      * @var DriverOptions[]
@@ -83,6 +88,23 @@ class ModuleOptions extends AbstractOptions
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * @param boolean $registerHttpMethodOverrideListener
+     * @return void
+     */
+    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
+    {
+        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getRegisterHttpMethodOverrideListener()
+    {
+        return $this->registerHttpMethodOverrideListener;
     }
 
     /**

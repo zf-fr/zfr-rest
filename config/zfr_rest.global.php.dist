@@ -20,6 +20,13 @@ return array(
         'cache' => '',
 
         /**
+         * If this listener is registered (it is not by default), it will check if the request contains
+         * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
+         * some contexts (for instance, some companies' proxies only allow GET and POST methods)
+         */
+        'register_http_method_override_listener' => false,
+
+        /**
          *
          * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
          * method is supported: annotations.

@@ -26,7 +26,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.3",
-        "symfony/serializer": "~2.2",
         "jms/metadata": "dev-master",
         "zendframework/zend-http": "~2.2",
         "zendframework/zend-inputfilter": "~2.2",

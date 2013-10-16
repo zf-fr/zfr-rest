@@ -28,6 +28,7 @@ return array(
         ),
 
         'invokables' => array(
+            'ZfrRest\Mvc\HttpMethodOverrideListener'                    => 'ZfrRest\Mvc\HttpMethodOverrideListener',
             'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher' => 'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher',
             'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher'  => 'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher',
         )
@@ -49,5 +50,8 @@ return array(
     /**
      * ZFR REST CONFIG
      */
-    'zfr_rest' => array()
+    'zfr_rest' => array(
+        // Don't register HTTP method override listener by default
+        'register_http_method_override_listener' => false,
+    )
 );
