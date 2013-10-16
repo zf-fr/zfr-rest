@@ -149,7 +149,6 @@ class ResourceGraphRoute implements RouteInterface
     {
         $metadata      = $resource->getMetadata();
         $classMetadata = $metadata->getClassMetadata();
-        $data          = $resource->getData();
 
         // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
@@ -158,19 +157,9 @@ class ResourceGraphRoute implements RouteInterface
             }
 
             // We wrap the data around a paginator
-            $paginatorAdapter = null;
+            $paginator = $this->wrapDataInPaginator($resource);
+            $resource  = new Resource($paginator, $metadata);
 
-            if ($data instanceof Selectable) {
-                $paginatorAdapter = new SelectableAdapter($data);
-            } elseif ($data instanceof Collection) {
-                $paginatorAdapter = new CollectionAdapter($data);
-            }
-
-            if (null === $paginatorAdapter) {
-                throw Exception\RuntimeException::noValidPaginatorAdapterFound($data);
-            }
-
-            $resource       = new Resource(new Paginator($paginatorAdapter), $metadata);
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $metadata->getControllerName();
@@ -183,6 +172,31 @@ class ResourceGraphRoute implements RouteInterface
             ),
             strlen($path)
         );
+    }
+
+    /**
+     * Wrap a data around a paginator
+     *
+     * @param  ResourceInterface $resource
+     * @return Paginator
+     * @throws Exception\RuntimeException If no paginator adapter is found
+     */
+    protected function wrapDataInPaginator(ResourceInterface $resource)
+    {
+        $data             = $resource->getData();
+        $paginatorAdapter = null;
+
+        if ($data instanceof Selectable) {
+            $paginatorAdapter = new SelectableAdapter($data);
+        } elseif ($data instanceof Collection) {
+            $paginatorAdapter = new CollectionAdapter($data);
+        }
+
+        if (null === $paginatorAdapter) {
+            throw Exception\RuntimeException::noValidPaginatorAdapterFound($data);
+        }
+
+        return new Paginator($paginatorAdapter);
     }
 
     /**

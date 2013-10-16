@@ -25,6 +25,7 @@ use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Mvc\Controller\Method\OptionsHandlerTrait;
 use ZfrRest\Mvc\Exception;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
