@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Controller\Method;
+namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
@@ -46,7 +46,7 @@ class DeleteHandler implements MethodHandlerInterface
     public function handleMethod(AbstractController $controller, ResourceInterface $resource)
     {
         // If no delete method is defined on the controller, then we cannot do anything
-        if (!is_callable(array($controller, 'delete'))) {
+        if (!method_exists($controller, 'delete')) {
             // @TODO: throw exception
         }
 
@@ -55,7 +55,7 @@ class DeleteHandler implements MethodHandlerInterface
         // According to http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7, status code should
         // be empty if nothing is returned
         if (empty($result)) {
-            $controller->getRequest()->setStatusCode(204);
+            $controller->getResponse()->setStatusCode(204);
         }
 
         return $result;

@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Controller\Method;
+namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
@@ -49,14 +49,10 @@ class OptionsHandler implements MethodHandlerInterface
     {
         // For the OPTIONS verb, we have an out-of-the box implementation, but if it is
         // defined in the controller we use the user-land method instead
-        if (is_callable(array($controller, 'options'))) {
+        if (method_exists($controller, 'options')) {
             $allowedMethods = $controller->options();
         } else {
             $allowedMethods = $this->getAllowedMethods($controller);
-        }
-
-        foreach ($allowedMethods as &$allowedMethod) {
-            $allowedMethod = strtoupper($allowedMethod);
         }
 
         $response = $controller->getResponse();

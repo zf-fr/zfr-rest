@@ -52,7 +52,7 @@ class ModuleOptions extends AbstractOptions
      *
      * @var ControllerBehavioursOptions
      */
-    protected $controllerBehavioursOptions = array();
+    protected $controllerBehaviours = array();
 
     /**
      * Options for all drivers
@@ -127,24 +127,24 @@ class ModuleOptions extends AbstractOptions
      * @param  array $options
      * @return void
      */
-    public function setControllerBehavioursOptions(array $options)
+    public function setControllerBehaviours(array $options)
     {
-        $this->controllerBehavioursOptions = new ControllerBehavioursOptions($options);
+        $this->controllerBehaviours = new ControllerBehavioursOptions($options);
     }
 
     /**
      * @return ControllerBehavioursOptions
      */
-    public function getControllerBehavioursOptions()
+    public function getControllerBehaviours()
     {
-        return $this->controllerBehavioursOptions;
+        return $this->controllerBehaviours;
     }
 
     /**
      * @param  array $drivers
      * @return void
      */
-    public function setDrivers($drivers)
+    public function setDrivers(array $drivers)
     {
         foreach ($drivers as $driverOptions) {
             $this->drivers[] = new DriverOptions($driverOptions);

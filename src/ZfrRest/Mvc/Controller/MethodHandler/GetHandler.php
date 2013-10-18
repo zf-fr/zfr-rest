@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Controller\Method;
+namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
@@ -48,7 +48,7 @@ class GetHandler implements MethodHandlerInterface
     public function handleMethod(AbstractController $controller, ResourceInterface $resource)
     {
         // If no get method is defined on the controller, then we cannot do anything
-        if (!is_callable(array($controller, 'get'))) {
+        if (!method_exists($controller, 'get')) {
             // @TODO: throw exception
         }
 

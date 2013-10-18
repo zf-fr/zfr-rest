@@ -16,30 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Factory;
+namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRestTest\Util\ServiceManagerFactory;
+use ZfrRest\Mvc\Controller\MethodHandler\GetHandler;
 
 /**
  * @author Michaël Gallego <mic.gallego@gmail.com>
- * @covers \ZfrRest\Factory\ModuleOptionsFactory
- * @covers \ZfrRest\Options\ModuleOptions
+ * @covers \ZfrRest\Mvc\Controller\MethodHandler\GetHandler
  */
-class ModuleOptionsFactoryTest extends TestCase
+class GetHandlerTest extends TestCase
 {
-    public function testCanCreateFromFactory()
+    public function testCanReturnData()
     {
-        $serviceManager = ServiceManagerFactory::getServiceManager();
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', array('get'));
+        $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
 
-        $moduleOptions     = $serviceManager->get('ZfrRest\Options\ModuleOptions');
-        $controllerOptions = $moduleOptions->getControllerBehaviours();
+        $controller->expects($this->once())
+                   ->method('get')
+                   ->with($resource)
+                   ->will($this->returnValue(array('foo' => 'bar')));
 
-        $this->assertInstanceOf('ZfrRest\Options\ModuleOptions', $moduleOptions);
-        $this->assertInstanceOf('ZfrRest\Options\ControllerBehavioursOptions', $controllerOptions);
+        $controller->expects($this->never())
+                   ->method('getResponse');
 
-        foreach ($moduleOptions->getDrivers() as $driverOptions) {
-            $this->assertInstanceOf('ZfrRest\Options\DriverOptions', $driverOptions);
-        }
+        $handler = new GetHandler();
+        $result  = $handler->handleMethod($controller, $resource);
+
+        $this->assertEquals(array('foo' => 'bar'), $result);
     }
 }

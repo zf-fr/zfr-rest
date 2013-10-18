@@ -47,4 +47,32 @@ return array(
             'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
         ),
     ),
+
+    /**
+     * ZFR REST CONFIG
+     */
+    'zfr_rest' => array(
+        // No object manager set by default
+        'object_manager' => null,
+
+        // No cache by default
+        'cache' => null,
+
+        // Don't register HTTP method override listener by default. If registered, it will check if the request
+        // contains a header "X-HTTP-Method-Override". This header allows to change the HTTP verb
+        'register_http_method_override_listener' => false,
+
+        // Specify the controller behaviours
+        'controller_behaviours' => array(
+            // Auto validate using input filters and auto hydrate using hydrators
+            'auto_validate' => true,
+            'auto_hydrate'  => true
+        ),
+
+        // No drivers by default
+        'drivers' => array(),
+
+        // Method handler plugin manager configuration
+        'method_handler_manager' => array()
+    )
 );

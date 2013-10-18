@@ -20,7 +20,7 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\Controller\Method\PostHandler;
+use ZfrRest\Mvc\Controller\MethodHandler\PostHandler;
 
 /**
  * @license MIT
@@ -36,6 +36,6 @@ class PostHandlerFactory implements FactoryInterface
         /** @var \ZfrRest\Options\ModuleOptions $moduleOptions */
         $moduleOptions = $serviceLocator->getServiceLocator()->get('ZfrRest\Options\ModuleOptions');
 
-        return new PostHandler($moduleOptions->getControllerBehavioursOptions());
+        return new PostHandler($moduleOptions->getControllerBehaviours());
     }
 }

@@ -20,7 +20,7 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\Controller\Method\PutHandler;
+use ZfrRest\Mvc\Controller\MethodHandler\PutHandler;
 
 /**
  * @license MIT
@@ -36,6 +36,6 @@ class PutHandlerFactory implements FactoryInterface
         /** @var \ZfrRest\Options\ModuleOptions $moduleOptions */
         $moduleOptions = $serviceLocator->getServiceLocator()->get('ZfrRest\Options\ModuleOptions');
 
-        return new PutHandler($moduleOptions->getControllerBehavioursOptions());
+        return new PutHandler($moduleOptions->getControllerBehaviours());
     }
 }

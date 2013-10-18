@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Mvc\Controller\Method;
+namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;

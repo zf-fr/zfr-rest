@@ -16,30 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRestTest\Factory;
 
-use Zend\ServiceManager\Config;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author Michaël Gallego <mic.gallego@gmail.com>
+ * @covers \ZfrRest\Factory\MethodHandlerPluginManagerFactory
  */
-class MethodHandlerPluginManagerFactory implements FactoryInterface
+class MethodHandlerPluginManagerFactoryTest extends TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function testCanCreateFromFactory()
     {
-        /** @var \ZfrRest\Options\ModuleOptions $config */
-        $config        = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
-        $pluginManager = new MethodHandlerPluginManager(new Config($config->getMethodHandlerManager()));
+        $serviceManager = ServiceManagerFactory::getServiceManager();
+        $pluginManager  = $serviceManager->get('ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager');
 
-        $pluginManager->setServiceLocator($serviceLocator);
-
-        return $pluginManager;
+        $this->assertInstanceOf('ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager', $pluginManager);
+        $this->assertSame($serviceManager, $pluginManager->getServiceLocator());
     }
 }

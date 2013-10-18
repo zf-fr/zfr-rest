@@ -19,8 +19,6 @@
 namespace ZfrRestTest;
 
 use PHPUnit_Framework_TestCase;
-use Zend\Mvc\Application;
-use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
 use ZfrRest\Module;
 use ZfrRest\Options\ModuleOptions;
