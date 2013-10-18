@@ -23,13 +23,16 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
 
+/**
+ * @author Michaël Gallego <mic.gallego@gmail.com>
+ * @covers \ZfrRest\Mvc\HttpMethodOverrideListener
+ */
 class HttpMethodOverrideListenerTest extends TestCase
 {
     /**
      * @var HttpMethodOverrideListener
      */
     protected $httpMethodOverrideListener;
-
 
     public function setUp()
     {
@@ -60,5 +63,15 @@ class HttpMethodOverrideListenerTest extends TestCase
         $event->setRequest($request);
 
         $this->httpMethodOverrideListener->overrideHttpMethod($event);
+    }
+
+    public function testDoNothingIfNotHttpRequest()
+    {
+        $event   = new MvcEvent();
+        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+
+        $event->setRequest($request);
+
+        $this->assertNull($this->httpMethodOverrideListener->overrideHttpMethod($event));
     }
 }

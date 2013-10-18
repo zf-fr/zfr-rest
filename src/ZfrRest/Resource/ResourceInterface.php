@@ -29,7 +29,7 @@ interface ResourceInterface
     /**
      * Get the resource metadata
      *
-     * @return \ZfrRest\Resource\Metadata\ResourceMetadataInterface
+     * @return Metadata\ResourceMetadataInterface
      */
     public function getMetadata();
 
@@ -37,7 +37,7 @@ interface ResourceInterface
      * Retrieves the resource data, which can be either an instance of the provided metadata name or
      * a collection of these instances
      *
-     * @return mixed
+     * @return array|object
      */
     public function getData();
 

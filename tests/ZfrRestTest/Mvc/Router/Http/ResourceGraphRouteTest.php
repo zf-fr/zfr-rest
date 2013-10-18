@@ -16,117 +16,58 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Mvc;
+namespace ZfrRest\Mvc\Router\Http;
 
-use Metadata\MetadataFactory;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Request;
-use ZfrRest\Http\Exception;
-use ZfrRest\Mvc\Router\Http\ResourceGraphRoute;
+use Zend\Http\Request as HttpRequest;
+use ZfrRest\Mvc\Router\Http\Matcher\SubPathMatch;
 
 /**
- * Tests for {@see \ZfrRest\Mvc\Router\Http\ResourceGraphRoute}
- *
- * @author Marco Pivetta <ocramius@gmail.com>
- *
+ * @author Michaël Gallego <mic.gallego@gmail.com>
  * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute
  */
 class ResourceGraphRouteTest extends TestCase
 {
-    /**
-     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
-     */
-    public function testMatchesConfiguredTrailingSlash()
+    public function testReturnsNullIfNotHttpRequest()
     {
-        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
-        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
-        $request         = new Request();
-        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
-        $route           = $this->getMock(
-            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
-            array('buildRouteMatch'),
-            array($metadataFactory, $resource, '/foo/bar/')
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $this->getMock('ZfrRest\Resource\ResourceInterface'),
+            'route'
         );
 
-        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
 
-        $request->setUri('foo/bar');
-        $this->assertNull($route->match($request));
+        $request = $this->getMock('Zend\Stdlib\RequestInterface');
 
-        $request->setUri('/foo/bar');
-        $this->assertNull($route->match($request));
-
-        $request->setUri('/foo/bar/');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $this->markTestIncomplete('Should not mock the resource graph route itself');
+        $this->assertNull($resourceGraphRoute->match($request));
     }
 
-    /**
-     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
-     */
-    public function testMatchesOnMissingConfiguredTrailingSlash()
+    public function testReturnsNullIfUriPathIsNotInRouteParameter()
     {
-        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
-        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
-        $request         = new Request();
-        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
-        $route           = $this->getMock(
-            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
-            array('buildRouteMatch'),
-            array($metadataFactory, $resource, '/foo/bar')
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $this->getMock('ZfrRest\Resource\ResourceInterface'),
+            'route'
         );
 
-        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
 
-        $request->setUri('foo/bar');
-        $this->assertNull($route->match($request));
+        $request = new HttpRequest();
+        $request->setUri('http://www.example.com/bar');
+        $this->assertNull($resourceGraphRoute->match($request));
 
-        $request->setUri('/foo/bar');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $request->setUri('/foo/bar/');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $this->markTestIncomplete('Should not mock the resource graph route itself');
-    }
-
-    /**
-     * @covers \ZfrRest\Mvc\Router\Http\ResourceGraphRoute::match
-     */
-    public function testDoesNotMatchCollectionItemsWithoutSlashSeparator()
-    {
-        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
-        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
-        $request         = new Request();
-        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
-        $route           = $this->getMock(
-            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
-            array('buildRouteMatch', 'matchIdentifier'),
-            array($metadataFactory, $resource, '/foo/bar')
-        );
-
-        $resource->expects($this->any())->method('isCollection')->will($this->returnValue(true));
-        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
-        $route
-            ->expects($this->any())
-            ->method('matchIdentifier')
-            ->with($resource, '/123')
-            ->will($this->returnValue($routeMatch));
-
-        $request->setUri('/foo/bar');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $request->setUri('/foo/bar/');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $request->setUri('/foo/bar/123');
-        $this->assertSame($routeMatch, $route->match($request));
-
-        $request->setUri('/foo/barbaz');
-        $this->assertNull($route->match($request));
-
-        $this->markTestIncomplete('Should not mock the resource graph route itself');
+        // It must also returns null if the "route" param is after in the URI
+        $request->setUri('http://www.example.com/bar/route');
+        $this->assertNull($resourceGraphRoute->match($request));
     }
 
     /**
@@ -135,36 +76,167 @@ class ResourceGraphRouteTest extends TestCase
      */
     public function testMatchWithBaseUrl()
     {
-        $metadataFactory = new MetadataFactory($this->getMock('Metadata\\Driver\\DriverInterface'));
-        $resource        = $this->getMock('ZfrRest\\Resource\\ResourceInterface');
-        $routeMatch      = $this->getMock('Zend\\Mvc\\Router\\RouteMatch', array(), array(), '', false);
-        $route           = $this->getMock(
-            'ZfrRest\Mvc\Router\Http\ResourceGraphRoute',
-            array('buildRouteMatch', 'matchIdentifier'),
-            array($metadataFactory, $resource, '/foo/bar')
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $this->getMock('ZfrRest\Resource\ResourceInterface'),
+            '/foo/bar'
         );
 
-        $resource->expects($this->any())->method('isCollection')->will($this->returnValue(true));
-        $route->expects($this->any())->method('buildRouteMatch')->will($this->returnValue($routeMatch));
-        $route
-            ->expects($this->any())
-            ->method('matchIdentifier')
-            ->with($resource, '/123')
-            ->will($this->returnValue($routeMatch));
+        $matcher->expects($this->never())
+                ->method('matchSubPath');
 
-        $request = new \ZfrRestTest\Asset\Request\Request();
+        $request = new \ZfrRestTest\Asset\Request();
         $request->setBaseUrl('/base/');
 
         $request->setUri('/foo/bar');
-        $this->assertNull($route->match($request));
-        $request->setUri('/foo/bar/123');
-        $this->assertNull($route->match($request));
+        $this->assertNull($resourceGraphRoute->match($request));
+    }
 
-        $request->setUri('/base/foo/bar');
-        $this->assertSame($routeMatch, $route->match($request));
-        $request->setUri('/base/foo/bar/123');
-        $this->assertSame($routeMatch, $route->match($request));
+    public function testReturnsNullIfCannotFindMatch()
+    {
+        $matcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
 
-        $this->markTestIncomplete('Should not mock the resource graph route itself');
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $this->getMock('ZfrRest\Resource\ResourceInterface'),
+            'route'
+        );
+
+        $matcher->expects($this->once())
+                ->method('matchSubPath')
+                ->will($this->returnValue(null));
+
+        $request = new HttpRequest();
+        $request->setUri('http://www.example.com/route');
+
+        $this->assertNull($resourceGraphRoute->match($request));
+    }
+
+    public function testCanBuildSimpleRouteMatch()
+    {
+        $matcher  = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $resource,
+            'route'
+        );
+
+        $match = new SubPathMatch($resource, 'matchedPath');
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+
+        $resourceMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $resourceMetadata->expects($this->once())
+                         ->method('getClassMetadata')
+                         ->will($this->returnValue($classMetadata));
+
+        $resourceMetadata->expects($this->once())
+                         ->method('getControllerName')
+                         ->will($this->returnValue('MyController'));
+
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($resourceMetadata));
+
+        $resource->expects($this->once())
+                 ->method('isCollection')
+                 ->will($this->returnValue(false));
+
+        $matcher->expects($this->once())
+                ->method('matchSubPath')
+                ->will($this->returnValue($match));
+
+        $request = new HttpRequest();
+        $request->setUri('http://www.example.com/route');
+
+        $routeMatch = $resourceGraphRoute->match($request);
+
+        $this->assertInstanceOf('Zend\Mvc\Router\Http\RouteMatch', $routeMatch);
+        $this->assertEquals(strlen('/route'), $routeMatch->getLength());
+        $this->assertSame($resource, $routeMatch->getParam('resource'));
+        $this->assertEquals('MyController', $routeMatch->getParam('controller'));
+    }
+
+    public function dataTypeForPaginator()
+    {
+        return array(
+            array('Doctrine\Common\Collections\Selectable', 'DoctrineModule\Paginator\Adapter\Selectable'),
+            array('Doctrine\Common\Collections\Collection', 'DoctrineModule\Paginator\Adapter\Collection')
+        );
+    }
+
+    /**
+     * @dataProvider dataTypeForPaginator
+     */
+    public function testCanBuildRouteMatchForCollectionAndWrapDataInsidePaginator($dataType, $adapterType)
+    {
+        $matcher  = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher', array(), array(), '', false);
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->getMock('Metadata\MetadataFactoryInterface'),
+            $matcher,
+            $resource,
+            'route'
+        );
+
+        $match = new SubPathMatch($resource, 'matchedPath');
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+
+        $resourceMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $resourceMetadata->expects($this->exactly(2))
+                         ->method('getClassMetadata')
+                         ->will($this->returnValue($classMetadata));
+
+        $resourceMetadata->expects($this->never())
+                         ->method('getControllerName')
+                         ->will($this->returnValue('MyController'));
+
+        $collectionResourceMetadata = $this->getMock('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface');
+
+        $collectionResourceMetadata->expects($this->once())
+                                   ->method('getControllerName')
+                                   ->will($this->returnValue('MyCollectionController'));
+
+        $resourceMetadata->expects($this->once())
+                         ->method('getCollectionMetadata')
+                         ->will($this->returnValue($collectionResourceMetadata));
+
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($resourceMetadata));
+
+        $resource->expects($this->once())
+                 ->method('isCollection')
+                 ->will($this->returnValue(true));
+
+        $resource->expects($this->once())
+                 ->method('getData')
+                 ->will($this->returnValue($this->getMock($dataType)));
+
+        $matcher->expects($this->once())
+                ->method('matchSubPath')
+                ->will($this->returnValue($match));
+
+        $request = new HttpRequest();
+        $request->setUri('http://www.example.com/route');
+
+        $routeMatch = $resourceGraphRoute->match($request);
+
+        $this->assertInstanceOf('Zend\Mvc\Router\Http\RouteMatch', $routeMatch);
+        $this->assertEquals(strlen('/route'), $routeMatch->getLength());
+        $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $routeMatch->getParam('resource'));
+        $this->assertNotSame($resource, $routeMatch->getParam('resource'));
+        $this->assertInstanceOf('Zend\Paginator\Paginator', $routeMatch->getParam('resource')->getData());
+        $this->assertInstanceOf($adapterType, $routeMatch->getParam('resource')->getData()->getAdapter());
+        $this->assertEquals('MyCollectionController', $routeMatch->getParam('controller'));
     }
 }

@@ -33,13 +33,6 @@ interface ResourceMetadataInterface
     public function createResource();
 
     /**
-     * Get the class name (this is a shortcut of retrieving it using class metadata)
-     *
-     * @return string
-     */
-    public function getClassName();
-
-    /**
      * Get the class metadata (provides information about Doctrine mapping)
      *
      * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
@@ -84,7 +77,7 @@ interface ResourceMetadataInterface
     public function hasAssociation($association);
 
     /**
-     * Get metadata to use in case the resource is a collection of item
+     * Get metadata for this resource when treated as a collection
      *
      * @return CollectionResourceMetadataInterface
      */

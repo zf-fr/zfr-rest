@@ -18,17 +18,19 @@
 
 namespace ZfrRest\Mvc\Router\Http;
 
-use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
+use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface as Request;
+use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Exception;
-use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Paginator\ResourcePaginator;
+use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -50,30 +52,33 @@ class ResourceGraphRoute implements RouteInterface
     protected $resource;
 
     /**
-     * Entry point route
-     *
+     * @var BaseSubPathMatcher
+     */
+    protected $subPathMatcher;
+
+    /**
      * @var string
      */
     protected $route;
 
     /**
-     * Optional GET parameters that are extracted from the request
+     * Constructor
      *
-     * @var array
-     */
-    protected $query;
-
-
-    /**
      * @param MetadataFactoryInterface $metadataFactory
-     * @param mixed                    $resource
+     * @param BaseSubPathMatcher       $matcher
+     * @param ResourceInterface|mixed  $resource
      * @param string                   $route
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory, $resource, $route)
-    {
+    public function __construct(
+        MetadataFactoryInterface $metadataFactory,
+        BaseSubPathMatcher $matcher,
+        $resource,
+        $route
+    ) {
         $this->metadataFactory = $metadataFactory;
-        $this->route           = (string) $route;
+        $this->subPathMatcher  = $matcher;
         $this->resource        = $resource;
+        $this->route           = trim($route, '/');
     }
 
     /**
@@ -105,128 +110,35 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function match(Request $request)
     {
-        if (!method_exists($request, 'getUri')) {
+        if (!$request instanceof HttpRequest) {
             return null;
         }
 
-        /* @var $request \Zend\Http\Request */
-        $uri         = $request->getUri();
-        $path        = $uri->getPath();
-        
-        // we must ommit the basePath
+        $uri  = $request->getUri();
+        $path = $uri->getPath();
+
+        // We must omit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
             $path = substr($path, strlen(rtrim($baseUrl, '/')));
         }
 
-        $matchedPath = rtrim($path, '/');
+        // If the URI does not begin by the route, we can stop immediately
 
-        // Save the query part (GET parameters) to optionally filter the result at the end
-        $this->query = $uri->getQueryAsArray();
-
-        // @todo consider using a segment/part route to handle this logic instead
-        // If the route is not even contained within the URI, this means we can return early...
-        if (strpos($matchedPath, $this->route) === false && strpos($path, $this->route) === false) {
+        if (substr(ltrim($path, '/'), 0, strlen($this->route)) !== $this->route) {
             return null;
         }
 
-        // ...and we can now initialize the resource
-        $this->initializeResource();
+        $subPath = substr($path, strlen($this->route));
 
-        if ($matchedPath === $this->route || $path === $this->route) {
-            return $this->buildRouteMatch($this->resource, $path);
-        }
-
-        $identifierPath = substr($path, strlen(rtrim($this->route, '/')));
-
-        if (0 !== strpos($identifierPath, '/') || ! $this->resource->isCollection()) {
+        if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;
         }
 
-        return $this->matchIdentifier($this->resource, $identifierPath);
+        return $this->buildRouteMatch($match->getMatchedResource(), $path);
     }
 
     /**
-     * @param  ResourceInterface $resource
-     * @param  string            $path
-     * @throws Exception\RuntimeException
-     * @return RouteMatch|null
-     */
-    protected function matchIdentifier(ResourceInterface $resource, $path)
-    {
-        $path          = trim($path, '/');
-        $classMetadata = $resource->getMetadata()->getClassMetadata();
-        $identifiers   = $classMetadata->getIdentifierFieldNames();
-
-        if (count($identifiers) > 1) {
-            throw new Exception\RuntimeException('Composite identifiers are not currently supported by ZfrRest');
-        }
-
-        $data   = $resource->getData();
-        $chunks = explode('/', $path);
-
-        // Favor Repository over Selectable as it allows to call custom repository methods
-        if ($data instanceof ObjectRepository) {
-            $data = $data->find(array_shift($chunks));
-        } elseif ($resource instanceof Selectable) {
-            $expression = Criteria::expr()->eq(current($identifiers), array_shift($chunks));
-            $data       = $data->matching(new Criteria($expression))->first();
-        }
-
-        if (null === $data) {
-            return $this->buildErrorRouteMatch($resource, $path);
-        }
-
-        // We matched an identifier, so the metadata stay the same (but we moved from a Collection to
-        // a single item)
-        $resource = new Resource($data, $resource->getMetadata());
-
-        // If empty, then we have processed the whole path
-        if (empty($chunks)) {
-            return $this->buildRouteMatch($resource, $path);
-        }
-
-        return $this->matchAssociation($resource, substr($path, strpos($path, '/')));
-    }
-
-    /**
-     * @param  ResourceInterface $resource
-     * @param  string            $path
-     * @return RouteMatch|null
-     */
-    protected function matchAssociation(ResourceInterface $resource, $path)
-    {
-        $path             = trim($path, '/');
-        $resourceMetadata = $resource->getMetadata();
-        $classMetadata    = $resourceMetadata->getClassMetadata();
-
-        $chunks          = explode('/', $path);
-        $associationName = array_shift($chunks);
-
-        if (!$resourceMetadata->hasAssociation($associationName)) {
-            return null;
-        }
-
-        $reflectionClass    = $classMetadata->getReflectionClass();
-        $reflectionProperty = $reflectionClass->getProperty($associationName);
-
-        $reflectionProperty->setAccessible(true);
-
-        $data = $reflectionProperty->getValue($resource->getData());
-
-        $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
-        $resource         = new Resource($data, $resourceMetadata);
-
-        // If empty, we have processed the whole path
-        if (empty($chunks)) {
-            return $this->buildRouteMatch($resource, $path);
-        }
-
-        return $this->matchIdentifier($resource, substr($path, strpos($path, '/')));
-    }
-
-    /**
-     * Build a route match. This function extract the controller from the resource metadata, and does
-     * optional filtering by query
+     * Build a route match
      *
      * @param  ResourceInterface $resource
      * @param  string           $path
@@ -235,35 +147,22 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildRouteMatch(ResourceInterface $resource, $path)
     {
-        $resourceMetadata   = $resource->getMetadata();
-        $collectionMetadata = $resourceMetadata->getCollectionMetadata();
-        $classMetadata      = $resourceMetadata->getClassMetadata();
-        $data               = $resource->getData();
-
-        if ($data instanceof Selectable) {
-            $criteria = Criteria::create();
-
-            foreach ($this->query as $key => $value) {
-                if ($classMetadata->hasField($key)) {
-                    $criteria->andWhere(Criteria::expr()->eq($key, $value));
-                }
-            }
-
-            // @TODO: for now, collection is always wrapped around a ResourcePaginator, should instead be configurable
-            $data = new ResourcePaginator($resourceMetadata, new SelectableAdapter($data, $criteria));
-
-            $resource = new Resource($data, $resourceMetadata);
-        }
+        $metadata      = $resource->getMetadata();
+        $classMetadata = $metadata->getClassMetadata();
 
         // If returned $data is a collection, then we use the controller specified in Collection mapping
         if ($resource->isCollection()) {
-            if (null === $collectionMetadata) {
+            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
                 throw Exception\RuntimeException::missingCollectionMetadata($classMetadata);
             }
 
+            // We wrap the data around a paginator
+            $paginator = $this->wrapDataInPaginator($resource);
+            $resource  = new Resource($paginator, $metadata);
+
             $controllerName = $collectionMetadata->getControllerName();
         } else {
-            $controllerName = $resourceMetadata->getControllerName();
+            $controllerName = $metadata->getControllerName();
         }
 
         return new RouteMatch(
@@ -276,16 +175,28 @@ class ResourceGraphRoute implements RouteInterface
     }
 
     /**
-     * Build an error route match. This can happen if, for instance, no object was found after matching an
-     * identifier. However, we still want to dispatch to the controller so that we can do further error handling
+     * Wrap a data around a paginator
      *
      * @param  ResourceInterface $resource
-     * @param  string            $path
-     * @return RouteMatch
+     * @return Paginator
+     * @throws Exception\RuntimeException If no paginator adapter is found
      */
-    protected function buildErrorRouteMatch(ResourceInterface $resource, $path)
+    protected function wrapDataInPaginator(ResourceInterface $resource)
     {
-        return new RouteMatch(array('controller' => $resource->getMetadata()->getControllerName()), strlen($path));
+        $data             = $resource->getData();
+        $paginatorAdapter = null;
+
+        if ($data instanceof Selectable) {
+            $paginatorAdapter = new SelectableAdapter($data);
+        } elseif ($data instanceof Collection) {
+            $paginatorAdapter = new CollectionAdapter($data);
+        }
+
+        if (null === $paginatorAdapter) {
+            throw Exception\RuntimeException::noValidPaginatorAdapterFound($data);
+        }
+
+        return new Paginator($paginatorAdapter);
     }
 
     /**
@@ -294,13 +205,13 @@ class ResourceGraphRoute implements RouteInterface
      * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
      *
      * @throws Exception\RuntimeException
-     * @return void
+     * @return ResourceInterface
      */
-    private function initializeResource()
+    private function getResource()
     {
         // Don't initialize twice
         if ($this->resource instanceof ResourceInterface) {
-            return;
+            return $this->resource;
         }
 
         /** @var $metadata \Metadata\ClassHierarchyMetadata */
@@ -312,9 +223,9 @@ class ResourceGraphRoute implements RouteInterface
         } elseif (is_string($resource)) {
             $metadata = $this->metadataFactory->getMetadataForClass($resource);
         } else {
-            throw RuntimeException::unsupportedResourceType($resource);
+            throw Exception\RuntimeException::unsupportedResourceType($resource);
         }
 
-        $this->resource = new Resource($resource, $metadata->getOutsideClassMetadata());
+        return $this->resource = new Resource($resource, $metadata->getOutsideClassMetadata());
     }
 }

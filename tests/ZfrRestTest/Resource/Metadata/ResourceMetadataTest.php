@@ -25,88 +25,52 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
 /**
  * Tests for {@see \ZfrRest\Resource\Metadata\ResourceMetadata}
  *
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @author Michaël Gallego <mic.gallego@gmail.com>
+ * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
  */
 class ResourceMetadataTest extends TestCase
 {
-    /**
-     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
-     */
-    public function testResourceMetadata()
+    public function testCanCheckAssociations()
     {
         $resourceMetadata = new ResourceMetadata('stdClass');
-        $this->assertSame('stdClass', $resourceMetadata->getClassName());
+        $resourceMetadata->associations['tweets'] = new \stdClass();
 
-        $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $resourceMetadata->classMetadata = $metadata;
-        $this->assertSame($metadata, $resourceMetadata->getClassMetadata());
-
-        $resourceMetadata->controller = 'test';
-        $this->assertSame('test', $resourceMetadata->getControllerName());
-        $resourceMetadata->controller = null;
-        $this->assertSame(null, $resourceMetadata->getControllerName());
-
-        $resourceMetadata->inputFilter = 'test';
-        $this->assertSame('test', $resourceMetadata->getInputFilterName());
-        $resourceMetadata->inputFilter = null;
-        $this->assertSame(null, $resourceMetadata->getInputFilterName());
-
-        $resourceMetadata->hydrator = 'test';
-        $this->assertSame('test', $resourceMetadata->getHydratorName());
-        $resourceMetadata->hydrator = null;
-        $this->assertSame(null, $resourceMetadata->getHydratorName());
-
-        $this->assertFalse($resourceMetadata->hasAssociation('assoc'));
-        $associationMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $resourceMetadata->associations['assoc'] = $associationMetadata;
-        $this->assertTrue($resourceMetadata->hasAssociation('assoc'));
-        $this->assertSame($associationMetadata, $resourceMetadata->getAssociationMetadata('assoc'));
+        $this->assertTrue($resourceMetadata->hasAssociation('tweets'));
+        $this->assertFalse($resourceMetadata->hasAssociation('retweets'));
     }
 
-    /**
-     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
-     */
-    public function testAssertHasDefaultHydrator()
+    public function testCanCreateSimpleResource()
     {
-        $resourceMetadata = new ResourceMetadata('stdClass');
-        $this->assertSame('DoctrineModule\Stdlib\Hydrator\DoctrineObject', $resourceMetadata->getHydratorName());
-    }
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->once())
+                      ->method('getReflectionClass')
+                      ->will($this->returnValue(new ReflectionClass('ZfrRestTest\Resource\Asset\ResourceAsset')));
 
-    /**
-     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
-     */
-    public function testCanCreateEmptyResource()
-    {
-        $resourceMetadata = new ResourceMetadata('stdClass');
-        $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $resourceMetadata->classMetadata = $metadata;
-        $reflectionClass                 = new ReflectionClass('stdClass');
-
-        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
+        $resourceMetadata = new ResourceMetadata('ZfrRestTest\Resource\Asset\ResourceAsset');
+        $resourceMetadata->classMetadata = $classMetadata;
 
         $resource = $resourceMetadata->createResource();
-
-        $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $resource);
-        $this->assertSame($resource->getMetadata(), $resourceMetadata);
-        $this->assertInstanceOf('stdClass', $resource->getData());
+        $this->assertInstanceOf('ZfrRestTest\Resource\Asset\ResourceAsset', $resource->getData());
+        $this->assertSame($resourceMetadata, $resource->getMetadata());
     }
 
-    /**
-     * @covers \ZfrRest\Resource\Metadata\ResourceMetadata
-     */
-    public function testCanCreateEmptyResourceWithParameter()
+    public function testCanCreateComplexResource()
     {
-        $resourceMetadata = new ResourceMetadata('ReflectionFunction');
-        $metadata                        = $this->getMock('Doctrine\\Common\\Persistence\\Mapping\\ClassMetadata');
-        $resourceMetadata->classMetadata = $metadata;
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->once())
+                      ->method('getReflectionClass')
+                      ->will($this->returnValue(
+                          new ReflectionClass(
+                              'ZfrRestTest\Resource\Asset\ResourceWithParametersAsset'
+                          )
+                      ));
 
-        $reflectionClass  = new \ReflectionClass('ReflectionFunction');
-        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
+        $resourceMetadata = new ResourceMetadata('ZfrRestTest\Resource\Asset\ResourceWithParametersAsset');
+        $resourceMetadata->classMetadata = $classMetadata;
 
-        $resource = $resourceMetadata->createResource('substr');
-
-        $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $resource);
-        $this->assertSame($resource->getMetadata(), $resourceMetadata);
-        $this->assertInstanceOf('ReflectionFunction', $resource->getData());
+        $resource = $resourceMetadata->createResource('foo');
+        $this->assertInstanceOf('ZfrRestTest\Resource\Asset\ResourceWithParametersAsset', $resource->getData());
+        $this->assertEquals('foo', $resource->getData()->getParam());
+        $this->assertSame($resourceMetadata, $resource->getMetadata());
     }
 }

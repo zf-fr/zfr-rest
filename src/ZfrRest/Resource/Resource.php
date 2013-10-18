@@ -24,7 +24,8 @@ use ZfrRest\Resource\Exception\InvalidResourceException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
- * @author Marco Pivetta <ocramius@gmail.com>
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @licence MIT
  */
 class Resource implements ResourceInterface
 {
@@ -38,7 +39,6 @@ class Resource implements ResourceInterface
      */
     protected $metadata;
 
-
     /**
      * @param  mixed                     $data
      * @param  ResourceMetadataInterface $metadata
@@ -51,7 +51,7 @@ class Resource implements ResourceInterface
 
         $reflectionClass = $metadata->getClassMetadata()->getReflectionClass();
 
-        if (!$this->isCollection() && ! $reflectionClass->isInstance($data)) {
+        if (!$this->isCollection() && !$reflectionClass->isInstance($data)) {
             throw InvalidResourceException::invalidResourceProvided($data, $metadata);
         }
     }

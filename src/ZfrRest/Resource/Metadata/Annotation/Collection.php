@@ -37,15 +37,7 @@ final class Collection implements AnnotationInterface
     /**
      * @var string
      */
-    public $hydrator = 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getKey()
-    {
-        return 'collection';
-    }
+    public $hydrator;
 
     /**
      * {@inheritDoc}

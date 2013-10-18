@@ -62,7 +62,7 @@ class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOpti
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        if (! $serviceLocator instanceof AbstractPluginManager) {
+        if (!$serviceLocator instanceof AbstractPluginManager) {
             throw RuntimeException::pluginManagerExpected($serviceLocator);
         }
 
@@ -74,9 +74,9 @@ class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOpti
             throw RuntimeException::missingResource($this->creationOptions['resource'], $exception);
         }
 
-        /* @var $metadataFactory \Metadata\MetadataFactoryInterface */
         $metadataFactory = $parentLocator->get('ZfrRest\Resource\Metadata\MetadataFactory');
+        $matcher         = $parentLocator->get('ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher');
 
-        return new ResourceGraphRoute($metadataFactory, $resource, $this->creationOptions['route']);
+        return new ResourceGraphRoute($metadataFactory, $matcher, $resource, $this->creationOptions['route']);
     }
 }

@@ -23,8 +23,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Options\ModuleOptions;
 
 /**
- * ModuleOptionsFactory
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
@@ -36,7 +34,6 @@ class ModuleOptionsFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('Config');
-
         return new ModuleOptions($config['zfr_rest']);
     }
 }

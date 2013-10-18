@@ -40,7 +40,7 @@ class HttpMethodOverrideListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'overrideHttpMethod'), 1000);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'overrideHttpMethod'), 10000);
     }
 
     /**

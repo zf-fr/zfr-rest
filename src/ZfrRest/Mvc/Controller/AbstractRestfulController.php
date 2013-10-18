@@ -18,34 +18,25 @@
 
 namespace ZfrRest\Mvc\Controller;
 
-use Zend\Http\Header\Accept;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
-use Zend\Mvc\Exception;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use ZfrRest\Http\Exception\Client;
-use ZfrRest\Http\Exception\Client\BadRequestException;
-use ZfrRest\Http\Exception\Server;
-use ZfrRest\Http\Exception\Server\InternalServerErrorException;
-use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Mvc\Controller\Method\MethodHandlerPluginManager;
+use ZfrRest\Mvc\Exception;
 
 /**
- * Abstract REST-ful controller. It is responsible for dispatching a HTTP request to a function, or throwing an
- * exception if the method is not implemented.
- *
- * By default, AbstractRestfulController handles the "big four" methods (GET, DELETE, PUT and POST). You can add
- * your own verbs or changing existing ones by overriding methods like handle*Method (eg.: handleGetMethod,
- * handlePostMethod, handlePatchMethod...). Please note that your handlers must always return the result of
- * the action!
- *
- * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
  */
-abstract class AbstractRestfulController extends AbstractController
+class AbstractRestfulController extends AbstractController
 {
+    /**
+     * @var MethodHandlerPluginManager
+     */
+    protected $methodHandlerManager;
+
     /**
      * {@inheritDoc}
      */
@@ -59,239 +50,46 @@ abstract class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * Execute the request. Try to match the HTTP verb to an action
-     *
-     * @param  MvcEvent $event
-     * @return mixed
-     * @throws Client\NotFoundException If the resource cannot be found
-     * @throws Client\MethodNotAllowedException If the method to handle the request is not implemented
+     * {@inheritDoc}
      */
     public function onDispatch(MvcEvent $event)
     {
-        $method  = strtolower($this->getRequest()->getMethod());
-        $handler = 'handle' . ucfirst($method) . 'Method';
+        $request = $this->getRequest();
 
-        if (!method_exists($this, $method) || !method_exists($this, $handler)) {
-            throw new Client\MethodNotAllowedException();
+        if (!$request instanceof HttpRequest) {
+            throw Exception\RuntimeException::notHttpRequest($request);
         }
+
+        $method  = $request->getMethod();
+        $handler = $this->getMethodHandlerManager()->get($method);
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */
         $resource = $event->getRouteMatch()->getParam('resource', null);
 
         // We should always have a resource, otherwise throw an 404 exception
         if (null === $resource) {
-            throw new Client\NotFoundException();
+            // @TODO: throw exception when we switch to Apigility API Problem
         }
 
-        $return = $this->$handler($resource);
+        $result = $handler->handleMethod($this, $resource);
+        $event->setResult($result);
 
-        $event->setResult($return);
-
-        return $return;
+        return $result;
     }
 
     /**
-     * GET method is used to retrieve (or read) a representation of a resource. Get method is idempotent, which means
-     * that making multiple identical requests ends up having the same result as a single request. Get requests should
-     * not modify any resources
+     * Get the method handler plugin manager
      *
-     * @param  ResourceInterface $resource
-     * @return mixed
+     * @return MethodHandlerPluginManager
      */
-    protected function handleGetMethod(ResourceInterface $resource)
+    public function getMethodHandlerManager()
     {
-        return $this->get($resource->getData(), $resource->getMetadata());
-    }
-
-    /**
-     * DELETE method is used to delete a representation of a resource
-     *
-     * @param  ResourceInterface $resource
-     * @return mixed
-     */
-    protected function handleDeleteMethod(ResourceInterface $resource)
-    {
-        return $this->delete($resource->getData(), $resource->getMetadata());
-    }
-
-    /**
-     * POST method is used to create a new resource. On successful creation, POST method should return a HTTP status
-     * 201, with a Location header containing the URL of the newly created resource. We are doing several things for the
-     * user automatically:
-     *      - we validate post data with the input filter defined in metadata
-     *      - we hydrate valid data
-     *      - we pass the object to the post method of the controller
-     *
-     * As you can see, the post method have three arguments: the object that is inserted, the resource metadata and
-     * the resource itself (which is the Collection where the object is added)
-     *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
-     * do nothing
-     *
-     * @param  ResourceInterface $resource
-     * @throws Client\BadRequestException if validation fails
-     * @return mixed
-     */
-    protected function handlePostMethod(ResourceInterface $resource)
-    {
-        $metadata       = $resource->getMetadata();
-        $singleResource = $metadata->createResource();
-
-        $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
-        $data = $this->hydrateData($metadata->getHydratorName(), $data, $singleResource);
-
-        $data = $this->post($data, $metadata, $resource);
-
-        // Set the Location header with the URL to the newly created resource
-        if (is_object($data)) {
-            // @FIXME: use Router for that
-            $identifierValues = $metadata->getClassMetadata()->getIdentifierValues($data);
-            $identifierValue  = reset($identifierValues);
-            $url              = '/' . trim($this->request->getUri()->getPath(), '/') . '/' . $identifierValue;
-
-            $this->response->getHeaders()->addHeaderLine('Location', $url);
+        if (null === $this->methodHandlerManager) {
+            $this->methodHandlerManager = $this->serviceLocator->get(
+                'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager'
+            );
         }
 
-        $this->response->setStatusCode(201);
-
-        return $data;
-    }
-
-    /**
-     * PUT method is used to update an existing resource. We are doing several things for the user automatically:
-     *      - we validate post data with the input filter defined in metadata
-     *      - we hydrate valid data to update existing resource
-     *      - we pass the object to the put method of the controller
-     *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
-     * do nothing
-     *
-     * @param ResourceInterface $resource
-     * @throws Client\BadRequestException if validation fails
-     * @return mixed
-     */
-    protected function handlePutMethod(ResourceInterface $resource)
-    {
-        $metadata = $resource->getMetadata();
-
-        $data = $this->validateData($metadata->getInputFilterName(), $this->decodeBody());
-        $data = $this->hydrateData($metadata->getHydratorName(), $data, $resource);
-
-        return $this->put($data, $metadata);
-    }
-
-    /**
-     * Automatically create an InputFilter object, and validate data against it.
-     *
-     * @param  string $inputFilterName
-     * @param  array $data
-     * @throws Server\InternalServerErrorException If the input filter class is not valid
-     * @throws Client\BadRequestException If input filter create validation errors
-     * @return array
-     */
-    protected function validateData($inputFilterName, array $data)
-    {
-        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
-        $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
-        $controllerBehaviours = $moduleOptions->getControllerBehaviours();
-
-        if (!$controllerBehaviours->getAutoValidate()) {
-            return $data;
-        }
-
-        if (empty($inputFilterName)) {
-            throw InternalServerErrorException::missingInputFilter();
-        }
-
-        $inputFilterManager = $this->serviceLocator->get('InputFilterManager');
-
-        try {
-            $inputFilter = $inputFilterManager->get($inputFilterName);
-        } catch (ServiceNotFoundException $exception) {
-            throw InternalServerErrorException::invalidInputFilter($inputFilterName, $exception);
-        }
-
-        /** @param \Zend\InputFilter\InputFilterInterface $inputFilter */
-        $inputFilter->setData($data);
-        if (!$inputFilter->isValid()) {
-            throw BadRequestException::invalidInput($inputFilter);
-        }
-
-        // Return validated and filtered values
-        return $inputFilter->getValues();
-    }
-
-    /**
-     * Automatically create a Hydrator object, and hydrate object. If ZfrRest was configured to not hydrate
-     * automatically, then this method only returns untouched data as array
-     *
-     * @param  string            $hydratorName
-     * @param  array             $data
-     * @param  ResourceInterface $resource
-     * @throws Server\InternalServerErrorException
-     * @return array|object
-     */
-    public function hydrateData($hydratorName, array $data, ResourceInterface $resource)
-    {
-        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
-        $moduleOptions        = $this->serviceLocator->get('ZfrRest\Options\ModuleOptions');
-        $controllerBehaviours = $moduleOptions->getControllerBehaviours();
-
-        if (!$controllerBehaviours->getAutoHydrate()) {
-            return $data;
-        }
-
-        if (empty($hydratorName)) {
-            throw InternalServerErrorException::missingHydrator();
-        }
-
-        $hydratorManager = $this->serviceLocator->get('HydratorManager');
-
-        try {
-            $hydrator = $hydratorManager->get($hydratorName);
-        } catch (ServiceNotFoundException $exception) {
-            throw InternalServerErrorException::invalidHydrator($hydratorName, $exception);
-        }
-
-        /** @param \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
-        return $hydrator->hydrate($data, $resource->getData());
-    }
-
-    /**
-     * Parse the body content according to the Content-Type value
-     *
-     * @return array
-     */
-    protected function decodeBody()
-    {
-        return $this->decode($this->request->getContent()) ?: array();
-    }
-
-    /**
-     * Decode a content according to the Content-Type value
-     *
-     * @param  mixed $content
-     * @return array
-     */
-    protected function decode($content)
-    {
-        /** @var $decoderPluginManager \ZfrRest\Serializer\DecoderPluginManager */
-        $decoderPluginManager = $this->serviceLocator->get('ZfrRest\Serializer\DecoderPluginManager');
-
-        /* @var $request \Zend\Http\Request */
-        $request = $this->getRequest();
-        /* @var $header \Zend\Http\Header\ContentType */
-        $header = $request->getHeader('Content-Type');
-
-        if (!$header) {
-            return null;
-        }
-
-        $contentTypes = Accept::fromString('Accept: ' . $header->getFieldValue())->getPrioritized();
-        /* @var $contentType \Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart */
-        $contentType  = reset($contentTypes);
-        $mimeType     = $contentType->getTypeString();
-
-        return $decoderPluginManager->get($mimeType)->decode($content, '');
+        return $this->methodHandlerManager;
     }
 }

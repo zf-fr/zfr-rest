@@ -18,16 +18,14 @@
 
 namespace ZfrRest\Resource\Metadata\Driver;
 
-use ReflectionClass;
-use Doctrine\Common\Annotations\Reader as AnnotationReader;
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
 use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface;
+use ReflectionClass;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
 use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Metadata\Annotation;
-use ZfrRest\Resource\Metadata\Annotation\AnnotationInterface;
-use ZfrRest\Resource\Metadata\Annotation\Resource;
-use ZfrRest\Resource\Metadata\Annotation\Collection;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
@@ -37,10 +35,10 @@ use ZfrRest\Resource\Metadata\ResourceMetadata;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterface
+class AnnotationDriver implements DriverInterface
 {
     /**
-     * @var AnnotationReader
+     * @var Reader
      */
     protected $annotationReader;
 
@@ -57,21 +55,18 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
     /**
      * Constructor
      *
-     * @param AnnotationReader        $reader
-     * @param DoctrineMetadataFactory $doctrineMetadataFactory
+     * @param Reader                   $reader
+     * @param MetadataFactoryInterface $resourceMetadataFactory
+     * @param DoctrineMetadataFactory  $doctrineMetadataFactory
      */
-    public function __construct(AnnotationReader $reader, DoctrineMetadataFactory $doctrineMetadataFactory)
-    {
+    public function __construct(
+        Reader $reader,
+        MetadataFactoryInterface $resourceMetadataFactory,
+        DoctrineMetadataFactory $doctrineMetadataFactory
+    ) {
         $this->annotationReader        = $reader;
+        $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->doctrineMetadataFactory = $doctrineMetadataFactory;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setResourceMetadataFactory(ResourceMetadataFactory $metadataFactory)
-    {
-        $this->resourceMetadataFactory = $metadataFactory;
     }
 
     /**
@@ -93,10 +88,10 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
         foreach ($classProperties as $classProperty) {
             $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
 
-            // We need to have at least the Association annotation, so we loop through all the annotations,
+            // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
             // check if it exists, and remove it so that we can process other annotations
             foreach ($propertyAnnotations as $key => $propertyAnnotation) {
-                if ($propertyAnnotation instanceof Annotation\Association) {
+                if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
                     unset($propertyAnnotations[$key]);
 
                     $associationName = $classProperty->getName();
@@ -104,10 +99,9 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties
-                    $resourceAssociationMetadata = $this
-                        ->resourceMetadataFactory
-                        ->getMetadataForClass($targetClass)
-                        ->getOutsideClassMetadata();
+                    $resourceAssociationMetadata = clone $this->resourceMetadataFactory
+                                                              ->getMetadataForClass($targetClass)
+                                                              ->getOutsideClassMetadata();
 
                     $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
                     $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
@@ -121,33 +115,35 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
     }
 
     /**
-     * @param ResourceMetadata      $metadata
-     * @param AnnotationInterface[] $annotations
+     * @param  ResourceMetadata                 $metadata
+     * @param  Annotation\AnnotationInterface[] $annotations
+     * @return void
      */
     private function processMetadata(ResourceMetadata $metadata, array $annotations)
     {
         foreach ($annotations as $annotation) {
-            if (!($annotation instanceof AnnotationInterface)) {
+            if (!($annotation instanceof Annotation\AnnotationInterface)) {
                 continue;
             }
 
             // Resource annotation
-            if ($annotation instanceof Resource) {
+            if ($annotation instanceof Annotation\Resource) {
                 $this->processResourceMetadata($metadata, $annotation);
             }
 
             // Collection annotation
-            if ($annotation instanceof Collection) {
+            if ($annotation instanceof Annotation\Collection) {
                 $this->processCollectionMetadata($metadata, $annotation);
             }
         }
     }
 
     /**
-     * @param ResourceMetadata $metadata
-     * @param Resource         $annotation
+     * @param  ResourceMetadata    $metadata
+     * @param  Annotation\Resource $annotation
+     * @return void
      */
-    private function processResourceMetadata(ResourceMetadata $metadata, Resource $annotation)
+    private function processResourceMetadata(ResourceMetadata $metadata, Annotation\Resource $annotation)
     {
         $values = $annotation->getValue();
 
@@ -165,26 +161,23 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
     }
 
     /**
-     * @param ResourceMetadata $metadata
-     * @param Collection       $annotation
+     * @param  ResourceMetadata      $metadata
+     * @param  Annotation\Collection $annotation
+     * @return void
      */
-    private function processCollectionMetadata(ResourceMetadata $metadata, Collection $annotation)
+    private function processCollectionMetadata(ResourceMetadata $metadata, Annotation\Collection $annotation)
     {
         $values             = $annotation->getValue();
-        $collectionMetadata = new CollectionResourceMetadata($metadata->getClassName());
+        $collectionMetadata = $metadata->collectionMetadata ?: new CollectionResourceMetadata($metadata->name);
 
         foreach ($values as $key => $value) {
-            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
-
-            // If the value is null, then we reuse the value defined at "resource-level"
-            if (null === $value && isset($metadata->propertyMetadata[$key])) {
-                $propertyMetadata->setValue(
-                    $collectionMetadata,
-                    $metadata->propertyMetadata[$key]->getValue($metadata)
-                );
-            } else {
-                $propertyMetadata->setValue($collectionMetadata, $value);
+            // Ignore null values in order to make cascading work as expected
+            if (null === $value) {
+                continue;
             }
+
+            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
+            $propertyMetadata->setValue($collectionMetadata, $value);
 
             $collectionMetadata->addPropertyMetadata($propertyMetadata);
         }

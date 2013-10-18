@@ -26,15 +26,11 @@ use ZfrRest\Resource\Resource;
  * Tests for {@see \ZfrRest\Resource\Resource}
  *
  * @author Marco Pivetta <ocramius@gmail.com>
+ * @covers \ZfrRest\Resource\Resource
  */
 class ResourceTest extends TestCase
 {
     /**
-     * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Resource\Resource::getData
-     * @covers \ZfrRest\Resource\Resource::getMetadata
-     * @covers \ZfrRest\Resource\Resource::isCollection
-     *
      * @dataProvider collectionResourceProvider
      *
      * @param string $className
@@ -51,10 +47,6 @@ class ResourceTest extends TestCase
         $this->assertSame($isCollection, $resource->isCollection());
     }
 
-    /**
-     * @covers \ZfrRest\Resource\Resource::__construct
-     * @covers \ZfrRest\Resource\Exception\InvalidResourceException::invalidResourceProvided
-     */
     public function testDisallowsInvalidResource()
     {
         $metadata = $this->createMetadata(new ReflectionClass($this));
@@ -82,7 +74,6 @@ class ResourceTest extends TestCase
 
     /**
      * @param ReflectionClass $reflectionClass
-     *
      * @return \PHPUnit_Framework_MockObject_MockObject|\ZfrRest\Resource\Metadata\ResourceMetadataInterface
      */
     private function createMetadata(ReflectionClass $reflectionClass)

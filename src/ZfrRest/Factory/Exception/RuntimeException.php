@@ -39,7 +39,7 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
     public static function pluginManagerExpected(ServiceLocatorInterface $serviceLocator)
     {
         return new self(
-            sprintf('A hydrator plugin manager was expected, but "%s" was given', get_class($serviceLocator))
+            sprintf('A plugin manager was expected, but "%s" was given', get_class($serviceLocator))
         );
     }
 

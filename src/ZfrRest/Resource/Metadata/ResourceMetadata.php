@@ -42,14 +42,14 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public $controller;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $inputFilter;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
+    public $hydrator;
 
     /**
      * @var ResourceMetadataInterface[]|array
@@ -60,7 +60,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      * @var CollectionResourceMetadataInterface
      */
     public $collectionMetadata;
-
 
     /**
      * {@inheritDoc}
@@ -74,14 +73,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
         }
 
         return new Resource($this->reflection->newInstanceArgs($args), $this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getClassName()
-    {
-        return $this->name;
     }
 
     /**
@@ -138,5 +129,13 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public function getCollectionMetadata()
     {
         return $this->collectionMetadata;
+    }
+
+    /**
+     * Make sure to clone the collection metadata too
+     */
+    public function __clone()
+    {
+        $this->collectionMetadata = clone $this->collectionMetadata;
     }
 }

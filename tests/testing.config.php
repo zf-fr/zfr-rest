@@ -19,46 +19,42 @@
 return array(
     'zfr_rest' => array(
         'object_manager' => 'doctrine.entitymanager.orm_default',
-
-        'resource_metadata' => array(
-            'drivers' => array(
-                'application_driver' => array(
-                    'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
-                )
+        'cache'          => 'array_cache',
+        'drivers'        => array(
+            'application_driver' => array(
+                'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
             )
         )
     ),
 
     'doctrine' => array(
         'driver' => array(
-            'application_driver' => array(
+            'annotation_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(__DIR__ . '/ZfrRestTest/Asset/Annotation')
+                'paths' => array(__DIR__ . '/ZfrRestTest/Resource/Metadata/Driver/AnnotationAsset')
             ),
             'orm_default' => array(
                 'drivers' => array(
-                    'ZfrRestTest\Asset\Annotation' => 'application_driver'
+                    'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset' => 'annotation_driver'
                 )
             )
         ),
-    ),
 
-    'controllers' => array(
-        'invokables' => array(
-            'ZfrRestTest\Asset\Controller\UserController' => 'ZfrRestTest\Asset\Controller\UserController',
-        ),
-    ),
-
-    'input_filters' => array(
-        'invokables' => array(
-            'ZfrRestTest\Asset\InputFilter\UserInputFilter' => 'ZfrRestTest\Asset\InputFilter\UserInputFilter',
-        ),
-    ),
-
-    'hydrators' => array(
-        'invokables' => array(
-            'ZfrRestTest\Asset\Hydrator\UserHydrator' => 'ZfrRestTest\Asset\Hydrator\UserHydrator',
+        'connection' => array(
+            'orm_default' => array(
+                'params' => array(
+                    'host'          => null,
+                    'port'          => null,
+                    'user'          => null,
+                    'password'      => null,
+                    'dbname'        => null,
+                    'driver'        => 'pdo_sqlite',
+                    'driverClass'   => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
+                    'path'          => null,
+                    'memory'        => true,
+                ),
+            ),
         ),
     ),
 );

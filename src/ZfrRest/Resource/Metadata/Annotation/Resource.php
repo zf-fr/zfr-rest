@@ -42,14 +42,6 @@ final class Resource implements AnnotationInterface
     /**
      * {@inheritDoc}
      */
-    public function getKey()
-    {
-        return 'resource';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getValue()
     {
         return array(

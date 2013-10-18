@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Exception;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use RuntimeException as BaseRuntimeException;
+use Zend\Stdlib\RequestInterface;
 use ZfrRest\Exception\ExceptionInterface;
 
 /**
@@ -32,7 +33,6 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
 {
     /**
      * @param ClassMetadata $classMetadata
-     *
      * @return self
      */
     public static function missingCollectionMetadata(ClassMetadata $classMetadata)
@@ -46,8 +46,21 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
     }
 
     /**
+     * @param  mixed $data
+     * @return self
+     */
+    public static function noValidPaginatorAdapterFound($data)
+    {
+        return new self(
+            sprintf(
+                'No paginator adapter can be matched for the data of type "%s"',
+                is_object($data) ? get_class($data) : gettype($data)
+            )
+        );
+    }
+
+    /**
      * @param mixed $resource
-     *
      * @return self
      */
     public static function unsupportedResourceType($resource)
@@ -56,6 +69,35 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
             sprintf(
                 'Resource "%s" is not supported: either specify an ObjectRepository instance, or an entity class name',
                 is_object($resource) ? get_class($resource) : gettype($resource)
+            )
+        );
+    }
+
+    /**
+     * @param  mixed $methodHandler
+     * @return self
+     */
+    public static function invalidMethodHandler($methodHandler)
+    {
+        return new self(
+            sprintf(
+                'Method handlers must implement "%s", "%s" given',
+                'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface',
+                is_object($methodHandler) ? get_class($methodHandler) : gettype($methodHandler)
+            )
+        );
+    }
+
+    /**
+     * @param  RequestInterface $request
+     * @return self
+     */
+    public static function notHttpRequest(RequestInterface $request)
+    {
+        return new self(
+            sprintf(
+                'ZfrRest controllers can only handle HTTP requests, "%s" given',
+                is_object($request) ? get_class($request) : gettype($request)
             )
         );
     }

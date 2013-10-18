@@ -30,9 +30,9 @@ use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 class InvalidResourceException extends InvalidArgumentException implements ExceptionInterface
 {
     /**
-     * @param mixed                                                 $resource
-     * @param \ZfrRest\Resource\Metadata\ResourceMetadataInterface  $metadata
-     * @return \ZfrRest\Resource\Exception\InvalidResourceException
+     * @param  mixed                     $resource
+     * @param  ResourceMetadataInterface $metadata
+     * @return InvalidResourceException
      */
     public static function invalidResourceProvided($resource, ResourceMetadataInterface $metadata)
     {

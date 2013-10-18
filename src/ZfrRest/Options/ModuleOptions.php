@@ -21,58 +21,57 @@ namespace ZfrRest\Options;
 use Zend\Stdlib\AbstractOptions;
 
 /**
- * ModuleOptions
- *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @author Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
  */
 class ModuleOptions extends AbstractOptions
 {
     /**
-     * Key of the object manager fetched from the service locator
+     * Key of the object manager fetched from service locator
      *
-     * @var string
+     * @var string|null
      */
     protected $objectManager;
 
     /**
-     * Listeners options (allow to activate/deactive listeners)
+     * FQCN of the cache driver to use for the metadata
      *
-     * @var ListenersOptions
+     * @var string|null
      */
-    protected $listenersOptions;
+    protected $cache;
+
+    /**
+     * Should we register this listener?
+     *
+     * @var bool
+     */
+    protected $registerHttpMethodOverrideListener = false;
 
     /**
      * Controller behaviours options
      *
      * @var ControllerBehavioursOptions
      */
-    protected $controllerBehavioursOptions;
+    protected $controllerBehaviours = array();
 
     /**
-     * Options for resource metadata
+     * Options for all drivers
      *
-     * @var ResourceMetadataOptions
+     * @var DriverOptions[]
      */
-    protected $resourceMetadataOptions;
+    protected $drivers = array();
 
     /**
-     * Plugin manager configuration for the content decoders
+     * Config for the method handler plugin manager
      *
      * @var array
      */
-    protected $decoders = array();
+    protected $methodHandlerManager = array();
 
     /**
-     * Plugin manager configuration for the view models
+     * Set the object manager key
      *
-     * @var array
-     */
-    protected $models = array();
-
-    /**
-     * @param string $objectManager
-     *
+     * @param  string $objectManager
      * @return void
      */
     public function setObjectManager($objectManager)
@@ -81,6 +80,8 @@ class ModuleOptions extends AbstractOptions
     }
 
     /**
+     * Get the object manager key
+     *
      * @return string
      */
     public function getObjectManager()
@@ -89,31 +90,46 @@ class ModuleOptions extends AbstractOptions
     }
 
     /**
-     * @param  array $options
-     *
+     * @param  string $cache
      * @return void
      */
-    public function setListeners(array $options)
+    public function setCache($cache)
     {
-        $this->listenersOptions = new ListenersOptions($options);
+        $this->cache = (string) $cache;
     }
 
     /**
-     * @return ListenersOptions
+     * @return string
      */
-    public function getListeners()
+    public function getCache()
     {
-        return $this->listenersOptions;
+        return $this->cache;
+    }
+
+    /**
+     * @param boolean $registerHttpMethodOverrideListener
+     * @return void
+     */
+    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
+    {
+        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getRegisterHttpMethodOverrideListener()
+    {
+        return $this->registerHttpMethodOverrideListener;
     }
 
     /**
      * @param  array $options
-     *
      * @return void
      */
     public function setControllerBehaviours(array $options)
     {
-        $this->controllerBehavioursOptions = new ControllerBehavioursOptions($options);
+        $this->controllerBehaviours = new ControllerBehavioursOptions($options);
     }
 
     /**
@@ -121,60 +137,42 @@ class ModuleOptions extends AbstractOptions
      */
     public function getControllerBehaviours()
     {
-        return $this->controllerBehavioursOptions;
+        return $this->controllerBehaviours;
     }
 
     /**
-     * @param  array $options
-     *
+     * @param  array $drivers
      * @return void
      */
-    public function setResourceMetadata(array $options)
+    public function setDrivers(array $drivers)
     {
-        $this->resourceMetadataOptions = new ResourceMetadataOptions($options);
+        foreach ($drivers as $driverOptions) {
+            $this->drivers[] = new DriverOptions($driverOptions);
+        }
     }
 
     /**
-     * @return ResourceMetadataOptions
+     * @return DriverOptions[]
      */
-    public function getResourceMetadata()
+    public function getDrivers()
     {
-        return $this->resourceMetadataOptions;
+        return $this->drivers;
     }
 
     /**
-     * @param  array $decoders
-     *
+     * @param  array $methodHandlerManager
      * @return void
      */
-    public function setDecoders(array $decoders)
+    public function setMethodHandlerManager(array $methodHandlerManager)
     {
-        $this->decoders = $decoders;
+        $this->methodHandlerManager = $methodHandlerManager;
     }
 
     /**
      * @return array
      */
-    public function getDecoders()
+    public function getMethodHandlerManager()
     {
-        return $this->decoders;
-    }
-
-    /**
-     * @param array $models
-     *
-     * @return void
-     */
-    public function setModels(array $models)
-    {
-        $this->models = $models;
-    }
-
-    /**
-     * @return array
-     */
-    public function getModels()
-    {
-        return $this->models;
+        return $this->methodHandlerManager;
     }
 }

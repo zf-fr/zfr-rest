@@ -17,56 +17,27 @@
  */
 
 return array(
+    /**
+     * SERVICE MANAGER CONFIG
+     */
     'service_manager' => array(
-        'invokables' => array(
-            'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener',
+        'factories'  => array(
+            'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
+            'ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher'              => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
+            'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
         ),
 
-        'factories' => array(
-            'ZfrRest\Mvc\View\Http\SelectModelListener'           => 'ZfrRest\Factory\SelectModelListenerFactory',
-            'ZfrRest\Options\ModuleOptions'                       => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\Resource\Metadata\CacheProvider'             => 'ZfrRest\Factory\ResourceMetadataCacheFactory',
-            'ZfrRest\Resource\Metadata\MetadataFactory'           => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
-            'ZfrRest\Serializer\DecoderPluginManager'             => 'ZfrRest\Factory\DecoderPluginManagerFactory',
-            'ZfrRest\View\Model\ModelPluginManager'               => 'ZfrRest\Factory\ModelPluginManagerFactory',
-            'ZfrRest\Mvc\View\Http\CreateResourcePayloadListener'
-                => 'ZfrRest\Factory\CreateResourcePayloadListenerFactory',
-        )
-    ),
-
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                'clear-cache' => array(
-                    'type'    => 'Simple',
-                    'options' => array(
-                        'route'    => 'rest clear metadata cache',
-                        'defaults' => array(
-                            'controller' => 'ZfrRest\Controller\Cache',
-                            'action'     => 'clear-cache'
-                        )
-                    ),
-                ),
-            )
-        )
-    ),
-
-    'controllers' => array(
         'invokables' => array(
-            'ZfrRest\Controller\Cache' => 'ZfrRest\Controller\CacheController',
+            'ZfrRest\Mvc\HttpMethodOverrideListener'                    => 'ZfrRest\Mvc\HttpMethodOverrideListener',
+            'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher' => 'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher',
+            'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher'  => 'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher',
         )
     ),
 
-    'hydrators' => array(
-        'factories' => array(
-            'ZfrRest\Stdlib\Hydrator\PaginatorHydrator' => 'ZfrRest\Factory\PaginatorHydratorFactory'
-        ),
-        'aliases' => array(
-            'PaginatorHydrator' => 'ZfrRest\Stdlib\Hydrator\PaginatorHydrator'
-        )
-    ),
-
+    /**
+     * ROUTE PLUGIN MANAGER
+     */
     'route_manager' => array(
         'factories' => array(
             'ZfrRest\Mvc\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
@@ -77,47 +48,31 @@ return array(
         ),
     ),
 
-    'view_manager' => array(
-        'strategies' => array(
-            'ViewJsonStrategy'
-        )
-    ),
-
+    /**
+     * ZFR REST CONFIG
+     */
     'zfr_rest' => array(
-        /**
-         * Listeners options
-         */
-        'listeners' => array(
-            'register_http_exception'          => true,
-            'register_create_resource_payload' => true,
-            'register_select_model'            => true,
-            'register_http_method_override'    => false
-        ),
+        // No object manager set by default
+        'object_manager' => null,
 
-        /**
-         * Which behaviours each controller should automatically do for us?
-         */
+        // No cache by default
+        'cache' => null,
+
+        // Don't register HTTP method override listener by default. If registered, it will check if the request
+        // contains a header "X-HTTP-Method-Override". This header allows to change the HTTP verb
+        'register_http_method_override_listener' => false,
+
+        // Specify the controller behaviours
         'controller_behaviours' => array(
+            // Auto validate using input filters and auto hydrate using hydrators
             'auto_validate' => true,
             'auto_hydrate'  => true
         ),
 
-        /**
-         * Resource metadata options
-         */
-        'resource_metadata' => array(
-            'cache'   => 'Doctrine\Common\Cache\ArrayCache',
-            'drivers' => array()
-        ),
+        // No drivers by default
+        'drivers' => array(),
 
-        /**
-         * Set DecoderPluginManager
-         */
-        'decoders' => array(),
-
-        /**
-         * Set ModelPluginManager
-         */
-        'models' => array()
+        // Method handler plugin manager configuration
+        'method_handler_manager' => array()
     )
 );

@@ -25,13 +25,6 @@ namespace ZfrRest\Resource\Metadata\Annotation;
 interface AnnotationInterface
 {
     /**
-     * Get the key of the annotation
-     *
-     * @return string
-     */
-    public function getKey();
-
-    /**
      * Get the value of the annotation
      *
      * @return mixed
