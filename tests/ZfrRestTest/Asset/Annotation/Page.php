@@ -16,19 +16,39 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset;
+namespace ZfrRestTest\Asset\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="Mayors")
+ * @ORM\MappedSuperclass
+ * @REST\Resource(controller="Application\Controller\PageController")
+ * @REST\Collection(controller="Application\Controller\PageListController")
  */
-class Mayor
+class Page extends AbstractPage
 {
     /**
-     * @ORM\Id
-     * @ORM\Column
+     * @var int
+     *
+     * @ORM\Column(type="string")
      */
-    protected $id;
+    protected $name = '';
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = (string) $name;
+    }
 }

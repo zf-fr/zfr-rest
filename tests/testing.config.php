@@ -29,14 +29,20 @@ return array(
 
     'doctrine' => array(
         'driver' => array(
-            'annotation_driver' => array(
+            'driver_annotation_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
                 'paths' => array(__DIR__ . '/ZfrRestTest/Resource/Metadata/Driver/AnnotationAsset')
             ),
+            'application_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/ZfrRestTest/Asset/Annotation')
+            ),
             'orm_default' => array(
                 'drivers' => array(
-                    'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset' => 'annotation_driver'
+                    'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset' => 'driver_annotation_driver',
+                    'ZfrRestTest\Asset\Annotation'                         => 'application_driver'
                 )
             )
         ),

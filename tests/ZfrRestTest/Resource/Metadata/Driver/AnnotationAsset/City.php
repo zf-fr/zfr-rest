@@ -23,6 +23,7 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="Cities")
  * @REST\Resource(controller="CityController", inputFilter="CityInputFilter", hydrator="CityHydrator")
  * @REST\Collection(controller="CityCollController", inputFilter="CityCollInputFilter", hydrator="CityCollHydrator")
  */

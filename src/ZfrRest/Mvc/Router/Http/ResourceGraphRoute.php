@@ -123,12 +123,12 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-
         if (substr(ltrim($path, '/'), 0, strlen($this->route)) !== $this->route) {
             return null;
         }
 
-        $subPath = substr($path, strlen($this->route));
+        $pathParts = explode('/', $this->route, 2);
+        $subPath   = end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;

@@ -16,19 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset;
+namespace ZfrRestTest\Asset\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="Mayors")
+ * @ORM\MappedSuperclass
  */
-class Mayor
+abstract class AbstractPage
 {
     /**
+     * @var int
+     *
      * @ORM\Id
-     * @ORM\Column
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
      */
     protected $id;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
