@@ -42,12 +42,12 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     public $controller;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $inputFilter;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $hydrator;
 

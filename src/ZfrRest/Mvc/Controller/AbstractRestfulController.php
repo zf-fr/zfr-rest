@@ -54,7 +54,13 @@ class AbstractRestfulController extends AbstractController
      */
     public function onDispatch(MvcEvent $event)
     {
-        $method  = strtolower($this->getRequest()->getMethod());
+        $request = $this->getRequest();
+
+        if (!$request instanceof HttpRequest) {
+            throw Exception\RuntimeException::notHttpRequest($request);
+        }
+
+        $method  = $request->getMethod();
         $handler = $this->getMethodHandlerManager()->get($method);
 
         /** @var \ZfrRest\Resource\ResourceInterface $resource */

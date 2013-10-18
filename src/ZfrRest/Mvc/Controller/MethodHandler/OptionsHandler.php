@@ -49,7 +49,7 @@ class OptionsHandler implements MethodHandlerInterface
     {
         // For the OPTIONS verb, we have an out-of-the box implementation, but if it is
         // defined in the controller we use the user-land method instead
-        if (method_exists($controller, 'options')) {
+        if (is_callable(array($controller, 'options'))) {
             $allowedMethods = $controller->options();
         } else {
             $allowedMethods = $this->getAllowedMethods($controller);

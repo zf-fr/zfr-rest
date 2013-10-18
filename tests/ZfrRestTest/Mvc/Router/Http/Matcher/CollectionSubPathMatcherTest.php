@@ -66,10 +66,13 @@ class CollectionSubPathMatcherTest extends TestCase
         $called       = false;
         $self         = $this;
         $eventManager = new EventManager();
-        $eventManager->attach(CollectionFilteringEvent::EVENT_COLLECTION_FILTERING, function($event) use ($self, &$called) {
-            $called = true;
-            $self->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\CollectionFilteringEvent', $event);
-        });
+        $eventManager->attach(
+            CollectionFilteringEvent::EVENT_COLLECTION_FILTERING,
+            function ($event) use ($self, &$called) {
+                $called = true;
+                $self->assertInstanceOf('ZfrRest\Mvc\Router\Http\Matcher\CollectionFilteringEvent', $event);
+            }
+        );
 
         $collectionPathMatcher = new CollectionSubPathMatcher();
         $collectionPathMatcher->setEventManager($eventManager);

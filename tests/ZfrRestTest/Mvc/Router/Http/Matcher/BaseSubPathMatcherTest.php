@@ -47,8 +47,22 @@ class BaseSubPathMatcherTest extends TestCase
 
     public function setUp()
     {
-        $this->collectionMatcher  = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher', array(), array(), '', false);
-        $this->associationMatcher = $this->getMock('ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher', array(), array(), '', false);
+        $this->collectionMatcher  = $this->getMock(
+            'ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher',
+            array(),
+            array(),
+            '',
+            false
+        );
+
+        $this->associationMatcher = $this->getMock(
+            'ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher',
+            array(),
+            array(),
+            '',
+            false
+        );
+
         $this->baseSubPathMatcher = new BaseSubPathMatcher($this->collectionMatcher, $this->associationMatcher);
     }
 
@@ -75,5 +89,4 @@ class BaseSubPathMatcherTest extends TestCase
 
         $this->assertNull($this->baseSubPathMatcher->matchSubPath($resource, 'foo', new HttpRequest()));
     }
-
 }

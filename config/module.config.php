@@ -47,24 +47,4 @@ return array(
             'ResourceGraphRoute' => 'ZfrRest\Mvc\Router\Http\ResourceGraphRoute'
         ),
     ),
-
-    /**
-     * ZFR REST CONFIG
-     */
-    'zfr_rest' => array(
-        // No object manager set by default
-        'object_manager' => '',
-
-        // No cache by default
-        'cache' => '',
-
-        // Don't register HTTP method override listener by default
-        'register_http_method_override_listener' => false,
-
-        // No drivers by default
-        'drivers' => array(),
-
-        // Method handler plugin manager configuration
-        'method_handler_manager' => array()
-    )
 );

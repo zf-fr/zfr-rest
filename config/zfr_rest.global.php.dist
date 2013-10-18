@@ -8,16 +8,16 @@
 return array(
     'zfr_rest' => array(
         /**
-         * The key of the object manager instance. It is retrieved from the service manager. For instance, if you
+         * Service name of the object manager instance. It is retrieved from the service manager. For instance, if you
          * are using Doctrine ORM Module, this value may be "doctrine.entitymanager.orm_default"
          */
-        'object_manager' => 'doctrine.entitymanager.orm_default',
+        // 'object_manager' => 'doctrine.entitymanager.orm_default',
 
         /**
-         * FQCN of the Metadata cache provider used for caching the mapping. It must returns an instance of
+         * Service name of the Metadata cache provider used for caching the mapping. It must returns an instance of
          * \Metadata\Cache\CacheInterface
          */
-        'cache' => '',
+        // 'cache' => 'Application\Cache\ApcCache',
 
         /**
          * If this listener is registered (it is not by default), it will check if the request contains
@@ -39,7 +39,9 @@ return array(
         'drivers' => array(),
 
         /**
-         * Allow to register new method handler (or override existing ones).
+         * Allow to register new method handler (or override existing ones). A handler is a simple object that
+         * knows how to treat a single HTTP method (like POST, GET...). ZfrRest comes bundled with sane
+         * implementations for most common verbs, but you can add yours or modify existing ones easily
          *
          * You must specify a service manager compliant config, and the key must be the HTTP method:
          *

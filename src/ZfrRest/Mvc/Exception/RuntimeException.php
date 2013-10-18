@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Exception;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use RuntimeException as BaseRuntimeException;
+use Zend\Stdlib\RequestInterface;
 use ZfrRest\Exception\ExceptionInterface;
 
 /**
@@ -80,8 +81,23 @@ class RuntimeException extends BaseRuntimeException implements ExceptionInterfac
     {
         return new self(
             sprintf(
-                'Method handlers must implement ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface, "%s" given',
+                'Method handlers must implement "%s", "%s" given',
+                'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface',
                 is_object($methodHandler) ? get_class($methodHandler) : gettype($methodHandler)
+            )
+        );
+    }
+
+    /**
+     * @param  RequestInterface $request
+     * @return self
+     */
+    public static function notHttpRequest(RequestInterface $request)
+    {
+        return new self(
+            sprintf(
+                'ZfrRest controllers can only handle HTTP requests, "%s" given',
+                is_object($request) ? get_class($request) : gettype($request)
             )
         );
     }

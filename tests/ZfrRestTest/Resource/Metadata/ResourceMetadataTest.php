@@ -59,7 +59,11 @@ class ResourceMetadataTest extends TestCase
         $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $classMetadata->expects($this->once())
                       ->method('getReflectionClass')
-                      ->will($this->returnValue(new ReflectionClass('ZfrRestTest\Resource\Asset\ResourceWithParametersAsset')));
+                      ->will($this->returnValue(
+                          new ReflectionClass(
+                              'ZfrRestTest\Resource\Asset\ResourceWithParametersAsset'
+                          )
+                      ));
 
         $resourceMetadata = new ResourceMetadata('ZfrRestTest\Resource\Asset\ResourceWithParametersAsset');
         $resourceMetadata->classMetadata = $classMetadata;

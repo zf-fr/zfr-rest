@@ -29,35 +29,35 @@ class ModuleOptions extends AbstractOptions
     /**
      * Key of the object manager fetched from service locator
      *
-     * @var string
+     * @var string|null
      */
     protected $objectManager;
 
     /**
      * FQCN of the cache driver to use for the metadata
      *
-     * @var string
+     * @var string|null
      */
     protected $cache;
 
     /**
      * @var bool
      */
-    protected $registerHttpMethodOverrideListener;
+    protected $registerHttpMethodOverrideListener = false;
 
     /**
      * Options for all drivers
      *
      * @var DriverOptions[]
      */
-    protected $drivers;
+    protected $drivers = array();
 
     /**
      * Config for the method handler plugin manager
      *
      * @var array
      */
-    protected $methodHandlerManager;
+    protected $methodHandlerManager = array();
 
     /**
      * Set the object manager key
@@ -149,5 +149,4 @@ class ModuleOptions extends AbstractOptions
     {
         return $this->methodHandlerManager;
     }
-
 }

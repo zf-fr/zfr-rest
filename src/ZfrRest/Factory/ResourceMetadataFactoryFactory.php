@@ -42,13 +42,9 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         /** @var $moduleOptions \ZfrRest\Options\ModuleOptions $moduleOptions */
         $moduleOptions = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
 
-        $objectManager = $moduleOptions->getObjectManager();
-        if (!$serviceLocator->has($objectManager)) {
-            throw Exception\RuntimeException::missingObjectManager($objectManager);
-        }
-
+        // @TODO: how to handle data coming from multiple object managers?
         /** @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
-        $objectManager           = $serviceLocator->get($objectManager);
+        $objectManager           = $serviceLocator->get($moduleOptions->getObjectManager());
         $doctrineMetadataFactory = $objectManager->getMetadataFactory();
 
         $driverChain             = new DriverChain();

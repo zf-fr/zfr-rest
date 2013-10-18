@@ -34,12 +34,12 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     public $controller;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $inputFilter;
 
     /**
-     * @var string
+     * @var string|null
      */
     public $hydrator;
 

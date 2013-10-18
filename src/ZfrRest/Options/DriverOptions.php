@@ -29,7 +29,7 @@ class DriverOptions extends AbstractOptions
     /**
      * FQCN of the driver class
      *
-     * @var string
+     * @var string|null
      */
     protected $class;
 
@@ -46,7 +46,7 @@ class DriverOptions extends AbstractOptions
      */
     public function setClass($class)
     {
-        $this->class = $class;
+        $this->class = (string) $class;
     }
 
     /**
@@ -63,7 +63,9 @@ class DriverOptions extends AbstractOptions
      */
     public function setPaths(array $paths)
     {
-        $this->paths = $paths;
+        $this->paths = array_map(function ($path) {
+            return (string) $path;
+        }, $paths);
     }
 
     /**

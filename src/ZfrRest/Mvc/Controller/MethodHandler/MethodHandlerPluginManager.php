@@ -25,6 +25,7 @@ use ZfrRest\Mvc\Exception;
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ * @method  MethodHandlerInterface get($name)
  */
 class MethodHandlerPluginManager extends AbstractPluginManager
 {

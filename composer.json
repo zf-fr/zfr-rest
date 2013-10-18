@@ -45,9 +45,6 @@
     "autoload": {
         "psr-0": {
             "ZfrRest\\": "src/"
-        },
-        "classmap": [
-            "./"
-        ]
+        }
     }
 }
