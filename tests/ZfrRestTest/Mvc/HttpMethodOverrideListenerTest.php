@@ -64,4 +64,14 @@ class HttpMethodOverrideListenerTest extends TestCase
 
         $this->httpMethodOverrideListener->overrideHttpMethod($event);
     }
+
+    public function testDoNothingIfNotHttpRequest()
+    {
+        $event   = new MvcEvent();
+        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+
+        $event->setRequest($request);
+
+        $this->assertNull($this->httpMethodOverrideListener->overrideHttpMethod($event));
+    }
 }
