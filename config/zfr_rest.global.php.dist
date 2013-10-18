@@ -24,7 +24,30 @@ return array(
          * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
          * some contexts (for instance, some companies' proxies only allow GET and POST methods)
          */
-        'register_http_method_override_listener' => false,
+        // 'register_http_method_override_listener' => false,
+
+        /**
+         * Which behaviours each controller should automatically do for us?
+         */
+        'controller_behaviours' => array(
+            /**
+             * If this is set to true (it is by default), then controller will automatically instantiate the
+             * input filter specified in resource metadata (if there is one) - from service locator first, or
+             * directly instantiate it if not found -, and validate data. If data is incorrect, it will return
+             * a 400 HTTP error (Bad Request) with the failed validation messages in it).
+             */
+            // 'auto_validate' => true,
+
+            /**
+             * If this is set to true (it is by default), then controller will automatically instantiate the hydrator
+             * specified in resource metadata (if there is one) - from service locator first, or directly instantiate
+             * it if not found - and hydrate resource object with previously validated data.
+             *
+             * Please note that for security reason, if you activate this option, you SHOULD NOT deactivate auto
+             * validation UNLESS you validate data yourself.
+             */
+            // 'auto_hydrate' => true
+        ),
 
         /**
          * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one

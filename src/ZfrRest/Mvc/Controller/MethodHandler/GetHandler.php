@@ -18,50 +18,40 @@
 
 namespace ZfrRest\Mvc\Controller\Method;
 
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\Mvc\Controller\AbstractController;
+use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
-use ZfrRest\Mvc\Exception;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
+ * Handler for the GET method verb
+ *
+ * The GET request allow the client to retrieve a resource
+ *
+ * @link    http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.3
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
- * @method  MethodHandlerInterface get($name)
  */
-class MethodHandlerPluginManager extends AbstractPluginManager
+class GetHandler implements MethodHandlerInterface
 {
     /**
-     * @var array
-     */
-    protected $invokableClasses = array(
-        'delete'  => 'ZfrRest\Mvc\Controller\MethodHandler\DeleteHandler',
-        'get'     => 'ZfrRest\Mvc\Controller\MethodHandler\GetHandler',
-        'options' => 'ZfrRest\Mvc\Controller\MethodHandler\OptionsHandler'
-    );
-
-    /**
-     * @var array
-     */
-    protected $factories = array(
-        'post' => 'ZfrRest\Factory\PostHandlerFactory',
-        'put'  => 'ZfrRest\Factory\PutHandlerFactory'
-    );
-
-    /**
-     * Whether or not to auto-add a class as an invokable class if it exists
+     * Handler for GET method
      *
-     * @var bool
+     * GET method is used to retrieve (or read) a representation of a resource. GET method is idempotent, which means
+     * that making multiple identical requests ends up having the same result as a single request. GET requests should
+     * not modify any resources
+     *
+     * @param  AbstractController $controller
+     * @param  ResourceInterface $resource
+     * @return ResponseInterface
      */
-    protected $autoAddInvokableClass = false;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function validatePlugin($plugin)
+    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
     {
-        if ($plugin instanceof MethodHandlerInterface) {
-            return; // we're okey
+        // If no get method is defined on the controller, then we cannot do anything
+        if (!is_callable(array($controller, 'get'))) {
+            // @TODO: throw exception
         }
 
-        throw Exception\RuntimeException::invalidMethodHandler($plugin);
+        return $controller->get($resource);
     }
 }

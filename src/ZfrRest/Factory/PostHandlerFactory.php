@@ -20,22 +20,22 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
+use ZfrRest\Mvc\Controller\Method\PostHandler;
 
 /**
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class BaseSubPathMatcherFactory implements FactoryInterface
+class PostHandlerFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new BaseSubPathMatcher(
-            $serviceLocator->get('ZfrRest\Mvc\Router\Http\Matcher\CollectionSubPathMatcher'),
-            $serviceLocator->get('ZfrRest\Mvc\Router\Http\Matcher\AssociationSubPathMatcher')
-        );
+        /** @var \ZfrRest\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceLocator->getServiceLocator()->get('ZfrRest\Options\ModuleOptions');
+
+        return new PostHandler($moduleOptions->getControllerBehavioursOptions());
     }
 }

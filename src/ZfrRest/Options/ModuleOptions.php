@@ -41,9 +41,18 @@ class ModuleOptions extends AbstractOptions
     protected $cache;
 
     /**
+     * Should we register this listener?
+     *
      * @var bool
      */
     protected $registerHttpMethodOverrideListener = false;
+
+    /**
+     * Controller behaviours options
+     *
+     * @var ControllerBehavioursOptions
+     */
+    protected $controllerBehavioursOptions = array();
 
     /**
      * Options for all drivers
@@ -112,6 +121,23 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterHttpMethodOverrideListener()
     {
         return $this->registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @param  array $options
+     * @return void
+     */
+    public function setControllerBehavioursOptions(array $options)
+    {
+        $this->controllerBehavioursOptions = new ControllerBehavioursOptions($options);
+    }
+
+    /**
+     * @return ControllerBehavioursOptions
+     */
+    public function getControllerBehavioursOptions()
+    {
+        return $this->controllerBehavioursOptions;
     }
 
     /**

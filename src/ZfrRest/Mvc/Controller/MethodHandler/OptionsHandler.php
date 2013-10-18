@@ -65,7 +65,7 @@ class OptionsHandler implements MethodHandlerInterface
         $response->setContent('');
         $response->setStatusCode(200);
 
-        return $this->response;
+        return $response;
     }
 
     /**
