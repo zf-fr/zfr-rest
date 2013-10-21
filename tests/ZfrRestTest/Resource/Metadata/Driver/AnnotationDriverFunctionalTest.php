@@ -99,4 +99,45 @@ class AnnotationDriverFunctionalTest extends TestCase
         $this->assertEquals($cityCountryCollMetadata->getControllerName(), $countryCollMetadata->getControllerName());
         $this->assertEquals($cityCountryCollMetadata->getInputFilterName(), $countryCollMetadata->getInputFilterName());
     }
+
+    public function testCanHandleCircularMetadata()
+    {
+        $serviceManager  = ServiceManagerFactory::getServiceManager();
+
+        $serviceManager->setAlias('object_manager', 'doctrine.entitymanager.orm_default');
+        $serviceManager->setService('array_cache', $this->getMock('Metadata\Cache\CacheInterface'));
+
+        /** @var \Metadata\MetadataFactory $resourceFactory */
+        $resourceFactory = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
+
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $circularA */
+        $circularA = $resourceFactory->getMetadataForClass(
+            'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\CircularA'
+        );
+        $circularA = $circularA->getOutsideClassMetadata();
+
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $circularB */
+        $circularB = $resourceFactory->getMetadataForClass(
+            'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\CircularB'
+        );
+        $circularB = $circularB->getOutsideClassMetadata();
+
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $circularA);
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $circularB);
+
+        $this->assertEquals('CircularAController', $circularA->getControllerName());
+        $this->assertEquals('CircularBController', $circularB->getControllerName());
+
+        $this->assertTrue($circularA->hasAssociation('b'));
+        $this->assertTrue($circularB->hasAssociation('a'));
+
+        $circularAB = $circularA->getAssociationMetadata('b');
+        $circularBA = $circularB->getAssociationMetadata('a');
+
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $circularAB);
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $circularBA);
+
+        $this->assertEquals('CircularABController', $circularAB->getControllerName());
+        $this->assertEquals('CircularBAController', $circularBA->getControllerName());
+    }
 }

@@ -136,6 +136,6 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function __clone()
     {
-        $this->collectionMetadata = clone $this->collectionMetadata;
+        $this->collectionMetadata = $this->collectionMetadata ? clone $this->collectionMetadata : null;
     }
 }

@@ -20,9 +20,6 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
-use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
-use ZfrRest\Options\ControllerBehavioursOptions;
-use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
