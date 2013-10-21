@@ -127,8 +127,10 @@ class ResourceGraphRoute implements RouteInterface
             return null;
         }
 
+        // If we have only one segment (for instance "users"), then the next path to analyze is in fact
+        // an empty string, hence the ternary condition
         $pathParts = explode('/', $this->route, 2);
-        $subPath   = end($pathParts);
+        $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;

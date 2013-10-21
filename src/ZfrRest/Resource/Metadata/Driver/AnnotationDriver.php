@@ -95,7 +95,14 @@ class AnnotationDriver implements DriverInterface
                     unset($propertyAnnotations[$key]);
 
                     $associationName = $classProperty->getName();
-                    $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
+
+                    // We need this to avoid circular dependency
+                    // @TODO: we should find something better as you cannot override REST mapping on inverse sides
+                    if ($classMetadata->isAssociationInverseSide($associationName)) {
+                        return $resourceMetadata;
+                    }
+
+                    $targetClass = $classMetadata->getAssociationTargetClass($associationName);
 
                     // We first load the metadata for the entity, and we then loop through the annotations defined
                     // at the association level so that the user can override some properties

@@ -24,8 +24,8 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
 /**
  * @ORM\Entity
  * @ORM\MappedSuperclass
- * @REST\Resource(controller="Application\Controller\PageController")
- * @REST\Collection(controller="Application\Controller\PageListController")
+ * @REST\Resource(controller="ZfrRestTest\Asset\Controller\PageController")
+ * @REST\Collection(controller="ZfrRestTest\Asset\Controller\PageListController")
  */
 class Page extends AbstractPage
 {

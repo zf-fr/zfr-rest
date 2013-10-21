@@ -30,7 +30,7 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
  *      inputFilter="ZfrRestTest\Asset\InputFilter\UserInputFilter",
  *      hydrator="ZfrRestTest\Asset\Hydrator\UserHydrator"
  * )
- * @REST\Collection(controller="Application\Controller\UserListController")
+ * @REST\Collection(controller="ZfrRestTest\Asset\Controller\UserListController")
  */
 class User
 {
@@ -55,7 +55,7 @@ class User
      *
      * @ORM\OneToMany(targetEntity="Tweet", mappedBy="user")
      * @REST\ExposeAssociation
-     * @REST\Collection(controller="Application\Controller\UserTweetListController")
+     * @REST\Collection(controller="ZfrRestTest\Asset\Controller\UserTweetListController")
      */
     protected $tweets;
 

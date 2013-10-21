@@ -25,10 +25,10 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
  * @ORM\Entity
  * @ORM\Table(name="Tweets")
  * @REST\Resource(
- *      controller="Application\Controller\TweetController",
- *      inputFilter="Application\InputFilter\TweetInputFilter"
+ *      controller="ZfrRestTest\Asset\Controller\TweetController",
+ *      inputFilter="ZfrRestTest\Asset\InputFilter\TweetInputFilter"
  * )
- * @REST\Collection(controller="Application\Controller\TweetListController")
+ * @REST\Collection(controller="ZfrRestTest\Asset\\Controller\TweetListController")
  */
 class Tweet
 {

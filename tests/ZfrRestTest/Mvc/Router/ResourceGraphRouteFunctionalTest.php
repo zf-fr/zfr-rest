@@ -81,21 +81,25 @@ class ResourceGraphRouteFunctionalTest extends TestCase
     }
 
     /**
-     * Verifying that the resource route is able to find single items in selectables
+     * Verifying that the resource route is able to return a collection from a selectable
      */
-    public function testMatchesSimpleCollectionItem()
+    public function testMatchesSimpleCollection()
     {
-        $tweet = new Tweet();
-        $tweet->setContent('42!');
+        $user1 = new User();
+        $user1->setName('Marco');
+
+        $user2 = new User();
+        $user2->setName('Michael');
 
         $objectManager = $this->getObjectManager();
 
-        $objectManager->persist($tweet);
+        $objectManager->persist($user1);
+        $objectManager->persist($user2);
         $objectManager->flush();
         $objectManager->clear();
 
-        $match = $this->createRoute('/tweets/', 'ZfrRestTest\Asset\Repository\TweetRepository')
-                      ->match($this->createRequest('/tweets/' . $tweet->getId()));
+        $match = $this->createRoute('/users/', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest('/users/'));
 
         $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
 
@@ -103,12 +107,25 @@ class ResourceGraphRouteFunctionalTest extends TestCase
         $resource = $match->getParam('resource');
 
         $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+        $this->assertTrue($resource->isCollection());
 
-        /* @var $data \ZfrRestTest\Asset\Annotation\Tweet */
+        $metadata = $resource->getMetadata();
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $metadata);
+        $this->assertEquals('ZfrRestTest\Asset\Controller\UserListController', $match->getParam('controller'));
+
+        /* @var $data \Zend\Paginator\Paginator */
         $data = $resource->getData();
 
-        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $data);
-        $this->assertSame($tweet->getId(), $data->getId());
+        $this->assertInstanceOf('Zend\Paginator\Paginator', $data);
+        $this->assertEquals(2, $data->getTotalItemCount());
+
+        $users = $data->getCurrentItems();
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\User', $users[0]);
+        $this->assertSame('Marco', $users[0]->getName());
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\User', $users[1]);
+        $this->assertSame('Michael', $users[1]->getName());
     }
 
     /**
