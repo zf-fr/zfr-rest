@@ -159,7 +159,7 @@ class ResourceGraphRouteTest extends TestCase
         $routeMatch = $resourceGraphRoute->match($request);
 
         $this->assertInstanceOf('Zend\Mvc\Router\Http\RouteMatch', $routeMatch);
-        $this->assertEquals(strlen('/route'), $routeMatch->getLength());
+        $this->assertEquals(strlen('route'), $routeMatch->getLength());
         $this->assertSame($resource, $routeMatch->getParam('resource'));
         $this->assertEquals('MyController', $routeMatch->getParam('controller'));
     }
@@ -232,7 +232,7 @@ class ResourceGraphRouteTest extends TestCase
         $routeMatch = $resourceGraphRoute->match($request);
 
         $this->assertInstanceOf('Zend\Mvc\Router\Http\RouteMatch', $routeMatch);
-        $this->assertEquals(strlen('/route'), $routeMatch->getLength());
+        $this->assertEquals(strlen('route'), $routeMatch->getLength());
         $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $routeMatch->getParam('resource'));
         $this->assertNotSame($resource, $routeMatch->getParam('resource'));
         $this->assertInstanceOf('Zend\Paginator\Paginator', $routeMatch->getParam('resource')->getData());

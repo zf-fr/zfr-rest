@@ -96,7 +96,7 @@ class AnnotationDriver implements DriverInterface
 
                     $associationName = $classProperty->getName();
 
-                    // We need this to avoid circular dependency
+                    // @TODO: We need this to avoid circular dependency
                     // @TODO: we should find something better as you cannot override REST mapping on inverse sides
                     if ($classMetadata->isAssociationInverseSide($associationName)) {
                         return $resourceMetadata;

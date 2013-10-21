@@ -115,39 +115,39 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         $uri  = $request->getUri();
-        $path = $uri->getPath();
+        $path = trim($uri->getPath(), '/');
 
         // We must omit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
-            $path = substr($path, strlen(rtrim($baseUrl, '/')));
+            $path = substr($path, strlen(trim($baseUrl, '/')));
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        if (substr(ltrim($path, '/'), 0, strlen($this->route)) !== $this->route) {
+        if (substr($path, 0, strlen($this->route)) !== $this->route) {
             return null;
         }
 
         // If we have only one segment (for instance "users"), then the next path to analyze is in fact
         // an empty string, hence the ternary condition
-        $pathParts = explode('/', $this->route, 2);
+        $pathParts = explode('/', $path, 2);
         $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
             return null;
         }
 
-        return $this->buildRouteMatch($match->getMatchedResource(), $path);
+        return $this->buildRouteMatch($match->getMatchedResource(), $this->route);
     }
 
     /**
      * Build a route match
      *
      * @param  ResourceInterface $resource
-     * @param  string           $path
+     * @param  string            $route
      * @throws Exception\RuntimeException
      * @return RouteMatch
      */
-    protected function buildRouteMatch(ResourceInterface $resource, $path)
+    protected function buildRouteMatch(ResourceInterface $resource, $route)
     {
         $metadata      = $resource->getMetadata();
         $classMetadata = $metadata->getClassMetadata();
@@ -172,7 +172,7 @@ class ResourceGraphRoute implements RouteInterface
                 'resource'   => $resource,
                 'controller' => $controllerName
             ),
-            strlen($path)
+            strlen($route)
         );
     }
 

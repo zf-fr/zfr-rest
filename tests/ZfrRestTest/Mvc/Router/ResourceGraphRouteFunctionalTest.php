@@ -78,6 +78,45 @@ class ResourceGraphRouteFunctionalTest extends TestCase
             'array_cache',
             new DoctrineCacheAdapter('prefix', new ArrayCache())
         );
+
+        $this->objectManager = $this->getObjectManager();
+    }
+
+    /**
+     * Verifies that the resource graph route strips slashes before applying comparisons
+     *
+     * @dataProvider checkSlashesProvider
+     *
+     * @param string $path
+     */
+    public function testMatchesSlashes($path)
+    {
+        $user = new User();
+        $user->setName('foo');
+
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+        $this->objectManager->clear();
+
+        $match = $this->createRoute('users', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest($path));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        $match = $this->createRoute('/users', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest($path));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        $match = $this->createRoute('users/', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest($path));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        $match = $this->createRoute('/users/', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest($path));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
     }
 
     /**
@@ -91,12 +130,10 @@ class ResourceGraphRouteFunctionalTest extends TestCase
         $user2 = new User();
         $user2->setName('Michael');
 
-        $objectManager = $this->getObjectManager();
-
-        $objectManager->persist($user1);
-        $objectManager->persist($user2);
-        $objectManager->flush();
-        $objectManager->clear();
+        $this->objectManager->persist($user1);
+        $this->objectManager->persist($user2);
+        $this->objectManager->flush();
+        $this->objectManager->clear();
 
         $match = $this->createRoute('/users/', 'ZfrRestTest\Asset\Repository\UserRepository')
                       ->match($this->createRequest('/users/'));
@@ -129,6 +166,80 @@ class ResourceGraphRouteFunctionalTest extends TestCase
     }
 
     /**
+     * Verifying that the resource route is able to find single items in selectables
+     */
+    public function testMatchesSimpleCollectionItem()
+    {
+        $tweet = new Tweet();
+        $tweet->setContent('42!');
+
+        $this->objectManager->persist($tweet);
+        $this->objectManager->flush();
+        $this->objectManager->clear();
+
+        $match = $this->createRoute('/tweets/', 'ZfrRestTest\Asset\Repository\TweetRepository')
+                      ->match($this->createRequest('/tweets/' . $tweet->getId()));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
+
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \ZfrRestTest\Asset\Annotation\Tweet */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $data);
+        $this->assertSame($tweet->getId(), $data->getId());
+    }
+
+    /**
+     * Verifying that the resource route is able to find collection-valued associations
+     */
+    public function testMatchesResourceCollection()
+    {
+        $user = new User();
+
+        $user->setName('Deep Thought');
+
+        $tweet = new Tweet();
+
+        $tweet->setContent('42!');
+
+        $user->getTweets()->add($tweet);
+        $tweet->setUser($user);
+
+        $this->objectManager->persist($user);
+        $this->objectManager->persist($tweet);
+        $this->objectManager->flush();
+        $this->objectManager->clear();
+
+        $match = $this->createRoute('/users/', 'ZfrRestTest\Asset\Repository\UserRepository')
+                      ->match($this->createRequest('/users/' . $user->getId() . '/tweets'));
+
+        $this->assertInstanceOf('Zend\\Mvc\\Router\\RouteMatch', $match);
+
+        /* @var $resource \ZfrRest\Resource\ResourceInterface */
+        $resource = $match->getParam('resource');
+
+        $this->assertInstanceOf('ZfrRest\\Resource\\ResourceInterface', $resource);
+
+        /* @var $data \Zend\Paginator\Paginator */
+        $data = $resource->getData();
+
+        $this->assertInstanceOf('Zend\Paginator\Paginator', $data);
+        $this->assertCount(1, $data);
+
+        /* @var $found \ZfrRestTest\Asset\Annotation\Tweet */
+        $found = $data->getItem(0);
+
+        $this->assertInstanceOf('ZfrRestTest\Asset\Annotation\Tweet', $found);
+        $this->assertSame($tweet->getId(), $found->getId());
+    }
+
+    /**
      * @param string $uri
      * @param array  $query
      *
@@ -153,7 +264,7 @@ class ResourceGraphRouteFunctionalTest extends TestCase
      *
      * @return ResourceGraphRoute
      */
-    private function createRoute($path = '/foo/bar/', $serviceName = 'ZfrRestTest\Asset\Repository\PageRepository')
+    private function createRoute($path, $serviceName)
     {
         $routeFactory = new ResourceGraphRouteFactory();
 
@@ -187,10 +298,10 @@ class ResourceGraphRouteFunctionalTest extends TestCase
     public function checkSlashesProvider()
     {
         return array(
-            array('foo/bar', false),
-            array('/foo/bar', false),
-            array('foo/bar/', false),
-            array('/foo/bar/', true),
+            array('users'),
+            array('/users'),
+            array('users/'),
+            array('/users/'),
         );
     }
 }

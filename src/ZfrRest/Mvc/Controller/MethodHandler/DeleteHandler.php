@@ -50,7 +50,7 @@ class DeleteHandler implements MethodHandlerInterface
             // @TODO: throw exception
         }
 
-        $result = $controller->delete($resource);
+        $result = $controller->delete($resource->getData(), $resource->getMetadata());
 
         // According to http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7, status code should
         // be empty if nothing is returned

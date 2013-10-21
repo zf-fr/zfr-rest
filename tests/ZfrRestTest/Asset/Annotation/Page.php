@@ -23,7 +23,7 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
  * @ORM\Entity
- * @ORM\MappedSuperclass
+ * @ORM\Table(name="Pages")
  * @REST\Resource(controller="ZfrRestTest\Asset\Controller\PageController")
  * @REST\Collection(controller="ZfrRestTest\Asset\Controller\PageListController")
  */

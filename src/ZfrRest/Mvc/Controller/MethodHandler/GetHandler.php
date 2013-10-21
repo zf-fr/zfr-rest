@@ -52,6 +52,6 @@ class GetHandler implements MethodHandlerInterface
             // @TODO: throw exception
         }
 
-        return $controller->get($resource);
+        return $controller->get($resource->getData(), $resource->getMetadata());
     }
 }

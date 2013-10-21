@@ -32,9 +32,19 @@ class GetHandlerTest extends TestCase
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', array('get'));
         $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
 
+        $data = new \stdClass();
+        $resource->expects($this->once())
+                 ->method('getData')
+                 ->will($this->returnValue($data));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($metadata));
+
         $controller->expects($this->once())
                    ->method('get')
-                   ->with($resource)
+                   ->with($data, $metadata)
                    ->will($this->returnValue(array('foo' => 'bar')));
 
         $controller->expects($this->never())

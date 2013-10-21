@@ -33,9 +33,19 @@ class DeleteHandlerTest extends TestCase
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', array('delete'));
         $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
 
+        $data = new \stdClass();
+        $resource->expects($this->once())
+                 ->method('getData')
+                 ->will($this->returnValue($data));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($metadata));
+
         $controller->expects($this->once())
                    ->method('delete')
-                   ->with($resource)
+                   ->with($data, $metadata)
                    ->will($this->returnValue(array('foo' => 'bar')));
 
         $controller->expects($this->never())
@@ -53,11 +63,22 @@ class DeleteHandlerTest extends TestCase
             'ZfrRest\Mvc\Controller\AbstractRestfulController',
             array('delete', 'getResponse')
         );
-        $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+
+        $data = new \stdClass();
+        $resource->expects($this->once())
+                 ->method('getData')
+                 ->will($this->returnValue($data));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($metadata));
 
         $controller->expects($this->once())
                    ->method('delete')
-                   ->with($resource)
+                   ->with($data, $metadata)
                    ->will($this->returnValue(null));
 
         $response = new HttpResponse();

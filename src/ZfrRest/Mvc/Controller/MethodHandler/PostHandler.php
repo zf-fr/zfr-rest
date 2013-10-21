@@ -21,7 +21,6 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -33,23 +32,8 @@ use ZfrRest\Resource\ResourceInterface;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class PostHandler implements MethodHandlerInterface
+class PostHandler extends AbstractDataHandler
 {
-    /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehaviourOptions;
-
-    /**
-     * Constructor
-     *
-     * @param ControllerBehavioursOptions $controllerBehavioursOptions
-     */
-    public function __construct(ControllerBehavioursOptions $controllerBehavioursOptions)
-    {
-        $this->controllerBehaviourOptions = $controllerBehavioursOptions;
-    }
-
     /**
      * Handler for POST method
      *
@@ -77,7 +61,22 @@ class PostHandler implements MethodHandlerInterface
             // @TODO: throw exception
         }
 
-        $result = $controller->post($resource);
+        $singleResource = $resource->getMetadata()->createResource();
+
+        // @TODO: this use the not yet done Apigility plugins
+        $data = $controller->bodyParams();
+
+        $data = $this->validateData($singleResource, $data);
+        $data = $this->hydrateData($singleResource, $data);
+
+        $result = $controller->post($data, $singleResource->getMetadata());
+
+        // Set the Location header with the URL of the newly created resource
+        if (is_object($result)) {
+            // @TODO: use Router for that
+        }
+
+        $controller->getResponse()->setStatusCode(201);
 
         return $result;
     }

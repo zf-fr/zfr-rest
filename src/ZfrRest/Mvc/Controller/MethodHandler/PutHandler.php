@@ -22,6 +22,7 @@ use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
 use ZfrRest\Options\ControllerBehavioursOptions;
+use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -33,23 +34,8 @@ use ZfrRest\Resource\ResourceInterface;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class PutHandler implements MethodHandlerInterface
+class PutHandler extends AbstractDataHandler
 {
-    /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehaviourOptions;
-
-    /**
-     * Constructor
-     *
-     * @param ControllerBehavioursOptions $controllerBehavioursOptions
-     */
-    public function __construct(ControllerBehavioursOptions $controllerBehavioursOptions)
-    {
-        $this->controllerBehaviourOptions = $controllerBehavioursOptions;
-    }
-
     /**
      * Handler for PUT method
      *
@@ -72,7 +58,13 @@ class PutHandler implements MethodHandlerInterface
             // @TODO: throw exception
         }
 
-        $result = $controller->put($resource);
+        // @TODO: this use the not yet done Apigility plugins
+        $data = $controller->bodyParams();
+
+        $data = $this->validateData($resource, $data);
+        $data = $this->hydrateData($resource, $data);
+
+        $result = $controller->put($data, $resource->getMetadata());
 
         return $result;
     }
