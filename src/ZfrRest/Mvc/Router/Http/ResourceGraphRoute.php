@@ -62,6 +62,11 @@ class ResourceGraphRoute implements RouteInterface
     protected $route;
 
     /**
+     * @var array
+     */
+    protected $assembledParams = array();
+
+    /**
      * Constructor
      *
      * @param MetadataFactoryInterface $metadataFactory
@@ -82,11 +87,55 @@ class ResourceGraphRoute implements RouteInterface
     }
 
     /**
+     * Assemble a resource graph
+     *
+     * The syntax may looks a bit strange at first, but here is how it works: the $params array
+     * must contain a list of either values or key => value. If only a value is defined, this part
+     * is considered as an collection. Otherwise, it's considered as specific resource of a collection.
+     *
+     * For instance (assuming the route is "/users"):
+     *
+     *      - assemble(array(1, 'tweets')): returns "/users/1/tweets"
+     *      - assemble(array(1, 'tweets' => 1)): returns "/users/1/tweets/1"
+     *      - assemble(array(1, 'tweets' => 1, 'retweets')): returns "/users/1/tweets/1/retweets"
+     *
+     * As you can see, order or params matters!
+     *
+     * Note that this method won't perform any database calls for performance reasons. It just checks
+     * that associations exist
+     *
      * {@inheritDoc}
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        // TODO: Implement assemble() method.
+        $url              = $this->route;
+        $resourceMetadata = $this->getResource()->getMetadata();
+
+        foreach ($params as $key => $value) {
+            // Item of the given collection
+            if (is_int($value)) {
+                $this->assembledParams[] = $value;
+
+                $url .= '/' . $value;
+                continue;
+            }
+
+            $associationName = is_int($key) ? $value : $key;
+
+            if (!$resourceMetadata->hasAssociation($associationName)) {
+                // @TODO: throw exception
+            }
+
+            if (is_int($key)) {
+                $this->assembledParams[] = $value;
+                $url .= '/' . $value;
+            } else {
+                $this->assembledParams[$key] = $value;
+                $url .= '/' . $key . '/' . $value;
+            }
+
+            $resourceMetadata = $resourceMetadata->getAssociationMetadata($associationName);
+        }
     }
 
     /**
@@ -94,7 +143,7 @@ class ResourceGraphRoute implements RouteInterface
      */
     public function getAssembledParams()
     {
-        // TODO: Implement getAssembledParams() method.
+        return $this->assembledParams;
     }
 
     /**
