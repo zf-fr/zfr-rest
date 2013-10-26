@@ -72,7 +72,10 @@ class PostHandler extends AbstractDataHandler
 
         // Set the Location header with the URL of the newly created resource
         if (is_object($result)) {
-            // @TODO: use Router for that
+            $identifiers = $singleResource->getMetadata()->getClassMetadata()->getIdentifierValues($result);
+            $url         = $controller->url(null, array(reset($identifiers)));
+
+            $controller->getResponse()->getHeaders()->addHeaderLine('Location', $url);
         }
 
         $controller->getResponse()->setStatusCode(201);
