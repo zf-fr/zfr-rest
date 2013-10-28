@@ -20,6 +20,7 @@ namespace ZfrRest\Resource\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactoryInterface;
+use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
@@ -53,6 +54,11 @@ class AnnotationDriver implements DriverInterface
     protected $resourceMetadataFactory;
 
     /**
+     * @var LazyLoadingValueHolderFactory
+     */
+    protected $lazyFactory;
+
+    /**
      * Constructor
      *
      * @param Reader                   $reader
@@ -67,6 +73,7 @@ class AnnotationDriver implements DriverInterface
         $this->annotationReader        = $reader;
         $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->doctrineMetadataFactory = $doctrineMetadataFactory;
+        $this->lazyFactory             = new LazyLoadingValueHolderFactory();
     }
 
     /**
@@ -74,51 +81,51 @@ class AnnotationDriver implements DriverInterface
      */
     public function loadMetadataForClass(ReflectionClass $class)
     {
-        $classMetadata = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
+        $initializer = function(&$wrappedObject, $proxy, $method, array $parameters, &$initializer) use ($class) {
+            $classMetadata    = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
+            $resourceMetadata = new ResourceMetadata($class->getName());
 
-        $resourceMetadata = new ResourceMetadata($class->getName());
-        $resourceMetadata->classMetadata = $classMetadata;
+            $resourceMetadata->classMetadata = $classMetadata;
 
-        // Process class level annotations
-        $classAnnotations = $this->annotationReader->getClassAnnotations($class);
-        $this->processMetadata($resourceMetadata, $classAnnotations);
+            // Process class level annotations
+            $classAnnotations = $this->annotationReader->getClassAnnotations($class);
+            $this->processMetadata($resourceMetadata, $classAnnotations);
 
-        // Then process properties level annotations (for associations)
-        $classProperties = $class->getProperties();
-        foreach ($classProperties as $classProperty) {
-            $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
+            // Process property level annotations
+            $classProperties = $class->getProperties();
+            foreach ($classProperties as $classProperty) {
+                $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
 
-            // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
-            // check if it exists, and remove it so that we can process other annotations
-            foreach ($propertyAnnotations as $key => $propertyAnnotation) {
-                if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
-                    unset($propertyAnnotations[$key]);
+                // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
+                // check if it exists, and remove it so that we can process other annotations
+                foreach ($propertyAnnotations as $key => $propertyAnnotation) {
+                    if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
+                        unset($propertyAnnotations[$key]);
 
-                    $associationName = $classProperty->getName();
+                        $associationName = $classProperty->getName();
+                        $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
 
-                    // @TODO: We need this to avoid circular dependency
-                    // @TODO: we should find something better as you cannot override REST mapping on inverse sides
-                    if ($classMetadata->isAssociationInverseSide($associationName)) {
-                        return $resourceMetadata;
+                        // We first load the metadata for the entity, and we then loop through the annotations defined
+                        // at the association level so that the user can override some properties
+                        $resourceAssociationMetadata = clone $this->resourceMetadataFactory
+                                                                  ->getMetadataForClass($targetClass)
+                                                                  ->getOutsideClassMetadata();
+
+                        $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
+                        $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
+
+                        break;
                     }
-
-                    $targetClass = $classMetadata->getAssociationTargetClass($associationName);
-
-                    // We first load the metadata for the entity, and we then loop through the annotations defined
-                    // at the association level so that the user can override some properties
-                    $resourceAssociationMetadata = clone $this->resourceMetadataFactory
-                                                              ->getMetadataForClass($targetClass)
-                                                              ->getOutsideClassMetadata();
-
-                    $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
-                    $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
-
-                    break;
                 }
             }
-        }
 
-        return $resourceMetadata;
+            $initializer   = null; // disable initialization
+            $wrappedObject = $resourceMetadata;
+
+            return true;
+        };
+
+        return $this->lazyFactory->createProxy('ZfrRest\Resource\Metadata\ResourceMetadata', $initializer);
     }
 
     /**
