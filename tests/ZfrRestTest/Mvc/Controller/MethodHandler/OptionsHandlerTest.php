@@ -39,6 +39,7 @@ class OptionsHandlerTest extends TestCase
 
         $controller->expects($this->once())
                    ->method('options')
+                   ->with()
                    ->will($this->returnValue(array('options', 'get', 'put')));
 
         $response = new HttpResponse();
