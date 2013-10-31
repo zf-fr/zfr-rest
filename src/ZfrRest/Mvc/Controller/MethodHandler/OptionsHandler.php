@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
+use Zend\Http\Header\Allow;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
@@ -57,7 +58,11 @@ class OptionsHandler implements MethodHandlerInterface
 
         $response = $controller->getResponse();
 
-        $response->getHeaders()->addHeaderLine('Allow', implode(', ', $allowedMethods));
+        $allow = new Allow();
+        $allow->disallowMethods(array_keys($allow->getAllMethods()));
+        $allow->allowMethods($allowedMethods);
+
+        $response->getHeaders()->addHeader($allow);
         $response->setContent('');
         $response->setStatusCode(200);
 
