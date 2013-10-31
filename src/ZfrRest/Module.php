@@ -65,6 +65,10 @@ class Module implements
      */
     public function getModuleDependencies()
     {
-        return array('DoctrineModule');
+        return array(
+            'ZF\ApiProblem',
+            'ZF\ContentNegotiation',
+            'DoctrineModule'
+        );
     }
 }

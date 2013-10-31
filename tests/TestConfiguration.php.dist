@@ -19,6 +19,8 @@ return array(
     'modules' => array(
         'DoctrineModule',
         'DoctrineORMModule',
+        'ZF\ApiProblem',
+        'ZF\ContentNegotiation',
         'ZfrRest',
     ),
     'module_listener_options' => array(
