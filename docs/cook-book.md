@@ -112,3 +112,38 @@ And the following decoders:
 
 > Note that although we have a decoder for Xml, ZfrRest currently does not fully support Xml because Zend Framework 2
 does not have any XmlModel as of today.
+
+
+## How to send JSON by default?
+
+If you don't plan on writing any view templates for your controllers, it might be a good idea to
+output `JSON` data by default. This can be accomplished by configuring ZfrRest models:
+
+
+```php
+return array(
+    'zfr_rest' => array(
+        'models' => array(
+            'invokables' => array(
+                // always send JSON, even when testing in the browser
+                '*/*'                    => 'Zend\View\Model\JsonModel',
+                'text/html'              => 'Zend\View\Model\JsonModel',
+                'application/xhtml+xml'  => 'Zend\View\Model\JsonModel',
+            )
+        ),
+    )
+);
+```
+
+## How to solve "Unable to render template" errors?
+
+If you see this error:
+> Zend\View\Renderer\PhpRenderer::render: Unable to render template "application/item-list"; resolver could not resolve to a file
+
+... it means that you're probably trying to access REST urls in your browser. Your browser by 
+default expects html, so ZfrRest tries to find and render view template for your RestfulController.
+
+In this case, you can either:
+
+   1. Provide view templates for your RestfulControllers (i.e. create `view/script/application/item-list.phtml`)
+   2. Change the default output format (i.e. to JSON, as described above)
