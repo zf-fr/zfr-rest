@@ -42,7 +42,7 @@ and property level.
 *Optional attributes:*
 
 * **inputFilter**: FQCN of the input filter to use. If not set, it will reuse the input filter set in the `Resource` annotation.
-* **hydrator** : FQCN of the hydrator to use. If not set, it will reuse the hydrator set in the `Resource` annotation.
+* **hydrator** : FQCN of the hydrator to use. Defaults to `ZfrRest\Stdlib\Hydrator\PaginatorHydrator`.
 
 *Example:*
 
