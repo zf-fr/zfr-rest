@@ -208,4 +208,8 @@ class User
 
 Now, the URL GET "/users/4/tweets" will be dispatched to `Application\Controller\UserTweetListController`.
 
-We're done with the quick start ! For more advanced features, please refer to the [cook-book](../cook-book.md).
+We're done with the quick start ! 
+
+ * For more advanced features, please refer to the [cook-book](../cook-book.md).
+ * Make sure to check out [complete reference of available annotations](../annotation-mapping-reference.md).
+ * You can learn about module options by reading the [example config file](../../config/zfr_rest.global.php.dist).
