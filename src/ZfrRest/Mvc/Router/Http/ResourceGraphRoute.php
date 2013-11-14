@@ -83,7 +83,7 @@ class ResourceGraphRoute implements RouteInterface
         $this->metadataFactory = $metadataFactory;
         $this->subPathMatcher  = $matcher;
         $this->resource        = $resource;
-        $this->route           = trim($route, '/');
+        $this->route           = $route;
     }
 
     /**
@@ -99,16 +99,16 @@ class ResourceGraphRoute implements RouteInterface
      *      - assemble(array(1, 'tweets' => 1)): returns "/users/1/tweets/1"
      *      - assemble(array(1, 'tweets' => 1, 'retweets')): returns "/users/1/tweets/1/retweets"
      *
-     * As you can see, order or params matters!
+     * As you can see, order of params matters!
      *
      * Note that this method won't perform any database calls for performance reasons. It just checks
-     * that associations exist
+     * if associations exist.
      *
      * {@inheritDoc}
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        $url              = $this->route;
+        $url              = trim($this->route, '/');
         $resourceMetadata = $this->getResource()->getMetadata();
 
         foreach ($params as $key => $value) {
@@ -157,14 +157,19 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * {@inheritDoc}
      */
-    public function match(Request $request)
+    public function match(Request $request, $pathOffset = null, array $options = array())
     {
         if (!$request instanceof HttpRequest) {
             return null;
         }
 
-        $uri  = $request->getUri();
-        $path = trim($uri->getPath(), '/');
+        $route = trim($this->route, '/');
+        $uri   = $request->getUri();
+        if ($pathOffset === null) {
+            $path = trim($uri->getPath(), '/');
+        }else{
+            $path = trim(substr($uri->getPath(), $pathOffset), '/');
+        }
 
         // We must omit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
@@ -172,7 +177,7 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        if (substr($path, 0, strlen($this->route)) !== $this->route) {
+        if (substr($path, 0, strlen($route)) !== $route) {
             return null;
         }
 
