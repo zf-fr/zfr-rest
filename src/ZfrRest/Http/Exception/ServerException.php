@@ -1,0 +1,54 @@
+<?php
+/*
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software consists of voluntary contributions made by many individuals
+ * and is licensed under the MIT license.
+ */
+
+namespace ZfrRest\Http\Exception;
+
+use InvalidArgumentException;
+
+/**
+ * ServerException
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class ServerException extends AbstractHttpException
+{
+    /**
+     * @var string
+     */
+    protected $message = 'A server error occurred';
+
+
+    /**
+     * @param  null|int $statusCode
+     * @param  string   $message
+     * @param  mixed    $errors
+     * @throws \InvalidArgumentException If status code is not 5xx
+     */
+    public function __construct($statusCode, $message = '', $errors = '')
+    {
+        // Server errors code are 5xx
+        if ($statusCode < 500 || $statusCode > 599) {
+            throw new InvalidArgumentException(
+                sprintf('Status code for server errors must be between 500 and 599, %s given', $statusCode)
+            );
+        }
+
+        parent::__construct($statusCode, $message, $errors);
+    }
+}

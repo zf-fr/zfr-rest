@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
+use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -47,12 +48,13 @@ class PutHandler extends AbstractDataHandler
      * @param  AbstractController $controller
      * @param  ResourceInterface $resource
      * @return ResponseInterface
+     * @throws MethodNotAllowedException
      */
     public function handleMethod(AbstractController $controller, ResourceInterface $resource)
     {
         // If no put method is defined on the controller, then we cannot do anything
         if (!method_exists($controller, 'put')) {
-            // @TODO: throw exception
+            throw new MethodNotAllowedException();
         }
 
         // @TODO: this use the not yet done Apigility plugins

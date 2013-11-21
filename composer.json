@@ -29,7 +29,6 @@
         "jms/metadata": "dev-master",
         "doctrine/common": "~2.4",
         "doctrine/doctrine-module": "~0.8",
-        "ocramius/proxy-manager": "~0.5",
         "zfcampus/zf-api-problem": "dev-master",
         "zfcampus/zf-content-negotiation": "dev-master",
         "zendframework/zend-http": "~2.2",
