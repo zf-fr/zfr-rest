@@ -23,7 +23,8 @@ use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
-use ZfrRest\Mvc\Controller\Method\MethodHandlerPluginManager;
+use ZfrRest\Http\Exception\Client\NotFoundException;
+use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception;
 
 /**
@@ -43,7 +44,7 @@ class AbstractRestfulController extends AbstractController
     public function dispatch(RequestInterface $request, ResponseInterface $response = null)
     {
         if (!$request instanceof HttpRequest) {
-            throw new Exception\InvalidArgumentException('Expected an HTTP request');
+            throw Exception\RuntimeException::notHttpRequest($request);
         }
 
         return parent::dispatch($request, $response);
@@ -55,11 +56,6 @@ class AbstractRestfulController extends AbstractController
     public function onDispatch(MvcEvent $event)
     {
         $request = $this->getRequest();
-
-        if (!$request instanceof HttpRequest) {
-            throw Exception\RuntimeException::notHttpRequest($request);
-        }
-
         $method  = $request->getMethod();
         $handler = $this->getMethodHandlerManager()->get($method);
 
@@ -68,7 +64,7 @@ class AbstractRestfulController extends AbstractController
 
         // We should always have a resource, otherwise throw an 404 exception
         if (null === $resource) {
-            // @TODO: throw exception when we switch to Apigility API Problem
+            throw new NotFoundException();
         }
 
         $result = $handler->handleMethod($this, $resource);
