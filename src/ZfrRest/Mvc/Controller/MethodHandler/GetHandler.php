@@ -20,7 +20,6 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\ResponseInterface;
-use ZF\ApiProblem\ApiProblem;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface;
 use ZfrRest\Resource\ResourceInterface;
