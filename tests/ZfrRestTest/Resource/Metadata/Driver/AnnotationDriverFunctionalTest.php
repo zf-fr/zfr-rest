@@ -83,7 +83,6 @@ class AnnotationDriverFunctionalTest extends TestCase
         $this->assertEquals($cityCountryMetadata->getInputFilterName(), $countryMetadata->getInputFilterName());
 
         // Test that override can also work on collection
-
         $cityCountryCollMetadata = $cityCountryMetadata->getCollectionMetadata();
         $countryCollMetadata     = $countryMetadata->getCollectionMetadata();
 
@@ -97,7 +96,7 @@ class AnnotationDriverFunctionalTest extends TestCase
 
     public function testCanHandleCircularMetadata()
     {
-        $this->markTestSkipped();
+        //$this->markTestSkipped();
 
 
         $serviceManager  = ServiceManagerFactory::getServiceManager();
@@ -112,13 +111,11 @@ class AnnotationDriverFunctionalTest extends TestCase
         $circularA = $resourceFactory->getMetadataForClass(
             'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\CircularA'
         );
-        $circularA = $circularA->getOutsideClassMetadata();
 
         /** @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $circularB */
         $circularB = $resourceFactory->getMetadataForClass(
             'ZfrRestTest\Resource\Metadata\Driver\AnnotationAsset\CircularB'
         );
-        $circularB = $circularB->getOutsideClassMetadata();
 
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $circularA);
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataInterface', $circularB);
@@ -129,13 +126,13 @@ class AnnotationDriverFunctionalTest extends TestCase
         $this->assertTrue($circularA->hasAssociation('b'));
         $this->assertTrue($circularB->hasAssociation('a'));
 
-        $circularAB = $circularA->getAssociationMetadata('b');
+        /*$circularAB = $circularA->getAssociationMetadata('b');
         $circularBA = $circularB->getAssociationMetadata('a');
 
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $circularAB);
         $this->assertInstanceOf('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface', $circularBA);
 
         $this->assertEquals('CircularABController', $circularAB->getControllerName());
-        $this->assertEquals('CircularBAController', $circularBA->getControllerName());
+        $this->assertEquals('CircularBAController', $circularBA->getControllerName());*/
     }
 }

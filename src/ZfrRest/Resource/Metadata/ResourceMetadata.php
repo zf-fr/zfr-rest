@@ -100,4 +100,12 @@ class ResourceMetadata extends MergeableClassMetadata implements ResourceMetadat
     {
         return $this->propertyMetadata['associations'][$association];
     }
+
+    /**
+     * Make sure we clone the collection metadata
+     */
+    public function __clone()
+    {
+        $this->propertyMetadata['collectionMetadata'] = clone $this->propertyMetadata['collectionMetadata'];
+    }
 }

@@ -18,13 +18,15 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Metadata\MergeableInterface;
+
 /**
  * Base collection resource metadata interface
  *
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com
  */
-interface CollectionResourceMetadataInterface
+interface CollectionResourceMetadataInterface extends MergeableInterface
 {
     /**
      * Get the controller's FQCN

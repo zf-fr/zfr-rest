@@ -31,6 +31,11 @@ use Metadata\MetadataFactory;
 class ResourceMetadataFactory extends MetadataFactory
 {
     /**
+     * Load metadata for association by applying merging logic
+     *
+     * ZfrRest allows users to specify metadata on a given entity and to override all or part of this
+     * mapping at the association level. This method handle this logic
+     *
      * @param  string|ResourceMetadataInterface $class
      * @param  string                           $association
      * @return ResourceMetadataInterface
@@ -42,7 +47,15 @@ class ResourceMetadataFactory extends MetadataFactory
         $associationTargetClass = $classMetadata->getClassMetadata()->getAssociationTargetClass($association);
         $associationMetadata    = clone $this->getMetadataForClass($associationTargetClass);
 
-        $associationMetadata->merge($classMetadata->getAssociationMetadata($association));
+        // We need to merge both resource metadata AND collection resource metadata
+        $baseAssociationMetadata = $classMetadata->getAssociationMetadata($association);
+
+        $collectionMetadata = $associationMetadata->propertyMetadata['collectionMetadata'];
+        $collectionMetadata->merge($baseAssociationMetadata->propertyMetadata['collectionMetadata']);
+
+        $associationMetadata->merge($baseAssociationMetadata);
+
+        $associationMetadata->propertyMetadata['collectionMetadata'] = $collectionMetadata;
 
         return $associationMetadata;
     }

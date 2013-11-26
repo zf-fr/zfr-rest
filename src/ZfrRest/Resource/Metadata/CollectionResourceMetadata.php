@@ -18,7 +18,7 @@
 
 namespace ZfrRest\Resource\Metadata;
 
-use Metadata\ClassMetadata;
+use Metadata\MergeableClassMetadata;
 
 /**
  * ResourceMetadata
@@ -26,7 +26,7 @@ use Metadata\ClassMetadata;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class CollectionResourceMetadata extends MergeableClassMetadata implements CollectionResourceMetadataInterface
 {
     /**
      * {@inheritDoc}
