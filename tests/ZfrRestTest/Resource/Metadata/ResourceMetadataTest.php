@@ -32,7 +32,7 @@ class ResourceMetadataTest extends TestCase
 {
     public function testCanCheckAssociations()
     {
-        $resourceMetadata = new ResourceMetadata('stdClass');
+        $resourceMetadata = unserialize(serialize(new ResourceMetadata('stdClass')));
         $resourceMetadata->associations['tweets'] = new \stdClass();
 
         $this->assertTrue($resourceMetadata->hasAssociation('tweets'));

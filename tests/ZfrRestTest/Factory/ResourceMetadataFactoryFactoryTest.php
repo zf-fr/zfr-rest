@@ -35,6 +35,6 @@ class ResourceMetadataFactoryFactoryTest extends TestCase
 
         $object = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
 
-        $this->assertInstanceOf('Metadata\MetadataFactoryInterface', $object);
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataFactory', $object);
     }
 }

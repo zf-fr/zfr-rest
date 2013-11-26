@@ -16,39 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
-
-use Metadata\ClassMetadata;
+namespace ZfrRest\Resource\Metadata\Annotation;
 
 /**
- * ResourceMetadata
+ * @TODO: I need to do that. Implemented as its own annotation as we may need more things in the future
  *
- * @license MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY"})
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+final class Resource implements AnnotationInterface
 {
     /**
-     * {@inheritDoc}
+     * @var int
      */
-    public function getControllerName()
-    {
-        return $this->propertyMetadata['controller'];
-    }
+    public $maxAge;
 
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
+    public function getValue()
     {
-        return $this->propertyMetadata['inputFilter'];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->propertyMetadata['hydrator'];
+        return array(
+            'maxAge' => $this->maxAge
+        );
     }
 }

@@ -19,16 +19,14 @@
 namespace ZfrRest\Resource\Metadata\Driver;
 
 use Metadata\Driver\DriverInterface;
-use Metadata\MetadataFactoryInterface;
-use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ReflectionClass;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory as DoctrineMetadataFactory;
-use Metadata\MetadataFactoryInterface as ResourceMetadataFactory;
 use Metadata\PropertyMetadata;
 use ZfrRest\Resource\Metadata\Annotation;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
+use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 
 /**
  * AnnotationDriver
@@ -54,26 +52,20 @@ class AnnotationDriver implements DriverInterface
     protected $resourceMetadataFactory;
 
     /**
-     * @var LazyLoadingValueHolderFactory
-     */
-    protected $lazyFactory;
-
-    /**
      * Constructor
      *
-     * @param Reader                   $reader
-     * @param MetadataFactoryInterface $resourceMetadataFactory
-     * @param DoctrineMetadataFactory  $doctrineMetadataFactory
+     * @param Reader                  $reader
+     * @param ResourceMetadataFactory $resourceMetadataFactory
+     * @param DoctrineMetadataFactory $doctrineMetadataFactory
      */
     public function __construct(
         Reader $reader,
-        MetadataFactoryInterface $resourceMetadataFactory,
+        ResourceMetadataFactory $resourceMetadataFactory,
         DoctrineMetadataFactory $doctrineMetadataFactory
     ) {
         $this->annotationReader        = $reader;
         $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->doctrineMetadataFactory = $doctrineMetadataFactory;
-        $this->lazyFactory             = new LazyLoadingValueHolderFactory();
     }
 
     /**
@@ -81,51 +73,51 @@ class AnnotationDriver implements DriverInterface
      */
     public function loadMetadataForClass(ReflectionClass $class)
     {
-        $initializer = function(&$wrappedObject, $proxy, $method, array $parameters, &$initializer) use ($class) {
-            $classMetadata    = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
-            $resourceMetadata = new ResourceMetadata($class->getName());
+        $classMetadata    = $this->doctrineMetadataFactory->getMetadataFor($class->getName());
+        $resourceMetadata = new ResourceMetadata($class->getName());
 
-            $resourceMetadata->classMetadata = $classMetadata;
+        $resourceMetadata->propertyMetadata['classMetadata'] = $classMetadata;
 
-            // Process class level annotations
-            $classAnnotations = $this->annotationReader->getClassAnnotations($class);
-            $this->processMetadata($resourceMetadata, $classAnnotations);
+        // Process class level annotations
+        $classAnnotations = $this->annotationReader->getClassAnnotations($class);
+        $this->processMetadata($resourceMetadata, $classAnnotations);
 
-            // Process property level annotations
-            $classProperties = $class->getProperties();
-            foreach ($classProperties as $classProperty) {
-                $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
+        // Process property level annotations
+        $classProperties = $class->getProperties();
+        foreach ($classProperties as $classProperty) {
+            $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
+            $found               = false;
 
-                // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
-                // check if it exists, and remove it so that we can process other annotations
-                foreach ($propertyAnnotations as $key => $propertyAnnotation) {
-                    if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
-                        unset($propertyAnnotations[$key]);
+            // We need to have at least the ExposeAssociation annotation, so we loop through all the annotations,
+            // check if it exists, and remove it so that we can process other annotations
+            foreach ($propertyAnnotations as $key => $propertyAnnotation) {
+                if ($propertyAnnotation instanceof Annotation\ExposeAssociation) {
+                    unset($propertyAnnotations[$key]);
+                    continue;
+                }
 
-                        $associationName = $classProperty->getName();
-                        $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
-
-                        // We first load the metadata for the entity, and we then loop through the annotations defined
-                        // at the association level so that the user can override some properties
-                        $resourceAssociationMetadata = clone $this->resourceMetadataFactory
-                                                                  ->getMetadataForClass($targetClass)
-                                                                  ->getOutsideClassMetadata();
-
-                        $this->processMetadata($resourceAssociationMetadata, $propertyAnnotations);
-                        $resourceMetadata->associations[$associationName] = $resourceAssociationMetadata;
-
-                        break;
-                    }
+                if ($propertyAnnotation instanceof Annotation\AnnotationInterface) {
+                    $found = true;
                 }
             }
 
-            $initializer   = null; // disable initialization
-            $wrappedObject = $resourceMetadata;
+            // We only create a resource metadata on annotation if at least one annotation has been found
+            // at the property level (which means that we want overwriting).
+            if ($found) {
+                $associationName = $classProperty->getName();
+                $targetClass     = $classMetadata->getAssociationTargetClass($associationName);
 
-            return true;
-        };
+                $associationClassMetadata    = $this->doctrineMetadataFactory->getMetadataFor($targetClass);
+                $associationResourceMetadata = new ResourceMetadata($targetClass);
+                $associationResourceMetadata->propertyMetadata['classMetadata'] = $associationClassMetadata;
 
-        return $this->lazyFactory->createProxy('ZfrRest\Resource\Metadata\ResourceMetadata', $initializer);
+                $this->processMetadata($associationResourceMetadata, $propertyAnnotations);
+
+                $resourceMetadata->propertyMetadata['associations'][$associationName] = $associationResourceMetadata;
+            }
+        }
+
+        return $resourceMetadata;
     }
 
     /**
@@ -167,10 +159,7 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $propertyMetadata = new PropertyMetadata($metadata, $key);
-            $propertyMetadata->setValue($metadata, $value);
-
-            $metadata->addPropertyMetadata($propertyMetadata);
+            $metadata->propertyMetadata[$key] = $value;
         }
     }
 
@@ -182,7 +171,7 @@ class AnnotationDriver implements DriverInterface
     private function processCollectionMetadata(ResourceMetadata $metadata, Annotation\Collection $annotation)
     {
         $values             = $annotation->getValue();
-        $collectionMetadata = $metadata->collectionMetadata ?: new CollectionResourceMetadata($metadata->name);
+        $collectionMetadata = new CollectionResourceMetadata($metadata->name);
 
         foreach ($values as $key => $value) {
             // Ignore null values in order to make cascading work as expected
@@ -190,12 +179,9 @@ class AnnotationDriver implements DriverInterface
                 continue;
             }
 
-            $propertyMetadata = new PropertyMetadata($collectionMetadata, $key);
-            $propertyMetadata->setValue($collectionMetadata, $value);
-
-            $collectionMetadata->addPropertyMetadata($propertyMetadata);
+            $collectionMetadata->propertyMetadata[$key] = $value;
         }
 
-        $metadata->collectionMetadata = $collectionMetadata;
+        $metadata->propertyMetadata['collectionMetadata'] = $collectionMetadata;
     }
 }

@@ -18,37 +18,32 @@
 
 namespace ZfrRest\Resource\Metadata;
 
-use Metadata\ClassMetadata;
+use Metadata\MetadataFactory;
 
 /**
- * ResourceMetadata
+ * This factory allows to lazy-load metadata for association and collection as well
  *
- * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ *
+ * @method ResourceMetadataInterface getMetadataForClass($string)
  */
-class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
+class ResourceMetadataFactory extends MetadataFactory
 {
     /**
-     * {@inheritDoc}
+     * @param  string|ResourceMetadataInterface $class
+     * @param  string                           $association
+     * @return ResourceMetadataInterface
      */
-    public function getControllerName()
+    public function getAssociationMetadataForClass($class, $association)
     {
-        return $this->propertyMetadata['controller'];
-    }
+        $classMetadata = $class instanceof ResourceMetadataInterface ? $class : $this->getMetadataForClass($class);
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getInputFilterName()
-    {
-        return $this->propertyMetadata['inputFilter'];
-    }
+        $associationTargetClass = $classMetadata->getClassMetadata()->getAssociationTargetClass($association);
+        $associationMetadata    = clone $this->getMetadataForClass($associationTargetClass);
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->propertyMetadata['hydrator'];
+        $associationMetadata->merge($classMetadata->getAssociationMetadata($association));
+
+        return $associationMetadata;
     }
 }

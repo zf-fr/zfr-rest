@@ -23,7 +23,6 @@ use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
-use Metadata\MetadataFactoryInterface;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Paginator\Paginator;
@@ -31,6 +30,7 @@ use Zend\Stdlib\RequestInterface as Request;
 use Zend\Http\Request as HttpRequest;
 use ZfrRest\Mvc\Exception;
 use ZfrRest\Mvc\Router\Http\Matcher\BaseSubPathMatcher;
+use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -42,7 +42,7 @@ use ZfrRest\Resource\ResourceInterface;
 class ResourceGraphRoute implements RouteInterface
 {
     /**
-     * @var MetadataFactoryInterface
+     * @var ResourceMetadataFactory
      */
     protected $metadataFactory;
 
@@ -69,13 +69,13 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * Constructor
      *
-     * @param MetadataFactoryInterface $metadataFactory
-     * @param BaseSubPathMatcher       $matcher
-     * @param ResourceInterface|mixed  $resource
-     * @param string                   $route
+     * @param ResourceMetadataFactory $metadataFactory
+     * @param BaseSubPathMatcher      $matcher
+     * @param ResourceInterface|mixed $resource
+     * @param string                  $route
      */
     public function __construct(
-        MetadataFactoryInterface $metadataFactory,
+        ResourceMetadataFactory $metadataFactory,
         BaseSubPathMatcher $matcher,
         $resource,
         $route

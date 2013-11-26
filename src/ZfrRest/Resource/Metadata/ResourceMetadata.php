@@ -19,7 +19,7 @@
 namespace ZfrRest\Resource\Metadata;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata as DoctrineClassMetadata;
-use Metadata\ClassMetadata;
+use Metadata\MergeableClassMetadata;
 use ZfrRest\Resource\Exception;
 use ZfrRest\Resource\Resource;
 
@@ -29,38 +29,8 @@ use ZfrRest\Resource\Resource;
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterface
+class ResourceMetadata extends MergeableClassMetadata implements ResourceMetadataInterface
 {
-    /**
-     * @var DoctrineClassMetadata
-     */
-    public $classMetadata;
-
-    /**
-     * @var string
-     */
-    public $controller;
-
-    /**
-     * @var string|null
-     */
-    public $inputFilter;
-
-    /**
-     * @var string|null
-     */
-    public $hydrator;
-
-    /**
-     * @var ResourceMetadataInterface[]|array
-     */
-    public $associations;
-
-    /**
-     * @var CollectionResourceMetadataInterface
-     */
-    public $collectionMetadata;
-
     /**
      * {@inheritDoc}
      */
@@ -80,7 +50,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getClassMetadata()
     {
-        return $this->classMetadata;
+        return $this->propertyMetadata['classMetadata'];
     }
 
     /**
@@ -88,7 +58,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getControllerName()
     {
-        return $this->controller;
+        return $this->propertyMetadata['controller'];
     }
 
     /**
@@ -96,7 +66,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getInputFilterName()
     {
-        return $this->inputFilter;
+        return $this->propertyMetadata['inputFilter'];
     }
 
     /**
@@ -104,23 +74,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getHydratorName()
     {
-        return $this->hydrator;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getAssociationMetadata($association)
-    {
-        return $this->associations[$association];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function hasAssociation($association)
-    {
-        return isset($this->associations[$association]);
+        return $this->propertyMetadata['hydrator'];
     }
 
     /**
@@ -128,14 +82,22 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      */
     public function getCollectionMetadata()
     {
-        return $this->collectionMetadata;
+        return $this->propertyMetadata['collectionMetadata'];
     }
 
     /**
-     * Make sure to clone the collection metadata too
+     * {@inheritDoc}
      */
-    public function __clone()
+    public function hasAssociation($association)
     {
-        $this->collectionMetadata = $this->collectionMetadata ? clone $this->collectionMetadata : null;
+        return isset($this->propertyMetadata['associations'][$association]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssociationMetadata($association)
+    {
+        return $this->propertyMetadata['associations'][$association];
     }
 }

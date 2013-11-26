@@ -18,12 +18,14 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Metadata\MergeableInterface;
+
 /**
  * Base resource metadata interface
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-interface ResourceMetadataInterface
+interface ResourceMetadataInterface extends MergeableInterface
 {
     /**
      * Create a new resource whose type is equals to class name
@@ -61,12 +63,11 @@ interface ResourceMetadataInterface
     public function getHydratorName();
 
     /**
-     * Get the metadata to a given association
+     * Get metadata for this resource when treated as a collection
      *
-     * @param  string $association
-     * @return ResourceMetadataInterface
+     * @return CollectionResourceMetadataInterface
      */
-    public function getAssociationMetadata($association);
+    public function getCollectionMetadata();
 
     /**
      * Check if the resource metadata can traverse the given association
@@ -77,9 +78,10 @@ interface ResourceMetadataInterface
     public function hasAssociation($association);
 
     /**
-     * Get metadata for this resource when treated as a collection
+     * Get the data stored with association
      *
-     * @return CollectionResourceMetadataInterface
+     * @param  string $association
+     * @return ResourceMetadataInterface
      */
-    public function getCollectionMetadata();
+    public function getAssociationMetadata($association);
 }
