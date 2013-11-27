@@ -16,8 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+namespace ZfrRestTest\Mvc;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use ZfrRest\Options\ModuleOptions;
+
+/**
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Options\ModuleOptions
+ */
+class ModuleOptionsTest extends TestCase
+{
+    public function testAssertDefaultValue()
+    {
+        $options = new ModuleOptions();
+
+        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
+    }
+
+    public function testSettersAndGetters()
+    {
+        $options = new ModuleOptions([
+            'register_http_method_override_listener' => false
+        ]);
+
+        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
+    }
+}

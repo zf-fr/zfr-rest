@@ -16,8 +16,35 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+namespace ZfrRestTest\Mvc;
+
+use PHPUnit_Framework_TestCase as TestCase;
+use Zend\ServiceManager\ServiceManager;
+use ZfrRest\Factory\ModuleOptionsFactory;
+
+/**
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Factory\ModuleOptionsFactory
+ */
+class ModuleOptionsFactoryTest extends TestCase
+{
+    public function testCreateFromFactory()
+    {
+        $config = [
+            'zfr_rest' => [
+                'options' => []
+            ]
+        ];
+
+        $serviceManager = new ServiceManager();
+        $serviceManager->setService('Config', $config);
+
+        $factory = new ModuleOptionsFactory();
+        $result  = $factory->createService($serviceManager);
+
+        $this->assertInstanceOf('ZfrRest\Options\ModuleOptions', $result);
+    }
+}

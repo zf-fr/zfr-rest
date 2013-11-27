@@ -42,6 +42,15 @@ class Module implements
         $application    = $event->getTarget();
         $serviceManager = $application->getServiceManager();
         $eventManager   = $application->getEventManager();
+
+        /* @var \ZfrRest\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+
+        $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
+
+        if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
+            $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
+        }
     }
 
     /**

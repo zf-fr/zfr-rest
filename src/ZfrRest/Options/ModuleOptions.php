@@ -16,8 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+namespace ZfrRest\Options;
+
+use Zend\Stdlib\AbstractOptions;
+
+/**
+ * @author Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class ModuleOptions extends AbstractOptions
+{
+    /**
+     * Should we register this listener?
+     *
+     * @var bool
+     */
+    protected $registerHttpMethodOverrideListener = false;
+
+    /**
+     * @param  boolean $registerHttpMethodOverrideListener
+     * @return void
+     */
+    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
+    {
+        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getRegisterHttpMethodOverrideListener()
+    {
+        return $this->registerHttpMethodOverrideListener;
+    }
+}

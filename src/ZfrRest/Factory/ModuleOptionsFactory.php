@@ -16,8 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+namespace ZfrRest\Factory;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Options\ModuleOptions;
+
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class ModuleOptionsFactory implements FactoryInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new ModuleOptions($serviceLocator->get('Config')['zfr_rest']['options']);
+    }
+}

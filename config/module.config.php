@@ -16,4 +16,18 @@
  * and is licensed under the MIT license.
  */
 
-return [];
+return [
+    'service_manager' => [
+        'factories' => [
+            'ZfrRest\Options\ModuleOptions' => 'ZfrRest\Factory\ModuleOptionsFactory'
+        ],
+        'invokables' => [
+            'ZfrRest\Mvc\HttpExceptionListener'      => 'ZfrRest\Mvc\HttpExceptionListener',
+            'ZfrRest\Mvc\HttpMethodOverrideListener' => 'ZfrRest\Mvc\HttpMethodOverrideListener'
+        ]
+    ],
+
+    'zfr_rest' => [
+        'options' => []
+    ]
+];
