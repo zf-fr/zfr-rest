@@ -18,7 +18,7 @@
 
 namespace ZfrRestTest\Mvc;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_TestCase;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
@@ -30,7 +30,7 @@ use ZfrRest\Mvc\HttpMethodOverrideListener;
  * @group Coverage
  * @covers \ZfrRest\Mvc\HttpMethodOverrideListener
  */
-class HttpMethodOverrideListenerTest extends TestCase
+class HttpMethodOverrideListenerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var HttpMethodOverrideListener

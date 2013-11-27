@@ -61,6 +61,7 @@ class CreateResourceModelListener extends AbstractListenerAggregate
     /**
      * Create payload and generate a JsonModel
      *
+     * @internal
      * @param  MvcEvent $event
      * @return void
      */
@@ -68,10 +69,12 @@ class CreateResourceModelListener extends AbstractListenerAggregate
     {
         // Do nothing if a Model has already been returned, or if we don't have any resource
         if (($result = $event->getResult() instanceof ModelInterface)
-            || !($resource = $event->getParam('resource') instanceof ResourceInterface)
+            || !$event->getParam('resource') instanceof ResourceInterface
         ) {
             return;
         }
+
+        $resource = $event->getParam('resource');
 
         // If we have a traversable (usually a paginator), we extract each element individually
         if ($resource->isCollection()) {

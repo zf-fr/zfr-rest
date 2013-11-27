@@ -43,6 +43,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
     /**
      * Get the exception and optionally set status code, reason message and additional errors
      *
+     * @internal
      * @param  MvcEvent $event
      * @return void
      */

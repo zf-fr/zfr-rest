@@ -18,7 +18,7 @@
 
 namespace ZfrRestTest\Mvc;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_TestCase;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Mvc\HttpExceptionListener;
@@ -31,7 +31,7 @@ use ZfrRest\Http\Exception;
  * @group Coverage
  * @covers \ZfrRest\Mvc\HttpExceptionListener
  */
-class HttpExceptionListenerTest extends TestCase
+class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var HttpExceptionListener
