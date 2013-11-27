@@ -19,15 +19,13 @@
 namespace ZfrRestTest;
 
 use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager;
 use ZfrRest\Module;
-use ZfrRest\Options\ModuleOptions;
 
 /**
  * Tests for {@see \ZfrRest\Module}
  *
  * @license MIT
- * @author  Marco Pivetta <ocramius@gmail.com>
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
  */
@@ -42,39 +40,5 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
         $this->assertInternalType('array', $module->getConfig());
         $this->assertSame($module->getConfig(), unserialize(serialize($module->getConfig())), 'Config is serializable');
-    }
-
-    /**
-     * @covers \ZfrRest\Module::onBootstrap
-     */
-    public function testAssertListenersAreCorrectlyRegistered()
-    {
-        $module         = new Module();
-        $mvcEvent       = $this->getMock('Zend\Mvc\MvcEvent');
-        $application    = $this->getMock('Zend\Mvc\Application', array(), array(), '', false);
-        $eventManager   = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $serviceManager = $this->getMock('Zend\ServiceManager\ServiceManager');
-
-        $httpOverrideListener = $this->getMock('ZfrRest\Mvc\HttpMethodOverrideListener', array(), array(), '', false);
-
-        $moduleOptions = new ModuleOptions();
-        $moduleOptions->setRegisterHttpMethodOverrideListener(true);
-
-        $serviceManager->expects($this->at(0))
-                       ->method('get')
-                       ->with('ZfrRest\Options\ModuleOptions')
-                       ->will($this->returnValue($moduleOptions));
-
-        $mvcEvent->expects($this->any())->method('getTarget')->will($this->returnValue($application));
-        $application->expects($this->any())->method('getEventManager')->will($this->returnValue($eventManager));
-        $application->expects($this->any())->method('getServiceManager')->will($this->returnValue($serviceManager));
-        $serviceManager->expects($this->at(1))
-                       ->method('get')
-                       ->with('ZfrRest\Mvc\HttpMethodOverrideListener')
-                       ->will($this->returnValue($httpOverrideListener));
-
-        $eventManager->expects($this->once())->method('attach')->with($httpOverrideListener);
-
-        $module->onBootstrap($mvcEvent);
     }
 }

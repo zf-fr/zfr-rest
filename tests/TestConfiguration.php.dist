@@ -15,19 +15,17 @@
  * This software consists of voluntary contributions made by many individuals
  * and is licensed under the MIT license.
  */
-return array(
-    'modules' => array(
+return [
+    'modules' => [
         'DoctrineModule',
         'DoctrineORMModule',
-        'ZF\ApiProblem',
-        'ZF\ContentNegotiation',
         'ZfrRest',
-    ),
-    'module_listener_options' => array(
-        'config_glob_paths' => array(
+    ],
+    'module_listener_options' => [
+        'config_glob_paths' => [
             __DIR__ . '/testing.config.php',
-        ),
-        'module_paths' => array(
-        ),
-    ),
-);
+        ],
+        'module_paths' => [
+        ],
+    ],
+];
