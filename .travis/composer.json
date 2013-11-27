@@ -1,6 +1,0 @@
-{
-    "minimum-stability": "dev",
-    "require": {
-        "zfr/zfr-rest": "dev-master"
-    }
-}

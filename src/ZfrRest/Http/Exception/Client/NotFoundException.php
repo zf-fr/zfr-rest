@@ -16,35 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-use ZfrRestTest\Util\ServiceManagerFactory;
+namespace ZfrRest\Http\Exception\Client;
 
-ini_set('error_reporting', E_ALL);
+use ZfrRest\Http\Exception\ClientErrorException;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+/**
+ * NotFoundException
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class NotFoundException extends ClientErrorException
+{
+    /**
+     * @var string
+     */
+    const DEFAULT_MESSAGE = 'The requested resource could not be found but may be available again in the future';
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
-
-        break;
+    /**
+     * @param mixed  $errors
+     */
+    public function __construct($errors = null)
+    {
+        parent::__construct(404, static::DEFAULT_MESSAGE, $errors);
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-ServiceManagerFactory::setApplicationConfig($config);
-unset($files, $file, $loader, $configFiles, $configFile, $config);

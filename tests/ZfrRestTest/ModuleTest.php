@@ -22,23 +22,51 @@ use PHPUnit_Framework_TestCase;
 use ZfrRest\Module;
 
 /**
- * Tests for {@see \ZfrRest\Module}
- *
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
+ * @covers \ZfrRest\Module
  */
 class ModuleTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @covers \ZfrRest\Module::getConfig
-     */
     public function testGetConfig()
     {
         $module = new Module();
 
         $this->assertInternalType('array', $module->getConfig());
         $this->assertSame($module->getConfig(), unserialize(serialize($module->getConfig())), 'Config is serializable');
+    }
+
+    public function testDependency()
+    {
+        $module = new Module();
+        $this->assertEquals(['DoctrineModule'], $module->getModuleDependencies());
+    }
+
+    public function testListenersAreRegistered()
+    {
+        $event = $this->getEvent();
+
+        $module = new Module();
+        $module->onBootstrap($event);
+    }
+
+    /**
+     * @return \Zend\EventManager\EventInterface|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getEvent()
+    {
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+        $eventManager   = $this->getMock('Zend\EventManager\EventManagerInterface');
+
+        $application = $this->getMock('Zend\Mvc\Application', [], [], '', false);
+        $application->expects($this->any())->method('getServiceManager')->will($this->returnValue($serviceLocator));
+        $application->expects($this->any())->method('getEventManager')->will($this->returnValue($eventManager));
+
+        $event = $this->getMock('Zend\EventManager\EventInterface');
+        $event->expects($this->any())->method('getTarget')->will($this->returnValue($application));
+
+        return $event;
     }
 }

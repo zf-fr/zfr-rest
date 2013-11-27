@@ -16,35 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-use ZfrRestTest\Util\ServiceManagerFactory;
+namespace ZfrRest\Http\Exception;
 
-ini_set('error_reporting', E_ALL);
+use ZfrRest\Exception\InvalidArgumentException;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+/**
+ * ServerErrorException
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class ServerErrorException extends AbstractHttpException
+{
+    /**
+     * @var string
+     */
+    const DEFAULT_MESSAGE = 'A server error occurred';
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+    /**
+     * {@inheritDoc}
+     * @throws InvalidArgumentException If status code is not 5xx
+     */
+    public function __construct($statusCode, $message = '', $errors = null)
+    {
+        // Server errors code are 5xx
+        if ($statusCode < 500 || $statusCode > 599) {
+            throw new InvalidArgumentException(
+                sprintf('Status code for server errors must be between 500 and 599, "%s" given', $statusCode)
+            );
+        }
 
-        break;
+        parent::__construct($statusCode, $message, $errors);
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-ServiceManagerFactory::setApplicationConfig($config);
-unset($files, $file, $loader, $configFiles, $configFile, $config);

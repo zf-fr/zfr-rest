@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.0
+## 0.1.0
 
 * Complete refactor, initial release (code cleaning, documentation...)
 

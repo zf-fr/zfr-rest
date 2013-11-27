@@ -16,35 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-use ZfrRestTest\Util\ServiceManagerFactory;
+namespace ZfrRest\Http\Exception\Server;
 
-ini_set('error_reporting', E_ALL);
+use ZfrRest\Http\Exception\ServerErrorException;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+/**
+ * ServiceUnavailableException
+ *
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ */
+class ServiceUnavailableException extends ServerErrorException
+{
+    /**
+     * @var string
+     */
+    const DEFAULT_MESSAGE = 'The server is currently unavailable. Please try again later';
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
-
-        break;
+    /**
+     * @param mixed  $errors
+     */
+    public function __construct($errors = null)
+    {
+        parent::__construct(503, static::DEFAULT_MESSAGE, $errors);
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-ServiceManagerFactory::setApplicationConfig($config);
-unset($files, $file, $loader, $configFiles, $configFile, $config);

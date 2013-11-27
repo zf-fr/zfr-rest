@@ -18,7 +18,6 @@
 
 namespace ZfrRest;
 
-use Zend\Console\Adapter\AdapterInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -40,16 +39,9 @@ class Module implements
     public function onBootstrap(EventInterface $event)
     {
         /* @var $application \Zend\Mvc\Application */
-        $application     = $event->getTarget();
-        $serviceManager  = $application->getServiceManager();
-        $eventManager    = $application->getEventManager();
-
-        /** @var $moduleOptions \ZfrRest\Options\ModuleOptions */
-        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
-
-        if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
-            $eventManager->attach($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
-        }
+        $application    = $event->getTarget();
+        $serviceManager = $application->getServiceManager();
+        $eventManager   = $application->getEventManager();
     }
 
     /**
@@ -65,10 +57,6 @@ class Module implements
      */
     public function getModuleDependencies()
     {
-        return array(
-            'ZF\ApiProblem',
-            'ZF\ContentNegotiation',
-            'DoctrineModule'
-        );
+        return ['DoctrineModule'];
     }
 }

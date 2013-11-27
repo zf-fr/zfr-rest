@@ -34,7 +34,7 @@ abstract class ServiceManagerFactory
     /**
      * @var array
      */
-    private static $config = array();
+    private static $config = [];
 
     /**
      * @static
