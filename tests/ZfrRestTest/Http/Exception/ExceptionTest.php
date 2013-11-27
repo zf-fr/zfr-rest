@@ -33,14 +33,13 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
 {
     public function testFillResponse()
     {
-        $exception = new SimpleException(400, 'Validation errors', ['email' => ['invalid']]);
+        $exception = new SimpleException(400, 'Validation errors');
         $response  = new HttpResponse();
 
         $exception->prepareResponse($response);
 
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals('Validation errors', $response->getReasonPhrase());
-        $this->assertEquals(['email' => ['invalid']], json_decode($response->getBody(), true));
     }
 
     public function testCanSetAndGetErrors()

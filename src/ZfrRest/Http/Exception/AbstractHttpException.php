@@ -59,10 +59,7 @@ abstract class AbstractHttpException extends Exception implements HttpExceptionI
     }
 
     /**
-     * Set errors
-     *
-     * @param  mixed $errors
-     * @return void
+     * {@inheritDoc}
      */
     public function setErrors($errors)
     {
@@ -70,9 +67,7 @@ abstract class AbstractHttpException extends Exception implements HttpExceptionI
     }
 
     /**
-     * Get errors
-     *
-     * @return mixed
+     * {@inheritDoc}
      */
     public function getErrors()
     {
@@ -80,15 +75,11 @@ abstract class AbstractHttpException extends Exception implements HttpExceptionI
     }
 
     /**
-     * Prepare the response for the exception
-     *
-     * @param  HttpResponse $response
-     * @return void
+     * {@inheritDoc}
      */
     public function prepareResponse(HttpResponse $response)
     {
         $response->setStatusCode($this->getCode());
         $response->setReasonPhrase($this->getMessage());
-        $response->setContent(json_encode($this->getErrors()));
     }
 }

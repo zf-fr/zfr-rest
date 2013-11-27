@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Http\Exception;
 
+use Zend\Http\Response as HttpResponse;
 use ZfrRest\Exception\ExceptionInterface;
 
 /**
@@ -28,4 +29,26 @@ use ZfrRest\Exception\ExceptionInterface;
  */
 interface HttpExceptionInterface extends ExceptionInterface
 {
+    /**
+     * Set additional errors
+     *
+     * @param  mixed $errors
+     * @return void
+     */
+    public function setErrors($errors);
+
+    /**
+     * Get additional errors
+     *
+     * @return mixed|null
+     */
+    public function getErrors();
+
+    /**
+     * Prepare the response from the exception
+     *
+     * @param  HttpResponse $response
+     * @return void
+     */
+    public function prepareResponse(HttpResponse $response);
 }
