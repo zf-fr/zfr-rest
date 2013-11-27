@@ -69,7 +69,7 @@ class ResourceRenderer implements RendererInterface
             $payload = $this->renderItem($resource->getData(), $nameOrModel->getHydrator());
         }
 
-        return $payload;
+        return json_encode($payload);
     }
 
     /**
