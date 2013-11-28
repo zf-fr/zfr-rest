@@ -35,10 +35,11 @@ class NotImplementedException extends ServerErrorException
         'The server either does not recognize the request method, or it lacks the ability to fulfill the request';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(501, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(501, $message, $errors);
     }
 }

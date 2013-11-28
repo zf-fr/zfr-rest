@@ -98,10 +98,10 @@ class ResourceRenderer implements RendererInterface
         $payload = [];
 
         if ($collection instanceof Paginator) {
-            $payload[] = [
-                'current_count' => $collection->getCurrentItemCount(),
-                'current_page'  => $collection->getCurrentPageNumber(),
-                'total_count'   => $collection->getTotalItemCount(),
+            $payload = [
+                'limit'  => $collection->getItemCountPerPage(),
+                'offset' => ($collection->getCurrentPageNumber() - 1) * $collection->getItemCountPerPage(),
+                'total'  => $collection->getTotalItemCount()
             ];
         }
 

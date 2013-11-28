@@ -34,10 +34,11 @@ class GoneException extends ClientErrorException
     const DEFAULT_MESSAGE = 'The requested resource is no longer available and will not be available again';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(410, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(410, $message, $errors);
     }
 }

@@ -34,10 +34,11 @@ class ServiceUnavailableException extends ServerErrorException
     const DEFAULT_MESSAGE = 'The server is currently unavailable. Please try again later';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(503, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(503, $message, $errors);
     }
 }

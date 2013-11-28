@@ -43,7 +43,7 @@ class UnauthorizedExceptionTest extends PHPUnit_Framework_TestCase
         $exception->setChallenge('Digest');
         $this->assertEquals('Digest', $exception->getChallenge());
 
-        $exception = new UnauthorizedException([], 'Digest');
+        $exception = new UnauthorizedException(UnauthorizedException::DEFAULT_MESSAGE, [], 'Digest');
         $this->assertEquals('Digest', $exception->getChallenge());
     }
 

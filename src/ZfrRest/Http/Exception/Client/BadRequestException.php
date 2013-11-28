@@ -34,10 +34,11 @@ class BadRequestException extends ClientErrorException
     const DEFAULT_MESSAGE = 'The request cannot be fulfilled due to bad syntax';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(400, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(400, $message, $errors);
     }
 }

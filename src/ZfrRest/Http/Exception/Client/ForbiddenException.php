@@ -34,10 +34,11 @@ class ForbiddenException extends ClientErrorException
     const DEFAULT_MESSAGE = 'The request was a valid request, but the server is refusing to respond to it';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(403, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(403, $message, $errors);
     }
 }

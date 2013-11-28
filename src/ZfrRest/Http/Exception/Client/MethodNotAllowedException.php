@@ -34,10 +34,11 @@ class MethodNotAllowedException extends ClientErrorException
     const DEFAULT_MESSAGE = 'A request was made using a HTTP method not supported by that resource';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(405, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(405, $message, $errors);
     }
 }

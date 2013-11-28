@@ -34,10 +34,11 @@ class InternalServerErrorException extends ServerErrorException
     const DEFAULT_MESSAGE = 'An internal server error occurred';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(500, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(500, $message, $errors);
     }
 }

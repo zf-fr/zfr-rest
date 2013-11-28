@@ -34,10 +34,11 @@ class NotFoundException extends ClientErrorException
     const DEFAULT_MESSAGE = 'The requested resource could not be found but may be available again in the future';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(404, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(404, $message, $errors);
     }
 }

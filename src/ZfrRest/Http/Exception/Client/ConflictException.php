@@ -35,10 +35,11 @@ class ConflictException extends ClientErrorException
         'The request could not be processed because of conflict in the request, such as an edit conflict';
 
     /**
+     * @param string $message
      * @param mixed  $errors
      */
-    public function __construct($errors = null)
+    public function __construct($message = '', $errors = null)
     {
-        parent::__construct(409, static::DEFAULT_MESSAGE, $errors);
+        parent::__construct(409, $message, $errors);
     }
 }
