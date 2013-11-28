@@ -16,27 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'service_manager' => [
-        'factories' => [
-            'ZfrRest\Options\ModuleOptions'          => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer' => 'ZfrRest\ResourceRendererFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy' => 'ZfrRest\ResourceStrategyFactory'
-        ],
-        'invokables' => [
-            'ZfrRest\Mvc\CreateResourceModelListener' => 'ZfrRest\Mvc\CreateResourceModelListener',
-            'ZfrRest\Mvc\HttpExceptionListener'       => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener'  => 'ZfrRest\Mvc\HttpMethodOverrideListener'
-        ]
-    ],
+namespace ZfrRest\Factory;
 
-    'view_manager' => [
-        'strategies' => [
-            'ZfrRest\View\Strategy\ResourceStrategy'
-        ]
-    ],
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\View\Strategy\ResourceStrategy;
 
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class ResourceStrategyFactory implements FactoryInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new ResourceStrategy($serviceLocator->get('ZfrRest\View\Renderer\ResourceRenderer'));
+    }
+}

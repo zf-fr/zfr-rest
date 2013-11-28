@@ -27,6 +27,8 @@ use ZfrRest\View\Renderer\ResourceRenderer;
 /**
  * This strategy is used to render ResourceModel
  *
+ * It automatically populates the response with the JSON body and set the appropriate Content-Type
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */

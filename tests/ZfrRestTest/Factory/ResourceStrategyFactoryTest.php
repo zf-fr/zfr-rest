@@ -16,27 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'service_manager' => [
-        'factories' => [
-            'ZfrRest\Options\ModuleOptions'          => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer' => 'ZfrRest\ResourceRendererFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy' => 'ZfrRest\ResourceStrategyFactory'
-        ],
-        'invokables' => [
-            'ZfrRest\Mvc\CreateResourceModelListener' => 'ZfrRest\Mvc\CreateResourceModelListener',
-            'ZfrRest\Mvc\HttpExceptionListener'       => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener'  => 'ZfrRest\Mvc\HttpMethodOverrideListener'
-        ]
-    ],
+namespace ZfrRestTest\Factory;
 
-    'view_manager' => [
-        'strategies' => [
-            'ZfrRest\View\Strategy\ResourceStrategy'
-        ]
-    ],
+use PHPUnit_Framework_TestCase;
+use Zend\ServiceManager\ServiceManager;
+use ZfrRest\Factory\ResourceStrategyFactory;
 
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+/**
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Factory\ResourceStrategyFactory
+ */
+class ResourceStrategyFactoryTest extends PHPUnit_Framework_TestCase
+{
+    public function testCreateFromFactory()
+    {
+        $serviceManager = new ServiceManager();
+        $serviceManager->setService(
+            'ZfrRest\View\Renderer\ResourceRenderer',
+            $this->getMock('ZfrRest\View\Renderer\ResourceRenderer', [], [], '', false)
+        );
+
+        $factory = new ResourceStrategyFactory();
+        $result  = $factory->createService($serviceManager);
+
+        $this->assertInstanceOf('ZfrRest\View\Strategy\ResourceStrategy', $result);
+    }
+}

@@ -27,6 +27,14 @@ use Zend\View\Resolver\ResolverInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
+ * This renderer automatically renders a resource
+ *
+ * It uses the hydrator attached to the resource metadata (or collection resource metadata if resource represents
+ * a collection). It also has logic to output specific values for Paginator
+ *
+ * A user can implement its own resource renderer to output the values in a more specific way (for instance
+ * if you need to transform each keys)
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
