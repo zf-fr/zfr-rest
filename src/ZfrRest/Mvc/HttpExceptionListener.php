@@ -22,6 +22,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
+use Zend\View\Model\JsonModel;
 use ZfrRest\Http\Exception\HttpExceptionInterface;
 
 /**
@@ -52,7 +53,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
         $exception = $event->getParam('exception');
 
         // We just deal with our Http error codes here !
-        if (!$exception instanceof HttpExceptionInterface) {
+        if (!$exception instanceof HttpExceptionInterface || $event->getResult() instanceof HttpResponse) {
             return;
         }
 
@@ -60,13 +61,14 @@ class HttpExceptionListener extends AbstractListenerAggregate
         $response = new HttpResponse();
         $exception->prepareResponse($response);
 
-        // Set the body from the additional errors. Note that currently, ZfrRest only supports JSON
+        // Create the JSON model
+        $model = new JsonModel();
+
         if ($errors = $exception->getErrors()) {
-            $response->setContent(json_encode($errors));
-            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $model->setVariable('errors', $errors);
         }
 
         $event->setResponse($response);
-        $event->setResult($response);
+        $event->setResult($model);
     }
 }

@@ -94,10 +94,7 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertNotSame($this->response, $response, 'Assert response is replaced');
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
-        $this->assertInstanceOf('Zend\Http\Response', $this->event->getResult());
-
-        $this->assertTrue($response->getHeaders()->has('Content-Type'));
-        $this->assertEquals('application/json', $response->getHeaders()->get('Content-Type')->getFieldValue());
-        $this->assertEquals(['email' => 'invalid'], json_decode($response->getContent(), true));
+        $this->assertInstanceOf('Zend\View\Model\JsonModel', $this->event->getResult());
+        $this->assertEquals(['errors' => ['email' => 'invalid']], $this->event->getResult()->getVariables()->getArrayCopy());
     }
 }
