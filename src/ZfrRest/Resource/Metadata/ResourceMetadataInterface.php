@@ -18,14 +18,12 @@
 
 namespace ZfrRest\Resource\Metadata;
 
-use Metadata\MergeableInterface;
-
 /**
  * Base resource metadata interface
  *
  * @author Marco Pivetta <ocramius@gmail.com>
  */
-interface ResourceMetadataInterface extends MergeableInterface
+interface ResourceMetadataInterface
 {
     /**
      * Create a new resource whose type is equals to class name
@@ -70,18 +68,10 @@ interface ResourceMetadataInterface extends MergeableInterface
     public function getCollectionMetadata();
 
     /**
-     * Check if the resource metadata can traverse the given association
+     * Check if the given association is exposed
      *
      * @param  string $association
      * @return bool
      */
     public function hasAssociation($association);
-
-    /**
-     * Get the data stored with association
-     *
-     * @param  string $association
-     * @return ResourceMetadataInterface
-     */
-    public function getAssociationMetadata($association);
 }

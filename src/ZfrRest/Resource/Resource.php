@@ -40,6 +40,8 @@ class Resource implements ResourceInterface
     protected $metadata;
 
     /**
+     * Constructor
+     *
      * @param  mixed                     $data
      * @param  ResourceMetadataInterface $metadata
      * @throws InvalidResourceException

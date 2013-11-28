@@ -18,7 +18,7 @@
 
 namespace ZfrRestTest\Resource;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ZfrRest\Resource\Resource;
 
@@ -29,7 +29,7 @@ use ZfrRest\Resource\Resource;
  * @group Coverage
  * @covers \ZfrRest\Resource\Resource
  */
-class ResourceTest extends TestCase
+class ResourceTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider collectionResourceProvider

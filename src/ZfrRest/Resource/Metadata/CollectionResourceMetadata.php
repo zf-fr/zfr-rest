@@ -18,32 +18,35 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Metadata\ClassMetadata;
+
 /**
- * Base collection resource metadata interface
- *
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-interface CollectionResourceMetadataInterface
+class CollectionResourceMetadata extends ClassMetadata implements CollectionResourceMetadataInterface
 {
     /**
-     * Get the controller's FQCN
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
-    public function getControllerName();
+    public function getControllerName()
+    {
+        return $this->propertyMetadata['controller'];
+    }
 
     /**
-     * Get the input filter's FQCN to be used for this resource
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
-    public function getInputFilterName();
+    public function getInputFilterName()
+    {
+        return $this->propertyMetadata['inputFilter'];
+    }
 
     /**
-     * Get the hydrator's FQCN to be used for this resource
-     *
-     * @return string|null
+     * {@inheritDoc}
      */
-    public function getHydratorName();
+    public function getHydratorName()
+    {
+        return $this->propertyMetadata['hydrator'];
+    }
 }

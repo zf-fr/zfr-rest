@@ -16,34 +16,8 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata;
+namespace ZfrRestTest\Asset\Resource;
 
-/**
- * Base collection resource metadata interface
- *
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com
- */
-interface CollectionResourceMetadataInterface
+class SimpleResource
 {
-    /**
-     * Get the controller's FQCN
-     *
-     * @return string|null
-     */
-    public function getControllerName();
-
-    /**
-     * Get the input filter's FQCN to be used for this resource
-     *
-     * @return string|null
-     */
-    public function getInputFilterName();
-
-    /**
-     * Get the hydrator's FQCN to be used for this resource
-     *
-     * @return string|null
-     */
-    public function getHydratorName();
 }
