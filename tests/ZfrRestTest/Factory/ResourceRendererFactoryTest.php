@@ -16,20 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-return [
-    'service_manager' => [
-        'factories' => [
-            'ZfrRest\Options\ModuleOptions'          => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer' => 'ZfrRest\ResourceRendererFactory'
-        ],
-        'invokables' => [
-            'ZfrRest\Mvc\CreateResourceModelListener' => 'ZfrRest\Mvc\CreateResourceModelListener',
-            'ZfrRest\Mvc\HttpExceptionListener'       => 'ZfrRest\Mvc\HttpExceptionListener',
-            'ZfrRest\Mvc\HttpMethodOverrideListener'  => 'ZfrRest\Mvc\HttpMethodOverrideListener'
-        ]
-    ],
+namespace ZfrRestTest\Factory;
 
-    'zfr_rest' => [
-        'options' => []
-    ]
-];
+use PHPUnit_Framework_TestCase;
+use Zend\ServiceManager\ServiceManager;
+use ZfrRest\Factory\ResourceRendererFactory;
+
+/**
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Factory\ResourceRendererFactory
+ */
+class ResourceRendererFactoryTest extends PHPUnit_Framework_TestCase
+{
+    public function testCreateFromFactory()
+    {
+        $serviceManager = new ServiceManager();
+        $serviceManager->setService(
+            'HydratorPluginManager',
+            $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager')
+        );
+
+        $factory = new ResourceRendererFactory();
+        $result  = $factory->createService($serviceManager);
+
+        $this->assertInstanceOf('ZfrRest\View\Renderer\ResourceRenderer', $result);
+    }
+}

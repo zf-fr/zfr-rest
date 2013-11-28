@@ -32,12 +32,9 @@ class ResourceModelTest extends PHPUnit_Framework_TestCase
 {
     public function testCanGetValues()
     {
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
-
-        $resourceModel = new ResourceModel($resource, $hydrator);
+        $resource      = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resourceModel = new ResourceModel($resource);
 
         $this->assertSame($resource, $resourceModel->getResource());
-        $this->assertEquals($hydrator, $resourceModel->getHydrator());
     }
 }

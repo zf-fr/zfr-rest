@@ -66,26 +66,38 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         $this->serviceLocator->setService('ZfrRest\Options\ModuleOptions', $options);
 
         // --------------------------------------------------------------------------------
-        // Test that HTTP exception listener is register
+        // Test that create resource model listener is registered
+        // --------------------------------------------------------------------------------
+        $this->serviceLocator->setService(
+            'ZfrRest\Mvc\CreateResourceModelListener',
+            $this->getMock('ZfrRest\Mvc\CreateResourceModelListener')
+        );
+
+        $this->eventManager->expects($this->at(0))
+                           ->method('attachAggregate')
+                           ->with($this->isInstanceOf('ZfrRest\Mvc\CreateResourceModelListener'));
+
+        // --------------------------------------------------------------------------------
+        // Test that HTTP exception listener is registered
         // --------------------------------------------------------------------------------
         $this->serviceLocator->setService(
             'ZfrRest\Mvc\HttpExceptionListener',
             $this->getMock('ZfrRest\Mvc\HttpExceptionListener')
         );
 
-        $this->eventManager->expects($this->at(0))
+        $this->eventManager->expects($this->at(1))
                            ->method('attachAggregate')
                            ->with($this->isInstanceOf('ZfrRest\Mvc\HttpExceptionListener'));
 
         // --------------------------------------------------------------------------------
-        // Test the HTTP method override listener
+        // Test the HTTP method override listener is registered
         // --------------------------------------------------------------------------------
         $this->serviceLocator->setService(
             'ZfrRest\Mvc\HttpMethodOverrideListener',
             $this->getMock('ZfrRest\Mvc\HttpMethodOverrideListener')
         );
 
-        $this->eventManager->expects($this->at(1))
+        $this->eventManager->expects($this->at(2))
                            ->method('attachAggregate')
                            ->with($this->isInstanceOf('ZfrRest\Mvc\HttpMethodOverrideListener'));
 

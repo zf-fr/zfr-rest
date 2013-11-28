@@ -36,21 +36,6 @@ use ZfrRest\View\Model\ResourceModel;
 class CreateResourceModelListener extends AbstractListenerAggregate
 {
     /**
-     * @var HydratorPluginManager
-     */
-    protected $hydratorPluginManager;
-
-    /**
-     * Constructor
-     *
-     * @param HydratorPluginManager $hydratorPluginManager
-     */
-    public function __construct(HydratorPluginManager $hydratorPluginManager)
-    {
-        $this->hydratorPluginManager = $hydratorPluginManager;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function attach(EventManagerInterface $events)
@@ -59,7 +44,7 @@ class CreateResourceModelListener extends AbstractListenerAggregate
     }
 
     /**
-     * Create payload and generate a JsonModel
+     * Create a resource model only if we have a ResourceInterface object
      *
      * @internal
      * @param  MvcEvent $event
@@ -74,19 +59,7 @@ class CreateResourceModelListener extends AbstractListenerAggregate
             return;
         }
 
-        $resource = $event->getParam('resource');
-
-        // If we have a traversable (usually a paginator), we extract each element individually
-        if ($resource->isCollection()) {
-            // Get the collection hydrator
-            $collectionMetadata = $resource->getMetadata()->getCollectionMetadata();
-            $hydrator           = $this->hydratorPluginManager->get($collectionMetadata->getHydratorName());
-        } else {
-            $metadata = $resource->getMetadata();
-            $hydrator = $this->hydratorPluginManager->get($metadata->getHydratorName());
-        }
-
-        $resourceModel = new ResourceModel($resource, $hydrator);
+        $resourceModel = new ResourceModel($event->getParam('resource'));
 
         $event->setViewModel($resourceModel);
         $event->setResult($resourceModel);

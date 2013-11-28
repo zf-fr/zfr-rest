@@ -16,7 +16,7 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\View\Model;
+namespace ZfrRestTest\View\Renderer;
 
 use ArrayIterator;
 use PHPUnit_Framework_TestCase;
@@ -34,11 +34,11 @@ use ZfrRest\View\Renderer\ResourceRenderer;
 class ResourceRendererTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * ResourceRendere does not really have engine
+     * ResourceRenderer does not really have engine
      */
     public function testEngineResolvesToItself()
     {
-        $renderer = new ResourceRenderer();
+        $renderer = new ResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
         $this->assertSame($renderer, $renderer->getEngine());
 
         // Just to add coverage, does nothing
@@ -47,7 +47,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
 
     public function testReturnsNullIfNotResourceModel()
     {
-        $renderer  = new ResourceRenderer();
+        $renderer  = new ResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
         $jsonModel = new JsonModel();
 
         $this->assertNull($renderer->render($jsonModel));
@@ -55,8 +55,11 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
 
     public function testCanRenderSingleItem()
     {
-        $renderer = new ResourceRenderer();
+        $hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
+
+        $renderer = new ResourceRenderer($hydratorPluginManager);
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
 
         $resourceModel = new ResourceModel($resource, $hydrator);
@@ -65,7 +68,15 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
         $expectedData = ['foo' => 'bar'];
 
         $resource->expects($this->once())->method('isCollection')->will($this->returnValue(false));
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $resource->expects($this->once())->method('getData')->will($this->returnValue($data));
+
+        $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('Hydrator'));
+
+        $hydratorPluginManager->expects($this->once())
+                              ->method('get')
+                              ->with('Hydrator')
+                              ->will($this->returnValue($hydrator));
 
         $hydrator->expects($this->once())
                  ->method('extract')
@@ -77,9 +88,13 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
 
     public function testCanRenderPaginator()
     {
-        $renderer = new ResourceRenderer();
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
+        $hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
+
+        $renderer           = new ResourceRenderer($hydratorPluginManager);
+        $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata           = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $collectionMetadata = $this->getMock('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface');
+        $hydrator           = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
 
         $resourceModel = new ResourceModel($resource, $hydrator);
         $paginator     = $this->getMock('Zend\Paginator\Paginator', [], [], '', false);
@@ -105,7 +120,16 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
         ];
 
         $resource->expects($this->once())->method('isCollection')->will($this->returnValue(true));
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $resource->expects($this->once())->method('getData')->will($this->returnValue($paginator));
+
+        $metadata->expects($this->once())->method('getCollectionMetadata')->will($this->returnValue($collectionMetadata));
+        $collectionMetadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('Hydrator'));
+
+        $hydratorPluginManager->expects($this->once())
+                              ->method('get')
+                              ->with('Hydrator')
+                              ->will($this->returnValue($hydrator));
 
         $hydrator->expects($this->exactly(2))
                  ->method('extract')

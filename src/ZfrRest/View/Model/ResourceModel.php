@@ -18,7 +18,6 @@
 
 namespace ZfrRest\View\Model;
 
-use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\View\Model\ViewModel;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -43,22 +42,13 @@ class ResourceModel extends ViewModel
     protected $resource;
 
     /**
-     * Hydrator used to extract data
-     *
-     * @var HydratorInterface
-     */
-    protected $hydrator;
-
-    /**
      * Constructor
      *
      * @param ResourceInterface $resource
-     * @param HydratorInterface $hydrator
      */
-    public function __construct(ResourceInterface $resource, HydratorInterface $hydrator)
+    public function __construct(ResourceInterface $resource)
     {
         $this->resource = $resource;
-        $this->hydrator = $hydrator;
     }
 
     /**
@@ -69,15 +59,5 @@ class ResourceModel extends ViewModel
     public function getResource()
     {
         return $this->resource;
-    }
-
-    /**
-     * Get the hydrator
-     *
-     * @return HydratorInterface
-     */
-    public function getHydrator()
-    {
-        return $this->hydrator;
     }
 }

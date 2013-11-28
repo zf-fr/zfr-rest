@@ -16,9 +16,9 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Mvc;
+namespace ZfrRestTest\Factory;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
 use ZfrRest\Factory\ModuleOptionsFactory;
 
@@ -29,7 +29,7 @@ use ZfrRest\Factory\ModuleOptionsFactory;
  * @group Coverage
  * @covers \ZfrRest\Factory\ModuleOptionsFactory
  */
-class ModuleOptionsFactoryTest extends TestCase
+class ModuleOptionsFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateFromFactory()
     {

@@ -46,6 +46,7 @@ class Module implements
         /* @var \ZfrRest\Options\ModuleOptions $moduleOptions */
         $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
 
+        $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\CreateResourceModelListener'));
         $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
 
         if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {

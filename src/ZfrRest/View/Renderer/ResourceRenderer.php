@@ -21,6 +21,7 @@ namespace ZfrRest\View\Renderer;
 use Traversable;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\ResolverInterface;
 use ZfrRest\View\Model\ResourceModel;
@@ -35,6 +36,21 @@ class ResourceRenderer implements RendererInterface
      * @var ResolverInterface
      */
     protected $resolver;
+
+    /**
+     * @var HydratorPluginManager
+     */
+    protected $hydratorPluginManager;
+
+    /**
+     * Constructor
+     *
+     * @param HydratorPluginManager $hydratorPluginManager
+     */
+    public function __construct(HydratorPluginManager $hydratorPluginManager)
+    {
+        $this->hydratorPluginManager = $hydratorPluginManager;
+    }
 
     /**
      * {@inheritDoc}
@@ -64,9 +80,15 @@ class ResourceRenderer implements RendererInterface
         $resource = $nameOrModel->getResource();
 
         if ($resource->isCollection()) {
-            $payload = $this->renderCollection($resource->getData(), $nameOrModel->getHydrator());
+            $collectionMetadata = $resource->getMetadata()->getCollectionMetadata();
+            $hydrator           = $this->hydratorPluginManager->get($collectionMetadata->getHydratorName());
+
+            $payload = $this->renderCollection($resource->getData(), $hydrator);
         } else {
-            $payload = $this->renderItem($resource->getData(), $nameOrModel->getHydrator());
+            $resourceMetadata = $resource->getMetadata();
+            $hydrator         = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+
+            $payload = $this->renderItem($resource->getData(), $hydrator);
         }
 
         return json_encode($payload);
