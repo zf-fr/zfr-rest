@@ -9,6 +9,32 @@ return [
     'zfr_rest' => [
         'options' => [
             /**
+             * Service name of the object manager instance. It is retrieved from the service manager. For instance, if you
+             * are using Doctrine ORM Module, this value may be "doctrine.entitymanager.orm_default"
+             */
+            // 'object_manager' => 'doctrine.entitymanager.orm_default',
+
+            /**
+             * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
+             * method is supported: annotations.
+             *
+             * To add an annotation driver:
+             *
+             *      'drivers' => [
+             *          [
+             *              'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+             *          ]
+             *      ]
+             */
+            // 'drivers' => array(),
+
+            /**
+             * Either a service name that returns a Zend\Cache\StorageInterface OR Doctrine\Common\Cache\Cache OR
+             * a Zend\Cache\StorageInterface compliant config.
+             */
+            // 'cache' => 'Application\Cache\ApcCache',
+
+            /**
              * If this listener is registered (it is not by default), it will check if the request contains
              * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
              * some contexts (for instance, some companies' proxies only allow GET and POST methods)

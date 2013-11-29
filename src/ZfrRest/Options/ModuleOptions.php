@@ -34,13 +34,6 @@ class ModuleOptions extends AbstractOptions
     protected $objectManager;
 
     /**
-     * Should we register this listener?
-     *
-     * @var bool
-     */
-    protected $registerHttpMethodOverrideListener = false;
-
-    /**
      * Options for all drivers
      *
      * @var DriverOptions[]
@@ -53,6 +46,14 @@ class ModuleOptions extends AbstractOptions
      * @var string|array|null
      */
     protected $cache;
+
+    /**
+     * Should we register this listener?
+     *
+     * @var bool
+     */
+    protected $registerHttpMethodOverrideListener = false;
+
 
     /**
      * Set the object manager key
@@ -73,23 +74,6 @@ class ModuleOptions extends AbstractOptions
     public function getObjectManager()
     {
         return $this->objectManager;
-    }
-
-    /**
-     * @param  boolean $registerHttpMethodOverrideListener
-     * @return void
-     */
-    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
-    {
-        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getRegisterHttpMethodOverrideListener()
-    {
-        return $this->registerHttpMethodOverrideListener;
     }
 
     /**
@@ -126,5 +110,22 @@ class ModuleOptions extends AbstractOptions
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * @param  boolean $registerHttpMethodOverrideListener
+     * @return void
+     */
+    public function setRegisterHttpMethodOverrideListener($registerHttpMethodOverrideListener)
+    {
+        $this->registerHttpMethodOverrideListener = (bool) $registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getRegisterHttpMethodOverrideListener()
+    {
+        return $this->registerHttpMethodOverrideListener;
     }
 }
