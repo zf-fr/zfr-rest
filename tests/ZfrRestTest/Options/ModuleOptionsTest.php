@@ -37,6 +37,7 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($options->getObjectManager());
         $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
         $this->assertCount(0, $options->getDrivers());
+        $this->assertNull($options->getCache());
     }
 
     public function testSettersAndGetters()
@@ -46,11 +47,13 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
             'register_http_method_override_listener' => false,
             'drivers'                                => [
                 ['class' => 'foo']
-            ]
+            ],
+            'cache' => 'myCache'
         ]);
 
         $this->assertEquals('doctrine', $options->getObjectManager());
         $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
+        $this->assertEquals('myCache', $options->getCache());
         $this->assertCount(1, $options->getDrivers());
 
         foreach ($options->getDrivers() as $driver) {

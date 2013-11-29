@@ -19,6 +19,7 @@
 return [
     'service_manager' => [
         'factories' => [
+            'ZfrRest\Cache'                                     => 'ZfrRest\Factory\CacheFactory',
             'ZfrRest\Options\ModuleOptions'                     => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\View\Renderer\ResourceRenderer'            => 'ZfrRest\ResourceRendererFactory',
             'ZfrRest\View\Strategy\ResourceStrategy'            => 'ZfrRest\ResourceStrategyFactory',

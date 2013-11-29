@@ -48,6 +48,13 @@ class ModuleOptions extends AbstractOptions
     protected $drivers = [];
 
     /**
+     * Key of the cache or a Zend\Cache compliant config
+     *
+     * @var string|array|null
+     */
+    protected $cache;
+
+    /**
      * Set the object manager key
      *
      * @param  string $objectManager
@@ -102,5 +109,22 @@ class ModuleOptions extends AbstractOptions
     public function getDrivers()
     {
         return $this->drivers;
+    }
+
+    /**
+     * @param  string|array $cache
+     * @return void
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCache()
+    {
+        return $this->cache;
     }
 }

@@ -29,6 +29,7 @@
         "jms/metadata": "~1.5",
         "doctrine/common": "~2.4",
         "doctrine/doctrine-module": "~0.8",
+        "zendframework/zend-cache": "~2.2",
         "zendframework/zend-http": "~2.2",
         "zendframework/zend-inputfilter": "~2.2",
         "zendframework/zend-mvc": "~2.2",

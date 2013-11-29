@@ -70,6 +70,8 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             $driverChain->addDriver($driver);
         }
 
+        $resourceMetadataFactory->setCache($serviceLocator->get('ZfrRest\Cache'));
+
         return $resourceMetadataFactory;
     }
 }

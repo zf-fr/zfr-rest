@@ -74,6 +74,7 @@ class ResourceMetadataFactoryFactoryTest extends PHPUnit_Framework_TestCase
         $objectManager->expects($this->once())->method('getMetadataFactory')->will($this->returnValue($metadataFactory));
 
         $serviceManager->setService('doctrine.entitymanager.orm_default', $objectManager);
+        $serviceManager->setService('ZfrRest\Cache', $this->getMock('Metadata\Cache\CacheInterface'));
 
         $factory = new ResourceMetadataFactoryFactory();
         $result  = $factory->createService($serviceManager);
