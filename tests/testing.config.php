@@ -17,7 +17,46 @@
  */
 
 return [
+    'doctrine' => [
+        'driver' => [
+            'driver_annotation_driver' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/ZfrRestTest/Asset/Resource/Metadata/Annotation']
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'ZfrRestTest\Asset\Resource\Metadata\Annotation' => 'driver_annotation_driver',
+                ]
+            ]
+        ],
+
+        'connection' => [
+            'orm_default' => [
+                'params' => [
+                    'host'          => null,
+                    'port'          => null,
+                    'user'          => null,
+                    'password'      => null,
+                    'dbname'        => null,
+                    'driver'        => 'pdo_sqlite',
+                    'driverClass'   => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
+                    'path'          => null,
+                    'memory'        => true,
+                ],
+            ],
+        ],
+    ],
+
     'zfr_rest' => [
-        'options' => []
+        'options' => [
+            'object_manager' => 'doctrine.entitymanager.orm_default',
+
+            'drivers' => [
+                [
+                    'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+                ]
+            ]
+        ]
     ]
 ];

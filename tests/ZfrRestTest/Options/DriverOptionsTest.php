@@ -19,42 +19,30 @@
 namespace ZfrRestTest\Options;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Options\ModuleOptions;
+use ZfrRest\Options\DriverOptions;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\Options\ModuleOptions
+ * @covers \ZfrRest\Options\DriverOptions
  */
-class ModuleOptionsTest extends PHPUnit_Framework_TestCase
+class DriverOptionsTest extends PHPUnit_Framework_TestCase
 {
     public function testAssertDefaultValue()
     {
-        $options = new ModuleOptions();
+        $options = new DriverOptions();
 
-        $this->assertEmpty($options->getObjectManager());
-        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
-        $this->assertCount(0, $options->getDrivers());
+        $this->assertNull($options->getClass());
     }
 
     public function testSettersAndGetters()
     {
-        $options = new ModuleOptions([
-            'object_manager'                         => 'doctrine',
-            'register_http_method_override_listener' => false,
-            'drivers'                                => [
-                ['class' => 'foo']
-            ]
+        $options = new DriverOptions([
+            'class' => 'foo'
         ]);
 
-        $this->assertEquals('doctrine', $options->getObjectManager());
-        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
-        $this->assertCount(1, $options->getDrivers());
-
-        foreach ($options->getDrivers() as $driver) {
-            $this->assertInstanceOf('ZfrRest\Options\DriverOptions', $driver);
-        }
+        $this->assertEquals('foo', $options->getClass());
     }
 }

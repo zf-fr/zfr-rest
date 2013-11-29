@@ -27,11 +27,46 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
+     * Key of the object manager fetched from service locator
+     *
+     * @var string|null
+     */
+    protected $objectManager;
+
+    /**
      * Should we register this listener?
      *
      * @var bool
      */
     protected $registerHttpMethodOverrideListener = false;
+
+    /**
+     * Options for all drivers
+     *
+     * @var DriverOptions[]
+     */
+    protected $drivers = [];
+
+    /**
+     * Set the object manager key
+     *
+     * @param  string $objectManager
+     * @return void
+     */
+    public function setObjectManager($objectManager)
+    {
+        $this->objectManager = (string) $objectManager;
+    }
+
+    /**
+     * Get the object manager key
+     *
+     * @return string
+     */
+    public function getObjectManager()
+    {
+        return $this->objectManager;
+    }
 
     /**
      * @param  boolean $registerHttpMethodOverrideListener
@@ -48,5 +83,24 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterHttpMethodOverrideListener()
     {
         return $this->registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @param  array $drivers
+     * @return void
+     */
+    public function setDrivers(array $drivers)
+    {
+        foreach ($drivers as $driverOptions) {
+            $this->drivers[] = new DriverOptions($driverOptions);
+        }
+    }
+
+    /**
+     * @return DriverOptions[]
+     */
+    public function getDrivers()
+    {
+        return $this->drivers;
     }
 }
