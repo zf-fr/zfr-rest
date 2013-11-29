@@ -18,9 +18,9 @@
 
 namespace ZfrRest\Http\Exception\Client;
 
-use ZfrRest\Http\Exception\ClientErrorException;
 use Zend\Http\Header;
 use Zend\Http\Response as HttpResponse;
+use ZfrRest\Http\Exception\ClientErrorException;
 
 /**
  * UnauthorizedException

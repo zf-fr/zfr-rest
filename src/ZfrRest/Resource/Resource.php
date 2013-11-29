@@ -18,8 +18,8 @@
 
 namespace ZfrRest\Resource;
 
-use Traversable;
 use Doctrine\Common\Collections\Selectable;
+use Traversable;
 use ZfrRest\Resource\Exception\InvalidResourceException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 

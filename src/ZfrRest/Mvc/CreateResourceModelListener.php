@@ -18,11 +18,9 @@
 
 namespace ZfrRest\Mvc;
 
-use Traversable;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\View\Model\ModelInterface;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
