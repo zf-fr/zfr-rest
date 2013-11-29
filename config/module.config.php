@@ -19,9 +19,10 @@
 return [
     'service_manager' => [
         'factories' => [
-            'ZfrRest\Options\ModuleOptions'          => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer' => 'ZfrRest\ResourceRendererFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy' => 'ZfrRest\ResourceStrategyFactory'
+            'ZfrRest\Options\ModuleOptions'                     => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\View\Renderer\ResourceRenderer'            => 'ZfrRest\ResourceRendererFactory',
+            'ZfrRest\View\Strategy\ResourceStrategy'            => 'ZfrRest\ResourceStrategyFactory',
+            'ZfrRest\Resource\Metadata\ResourceMetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
         ],
         'invokables' => [
             'ZfrRest\Mvc\CreateResourceModelListener' => 'ZfrRest\Mvc\CreateResourceModelListener',
