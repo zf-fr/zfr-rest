@@ -40,7 +40,12 @@ return [
              * some contexts (for instance, some companies' proxies only allow GET and POST methods)
              */
             // 'register_http_method_override_listener' => false,
-        ]
+        ],
 
+        /**
+         * Service manager configuration to configure the method handlers. A method handler handles a HTTP request
+         * like GET, PUT...
+         */
+        // 'method_handlers' => []
     ]
 ];

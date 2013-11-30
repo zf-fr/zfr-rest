@@ -19,11 +19,12 @@
 return [
     'service_manager' => [
         'factories' => [
-            'ZfrRest\Cache'                                     => 'ZfrRest\Factory\CacheFactory',
-            'ZfrRest\Options\ModuleOptions'                     => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer'            => 'ZfrRest\ResourceRendererFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy'            => 'ZfrRest\ResourceStrategyFactory',
-            'ZfrRest\Resource\Metadata\ResourceMetadataFactory' => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
+            'ZfrRest\Cache'                                                   => 'ZfrRest\Factory\CacheFactory',
+            'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
+            'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
+            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\ResourceRendererFactory',
+            'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\ResourceStrategyFactory',
+            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory'
         ],
         'invokables' => [
             'ZfrRest\Mvc\CreateResourceModelListener' => 'ZfrRest\Mvc\CreateResourceModelListener',
@@ -39,6 +40,10 @@ return [
     ],
 
     'zfr_rest' => [
-        'options' => []
+        // General options
+        'options'         => [],
+
+        // Plugin managers configurations
+        'method_handlers' => []
     ]
 ];
