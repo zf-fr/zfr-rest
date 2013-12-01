@@ -22,7 +22,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Traversable;
-use Zend\Http\Request as HttpRequest;
 use ZfrRest\Router\Exception\RuntimeException;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;

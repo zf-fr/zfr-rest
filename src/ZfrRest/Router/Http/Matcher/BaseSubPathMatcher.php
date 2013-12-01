@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Router\Http\Matcher;
 
-use Zend\Http\Request as HttpRequest;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -61,7 +60,7 @@ class BaseSubPathMatcher implements SubPathMatcherInterface
 
         // We have traversed the whole path, return the last matched path!
         if (empty($subPath)) {
-            return $previousMatch;
+            return $previousMatch ?: new SubPathMatch($resource, $subPath);
         }
 
         if ($resource->isCollection()) {

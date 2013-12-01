@@ -18,7 +18,7 @@
 
 namespace ZfrRestTest\Router\Http\Matcher;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher;
 use ZfrRestTest\Asset\Router\AssociationMatcherEntity;
@@ -30,7 +30,7 @@ use ZfrRestTest\Asset\Router\AssociationMatcherEntity;
  * @group  Coverage
  * @covers \ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher
  */
-class AssociationSubPathMatcherTest extends TestCase
+class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var \Metadata\MetadataFactory
