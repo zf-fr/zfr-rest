@@ -53,12 +53,11 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
      */
     public function matchSubPath(ResourceInterface $resource, $subPath, SubPathMatch $previousMatch = null)
     {
-        $data             = $resource->getData();
-        $resourceMetadata = $resource->getMetadata();
-
         // There is no need to trim $subPath again because it is done in BaseSubPathMatcher
         $pathChunks      = explode('/', $subPath);
         $associationName = array_shift($pathChunks);
+
+        $resourceMetadata = $resource->getMetadata();
 
         if (!$resourceMetadata->hasAssociation($associationName)) {
             return null;
@@ -72,7 +71,7 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $reflectionProperty = $reflectionClass->getProperty($associationName);
         $reflectionProperty->setAccessible(true);
 
-        $associationData = $reflectionProperty->getValue($data);
+        $associationData = $reflectionProperty->getValue($resource->getData());
 
         return new SubPathMatch(
             new Resource($associationData, $associationMetadata),

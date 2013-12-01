@@ -22,16 +22,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Traversable;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
-use ZfrRest\Mvc\Exception\RuntimeException;
+use ZfrRest\Router\Exception\RuntimeException;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
- * Matcher for an item sub-path
+ * Matcher for an collection sub-path
  *
  * This matcher is executed when matching an item of a collection. For instance, with the URI "/users/5", this
  * matcher will be executed for the "/5" sub path, the resource passed to the "matchSubPath" method
@@ -44,41 +41,23 @@ use ZfrRest\Resource\ResourceInterface;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ItemSubPathMatcher implements SubPathMatcherInterface, EventManagerAwareInterface
+class CollectionSubPathMatcher implements SubPathMatcherInterface
 {
-    /**
-     * @var EventManagerInterface
-     */
-    protected $eventManager;
-
     /**
      * {@inheritDoc}
      */
-    public function matchSubPath(
-        ResourceInterface $resource,
-        $subPath,
-        HttpRequest $request,
-        SubPathMatch $previousMatch = null
-    ) {
-        if (!$resource->isCollection()) {
-            return null;
-        }
+    public function matchSubPath(ResourceInterface $resource, $subPath, SubPathMatch $previousMatch = null)
+    {
+        $pathChunks = explode('/', $subPath);
+        $identifier = array_shift($pathChunks);
 
-        $path = trim($subPath, '/');
-
-        if (empty($path)) {
-            return new SubPathMatch($this->filterAssociation($resource, $request), $subPath);
-        }
-
-        $pathChunks    = explode('/', $path);
-        $identifier    = array_shift($pathChunks);
-        $classMetadata = $resource->getMetadata()->getClassMetadata();
-        $data          = $this->findItem($resource->getData(), $classMetadata->getIdentifierFieldNames(), $identifier);
+        $data = $this->findItem($resource, $identifier);
 
         if (null === $data) {
             return null;
         }
 
+        // If we have /users/5, metadata for both /users and /5 parts is the same
         return new SubPathMatch(
             new Resource($data, $resource->getMetadata()),
             $identifier,
@@ -87,45 +66,23 @@ class ItemSubPathMatcher implements SubPathMatcherInterface, EventManagerAwareIn
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
-    {
-        $eventManager->setIdentifiers(array(
-            __CLASS__,
-            get_class($this)
-        ));
-
-        $this->eventManager = $eventManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEventManager()
-    {
-        if (null === $this->eventManager) {
-            $this->setEventManager(new EventManager());
-        }
-
-        return $this->eventManager;
-    }
-
-    /**
      * Retrieves a single item in the collection by its identifier
      *
-     * @param  mixed $data
-     * @param  array $identifierNames
-     * @param  mixed $identifier
+     * @param  ResourceInterface $resource
+     * @param  string            $identifier
      * @return mixed|null
-     *
      * @throws RuntimeException on composite identifiers (not yet supported)
      */
-    protected function findItem($data, array $identifierNames, $identifier)
+    protected function findItem(ResourceInterface $resource, $identifier)
     {
+        $classMetadata   = $resource->getMetadata()->getClassMetadata();
+        $identifierNames = $classMetadata->getIdentifierFieldNames();
+
         if (count($identifierNames) > 1) {
-            throw new RuntimeException(get_class($this) . ' is not able to handle composite identifiers');
+            throw new RuntimeException(get_class($this) . ' does not support composite identifiers');
         }
+
+        $data = $resource->getData();
 
         if (!$data instanceof Selectable && $data instanceof Traversable) {
             $data = new ArrayCollection(iterator_to_array($data));
@@ -137,23 +94,5 @@ class ItemSubPathMatcher implements SubPathMatcherInterface, EventManagerAwareIn
         $found = $data->matching($criteria);
 
         return $found->isEmpty() ? null : $found->first();
-    }
-
-    /**
-     * Filters the given resource by using the request object, then return the filtered subset
-     *
-     * @param  ResourceInterface $resource
-     * @param  HttpRequest       $request
-     * @return ResourceInterface
-     */
-    protected function filterAssociation(ResourceInterface $resource, HttpRequest $request)
-    {
-        // Trigger an event to allow custom filtering
-        $this->eventManager->trigger(
-            CollectionFilteringEvent::EVENT_COLLECTION_FILTERING,
-            new CollectionFilteringEvent($resource, $request)
-        );
-
-        return $resource;
     }
 }

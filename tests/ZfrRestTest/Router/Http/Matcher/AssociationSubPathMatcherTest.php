@@ -52,10 +52,8 @@ class AssociationSubPathMatcherTest extends TestCase
     {
         return [
             ['tweets'],
-            ['/tweets'],
-            ['/tweets/'],
-            ['/tweets/5'],
-            ['/tweets/5/']
+            ['tweets/5'],
+            ['tweets/5/bar']
         ];
     }
 
@@ -64,13 +62,12 @@ class AssociationSubPathMatcherTest extends TestCase
      */
     public function testReturnsNullIfNoAssociation($subPath)
     {
-        $pathChunks      = explode('/', trim($subPath, '/'));
+        $pathChunks      = explode('/', $subPath);
         $associationName = array_shift($pathChunks);
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
-        $resource->expects($this->once())->method('getData')->will($this->returnValue(new \stdClass()));
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())
                  ->method('hasAssociation')
@@ -85,7 +82,7 @@ class AssociationSubPathMatcherTest extends TestCase
      */
     public function testCanMatchAssociation($subPath)
     {
-        $pathChunks      = explode('/', trim($subPath, '/'));
+        $pathChunks      = explode('/', $subPath);
         $associationName = array_shift($pathChunks);
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
