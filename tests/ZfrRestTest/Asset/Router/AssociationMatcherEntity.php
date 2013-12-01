@@ -16,34 +16,10 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata;
+namespace ZfrRestTest\Asset\Router;
 
-use PHPUnit_Framework_TestCase;
-use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 
-/**
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- *
- * @group Coverage
- * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
- */
-class ResourceTest extends PHPUnit_Framework_TestCase
+class AssociationMatcherEntity
 {
-    public function testSettersAndGetters()
-    {
-        $collectionResourceMetadata = new CollectionResourceMetadata('stdClass');
-
-        $data = [
-            'controller' => 'Controller',
-            'hydrator'   => 'Hydrator'
-        ];
-
-        foreach ($data as $key => $value) {
-            $collectionResourceMetadata->propertyMetadata[$key] = $value;
-        }
-
-        $this->assertEquals($data['controller'], $collectionResourceMetadata->getControllerName());
-        $this->assertEquals($data['hydrator'], $collectionResourceMetadata->getHydratorName());
-    }
+    protected $tweets = [];
 }

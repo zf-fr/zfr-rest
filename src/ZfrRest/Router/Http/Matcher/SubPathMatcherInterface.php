@@ -16,34 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata;
+namespace ZfrRest\Router\Http\Matcher;
 
-use PHPUnit_Framework_TestCase;
-use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * Association matcher - builds a sub path match from the resource and sub path
  *
- * @group Coverage
- * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
+ * When the router tries to match a URI to a ResourceGraphRoute, it recursively "explodes" the
+ * path, and either matches an association or collection according to the resource metadata
+ *
+ * @license MIT
+ * @author  Marco Pivetta <ocramius@gmail.com>
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceTest extends PHPUnit_Framework_TestCase
+interface SubPathMatcherInterface
 {
-    public function testSettersAndGetters()
-    {
-        $collectionResourceMetadata = new CollectionResourceMetadata('stdClass');
-
-        $data = [
-            'controller' => 'Controller',
-            'hydrator'   => 'Hydrator'
-        ];
-
-        foreach ($data as $key => $value) {
-            $collectionResourceMetadata->propertyMetadata[$key] = $value;
-        }
-
-        $this->assertEquals($data['controller'], $collectionResourceMetadata->getControllerName());
-        $this->assertEquals($data['hydrator'], $collectionResourceMetadata->getHydratorName());
-    }
+    /**
+     * Match a sub-path
+     *
+     * @param  ResourceInterface $resource
+     * @param  string            $subPath
+     * @param  SubPathMatch|null $previousMatch
+     * @return SubPathMatch|null
+     */
+    public function matchSubPath(ResourceInterface $resource, $subPath, SubPathMatch $previousMatch = null);
 }

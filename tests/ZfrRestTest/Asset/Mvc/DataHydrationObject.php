@@ -16,32 +16,40 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Asset\Mvc;
 
-/**
- * @Annotation
- * @Target({"CLASS"})
- */
-final class Collection implements AnnotationInterface
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Mvc\Controller\MethodHandler\DataHydrationTrait;
+use ZfrRest\Options\ControllerBehavioursOptions;
+
+class DataHydrationObject
 {
-    /**
-     * @var string
-     */
-    public $controller;
+    use DataHydrationTrait;
 
     /**
-     * @var string
+     * @var ControllerBehavioursOptions
      */
-    public $hydrator;
+    protected $controllerBehavioursOptions;
 
     /**
-     * {@inheritDoc}
+     * @param ControllerBehavioursOptions $behavioursOptions
+     * @param HydratorPluginManager       $hydratorPluginManager
      */
-    public function getValue()
+    public function __construct(
+        ControllerBehavioursOptions $behavioursOptions,
+        HydratorPluginManager $hydratorPluginManager
+    ) {
+        $this->controllerBehavioursOptions = $behavioursOptions;
+        $this->hydratorPluginManager       = $hydratorPluginManager;
+    }
+
+    /**
+     * Get the controller behaviour options
+     *
+     * @return ControllerBehavioursOptions
+     */
+    public function getControllerBehavioursOptions()
     {
-        return array(
-            'controller'  => $this->controller,
-            'hydrator'    => $this->hydrator
-        );
+        return $this->controllerBehavioursOptions;
     }
 }

@@ -16,34 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata;
+namespace ZfrRestTest\Router\Http\Matcher;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
+use ZfrRest\Router\Http\Matcher\SubPathMatch;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
- * @group Coverage
- * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
+ * @group  Coverage
+ * @covers \ZfrRest\Router\Http\Matcher\SubPathMatch
  */
-class ResourceTest extends PHPUnit_Framework_TestCase
+class SubPathMatchTest extends PHPUnit_Framework_TestCase
 {
-    public function testSettersAndGetters()
+    public function testSubPathMatch()
     {
-        $collectionResourceMetadata = new CollectionResourceMetadata('stdClass');
+        $resource      = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $previousMatch = $this->getMock('ZfrRest\Router\Http\Matcher\SubPathMatch', [], [], '', false);
 
-        $data = [
-            'controller' => 'Controller',
-            'hydrator'   => 'Hydrator'
-        ];
+        $subPathMatch = new SubPathMatch($resource, 'foo', $previousMatch);
 
-        foreach ($data as $key => $value) {
-            $collectionResourceMetadata->propertyMetadata[$key] = $value;
-        }
-
-        $this->assertEquals($data['controller'], $collectionResourceMetadata->getControllerName());
-        $this->assertEquals($data['hydrator'], $collectionResourceMetadata->getHydratorName());
+        $this->assertSame($resource, $subPathMatch->getMatchedResource());
+        $this->assertEquals('foo', $subPathMatch->getMatchedPath());
+        $this->assertSame($previousMatch, $subPathMatch->getPreviousMatch());
     }
 }

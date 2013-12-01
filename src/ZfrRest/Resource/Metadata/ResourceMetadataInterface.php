@@ -26,7 +26,7 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
-     * Create a new resource whose type is equals to class name
+     * Create a new resource from the metadata
      *
      * @return \ZfrRest\Resource\ResourceInterface
      */

@@ -18,56 +18,45 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
-use Zend\InputFilter\InputFilterPluginManager;
-use ZfrRest\Http\Exception\Client\BadRequestException;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
- * This trait is responsible for validating data for any method handler
+ * This trait is responsible for hydrating object with valid data
  *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-trait DataValidationTrait
+trait DataHydrationTrait
 {
     /**
-     * @var InputFilterPluginManager
+     * @var HydratorPluginManager
      */
-    protected $inputFilterPluginManager;
+    protected $hydratorPluginManager;
 
     /**
-     * Filter and validate the data
+     * Hydrate the object bound to the data
      *
      * @param  ResourceInterface $resource
-     * @param  array $data
-     * @return array
-     * @throws RuntimeException If no input filter is bound to the resource
-     * @throws BadRequestException If validation fails
+     * @param  array             $data
+     * @return array|object
+     * @throws RuntimeException
      */
-    public function validateData(ResourceInterface $resource, array $data)
+    public function hydrateData(ResourceInterface $resource, array $data)
     {
-        if (!$this->getControllerBehavioursOptions()->getAutoValidate()) {
+        if (!$this->getControllerBehavioursOptions()->getAutoHydrate()) {
             return $data;
         }
 
-        if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
-            throw new RuntimeException('No input filter name has been found in resource metadata');
+        if (!($hydratorName = $resource->getMetadata()->getHydratorName())) {
+            throw new RuntimeException('No hydrator name has been found in resource metadata');
         }
 
-        /* @var \Zend\InputFilter\InputFilter $inputFilter */
-        $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
-        $inputFilter->setData($data);
+        $hydrator = $this->hydratorPluginManager->get($hydratorName);
 
-        if (!$inputFilter->isValid()) {
-            throw new BadRequestException(
-                'Validation error',
-                $inputFilter->getMessages()
-            );
-        }
-
-        return $inputFilter->getValues();
+        return $hydrator->hydrate($data, $resource->getData());
     }
 
     /**

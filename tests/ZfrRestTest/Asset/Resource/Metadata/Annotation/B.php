@@ -33,7 +33,6 @@ use ZfrRest\Resource\Metadata\Annotation\AnnotationInterface as REST;
  * )
  * @REST\Collection(
  *      controller="CollectionController",
- *      inputFilter="CollectionInputFilter",
  *      hydrator="CollectionHydrator"
  * )
  */

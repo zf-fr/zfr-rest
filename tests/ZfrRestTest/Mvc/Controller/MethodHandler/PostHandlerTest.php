@@ -16,34 +16,33 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata;
+namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
+use ZfrRest\Mvc\Controller\MethodHandler\PostHandler;
+use ZfrRest\Options\ControllerBehavioursOptions;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
- * @group Coverage
- * @covers \ZfrRest\Resource\Metadata\CollectionResourceMetadata
+ * @group  Coverage
+ * @covers \ZfrRest\Mvc\Controller\MethodHandler\PostHandler
  */
-class ResourceTest extends PHPUnit_Framework_TestCase
+class PostHandlerTest extends PHPUnit_Framework_TestCase
 {
-    public function testSettersAndGetters()
+    public function testThrowMethodNotAllowedIfNoPostMethodIsSet()
     {
-        $collectionResourceMetadata = new CollectionResourceMetadata('stdClass');
+        $this->setExpectedException('ZfrRest\Http\Exception\Client\MethodNotAllowedException');
 
-        $data = [
-            'controller' => 'Controller',
-            'hydrator'   => 'Hydrator'
-        ];
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
 
-        foreach ($data as $key => $value) {
-            $collectionResourceMetadata->propertyMetadata[$key] = $value;
-        }
+        $handler = new PostHandler(
+            new ControllerBehavioursOptions(),
+            $this->getMock('Zend\InputFilter\InputFilterPluginManager'),
+            $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager')
+        );
 
-        $this->assertEquals($data['controller'], $collectionResourceMetadata->getControllerName());
-        $this->assertEquals($data['hydrator'], $collectionResourceMetadata->getHydratorName());
+        $handler->handleMethod($controller, $this->getMock('ZfrRest\Resource\ResourceInterface'));
     }
 }

@@ -37,14 +37,6 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     /**
      * {@inheritDoc}
      */
-    public function getInputFilterName()
-    {
-        return $this->propertyMetadata['inputFilter'];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getHydratorName()
     {
         return $this->propertyMetadata['hydrator'];

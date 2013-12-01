@@ -16,32 +16,40 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Asset\Mvc;
 
-/**
- * @Annotation
- * @Target({"CLASS"})
- */
-final class Collection implements AnnotationInterface
+use Zend\InputFilter\InputFilterPluginManager;
+use ZfrRest\Mvc\Controller\MethodHandler\DataValidationTrait;
+use ZfrRest\Options\ControllerBehavioursOptions;
+
+class DataValidationObject
 {
-    /**
-     * @var string
-     */
-    public $controller;
+    use DataValidationTrait;
 
     /**
-     * @var string
+     * @var ControllerBehavioursOptions
      */
-    public $hydrator;
+    protected $controllerBehavioursOptions;
 
     /**
-     * {@inheritDoc}
+     * @param ControllerBehavioursOptions $behavioursOptions
+     * @param InputFilterPluginManager    $inputFilterPluginManager
      */
-    public function getValue()
+    public function __construct(
+        ControllerBehavioursOptions $behavioursOptions,
+        InputFilterPluginManager $inputFilterPluginManager
+    ) {
+        $this->controllerBehavioursOptions = $behavioursOptions;
+        $this->inputFilterPluginManager    = $inputFilterPluginManager;
+    }
+
+    /**
+     * Get the controller behaviour options
+     *
+     * @return ControllerBehavioursOptions
+     */
+    public function getControllerBehavioursOptions()
     {
-        return array(
-            'controller'  => $this->controller,
-            'hydrator'    => $this->hydrator
-        );
+        return $this->controllerBehavioursOptions;
     }
 }

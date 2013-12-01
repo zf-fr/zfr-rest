@@ -34,12 +34,10 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     {
         $annotation = new Collection();
         $annotation->controller  = 'Controller';
-        $annotation->inputFilter = 'InputFilter';
         $annotation->hydrator    = 'Hydrator';
 
         $expected = [
             'controller'  => 'Controller',
-            'inputFilter' => 'InputFilter',
             'hydrator'    => 'Hydrator'
         ];
 

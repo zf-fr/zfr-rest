@@ -47,7 +47,6 @@ class AnnotationDriverTest extends PHPUnit_Framework_TestCase
 
         $collectionMetadata = $metadata->getCollectionMetadata();
         $this->assertEquals('CollectionController', $collectionMetadata->getControllerName());
-        $this->assertEquals('CollectionInputFilter', $collectionMetadata->getInputFilterName());
         $this->assertEquals('CollectionHydrator', $collectionMetadata->getHydratorName());
 
         $this->assertTrue($metadata->hasAssociation('b'));
