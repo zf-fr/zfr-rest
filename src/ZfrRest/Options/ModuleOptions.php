@@ -48,12 +48,18 @@ class ModuleOptions extends AbstractOptions
     protected $cache;
 
     /**
+     * Controller behaviours
+     *
+     * @var ControllerBehavioursOptions|null
+     */
+    protected $controllerBehaviours;
+
+    /**
      * Should we register this listener?
      *
      * @var bool
      */
     protected $registerHttpMethodOverrideListener = false;
-
 
     /**
      * Set the object manager key
@@ -110,6 +116,27 @@ class ModuleOptions extends AbstractOptions
     public function getCache()
     {
         return $this->cache;
+    }
+
+    /**
+     * @param  array $controllerBehaviours
+     * @return void
+     */
+    public function setControllerBehaviours(array $controllerBehaviours)
+    {
+        $this->controllerBehaviours = new ControllerBehavioursOptions($controllerBehaviours);
+    }
+
+    /**
+     * @return ControllerBehavioursOptions
+     */
+    public function getControllerBehaviours()
+    {
+        if (null === $this->controllerBehaviours) {
+            $this->controllerBehaviours = new ControllerBehavioursOptions();
+        }
+
+        return $this->controllerBehaviours;
     }
 
     /**

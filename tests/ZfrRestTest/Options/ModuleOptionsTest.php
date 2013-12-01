@@ -35,9 +35,10 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
         $options = new ModuleOptions();
 
         $this->assertEmpty($options->getObjectManager());
-        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
         $this->assertCount(0, $options->getDrivers());
         $this->assertNull($options->getCache());
+        $this->assertInstanceOf('ZfrRest\Options\ControllerBehavioursOptions', $options->getControllerBehaviours());
+        $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
     }
 
     public function testSettersAndGetters()
@@ -47,6 +48,9 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
             'register_http_method_override_listener' => false,
             'drivers'                                => [
                 ['class' => 'foo']
+            ],
+            'controller_behaviours' => [
+                'auto_hydrate' => false
             ],
             'cache' => 'myCache'
         ]);
@@ -59,5 +63,7 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
         foreach ($options->getDrivers() as $driver) {
             $this->assertInstanceOf('ZfrRest\Options\DriverOptions', $driver);
         }
+
+        $this->assertInstanceOf('ZfrRest\Options\ControllerBehavioursOptions', $options->getControllerBehaviours());
     }
 }
