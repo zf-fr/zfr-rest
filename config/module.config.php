@@ -26,16 +26,28 @@ return [
             /* Factories that map to a class */
             'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
             'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZFrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
+            'ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
+            'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'                  => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
             'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\ResourceRendererFactory',
             'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\ResourceStrategyFactory'
         ],
+
         'invokables' => [
             'ZfrRest\Mvc\CreateResourceModelListener'              => 'ZfrRest\Mvc\CreateResourceModelListener',
             'ZfrRest\Mvc\HttpExceptionListener'                    => 'ZfrRest\Mvc\HttpExceptionListener',
             'ZfrRest\Mvc\HttpMethodOverrideListener'               => 'ZfrRest\Mvc\HttpMethodOverrideListener',
             'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher' => 'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher'
         ]
+    ],
+
+    'route_manager' => [
+        'factories' => [
+            'ZfrRest\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
+        ],
+
+        'aliases' => [
+            'ResourceGraphRoute' => 'ZfrRest\Router\Http\ResourceGraphRoute'
+        ],
     ],
 
     'view_manager' => [
