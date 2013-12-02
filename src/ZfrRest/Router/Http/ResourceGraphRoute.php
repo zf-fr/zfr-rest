@@ -98,14 +98,14 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * {@inheritDoc}
      */
-    public function match(RequestInterface $request)
+    public function match(RequestInterface $request, $pathOffset = 0)
     {
         if (!$request instanceof HttpRequest) {
             return null;
         }
 
         $uri  = $request->getUri();
-        $path = trim($uri->getPath(), '/');
+        $path = trim(substr($uri->getPath(), $pathOffset), '/');
 
         // We must omit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
@@ -122,7 +122,7 @@ class ResourceGraphRoute implements RouteInterface
         $pathParts = explode('/', $path, 2);
         $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
 
-        if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath, $request)) {
+        if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath)) {
             return null;
         }
 
