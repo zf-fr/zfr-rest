@@ -28,7 +28,9 @@ use ZfrRest\Resource\Metadata\Annotation;
 use ZfrRest\Resource\Metadata\Annotation\AnnotationInterface;
 use ZfrRest\Resource\Metadata\Annotation\Resource;
 use ZfrRest\Resource\Metadata\Annotation\Collection;
+use ZfrRest\Resource\Metadata\Annotation\ExtractionDepth;
 use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
+use ZfrRest\Resource\Metadata\ExtractionDepthResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**
@@ -92,7 +94,6 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
         $classProperties = $class->getProperties();
         foreach ($classProperties as $classProperty) {
             $propertyAnnotations = $this->annotationReader->getPropertyAnnotations($classProperty);
-
             // We need to have at least the Association annotation, so we loop through all the annotations,
             // check if it exists, and remove it so that we can process other annotations
             foreach ($propertyAnnotations as $key => $propertyAnnotation) {
@@ -139,6 +140,11 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
             // Collection annotation
             if ($annotation instanceof Collection) {
                 $this->processCollectionMetadata($metadata, $annotation);
+            }
+
+            // ExtractionDepth annotation
+            if ($annotation instanceof ExtractionDepth) {
+                $this->processExtractionDepthMetadata($metadata, $annotation);
             }
         }
     }
@@ -190,5 +196,29 @@ class AnnotationDriver implements DriverInterface, ResourceMetadataDriverInterfa
         }
 
         $metadata->collectionMetadata = $collectionMetadata;
+    }
+
+    public function processExtractionDepthMetadata(ResourceMetadata $metadata, ExtractionDepth $annotation)
+    {
+        $values                  = $annotation->getValue();
+        $extractionDepthMetadata = new ExtractionDepthResourceMetadata($metadata->getClassName());
+
+        foreach ($values as $key => $value) {
+            $propertyMetadata = new PropertyMetadata($extractionDepthMetadata, $key);
+
+            // If the value is null, the we reuse the value defined at "resource-level"
+            if (null === $value && isset($metadata->propertyMetadata[$key])) {
+                $propertyMetadata->setValue(
+                    $extractionDepthMetadata,
+                    $metadata->propertyMetadata[$key]->getValue($metadata)
+                );
+            } else {
+                $propertyMetadata->setValue($extractionDepthMetadata, $value);
+            }
+
+            $extractionDepthMetadata->addPropertyMetadata($propertyMetadata);
+        }
+
+        $metadata->extractionDepthMetadata = $extractionDepthMetadata;
     }
 }

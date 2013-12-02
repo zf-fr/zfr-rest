@@ -49,7 +49,7 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * @var string
      */
-    public $hydrator = 'DoctrineModule\Stdlib\Hydrator\DoctrineObject';
+    public $hydrator = 'ZfrRest\Stdlib\Hydrator\ZfrRestHydrator';
 
     /**
      * @var ResourceMetadataInterface[]|array
@@ -60,6 +60,11 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
      * @var CollectionResourceMetadataInterface
      */
     public $collectionMetadata;
+
+    /**
+     * @var ExtractionDepthResourceMetadataInterface
+     */
+    public $extractionDepthMetadata;
 
 
     /**
@@ -139,4 +144,13 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     {
         return $this->collectionMetadata;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getExtractionDepthMetadata()
+    {
+        return $this->extractionDepthMetadata;
+    }
+
 }
