@@ -6,6 +6,8 @@ ZfrRest
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/badges/quality-score.png?s=78ed408c927e01cb27ab7f3cc04349a770132550)](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/)
 [![Dependency Status](https://www.versioneye.com/package/php--zfr--zfr-rest/badge.png)](https://www.versioneye.com/package/php--zfr--zfr-rest)
 
+> Note 5th december 2013: this is the new version of ZfrRest. Doc is not written yet, but it should come soon!
+
 ## Installation
 
 Install the module by typing (or add it to your `composer.json` file):
