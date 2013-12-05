@@ -28,8 +28,8 @@ return [
             'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
             'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'                  => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\ResourceRendererFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\ResourceStrategyFactory'
+            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\ResourceRendererFactory',
+            'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\Factory\ResourceStrategyFactory'
         ],
 
         'invokables' => [
