@@ -81,7 +81,8 @@ class AnnotationDriver implements DriverInterface
             // We search for the "ExposeAssociation" annotation at property level, so that we can say that the
             // association can be traversed
             $exposeAssociationAnnotation = $this->annotationReader->getPropertyAnnotation(
-                $classProperty, 'ZfrRest\Resource\Metadata\Annotation\ExposeAssociation'
+                $classProperty,
+                'ZfrRest\Resource\Metadata\Annotation\ExposeAssociation'
             );
 
             if (null !== $exposeAssociationAnnotation && $exposeAssociationAnnotation->getValue()) {
