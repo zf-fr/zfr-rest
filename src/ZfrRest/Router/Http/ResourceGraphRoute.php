@@ -74,7 +74,7 @@ class ResourceGraphRoute implements RouteInterface
         $this->metadataFactory = $metadataFactory;
         $this->subPathMatcher  = $matcher;
         $this->resource        = $resource;
-        $this->route           = $route;
+        $this->route           = ltrim($route, '/');
     }
 
     /**
@@ -121,7 +121,7 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        if (substr($path, 0, strlen($this->route)) !== ltrim($this->route, '/')) {
+        if (substr($path, 0, strlen($this->route)) !== $this->route) {
             return null;
         }
 

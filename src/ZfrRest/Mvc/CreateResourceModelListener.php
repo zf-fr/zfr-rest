@@ -58,12 +58,12 @@ class CreateResourceModelListener extends AbstractListenerAggregate
     {
         // Do nothing if a Model has already been returned, or if we don't have any resource
         if (($result = $event->getResult() instanceof ModelInterface)
-            || !$event->getParam('resource') instanceof ResourceInterface
+            || !$event->getRouteMatch()->getParam('resource') instanceof ResourceInterface
         ) {
             return;
         }
 
-        $resourceModel = new ResourceModel($event->getParam('resource'));
+        $resourceModel = new ResourceModel($event->getRouteMatch()->getParam('resource'));
 
         $event->setViewModel($resourceModel);
         $event->setResult($resourceModel);
