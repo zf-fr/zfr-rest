@@ -121,7 +121,7 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        if (substr($path, 0, strlen($this->route)) !== $this->route) {
+        if (substr($path, 0, strlen($this->route)) !== ltrim($this->route, '/')) {
             return null;
         }
 
@@ -229,6 +229,6 @@ class ResourceGraphRoute implements RouteInterface
             ));
         }
 
-        return $this->resource = new Resource($this->resource, $metadata);
+        return $this->resource = new Resource($this->resource, $metadata->getOutsideClassMetadata());
     }
 }
