@@ -19,29 +19,36 @@
 namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
+use Zend\InputFilter\InputFilterPluginManager;
 use Zend\ServiceManager\ServiceManager;
-use ZfrRest\Factory\ResourceRendererFactory;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Factory\PutHandlerFactory;
+use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
+use ZfrRest\Options\ModuleOptions;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\Factory\ResourceRendererFactory
+ * @covers \ZfrRest\Factory\PutHandlerFactory
  */
-class ResourceRendererFactoryTest extends PHPUnit_Framework_TestCase
+class PutHandlerFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateFromFactory()
     {
         $serviceManager = new ServiceManager();
-        $serviceManager->setService(
-            'HydratorManager',
-            $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager')
-        );
 
-        $factory = new ResourceRendererFactory();
-        $result  = $factory->createService($serviceManager);
+        $pluginManager  = new MethodHandlerPluginManager();
+        $pluginManager->setServiceLocator($serviceManager);
 
-        $this->assertInstanceOf('ZfrRest\View\Renderer\ResourceRenderer', $result);
+        $serviceManager->setService('ZfrRest\Options\ModuleOptions', new ModuleOptions());
+        $serviceManager->setService('InputFilterManager', new InputFilterPluginManager());
+        $serviceManager->setService('HydratorManager', new HydratorPluginManager());
+
+        $factory = new PutHandlerFactory();
+        $result  = $factory->createService($pluginManager);
+
+        $this->assertInstanceOf('ZfrRest\Mvc\Controller\MethodHandler\PutHandler', $result);
     }
 }

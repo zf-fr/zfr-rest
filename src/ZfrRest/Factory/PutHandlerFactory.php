@@ -20,19 +20,28 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\Mvc\Controller\MethodHandler\PutHandler;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ResourceRendererFactory implements FactoryInterface
+class PutHandlerFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ResourceRenderer($serviceLocator->get('HydratorManager'));
+        $parentLocator = $serviceLocator->getServiceLocator();
+
+        /* @var \ZfrRest\Options\ModuleOptions $options */
+        $options = $parentLocator->get('ZfrRest\Options\ModuleOptions');
+
+        return new PutHandler(
+            $options->getControllerBehaviours(),
+            $parentLocator->get('InputFilterManager'),
+            $parentLocator->get('HydratorManager')
+        );
     }
 }
