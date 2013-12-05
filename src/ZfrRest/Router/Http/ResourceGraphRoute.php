@@ -131,7 +131,11 @@ class ResourceGraphRoute implements RouteInterface
         $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath)) {
-            return null;
+            // Although this is an error, we still want to create a route match, so that the request
+            // can continue, and that we can do more error handling
+            return new RouteMatch([
+                'controller' => $this->resource->getMetadata()->getControllerName()
+            ]);
         }
 
         return $this->buildRouteMatch($match->getMatchedResource(), $this->route);
@@ -167,10 +171,10 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         return new RouteMatch(
-            array(
+            [
                 'resource'   => $resource,
                 'controller' => $controllerName
-            ),
+            ],
             strlen($route)
         );
     }
