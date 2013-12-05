@@ -10,18 +10,11 @@ ZfrRest
 
 Install the module by typing (or add it to your `composer.json` file):
 
-`php composer.phar require zfr/zfr-rest`
+`php composer.phar require zfr/zfr-rest:0.1.*`
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
-`zfr_rest.global.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!). For
-more details about how to use ZfrRest, please follow the [quick start](/docs/quick-start/01-introduction.md).
+`zfr_rest.global.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!).
 
-## Current limitations
+## Documentation
 
-ZfrRest currently suffers from the following flaws:
-
-* ZfrRest only support POST and PUT for single resource (you cannot bulk create or bulk update)
-* ZfrRest only supports JSON output
-* Cannot assemble URLs from the router
-* Links are not yet supported (ZfrRest is currently for target for internal used APIs rather than exposed APIs)
-* ManyToMany associations are not yet supported (ie. URI like http://example.com/countries/capitals)
+The official documentation is available is the [/docs](/docs) folder.
