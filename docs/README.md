@@ -12,7 +12,6 @@ If you are looking for some information that is not listed in the documentation,
 
 2. Quick Start
     1. Creating your entity
-    2. Adding an annotation driver
     3. Adding a route
     4. Adding a controller
 

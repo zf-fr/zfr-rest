@@ -26,7 +26,7 @@ use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteMatch;
-use Zend\Mvc\Router\RouteInterface;
+use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface;
 use ZfrRest\Resource\Resource;
@@ -84,6 +84,14 @@ class ResourceGraphRoute implements RouteInterface
     {
         // @TODO: not sure about how to do this correctly...
 
+        throw new RuntimeException('ResourceGraphRoute does not support yet assembling route');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssembledParams()
+    {
         throw new RuntimeException('ResourceGraphRoute does not support yet assembling route');
     }
 
