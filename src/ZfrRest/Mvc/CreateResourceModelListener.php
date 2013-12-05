@@ -38,7 +38,13 @@ class CreateResourceModelListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'createResourceModel'), -40);
+        $sharedEventManager = $events->getSharedManager();
+        $sharedEventManager->attach(
+            'Zend\Stdlib\DispatchableInterface',
+            MvcEvent::EVENT_DISPATCH,
+            array($this, 'createResourceModel'),
+            -40
+        );
     }
 
     /**
