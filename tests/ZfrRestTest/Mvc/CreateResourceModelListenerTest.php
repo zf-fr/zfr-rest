@@ -21,6 +21,7 @@ namespace ZfrRestTest\Mvc;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\Router\Http\RouteMatch;
 use ZfrRest\Mvc\CreateResourceModelListener;
 use ZfrRest\Http\Exception;
 
@@ -50,8 +51,10 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
 
     public function testAttachToCorrectEvent()
     {
-        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $eventManager->expects($this->once())->method('attach')->with(MvcEvent::EVENT_DISPATCH);
+        $sharedManager = $this->getMock('Zend\EventManager\SharedEventManagerInterface');
+        $eventManager  = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $eventManager->expects($this->once())->method('getSharedManager')->will($this->returnValue($sharedManager));
+        $sharedManager->expects($this->once())->method('attach')->with('Zend\Stdlib\DispatchableInterface', MvcEvent::EVENT_DISPATCH);
 
         $this->createResourceModelListener->attach($eventManager);
     }
@@ -66,7 +69,10 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
 
     public function testDoNothingIfDoesNotHaveResourceParam()
     {
-        $event = new MvcEvent();
+        $event      = new MvcEvent();
+        $routeMatch = new RouteMatch([]);
+        $event->setRouteMatch($routeMatch);
+
         $this->assertNull($this->createResourceModelListener->createResourceModel($event));
     }
 
@@ -74,8 +80,9 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
     {
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
 
-        $event = new MvcEvent();
-        $event->setParam('resource', $resource);
+        $event      = new MvcEvent();
+        $routeMatch = new RouteMatch(['resource' => $resource]);
+        $event->setRouteMatch($routeMatch);
 
         $this->createResourceModelListener->createResourceModel($event);
 
