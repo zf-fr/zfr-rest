@@ -115,7 +115,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 
         $classHierarchy = $this->getMock('Metadata\ClassHierarchyMetadata');
         $classHierarchy->expects($this->once())->method('getOutsideClassMetadata')->will($this->returnValue($associationMetadata));
-        
+
         $this->metadataFactory->expects($this->once())
                               ->method('getMetadataForClass')
                               ->with('ZfrRestTest\Asset\Router\AssociationMatcherEntity')
@@ -135,5 +135,19 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertSame($associationMetadata, $result->getMatchedResource()->getMetadata());
         $this->assertEquals($associationName, $result->getMatchedPath());
         $this->assertNull($result->getPreviousMatch());
+    }
+
+    public function testCanInflectDashSeparatedPaths()
+    {
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())
+                 ->method('hasAssociation')
+                 ->with('fooBar')
+                 ->will($this->returnValue(false));
+
+        $this->assertNull($this->associationMatcher->matchSubPath($resource, 'foo-bar'));
     }
 }

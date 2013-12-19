@@ -19,6 +19,7 @@
 namespace ZfrRest\Router\Http\Matcher;
 
 use Metadata\MetadataFactory;
+use Zend\Filter\Word\DashToCamelCase;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -41,11 +42,17 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
     protected $metadataFactory;
 
     /**
+     * @var DashToCamelCase
+     */
+    protected $inflector;
+
+    /**
      * @param MetadataFactory $metadataFactory
      */
     public function __construct(MetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
+        $this->inflector       = new DashToCamelCase();
     }
 
     /**
@@ -57,14 +64,17 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $pathChunks      = explode('/', $subPath);
         $associationName = array_shift($pathChunks);
 
+        // Most of the time, the convention in URI is too have dash-separated paths, so we inflect it
+        $inflectedAssociationName = lcfirst($this->inflector->filter($associationName));
+
         $resourceMetadata = $resource->getMetadata();
 
-        if (!$resourceMetadata->hasAssociation($associationName)) {
+        if (!$resourceMetadata->hasAssociation($inflectedAssociationName)) {
             return null;
         }
 
         $classMetadata          = $resourceMetadata->getClassMetadata();
-        $associationTargetClass = $classMetadata->getAssociationTargetClass($associationName);
+        $associationTargetClass = $classMetadata->getAssociationTargetClass($inflectedAssociationName);
         $associationMetadata    = $this->metadataFactory->getMetadataForClass($associationTargetClass)
                                                         ->getOutsideClassMetadata();
 
