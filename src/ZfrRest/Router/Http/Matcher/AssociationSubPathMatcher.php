@@ -65,7 +65,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
 
         $classMetadata          = $resourceMetadata->getClassMetadata();
         $associationTargetClass = $classMetadata->getAssociationTargetClass($associationName);
-        $associationMetadata    = $this->metadataFactory->getMetadataForClass($associationTargetClass);
+        $associationMetadata    = $this->metadataFactory->getMetadataForClass($associationTargetClass)
+                                                        ->getOutsideClassMetadata();
 
         $reflectionClass    = $classMetadata->getReflectionClass();
         $reflectionProperty = $reflectionClass->getProperty($associationName);

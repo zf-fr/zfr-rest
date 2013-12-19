@@ -26,13 +26,13 @@ return [
              *          ]
              *      ]
              */
-            // 'drivers' => array(),
+            // 'drivers' => [],
 
             /**
              * Either a service name that returns a Zend\Cache\StorageInterface OR Doctrine\Common\Cache\Cache OR
              * a Zend\Cache\StorageInterface compliant config.
              */
-            // 'cache' => 'Application\Cache\ApcCache',
+            // 'cache' => ['adapter' => 'apc'],
 
             /**
              * If this listener is registered (it is not by default), it will check if the request contains

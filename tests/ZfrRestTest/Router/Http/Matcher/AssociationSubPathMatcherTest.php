@@ -113,10 +113,13 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
                             ->method('getClassMetadata')
                             ->will($this->returnValue($associationClassMetadata));
 
+        $classHierarchy = $this->getMock('Metadata\ClassHierarchyMetadata');
+        $classHierarchy->expects($this->once())->method('getOutsideClassMetadata')->will($this->returnValue($associationMetadata));
+        
         $this->metadataFactory->expects($this->once())
                               ->method('getMetadataForClass')
                               ->with('ZfrRestTest\Asset\Router\AssociationMatcherEntity')
-                              ->will($this->returnValue($associationMetadata));
+                              ->will($this->returnValue($classHierarchy));
 
         $classMetadata->expects($this->once())
                       ->method('getReflectionClass')
