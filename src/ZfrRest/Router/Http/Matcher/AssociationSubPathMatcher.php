@@ -19,7 +19,6 @@
 namespace ZfrRest\Router\Http\Matcher;
 
 use Metadata\MetadataFactory;
-use Zend\Filter\Word\DashToCamelCase;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -42,17 +41,11 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
     protected $metadataFactory;
 
     /**
-     * @var DashToCamelCase
-     */
-    protected $inflector;
-
-    /**
      * @param MetadataFactory $metadataFactory
      */
     public function __construct(MetadataFactory $metadataFactory)
     {
         $this->metadataFactory = $metadataFactory;
-        $this->inflector       = new DashToCamelCase();
     }
 
     /**
@@ -62,21 +55,23 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
     {
         // There is no need to trim $subPath again because it is done in BaseSubPathMatcher
         $pathChunks      = explode('/', $subPath);
-        $associationName = array_shift($pathChunks);
-
-        // Most of the time, the convention in URI is too have dash-separated paths, so we inflect it
-        $inflectedAssociationName = lcfirst($this->inflector->filter($associationName));
+        $associationPath = array_shift($pathChunks);
 
         $resourceMetadata = $resource->getMetadata();
 
-        if (!$resourceMetadata->hasAssociation($inflectedAssociationName)) {
+        if (!$resourceMetadata->hasAssociationMetadata($associationPath)) {
             return null;
         }
 
-        $classMetadata          = $resourceMetadata->getClassMetadata();
-        $associationTargetClass = $classMetadata->getAssociationTargetClass($inflectedAssociationName);
-        $associationMetadata    = $this->metadataFactory->getMetadataForClass($associationTargetClass)
-                                                        ->getOutsideClassMetadata();
+        // User may specify a different path for a given association, however we need to retrieve the real
+        // property name to be used by Doctrine, so we use the association metadata
+        $associationMetadata = $resourceMetadata->getAssociationMetadata($associationPath);
+        $associationName     = $associationMetadata['propertyName'];
+
+        $classMetadata               = $resourceMetadata->getClassMetadata();
+        $associationTargetClass      = $classMetadata->getAssociationTargetClass($associationName);
+        $associationResourceMetadata = $this->metadataFactory->getMetadataForClass($associationTargetClass)
+                                                             ->getOutsideClassMetadata();
 
         $reflectionClass    = $classMetadata->getReflectionClass();
         $reflectionProperty = $reflectionClass->getProperty($associationName);
@@ -85,8 +80,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $associationData = $reflectionProperty->getValue($resource->getData());
 
         return new SubPathMatch(
-            new Resource($associationData, $associationMetadata),
-            $associationName,
+            new Resource($associationData, $associationResourceMetadata),
+            $associationPath,
             $previousMatch
         );
     }

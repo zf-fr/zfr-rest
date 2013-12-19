@@ -78,16 +78,23 @@ class AnnotationDriver implements DriverInterface
         $classProperties = $class->getProperties();
 
         foreach ($classProperties as $classProperty) {
-            // We search for the "ExposeAssociation" annotation at property level, so that we can say that the
-            // association can be traversed
-            $exposeAssociationAnnotation = $this->annotationReader->getPropertyAnnotation(
+            // We search for the "Association" annotation at property level, the only one currently supported
+            $associationAnnotation = $this->annotationReader->getPropertyAnnotation(
                 $classProperty,
-                'ZfrRest\Resource\Metadata\Annotation\ExposeAssociation'
+                'ZfrRest\Resource\Metadata\Annotation\Association'
             );
 
-            if (null !== $exposeAssociationAnnotation && $exposeAssociationAnnotation->getValue()) {
-                $resourceMetadata->propertyMetadata['associations'][$classProperty->getName()] = true;
+            if (!$associationAnnotation) {
+                continue;
             }
+
+            $associationMetadata = $associationAnnotation->getValue();
+
+            // If the data contains a "path" part, then we index it by this one so that the router can fetch it
+            $indexBy = empty($associationMetadata['path']) ? $classProperty->getName() : $associationMetadata['path'];
+
+            $resourceMetadata->propertyMetadata['associations'][$indexBy] =
+                ['propertyName' => $classProperty->getName()] + $associationMetadata;
         }
 
         return $resourceMetadata;

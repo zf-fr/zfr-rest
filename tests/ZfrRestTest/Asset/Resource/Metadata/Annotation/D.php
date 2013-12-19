@@ -16,23 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
-use PHPUnit_Framework_TestCase;
-use ZfrRest\Resource\Metadata\Annotation\ExposeAssociation;
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- *
- * @group Coverage
- * @covers \ZfrRest\Resource\Metadata\Annotation\ExposeAssociation
+ * @ORM\Entity
+ * @REST\Resource(
+ *      controller="ResourceController",
+ *      inputFilter="ResourceInputFilter",
+ *      hydrator="ResourceHydrator"
+ * )
+ * @REST\Collection(
+ *      controller="CollectionController",
+ *      hydrator="CollectionHydrator"
+ * )
  */
-class ExposeAssociationTest extends PHPUnit_Framework_TestCase
+class D
 {
-    public function testAnnotation()
-    {
-        $annotation = new ExposeAssociation();
-        $this->assertTrue($annotation->getValue());
-    }
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
+
+    /**
+     * Exposed association
+     *
+     * @ORM\OneToOne(targetEntity="B")
+     * @REST\Association(path="bb")
+     */
+    protected $b;
 }

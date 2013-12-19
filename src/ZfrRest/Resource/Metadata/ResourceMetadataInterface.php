@@ -68,10 +68,18 @@ interface ResourceMetadataInterface
     public function getCollectionMetadata();
 
     /**
-     * Check if the given association is exposed
+     * Check if the given association contains metadata
      *
      * @param  string $association
      * @return bool
      */
-    public function hasAssociation($association);
+    public function hasAssociationMetadata($association);
+
+    /**
+     * Get the association metadata
+     *
+     * @param  string $association
+     * @return array|null
+     */
+    public function getAssociationMetadata($association);
 }

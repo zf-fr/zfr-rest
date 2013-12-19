@@ -32,7 +32,6 @@
         "zendframework/zend-cache": "~2.2",
         "zendframework/zend-http": "~2.2",
         "zendframework/zend-inputfilter": "~2.2",
-        "zendframework/zend-filter": "~2.2",
         "zendframework/zend-mvc": "~2.2",
         "zendframework/zend-modulemanager": "~2.2",
         "zendframework/zend-paginator": "~2.2",
