@@ -39,9 +39,9 @@ final class Association implements AnnotationInterface
      */
     public function getValue()
     {
-        return array(
+        return [
             'propertyName' => $this->propertyName,
             'path'         => $this->path
-        );
+        ];
     }
 }

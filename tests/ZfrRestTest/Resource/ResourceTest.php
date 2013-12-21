@@ -64,13 +64,13 @@ class ResourceTest extends PHPUnit_Framework_TestCase
      */
     public function collectionResourceProvider()
     {
-        return array(
-            array('stdClass', $this->getMock('Iterator'), true),
-            array('stdClass', $this->getMock('Doctrine\Common\Collections\Selectable'), true),
-            array('stdClass', $this->getMock('Doctrine\Common\Collections\Collection'), true),
-            array('stdClass', array(), true),
-            array('stdClass', new \stdClass(), false),
-        );
+        return [
+            ['stdClass', $this->getMock('Iterator'), true],
+            ['stdClass', $this->getMock('Doctrine\Common\Collections\Selectable'), true],
+            ['stdClass', $this->getMock('Doctrine\Common\Collections\Collection'), true],
+            ['stdClass', [], true],
+            ['stdClass', new \stdClass(), false],
+        ];
     }
 
     /**

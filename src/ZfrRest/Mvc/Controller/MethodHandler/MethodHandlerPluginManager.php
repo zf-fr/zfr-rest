@@ -31,19 +31,19 @@ class MethodHandlerPluginManager extends AbstractPluginManager
     /**
      * @var array
      */
-    protected $invokableClasses = array(
+    protected $invokableClasses = [
         'delete'  => 'ZfrRest\Mvc\Controller\MethodHandler\DeleteHandler',
         'get'     => 'ZfrRest\Mvc\Controller\MethodHandler\GetHandler',
         'options' => 'ZfrRest\Mvc\Controller\MethodHandler\OptionsHandler'
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $factories = array(
+    protected $factories = [
         'post' => 'ZfrRest\Factory\PostHandlerFactory',
         'put'  => 'ZfrRest\Factory\PutHandlerFactory'
-    );
+    ];
 
     /**
      * Whether or not to auto-add a class as an invokable class if it exists

@@ -84,7 +84,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
     /**
      * {@inheritDoc}
      */
-    public function assemble(array $params = array(), array $options = array())
+    public function assemble(array $params = [], array $options = [])
     {
         // @TODO: not sure about how to do this correctly...
 
@@ -102,7 +102,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
     /**
      * {@inheritDoc}
      */
-    public static function factory($options = array())
+    public static function factory($options = [])
     {
         throw new RuntimeException('Not supported');
     }

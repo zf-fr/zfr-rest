@@ -42,7 +42,7 @@ class CreateResourceModelListener extends AbstractListenerAggregate
         $sharedEventManager->attach(
             'Zend\Stdlib\DispatchableInterface',
             MvcEvent::EVENT_DISPATCH,
-            array($this, 'createResourceModel'),
+            [$this, 'createResourceModel'],
             -40
         );
     }

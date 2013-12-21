@@ -72,7 +72,7 @@ class OptionsHandler implements MethodHandlerInterface
      */
     protected function getAllowedMethods(AbstractController $controller)
     {
-        $genericMethods = array('get', 'head', 'put', 'post', 'patch', 'delete', 'options');
+        $genericMethods = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
         $methods        = array_intersect(get_class_methods($controller), $genericMethods);
 
         return $methods;

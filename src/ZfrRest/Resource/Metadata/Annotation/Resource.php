@@ -44,10 +44,10 @@ final class Resource implements AnnotationInterface
      */
     public function getValue()
     {
-        return array(
+        return [
             'controller'  => $this->controller,
             'inputFilter' => $this->inputFilter,
             'hydrator'    => $this->hydrator
-        );
+        ];
     }
 }
