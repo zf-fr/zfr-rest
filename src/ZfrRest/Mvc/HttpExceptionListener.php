@@ -68,7 +68,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
         // so the simplest is simply to do that
 
         if ($errors = $exception->getErrors()) {
-            $response->setContent(json_encode($errors));
+            $response->setContent(json_encode(['errors' => $errors]));
         }
 
         $event->setResponse($response);
