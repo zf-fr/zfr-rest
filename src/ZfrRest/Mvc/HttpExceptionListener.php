@@ -59,16 +59,19 @@ class HttpExceptionListener extends AbstractListenerAggregate
 
         // We clear the response for security purpose
         $response = new HttpResponse();
+
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
         $exception->prepareResponse($response);
 
-        // Create the JSON model
-        $model = new JsonModel();
+        // NOTE: I'd like to return a JsonModel instead, and let ZF handle the request, but I couldn't make
+        // it work because for unknown reasons, the Response get replaced "somewhere" in the MVC workflow,
+        // so the simplest is simply to do that
 
         if ($errors = $exception->getErrors()) {
-            $model->setVariable('errors', $errors);
+            $response->setContent(json_encode($errors));
         }
 
         $event->setResponse($response);
-        $event->setResult($model);
+        $event->setResult($response);
     }
 }

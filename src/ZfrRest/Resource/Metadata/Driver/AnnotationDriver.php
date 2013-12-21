@@ -91,7 +91,7 @@ class AnnotationDriver implements DriverInterface
             $associationMetadata = $associationAnnotation->getValue();
 
             // If the data contains a "path" part, then we index it by this one so that the router can fetch it
-            $indexBy = empty($associationMetadata['path']) ? $classProperty->getName() : $associationMetadata['path'];
+            $indexBy = $associationMetadata['path'] ?: $classProperty->getName();
 
             $resourceMetadata->propertyMetadata['associations'][$indexBy] =
                 ['propertyName' => $classProperty->getName()] + $associationMetadata;
