@@ -16,47 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception;
+namespace ZfrRest\Factory;
 
-use Zend\Http\Response as HttpResponse;
-use ZfrRest\Exception\ExceptionInterface;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Mvc\HttpExceptionListener;
 
 /**
- * Interface exception for exceptions that must be catch by the HttpExceptionListener
- *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-interface HttpExceptionInterface extends ExceptionInterface
+class HttpExceptionListenerFactory implements FactoryInterface
 {
     /**
-     * Set the message
-     *
-     * @param  string $message
-     * @return void
+     * {@inheritDoc}
      */
-    public function setMessage($message);
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /* @var \ZfrRest\Options\ModuleOptions $options */
+        $options = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
 
-    /**
-     * Set additional errors
-     *
-     * @param  mixed $errors
-     * @return void
-     */
-    public function setErrors($errors);
-
-    /**
-     * Get additional errors
-     *
-     * @return mixed|null
-     */
-    public function getErrors();
-
-    /**
-     * Prepare the response from the exception
-     *
-     * @param  HttpResponse $response
-     * @return void
-     */
-    public function prepareResponse(HttpResponse $response);
+        return new HttpExceptionListener($options->getExceptionMap());
+    }
 }

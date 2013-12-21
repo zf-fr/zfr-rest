@@ -97,4 +97,18 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResult());
         $this->assertEquals(['errors' => ['email' => 'invalid']], json_decode($this->event->getResponse()->getContent(), true));
     }
+
+    public function testCanCreateFromCustomException()
+    {
+        $httpExceptionListener = new HttpExceptionListener([
+            'InvalidArgumentException' => 'ZfrRest\Http\Exception\Client\NotFoundException'
+        ]);
+
+        $this->event->setParam('exception', new \InvalidArgumentException('An error'));
+
+        $httpExceptionListener->onDispatchError($this->event);
+
+        $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
+        $this->assertEquals('An error', $this->event->getResponse()->getReasonPhrase());
+    }
 }

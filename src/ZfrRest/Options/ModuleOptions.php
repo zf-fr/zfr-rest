@@ -55,6 +55,13 @@ class ModuleOptions extends AbstractOptions
     protected $controllerBehaviours;
 
     /**
+     * Array that map a custom exception to a HttpExceptionInterface exception
+     *
+     * @var array
+     */
+    protected $exceptionMap = [];
+
+    /**
      * Should we register this listener?
      *
      * @var bool
@@ -137,6 +144,23 @@ class ModuleOptions extends AbstractOptions
         }
 
         return $this->controllerBehaviours;
+    }
+
+    /**
+     * @param  array $exceptionMap
+     * @return void
+     */
+    public function setExceptionMap(array $exceptionMap)
+    {
+        $this->exceptionMap = $exceptionMap;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExceptionMap()
+    {
+        return $this->exceptionMap;
     }
 
     /**

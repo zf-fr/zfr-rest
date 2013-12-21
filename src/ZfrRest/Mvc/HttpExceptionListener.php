@@ -18,11 +18,11 @@
 
 namespace ZfrRest\Mvc;
 
+use Exception;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
-use Zend\View\Model\JsonModel;
 use ZfrRest\Http\Exception\HttpExceptionInterface;
 
 /**
@@ -33,6 +33,21 @@ use ZfrRest\Http\Exception\HttpExceptionInterface;
  */
 class HttpExceptionListener extends AbstractListenerAggregate
 {
+    /**
+     * A map that associate a custom exception to a ZfrRest HTTP exception
+     *
+     * @var array
+     */
+    protected $exceptionMap = [];
+
+    /**
+     * @param array $exceptionMap
+     */
+    public function __construct(array $exceptionMap = [])
+    {
+        $this->exceptionMap = $exceptionMap;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -54,7 +69,11 @@ class HttpExceptionListener extends AbstractListenerAggregate
 
         // We just deal with our Http error codes here !
         if (!$exception instanceof HttpExceptionInterface || $event->getResult() instanceof HttpResponse) {
-            return;
+            if (!isset($this->exceptionMap[get_class($exception)])) {
+                return;
+            }
+
+            $exception = $this->createHttpException($exception);
         }
 
         // We clear the response for security purpose
@@ -73,5 +92,20 @@ class HttpExceptionListener extends AbstractListenerAggregate
 
         $event->setResponse($response);
         $event->setResult($response);
+    }
+
+    /**
+     * Create a HTTP exception from the exceptions map
+     *
+     * @param  Exception $exception
+     * @return HttpExceptionInterface
+     */
+    private function createHttpException(Exception $exception)
+    {
+        /* @var HttpExceptionInterface $httpException */
+        $httpException = new $this->exceptionMap[get_class($exception)];
+        $httpException->setMessage($exception->getMessage());
+
+        return $httpException;
     }
 }
