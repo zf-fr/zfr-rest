@@ -24,6 +24,8 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Mvc\Router\Http\RouteInterface;
@@ -39,8 +41,10 @@ use ZfrRest\Router\Http\Matcher\BaseSubPathMatcher;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceGraphRoute implements RouteInterface
+class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
 {
+    use EventManagerAwareTrait;
+
     /**
      * @var MetadataFactory
      */
@@ -138,18 +142,17 @@ class ResourceGraphRoute implements RouteInterface
             ]);
         }
 
-        return $this->buildRouteMatch($match->getMatchedResource(), $this->route);
+        return $this->buildRouteMatch($match->getMatchedResource());
     }
 
     /**
      * Build a route match
      *
      * @param  ResourceInterface $resource
-     * @param  string            $route
      * @throws RuntimeException
      * @return RouteMatch
      */
-    protected function buildRouteMatch(ResourceInterface $resource, $route)
+    protected function buildRouteMatch(ResourceInterface $resource)
     {
         $metadata = $resource->getMetadata();
 
@@ -175,7 +178,7 @@ class ResourceGraphRoute implements RouteInterface
                 'resource'   => $resource,
                 'controller' => $controllerName
             ],
-            strlen($route)
+            strlen($this->route)
         );
     }
 

@@ -51,9 +51,39 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
     public function pathProvider()
     {
         return [
-            ['tweets'],
-            ['tweets/5'],
-            ['tweets/5/bar']
+            // Path name same as property
+            [
+                'subPath'         => 'tweets',
+                'associationPath' => 'tweets',
+                'propertyName'    => 'tweets'
+            ],
+            [
+                'subPath'         => 'tweets/5',
+                'associationPath' => 'tweets',
+                'propertyName'    => 'tweets'
+            ],
+            [
+                'subPath'         => 'tweets/5/bar',
+                'associationPath' => 'tweets',
+                'propertyName'    => 'tweets'
+            ],
+
+            // Path name different than property's name
+            [
+                'subPath'         => 'twe-ets',
+                'associationPath' => 'twe-ets',
+                'propertyName'    => 'tweets'
+            ],
+            [
+                'subPath'         => 'twe-ets/5',
+                'associationPath' => 'twe-ets',
+                'propertyName'    => 'tweets'
+            ],
+            [
+                'subPath'         => 'twe-ets/5/bar',
+                'associationPath' => 'twe-ets',
+                'propertyName'    => 'tweets'
+            ]
         ];
     }
 
@@ -70,7 +100,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())
-                 ->method('hasAssociation')
+                 ->method('hasAssociationMetadata')
                  ->with($associationName)
                  ->will($this->returnValue(false));
 
@@ -80,11 +110,8 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider pathProvider
      */
-    public function testCanMatchAssociation($subPath)
+    public function testCanMatchAssociation($subPath, $associationPath, $propertyName)
     {
-        $pathChunks      = explode('/', $subPath);
-        $associationName = array_shift($pathChunks);
-
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
@@ -93,14 +120,22 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $resource->expects($this->once())->method('getData')->will($this->returnValue($data));
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())
-                 ->method('hasAssociation')
-                 ->with($associationName)
+                 ->method('hasAssociationMetadata')
+                 ->with($associationPath)
                  ->will($this->returnValue(true));
+
+        $metadata->expects($this->once())
+                 ->method('getAssociationMetadata')
+                 ->with($associationPath)
+                 ->will($this->returnValue([
+                    'propertyName' => $propertyName,
+                    'path'         => $associationPath
+                ]));
 
         $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
         $classMetadata->expects($this->once())
                       ->method('getAssociationTargetClass')
-                      ->with($associationName)
+                      ->with($propertyName)
                       ->will($this->returnValue('ZfrRestTest\Asset\Router\AssociationMatcherEntity'));
 
         $associationClassMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
@@ -113,10 +148,13 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
                             ->method('getClassMetadata')
                             ->will($this->returnValue($associationClassMetadata));
 
+        $classHierarchy = $this->getMock('Metadata\ClassHierarchyMetadata');
+        $classHierarchy->expects($this->once())->method('getOutsideClassMetadata')->will($this->returnValue($associationMetadata));
+
         $this->metadataFactory->expects($this->once())
                               ->method('getMetadataForClass')
                               ->with('ZfrRestTest\Asset\Router\AssociationMatcherEntity')
-                              ->will($this->returnValue($associationMetadata));
+                              ->will($this->returnValue($classHierarchy));
 
         $classMetadata->expects($this->once())
                       ->method('getReflectionClass')
@@ -130,7 +168,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $result->getMatchedResource());
         $this->assertEquals([], $result->getMatchedResource()->getData());
         $this->assertSame($associationMetadata, $result->getMatchedResource()->getMetadata());
-        $this->assertEquals($associationName, $result->getMatchedPath());
+        $this->assertEquals($associationPath, $result->getMatchedPath());
         $this->assertNull($result->getPreviousMatch());
     }
 }

@@ -77,7 +77,7 @@ class ResourceMetadataTest extends PHPUnit_Framework_TestCase
             'inputFilter'        => 'InputFilter',
             'hydrator'           => 'Hydrator',
             'collectionMetadata' => $this->getMock('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface'),
-            'associations'       => ['foo' => true]
+            'associations'       => ['foo' => ['path' => 'foo']]
         ];
 
         foreach ($data as $key => $value) {
@@ -89,7 +89,9 @@ class ResourceMetadataTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($data['inputFilter'], $resourceMetadata->getInputFilterName());
         $this->assertEquals($data['hydrator'], $resourceMetadata->getHydratorName());
         $this->assertSame($data['collectionMetadata'], $resourceMetadata->getCollectionMetadata());
-        $this->assertTrue($resourceMetadata->hasAssociation('foo'));
-        $this->assertFalse($resourceMetadata->hasAssociation('bar'));
+        $this->assertTrue($resourceMetadata->hasAssociationMetadata('foo'));
+        $this->assertInternalType('array', $resourceMetadata->getAssociationMetadata('foo'));
+        $this->assertFalse($resourceMetadata->hasAssociationMetadata('bar'));
+        $this->assertNull($resourceMetadata->getAssociationMetadata('bar'));
     }
 }

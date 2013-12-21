@@ -55,17 +55,23 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
     {
         // There is no need to trim $subPath again because it is done in BaseSubPathMatcher
         $pathChunks      = explode('/', $subPath);
-        $associationName = array_shift($pathChunks);
+        $associationPath = array_shift($pathChunks);
 
         $resourceMetadata = $resource->getMetadata();
 
-        if (!$resourceMetadata->hasAssociation($associationName)) {
+        if (!$resourceMetadata->hasAssociationMetadata($associationPath)) {
             return null;
         }
 
-        $classMetadata          = $resourceMetadata->getClassMetadata();
-        $associationTargetClass = $classMetadata->getAssociationTargetClass($associationName);
-        $associationMetadata    = $this->metadataFactory->getMetadataForClass($associationTargetClass);
+        // User may specify a different path for a given association, however we need to retrieve the real
+        // property name to be used by Doctrine, so we use the association metadata
+        $associationMetadata = $resourceMetadata->getAssociationMetadata($associationPath);
+        $associationName     = $associationMetadata['propertyName'];
+
+        $classMetadata               = $resourceMetadata->getClassMetadata();
+        $associationTargetClass      = $classMetadata->getAssociationTargetClass($associationName);
+        $associationResourceMetadata = $this->metadataFactory->getMetadataForClass($associationTargetClass)
+                                                             ->getOutsideClassMetadata();
 
         $reflectionClass    = $classMetadata->getReflectionClass();
         $reflectionProperty = $reflectionClass->getProperty($associationName);
@@ -74,8 +80,8 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $associationData = $reflectionProperty->getValue($resource->getData());
 
         return new SubPathMatch(
-            new Resource($associationData, $associationMetadata),
-            $associationName,
+            new Resource($associationData, $associationResourceMetadata),
+            $associationPath,
             $previousMatch
         );
     }

@@ -16,43 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Resource\Metadata\Annotation;
 
-use Doctrine\ORM\Mapping as ORM;
-use ZfrRest\Resource\Metadata\Annotation as REST;
+use PHPUnit_Framework_TestCase;
+use ZfrRest\Resource\Metadata\Annotation\Association;
 
 /**
- * @ORM\Entity
- * @REST\Resource(
- *      controller="ResourceController",
- *      inputFilter="ResourceInputFilter",
- *      hydrator="ResourceHydrator"
- * )
- * @REST\Collection(
- *      controller="CollectionController",
- *      hydrator="CollectionHydrator"
- * )
+ * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Resource\Metadata\Annotation\Association
  */
-class A
+class ExposeAssociationTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
+    public function testAnnotation()
+    {
+        $annotation = new Association();
+        $annotation->propertyName = 'fooBar';
+        $annotation->path         = 'foo-bar';
 
-    /**
-     * Exposed association
-     *
-     * @ORM\OneToOne(targetEntity="B")
-     * @REST\Association(path="b")
-     */
-    protected $b;
+        $expected = [
+            'propertyName' => 'fooBar',
+            'path'         => 'foo-bar'
+        ];
 
-    /**
-     * Non exposed association
-     *
-     * @ORM\OneToOne(targetEntity="C")
-     */
-    protected $c;
+        $this->assertEquals($expected, $annotation->getValue());
+    }
 }

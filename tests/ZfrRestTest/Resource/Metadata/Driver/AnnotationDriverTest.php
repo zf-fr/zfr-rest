@@ -49,7 +49,21 @@ class AnnotationDriverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('CollectionController', $collectionMetadata->getControllerName());
         $this->assertEquals('CollectionHydrator', $collectionMetadata->getHydratorName());
 
-        $this->assertTrue($metadata->hasAssociation('b'));
-        $this->assertFalse($metadata->hasAssociation('c'));
+        $this->assertTrue($metadata->hasAssociationMetadata('b'));
+        $this->assertFalse($metadata->hasAssociationMetadata('c'));
+    }
+
+    public function testAssertAssociationMetadataIsIndexedByPath()
+    {
+        $serviceManager = ServiceManagerFactory::getServiceManager();
+
+        /* @var \Metadata\MetadataFactory $resourceMetadataFactory */
+        $resourceMetadataFactory = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
+
+        /* @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $metadata */
+        $metadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Resource\Metadata\Annotation\D')
+                                            ->getOutsideClassMetadata();
+
+        $this->assertTrue($metadata->hasAssociationMetadata('bb'));
     }
 }

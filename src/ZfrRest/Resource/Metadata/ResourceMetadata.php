@@ -85,8 +85,20 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * {@inheritDoc}
      */
-    public function hasAssociation($association)
+    public function hasAssociationMetadata($association)
     {
         return isset($this->propertyMetadata['associations'][$association]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssociationMetadata($association)
+    {
+        if (!$this->hasAssociationMetadata($association)) {
+            return null;
+        }
+
+        return $this->propertyMetadata['associations'][$association];
     }
 }

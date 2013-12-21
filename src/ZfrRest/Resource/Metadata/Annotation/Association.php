@@ -22,13 +22,26 @@ namespace ZfrRest\Resource\Metadata\Annotation;
  * @Annotation
  * @Target({"PROPERTY"})
  */
-final class ExposeAssociation implements AnnotationInterface
+final class Association implements AnnotationInterface
 {
+    /**
+     * @var string
+     */
+    public $propertyName;
+
+    /**
+     * @var string
+     */
+    public $path;
+
     /**
      * {@inheritDoc}
      */
     public function getValue()
     {
-        return true;
+        return array(
+            'propertyName' => $this->propertyName,
+            'path'         => $this->path
+        );
     }
 }
