@@ -45,7 +45,7 @@ class HttpMethodOverrideListenerTest extends PHPUnit_Framework_TestCase
     public function testAttachToCorrectEvent()
     {
         $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $eventManager->expects($this->once())->method('attach')->with(MvcEvent::EVENT_DISPATCH);
+        $eventManager->expects($this->once())->method('attach')->with(MvcEvent::EVENT_ROUTE);
 
         $this->httpMethodOverrideListener->attach($eventManager);
     }
