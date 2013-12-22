@@ -12,8 +12,11 @@ If you are looking for some information that is not listed in the documentation,
 
 2. Quick Start
     1. Creating your entity
+    2. Adding ZfrRest mapping
     3. Adding a route
     4. Adding a controller
+
+3. Associations
 
 3. Using HTTP exceptions for reporting errors
 
