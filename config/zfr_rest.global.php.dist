@@ -35,6 +35,18 @@ return [
             // 'cache' => ['adapter' => 'apc'],
 
             /**
+             * Configure if the method handlers should automatically validate and/or hydrate incoming POST and
+             * PUT data using the hydrator and input filter defined in your mapping
+             *
+             * NOTE: if you deactivate those things, be sure to manually filter data, otherwise it may be a
+             * security issue
+             */
+            // 'controller_behaviours' => [
+                // 'auto_validate' => true,
+                // 'auto_hydrate'  => true
+            // ],
+
+            /**
              * If this listener is registered (it is not by default), it will check if the request contains
              * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
              * some contexts (for instance, some companies' proxies only allow GET and POST methods)
