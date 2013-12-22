@@ -15,10 +15,11 @@ If you are looking for some information that is not listed in the documentation,
     2. Adding ZfrRest mapping
     3. Adding a route
     4. Adding a controller
-
-3. Associations
+    5. Associations
 
 3. Using HTTP exceptions for reporting errors
+    1. Built-in exceptions
+    2. Mapping custom exceptions
 
 4. Controllers
     1. Understanding method handlers
@@ -31,3 +32,7 @@ If you are looking for some information that is not listed in the documentation,
 
 6. View layer
     1. Customizing output
+
+7. Cookbook
+    1. How to implement the OPTIONS method?
+    2. How to customize the payload?
