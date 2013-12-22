@@ -67,13 +67,13 @@ class HttpExceptionListener extends AbstractListenerAggregate
     {
         $exception = $event->getParam('exception');
 
+        if (isset($this->exceptionMap[get_class($exception)])) {
+            $exception = $this->createHttpException($exception);
+        }
+
         // We just deal with our Http error codes here !
         if (!$exception instanceof HttpExceptionInterface || $event->getResult() instanceof HttpResponse) {
-            if (!isset($this->exceptionMap[get_class($exception)])) {
-                return;
-            }
-
-            $exception = $this->createHttpException($exception);
+            return;
         }
 
         // We clear the response for security purpose
@@ -104,7 +104,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
     {
         /* @var HttpExceptionInterface $httpException */
         $httpException = new $this->exceptionMap[get_class($exception)];
-        $httpException->setMessage($exception->getMessage());
+        $httpException->setMessage((string) $exception->getMessage());
 
         return $httpException;
     }
