@@ -12,6 +12,7 @@ If you are looking for some information that is not listed in the documentation,
 
 2. Quick Start
     1. Creating your entity
+    2. Adding ZfrRest mapping
     3. Adding a route
     4. Adding a controller
 
@@ -28,3 +29,5 @@ If you are looking for some information that is not listed in the documentation,
 
 6. View layer
     1. Customizing output
+
+7. Mapping reference

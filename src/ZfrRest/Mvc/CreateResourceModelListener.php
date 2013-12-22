@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ModelInterface;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
@@ -56,16 +57,17 @@ class CreateResourceModelListener extends AbstractListenerAggregate
      */
     public function createResourceModel(MvcEvent $event)
     {
+        $result   = $event->getResult();
+        $resource = $event->getRouteMatch()->getParam('resource');
+
         // Do nothing if a Model has already been returned, or if we don't have any resource
-        if (($result = $event->getResult() instanceof ModelInterface)
-            || !$event->getRouteMatch()->getParam('resource') instanceof ResourceInterface
-        ) {
+        if (($result instanceof ModelInterface) || $result === null || !$resource instanceof ResourceInterface) {
             return;
         }
 
-        $resourceModel = new ResourceModel($event->getRouteMatch()->getParam('resource'));
+        $model = new ResourceModel($resource);
 
-        $event->setViewModel($resourceModel);
-        $event->setResult($resourceModel);
+        $event->setViewModel($model);
+        $event->setResult($model);
     }
 }
