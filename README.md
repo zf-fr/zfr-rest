@@ -27,10 +27,8 @@ On the other hand, Apigility comes with a graphical user interface, versioning s
 HAL, content negotiation... ZfrRest will never provide **all** those functionalities, so if you need them, just go
 with Apigility.
 
-The truth is that I actually don't really like Apigility's architecture, and it does not integrate *that* well with
-Doctrine, so that's why I've created ZfrRest. Its scope is much more limited (although I'd really like to add support
-for versioning and links), but I really think it's a nice product too. So give it a try to both products, and choose
-the one you prefer!
+ZfrRest's scope is much more limited (although I'd really like to add support for versioning and links), but I
+really think it's a nice product too. So give it a try to both products, and choose the one you prefer!
 
 ## Documentation
 

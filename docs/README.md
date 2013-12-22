@@ -36,3 +36,9 @@ If you are looking for some information that is not listed in the documentation,
 7. Cookbook
     1. How to implement the OPTIONS method?
     2. How to customize the payload?
+    3. How to specify a custom hydrator?
+    4. How to specify a custom input filter?
+    5. How to filter a collection using query params?
+
+8. Mapping reference
+    1. Annotations
