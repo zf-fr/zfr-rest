@@ -1,4 +1,4 @@
-*Up-to-date with version 0.1.0 of ZfrRest*
+*Up-to-date with version 0.1.* of ZfrRest*
 
 Welcome to the official ZfrRest documentation.
 
