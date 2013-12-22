@@ -53,7 +53,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'onDispatchError'], 100);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, [$this, 'onDispatchError'], 500);
     }
 
     /**
