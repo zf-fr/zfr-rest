@@ -61,8 +61,19 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
 
     public function testDoNothingIfAlreadyAModel()
     {
-        $event = new MvcEvent();
+        $event      = new MvcEvent();
+        $routeMatch = new RouteMatch([]);
+        $event->setRouteMatch($routeMatch);
         $event->setResult($this->getMock('Zend\View\Model\ModelInterface'));
+
+        $this->assertNull($this->createResourceModelListener->createResourceModel($event));
+    }
+
+    public function testDoNothingIfNoResult()
+    {
+        $event      = new MvcEvent();
+        $routeMatch = new RouteMatch([]);
+        $event->setRouteMatch($routeMatch);
 
         $this->assertNull($this->createResourceModelListener->createResourceModel($event));
     }
@@ -82,6 +93,7 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
 
         $event      = new MvcEvent();
         $routeMatch = new RouteMatch(['resource' => $resource]);
+        $event->setResult(new \stdClass());
         $event->setRouteMatch($routeMatch);
 
         $this->createResourceModelListener->createResourceModel($event);

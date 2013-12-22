@@ -61,6 +61,14 @@ abstract class AbstractHttpException extends Exception implements HttpExceptionI
     /**
      * {@inheritDoc}
      */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setErrors($errors)
     {
         $this->errors = $errors;

@@ -16,47 +16,36 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Http\Exception;
+namespace ZfrRestTest\Factory;
 
-use Zend\Http\Response as HttpResponse;
-use ZfrRest\Exception\ExceptionInterface;
+use PHPUnit_Framework_TestCase;
+use Zend\ServiceManager\ServiceManager;
+use ZfrRest\Factory\HttpExceptionListenerFactory;
+use ZfrRest\Options\ModuleOptions;
 
 /**
- * Interface exception for exceptions that must be catch by the HttpExceptionListener
- *
- * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Factory\HttpExceptionListenerFactory
  */
-interface HttpExceptionInterface extends ExceptionInterface
+class HttpExceptionListenerFactoryTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Set the message
-     *
-     * @param  string $message
-     * @return void
-     */
-    public function setMessage($message);
+    public function testCreateFromFactory()
+    {
+        $moduleOptions = new ModuleOptions([
+            'exception_map' => [
+                'Foo' => 'Bar'
+            ]
+        ]);
 
-    /**
-     * Set additional errors
-     *
-     * @param  mixed $errors
-     * @return void
-     */
-    public function setErrors($errors);
+        $serviceManager = new ServiceManager();
+        $serviceManager->setService('ZfrRest\Options\ModuleOptions', $moduleOptions);
 
-    /**
-     * Get additional errors
-     *
-     * @return mixed|null
-     */
-    public function getErrors();
+        $factory  = new HttpExceptionListenerFactory();
+        $listener = $factory->createService($serviceManager);
 
-    /**
-     * Prepare the response from the exception
-     *
-     * @param  HttpResponse $response
-     * @return void
-     */
-    public function prepareResponse(HttpResponse $response);
+        $this->assertInstanceOf('ZfrRest\Mvc\HttpExceptionListener', $listener);
+    }
 }
