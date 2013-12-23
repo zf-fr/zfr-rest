@@ -17,8 +17,8 @@ Then, add the keys "ZfrRest" to your modules list in `application.config.php` fi
 
 ## ZfrRest vs Apigility
 
-[Apigility](http://www.apigility.org) is a Zend Framework 2 module that also aims to simplify the creation of REST
-APIs.
+[Apigility](http://www.apigility.org) is a Zend Framework 2 API builder that also aims to simplify the creation of
+REST APIs.
 
 ZfrRest and Apigility philosophies are completely different. ZfrRest is Doctrine only, and focuses only on a very
 small subset on your REST API: it provides routing, validation and hydration.
