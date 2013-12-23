@@ -21,8 +21,8 @@ namespace ZfrRest\Mvc;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ModelInterface;
+use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
@@ -65,7 +65,13 @@ class CreateResourceModelListener extends AbstractListenerAggregate
             return;
         }
 
-        $model = new ResourceModel($resource);
+        // Because we may manipulate the resource data in the controller (for instance wrapping a collection around
+        // a paginator), we need to create a new resource from the data
+        if ($result !== $resource->getData()) {
+            $model = new ResourceModel(new Resource($result, $resource->getMetadata()));
+        } else {
+            $model = new ResourceModel($resource);
+        }
 
         $event->setViewModel($model);
         $event->setResult($model);
