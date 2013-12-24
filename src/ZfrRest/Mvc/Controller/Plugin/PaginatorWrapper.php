@@ -38,12 +38,12 @@ use ZfrRest\Exception\RuntimeException;
 class PaginatorWrapper extends AbstractPlugin
 {
     /**
-     * @param  Traversable    $data
-     * @param  Criteria|array $criteria
+     * @param  Collection|Selectable $data
+     * @param  Criteria|array        $criteria
      * @return Paginator
      * @throws RuntimeException
      */
-    public function __invoke(Traversable $data, $criteria = [])
+    public function __invoke($data, $criteria = [])
     {
         if ($data instanceof Selectable) {
             return new Paginator(new SelectableAdapter($data, $this->createCriteria($criteria)));
@@ -70,12 +70,13 @@ class PaginatorWrapper extends AbstractPlugin
             return $criteria;
         }
 
-        $expr = Criteria::expr();
+        $builder        = Criteria::expr();
+        $criteriaObject = new Criteria();
 
         foreach ($criteria as $key => $value) {
-            $expr->andX($expr->eq($key, $value));
+            $criteriaObject->andWhere($builder->eq($key, $value));
         }
 
-        return new Criteria($expr);
+        return $criteriaObject;
     }
 }
