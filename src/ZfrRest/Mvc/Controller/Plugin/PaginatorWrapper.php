@@ -45,20 +45,16 @@ class PaginatorWrapper extends AbstractPlugin
      */
     public function __invoke(Traversable $data, $criteria = [])
     {
-        $paginatorAdapter = null;
-
         if ($data instanceof Selectable) {
-            $paginatorAdapter = new SelectableAdapter($data, $this->createCriteria($criteria));
+            return new Paginator(new SelectableAdapter($data, $this->createCriteria($criteria)));
         } elseif ($data instanceof Collection) {
-            $paginatorAdapter = new CollectionAdapter($data);
+            return new Paginator(new CollectionAdapter($data));
         }
 
-        if (null === $paginatorAdapter) {
-            throw new RuntimeException(sprintf(
-                'No paginator adapter could be found for resource of type "%s"',
-                is_object($data) ? get_class($data) : gettype($data)
-            ));
-        }
+        throw new RuntimeException(sprintf(
+            'No paginator adapter could be found for resource of type "%s"',
+            is_object($data) ? get_class($data) : gettype($data)
+        ));
     }
 
     /**
