@@ -46,8 +46,14 @@ return [
         ],
 
         'aliases' => [
-            'ResourceGraphRoute' => 'ZfrRest\Router\Http\ResourceGraphRoute'
+            'resourceGraphRoute' => 'ZfrRest\Router\Http\ResourceGraphRoute'
         ],
+    ],
+
+    'controller_plugins' => [
+        'invokables' => [
+            'paginatorWrapper' => 'ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper'
+        ]
     ],
 
     'view_manager' => [

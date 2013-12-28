@@ -18,18 +18,13 @@
 
 namespace ZfrRest\Router\Http;
 
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Selectable;
 use Doctrine\Common\Persistence\ObjectRepository;
-use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
-use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Metadata\MetadataFactory;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Mvc\Router\Http\RouteInterface;
-use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
@@ -163,11 +158,6 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
                     'No collection metadata could be found. Did you make sure you added the Collection annotation?'
                 );
             }
-
-            // We wrap the data around a paginator
-            $paginator = $this->wrapDataInPaginator($resource);
-            $resource  = new Resource($paginator, $metadata);
-
             $controllerName = $collectionMetadata->getControllerName();
         } else {
             $controllerName = $metadata->getControllerName();
@@ -180,34 +170,6 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             ],
             strlen($this->route)
         );
-    }
-
-    /**
-     * Wrap a data around a paginator
-     *
-     * @param  ResourceInterface $resource
-     * @return Paginator
-     * @throws RuntimeException If no paginator adapter is found
-     */
-    protected function wrapDataInPaginator(ResourceInterface $resource)
-    {
-        $data             = $resource->getData();
-        $paginatorAdapter = null;
-
-        if ($data instanceof Selectable) {
-            $paginatorAdapter = new SelectableAdapter($data);
-        } elseif ($data instanceof Collection) {
-            $paginatorAdapter = new CollectionAdapter($data);
-        }
-
-        if (null === $paginatorAdapter) {
-            throw new RuntimeException(sprintf(
-                'No paginator adapter could be found for resource of type "%s"',
-                is_object($data) ? get_class($data) : gettype($data)
-            ));
-        }
-
-        return new Paginator($paginatorAdapter);
     }
 
     /**
