@@ -22,6 +22,8 @@ use Zend\View\Model\ViewModel;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
+ * A resource model holds the data that is rendered
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
@@ -35,29 +37,29 @@ class ResourceModel extends ViewModel
     protected $terminate = true;
 
     /**
-     * The resource to be rendered
+     * The data that is rendered
      *
-     * @var ResourceInterface
+     * @var array
      */
-    protected $resource;
+    protected $data;
 
     /**
      * Constructor
      *
-     * @param ResourceInterface $resource
+     * @param array $data
      */
-    public function __construct(ResourceInterface $resource)
+    public function __construct(array $data)
     {
-        $this->resource = $resource;
+        $this->data = $data;
     }
 
     /**
-     * Get the resource
+     * Get the data to render
      *
-     * @return ResourceInterface
+     * @return array
      */
-    public function getResource()
+    public function getData()
     {
-        return $this->resource;
+        return $this->data;
     }
 }

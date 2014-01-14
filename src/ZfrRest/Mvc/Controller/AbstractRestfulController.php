@@ -60,6 +60,8 @@ class AbstractRestfulController extends AbstractController
     {
         /* @var HttpRequest $request */
         $request = $this->getRequest();
+
+        /* @var \ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface $handler */
         $handler = $this->getMethodHandlerManager()->get($request->getMethod());
 
         /* @var \ZfrRest\Resource\ResourceInterface $resource */

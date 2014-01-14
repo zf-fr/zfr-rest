@@ -60,18 +60,12 @@ class CreateResourceModelListener extends AbstractListenerAggregate
         $result   = $event->getResult();
         $resource = $event->getRouteMatch()->getParam('resource');
 
-        // Do nothing if a Model has already been returned, or if we don't have any resource
-        if (($result instanceof ModelInterface) || $result === null || !$resource instanceof ResourceInterface) {
+        // ZfrRest expects an array
+        if (!is_array($result) || !$resource instanceof ResourceInterface) {
             return;
         }
 
-        // Because we may manipulate the resource data in the controller (for instance wrapping a collection around
-        // a paginator), we need to create a new resource from the data
-        if ($result !== $resource->getData()) {
-            $model = new ResourceModel(new Resource($result, $resource->getMetadata()));
-        } else {
-            $model = new ResourceModel($resource);
-        }
+        $model = new ResourceModel($result);
 
         $event->setViewModel($model);
         $event->setResult($model);

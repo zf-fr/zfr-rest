@@ -87,11 +87,12 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->createResourceModelListener->createResourceModel($event));
     }
 
-    public function testCreateResourceModelFromSingleResource()
+    public function testCreateResourceModelFromArray()
     {
-        $data     = new \stdClass();
+        $data     = ['foo' => 'bar'];
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $resource->expects($this->once())->method('getData')->will($this->returnValue($data));
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
 
         $event      = new MvcEvent();
         $routeMatch = new RouteMatch(['resource' => $resource]);
@@ -104,34 +105,5 @@ class CreateResourceModelListenerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('ZfrRest\View\Model\ResourceModel', $event->getResult());
 
         $this->assertSame($resource, $event->getResult()->getResource());
-    }
-
-    public function testCreateNewResourceIfResultIsDifferentFromOriginalResource()
-    {
-        $originalData = $this->getMock('Doctrine\Common\Collections\ArrayCollection');
-        $returnedData = $this->getMock('Zend\Paginator\Paginator', [], [], '', false);
-
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $resource->expects($this->once())->method('getData')->will($this->returnValue($originalData));
-
-        $metadata      = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->once())->method('getClassMetadata')->will($this->returnValue($classMetadata));
-
-        $event      = new MvcEvent();
-        $routeMatch = new RouteMatch(['resource' => $resource]);
-        $event->setResult($returnedData);
-        $event->setRouteMatch($routeMatch);
-
-        $this->createResourceModelListener->createResourceModel($event);
-
-        $this->assertInstanceOf('ZfrRest\View\Model\ResourceModel', $event->getViewModel());
-        $this->assertInstanceOf('ZfrRest\View\Model\ResourceModel', $event->getResult());
-        $this->assertInstanceOf('Zend\Paginator\Paginator', $event->getResult()->getResource()->getData());
-
-        $this->assertNotSame($resource, $event->getResult()->getResource());
-        $this->assertSame($metadata, $event->getResult()->getResource()->getMetadata());
     }
 }
