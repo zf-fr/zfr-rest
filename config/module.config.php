@@ -64,9 +64,6 @@ return [
     ],
 
     'zfr_rest' => [
-        // General options
-        'options'         => [],
-
         // Plugin managers configurations
         'method_handlers' => []
     ]

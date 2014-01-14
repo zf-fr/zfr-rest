@@ -33,6 +33,6 @@ class ModuleOptionsFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ModuleOptions($serviceLocator->get('Config')['zfr_rest']['options']);
+        return new ModuleOptions($serviceLocator->get('Config')['zfr_rest']);
     }
 }

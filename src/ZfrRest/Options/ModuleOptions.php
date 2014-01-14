@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Options;
 
+use Traversable;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -67,6 +68,15 @@ class ModuleOptions extends AbstractOptions
      * @var bool
      */
     protected $registerHttpMethodOverrideListener = false;
+
+    /**
+     * @param array|null $options
+     */
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
 
     /**
      * Set the object manager key

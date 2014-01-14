@@ -7,62 +7,60 @@
 
 return [
     'zfr_rest' => [
-        'options' => [
-            /**
-             * Service name of the object manager instance. It is retrieved from the service manager. For instance, if you
-             * are using Doctrine ORM Module, this value may be "doctrine.entitymanager.orm_default"
-             */
-            // 'object_manager' => 'doctrine.entitymanager.orm_default',
+        /**
+         * Service name of the object manager instance. It is retrieved from the service manager. For instance, if you
+         * are using Doctrine ORM Module, this value may be "doctrine.entitymanager.orm_default"
+         */
+        // 'object_manager' => 'doctrine.entitymanager.orm_default',
 
-            /**
-             * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
-             * method is supported: annotations.
-             *
-             * To add an annotation driver:
-             *
-             *      'drivers' => [
-             *          [
-             *              'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
-             *          ]
-             *      ]
-             */
-            // 'drivers' => [],
+        /**
+         * Specify the resource metadata drivers. This is used by ZfrRest to extract your mapping. Currently one
+         * method is supported: annotations.
+         *
+         * To add an annotation driver:
+         *
+         *      'drivers' => [
+         *          [
+         *              'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
+         *          ]
+         *      ]
+         */
+        // 'drivers' => [],
 
-            /**
-             * Either a service name that returns a Zend\Cache\StorageInterface OR Doctrine\Common\Cache\Cache OR
-             * a Zend\Cache\StorageInterface compliant config.
-             */
-            // 'cache' => ['adapter' => 'apc'],
+        /**
+         * Either a service name that returns a Zend\Cache\StorageInterface OR Doctrine\Common\Cache\Cache OR
+         * a Zend\Cache\StorageInterface compliant config.
+         */
+        // 'cache' => ['adapter' => 'apc'],
 
-            /**
+        /**
 
-             * Allow to map a custom exception to a HTTP exception. For instance:
-             *
-             *      'exception_map' => [
-             *          'Application\Exception\CustomerNotFound' => 'ZfrRest\Http\Exception\Client\NotFoundException'
-             *      ]
-             */
-            // 'exception_map' => [],
+         * Allow to map a custom exception to a HTTP exception. For instance:
+         *
+         *      'exception_map' => [
+         *          'Application\Exception\CustomerNotFound' => 'ZfrRest\Http\Exception\Client\NotFoundException'
+         *      ]
+         */
+        // 'exception_map' => [],
 
-            /**
-             * Configure if the method handlers should automatically validate and/or hydrate incoming POST and
-             * PUT data using the hydrator and input filter defined in your mapping
-             *
-             * NOTE: if you deactivate those things, be sure to manually filter data, otherwise it may be a
-             * security issue
-             */
-            // 'controller_behaviours' => [
-                // 'auto_validate' => true,
-                // 'auto_hydrate'  => true
-            // ],
+        /**
+         * Configure if the method handlers should automatically validate and/or hydrate incoming POST and
+         * PUT data using the hydrator and input filter defined in your mapping
+         *
+         * NOTE: if you deactivate those things, be sure to manually filter data, otherwise it may be a
+         * security issue
+         */
+        // 'controller_behaviours' => [
+            // 'auto_validate' => true,
+            // 'auto_hydrate'  => true
+        // ],
 
-            /**
-             * If this listener is registered (it is not by default), it will check if the request contains
-             * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
-             * some contexts (for instance, some companies' proxies only allow GET and POST methods)
-             */
-            // 'register_http_method_override_listener' => false,
-        ],
+        /**
+         * If this listener is registered (it is not by default), it will check if the request contains
+         * a header "X-HTTP-Method-Override". This header allows to change the HTTP verb. This is useful in
+         * some contexts (for instance, some companies' proxies only allow GET and POST methods)
+         */
+        // 'register_http_method_override_listener' => false,
 
         /**
          * Service manager configuration to configure the method handlers. A method handler handles a HTTP request

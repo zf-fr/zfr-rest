@@ -49,13 +49,11 @@ return [
     ],
 
     'zfr_rest' => [
-        'options' => [
-            'object_manager' => 'doctrine.entitymanager.orm_default',
+        'object_manager' => 'doctrine.entitymanager.orm_default',
 
-            'drivers' => [
-                [
-                    'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
-                ]
+        'drivers' => [
+            [
+                'class' => 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver'
             ]
         ]
     ]
