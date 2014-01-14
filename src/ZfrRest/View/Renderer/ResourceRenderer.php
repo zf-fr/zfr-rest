@@ -46,21 +46,6 @@ class ResourceRenderer implements RendererInterface
     protected $resolver;
 
     /**
-     * @var HydratorPluginManager
-     */
-    protected $hydratorPluginManager;
-
-    /**
-     * Constructor
-     *
-     * @param HydratorPluginManager $hydratorPluginManager
-     */
-    public function __construct(HydratorPluginManager $hydratorPluginManager)
-    {
-        $this->hydratorPluginManager = $hydratorPluginManager;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getEngine()
@@ -85,60 +70,6 @@ class ResourceRenderer implements RendererInterface
             return;
         }
 
-        $resource = $nameOrModel->getResource();
-
-        if ($resource->isCollection()) {
-            $collectionMetadata = $resource->getMetadata()->getCollectionMetadata();
-            $hydrator           = $this->hydratorPluginManager->get($collectionMetadata->getHydratorName());
-
-            $payload = $this->renderCollection($resource->getData(), $hydrator);
-        } else {
-            $resourceMetadata = $resource->getMetadata();
-            $hydrator         = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
-
-            $payload = $this->renderItem($resource->getData(), $hydrator);
-        }
-
-        return json_encode($payload);
-    }
-
-    /**
-     * Return the payload for a single item
-     *
-     * @param  mixed             $item
-     * @param  HydratorInterface $hydrator
-     * @return array
-     */
-    protected function renderItem($item, HydratorInterface $hydrator)
-    {
-        return $hydrator->extract($item);
-    }
-
-    /**
-     * Return the payload for a collection
-     *
-     * By default, it creates some data if a paginator is found, and wrap all items under the "items" key
-     *
-     * @param  array|Traversable $collection
-     * @param  HydratorInterface $hydrator
-     * @return array
-     */
-    protected function renderCollection($collection, HydratorInterface $hydrator)
-    {
-        $payload = [];
-
-        if ($collection instanceof Paginator) {
-            $payload = [
-                'limit'  => $collection->getItemCountPerPage(),
-                'offset' => ($collection->getCurrentPageNumber() - 1) * $collection->getItemCountPerPage(),
-                'total'  => $collection->getTotalItemCount()
-            ];
-        }
-
-        foreach ($collection as $item) {
-            $payload['items'][] = $this->renderItem($item, $hydrator);
-        }
-
-        return $payload;
+        return json_encode($nameOrModel->getData());
     }
 }
