@@ -87,12 +87,20 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         }
 
         /* @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource = $params['resource'];
+        $resource         = $params['resource'];
+        $resourceMetadata = $resource->getMetadata();
 
-        $classMetadata = $resource->getMetadata()->getClassMetadata();
+        $classMetadata = $resourceMetadata->getClassMetadata();
         $identifiers   = $classMetadata->getIdentifierValues($resource->getData());
 
-        return trim($this->route, '/') . '/' . current($identifiers);
+        $route = trim($this->route, '/') . '/' . current($identifiers);
+
+        if (isset($params['association']) && $resourceMetadata->hasAssociationMetadata($params['association'])) {
+            $associationMetadata = $resourceMetadata->getAssociationMetadata($params['association']);
+            $route               .= '/' . $associationMetadata['path'];
+        }
+
+        return $route;
     }
 
     /**
