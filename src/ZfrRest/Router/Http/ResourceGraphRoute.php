@@ -81,9 +81,18 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
      */
     public function assemble(array $params = [], array $options = [])
     {
-        // @TODO: not sure about how to do this correctly...
+        // We cannot do anything if no resource is given...
+        if (!isset($params['resource'])) {
+            throw new RuntimeException('ResourceGraphRoute cannot assemble without resource');
+        }
 
-        throw new RuntimeException('ResourceGraphRoute does not support yet assembling route');
+        /* @var \ZfrRest\Resource\ResourceInterface $resource */
+        $resource = $params['resource'];
+
+        $classMetadata = $resource->getMetadata()->getClassMetadata();
+        $identifiers   = $classMetadata->getIdentifierValues($resource->getData());
+
+        return trim($this->route, '/') . '/' . current($identifiers);
     }
 
     /**
