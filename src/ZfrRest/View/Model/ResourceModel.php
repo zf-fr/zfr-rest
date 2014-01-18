@@ -19,6 +19,7 @@
 namespace ZfrRest\View\Model;
 
 use Zend\View\Model\ViewModel;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\ResourceInterface;
 
 /**

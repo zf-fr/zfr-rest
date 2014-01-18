@@ -18,27 +18,58 @@
 
 namespace ZfrRest\View\Renderer;
 
-use Traversable;
 use Zend\Paginator\Paginator;
-use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\ResolverInterface;
+use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
- * This renderer automatically renders a resource
+ * This is a very simple renderer that only outputs the resource as JSON, either directly in the payload for a single
+ * resource, or wrapping it around a "data" top-level attributes for multiple resources
  *
- * It uses the hydrator attached to the resource metadata (or collection resource metadata if resource represents
- * a collection). It also has logic to output specific values for Paginator
+ * This renderer does not assume to render any links, it's voluntarily simple. Here is an example of the generated
+ * payload when asking a simple resource like GET /posts/1:
  *
- * A user can implement its own resource renderer to output the values in a more specific way (for instance
- * if you need to transform each keys)
+ * {
+ *     "id": 1,
+ *     "title": "ZfrRest is awesome",
+ *     "author": {
+ *         "id": 50,
+ *         "name": "Michaël Gallego"
+ *     }
+ * }
+ *
+ * Or when using a collection:
+ *
+ * {
+ *     "limit": 10,
+ *     "offset": 50,
+ *     "total": 600,
+ *     "data": [
+ *         {
+ *             "id": 1,
+ *             "title": "PHP will domine the world!",
+ *             "author": {
+ *                 "id": 56,
+ *                 "name": "Marco Pivetta"
+ *             }
+ *         },
+ *         {
+ *             "id": 2,
+ *             "title": "PHP generators are awesome",
+ *             "author": {
+ *                 "id": 95,
+ *                 "name": "Daniel Gimenes"
+ *             }
+ *         }
+ *     ]
+ * }
  *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ResourceRenderer implements RendererInterface
+class SimpleResourceRenderer implements ResourceRendererInterface
 {
     /**
      * @var ResolverInterface
@@ -88,55 +119,46 @@ class ResourceRenderer implements RendererInterface
         $resource = $nameOrModel->getResource();
 
         if ($resource->isCollection()) {
-            $collectionMetadata = $resource->getMetadata()->getCollectionMetadata();
-            $hydrator           = $this->hydratorPluginManager->get($collectionMetadata->getHydratorName());
-
-            $payload = $this->renderCollection($resource->getData(), $hydrator);
+            $payload = $this->renderCollection($resource);
         } else {
-            $resourceMetadata = $resource->getMetadata();
-            $hydrator         = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
-
-            $payload = $this->renderItem($resource->getData(), $hydrator);
+            $payload = $this->renderItem($resource);
         }
 
         return json_encode($payload);
     }
 
     /**
-     * Return the payload for a single item
-     *
-     * @param  mixed             $item
-     * @param  HydratorInterface $hydrator
-     * @return array
+     * {@inheritDoc}
      */
-    protected function renderItem($item, HydratorInterface $hydrator)
+    public function renderItem(ResourceInterface $resource)
     {
-        return $hydrator->extract($item);
+        $hydratorName = $resource->getMetadata()->getHydratorName();
+        $hydrator     = $this->hydratorPluginManager->get($hydratorName);
+
+        return $hydrator->extract($resource->getData());
     }
 
     /**
-     * Return the payload for a collection
-     *
-     * By default, it creates some data if a paginator is found, and wrap all items under the "items" key
-     *
-     * @param  array|Traversable $collection
-     * @param  HydratorInterface $hydrator
-     * @return array
+     * {@inheritDoc}
      */
-    protected function renderCollection($collection, HydratorInterface $hydrator)
+    public function renderCollection(ResourceInterface $resource)
     {
+        $hydratorName = $resource->getMetadata()->getCollectionMetadata()->getHydratorName();
+        $hydrator     = $this->hydratorPluginManager->get($hydratorName);
+
+        $data    = $resource->getData();
         $payload = [];
 
-        if ($collection instanceof Paginator) {
+        if ($data instanceof Paginator) {
             $payload = [
-                'limit'  => $collection->getItemCountPerPage(),
-                'offset' => ($collection->getCurrentPageNumber() - 1) * $collection->getItemCountPerPage(),
-                'total'  => $collection->getTotalItemCount()
+                'limit'  => $data->getItemCountPerPage(),
+                'offset' => ($data->getCurrentPageNumber() - 1) * $data->getItemCountPerPage(),
+                'total'  => $data->getTotalItemCount()
             ];
         }
 
-        foreach ($collection as $item) {
-            $payload['items'][] = $this->renderItem($item, $hydrator);
+        foreach ($data as $item) {
+            $payload['data'][] = $hydrator->extract($item);
         }
 
         return $payload;

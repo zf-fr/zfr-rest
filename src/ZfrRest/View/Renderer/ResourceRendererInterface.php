@@ -16,32 +16,32 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Factory;
+namespace ZfrRest\View\Renderer;
 
-use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager;
-use ZfrRest\Factory\ResourceStrategyFactory;
+use Zend\View\Renderer\RendererInterface;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
- * @licence MIT
- * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * Interface for all resource renderers
  *
- * @group Coverage
- * @covers \ZfrRest\Factory\ResourceStrategyFactory
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
  */
-class ResourceStrategyFactoryTest extends PHPUnit_Framework_TestCase
+interface ResourceRendererInterface extends RendererInterface
 {
-    public function testCreateFromFactory()
-    {
-        $serviceManager = new ServiceManager();
-        $serviceManager->setService(
-            'ZfrRest\View\Renderer\ResourceRenderer',
-            $this->getMock('ZfrRest\View\Renderer\ResourceRendererInterface')
-        );
+    /**
+     * Render a single resource
+     *
+     * @param  ResourceInterface $resource
+     * @return array
+     */
+    public function renderItem(ResourceInterface $resource);
 
-        $factory = new ResourceStrategyFactory();
-        $result  = $factory->createService($serviceManager);
-
-        $this->assertInstanceOf('ZfrRest\View\Strategy\ResourceStrategy', $result);
-    }
+    /**
+     * Render a multiple resources
+     *
+     * @param  ResourceInterface $resource
+     * @return array
+     */
+    public function renderCollection(ResourceInterface $resource);
 }

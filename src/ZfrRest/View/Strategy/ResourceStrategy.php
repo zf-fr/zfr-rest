@@ -22,7 +22,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\View\ViewEvent;
 use ZfrRest\View\Model\ResourceModel;
-use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Renderer\ResourceRendererInterface;
 
 /**
  * This strategy is used to render ResourceModel
@@ -35,14 +35,14 @@ use ZfrRest\View\Renderer\ResourceRenderer;
 class ResourceStrategy extends AbstractListenerAggregate
 {
     /**
-     * @var ResourceRenderer
+     * @var ResourceRendererInterface
      */
     protected $renderer;
 
     /**
-     * @param ResourceRenderer $renderer
+     * @param ResourceRendererInterface $renderer
      */
-    public function __construct(ResourceRenderer $renderer)
+    public function __construct(ResourceRendererInterface $renderer)
     {
         $this->renderer = $renderer;
     }
@@ -61,7 +61,7 @@ class ResourceStrategy extends AbstractListenerAggregate
      *
      * @internal
      * @param  ViewEvent $event
-     * @return null|ResourceRenderer
+     * @return null|ResourceRendererInterface
      */
     public function selectRenderer(ViewEvent $event)
     {
