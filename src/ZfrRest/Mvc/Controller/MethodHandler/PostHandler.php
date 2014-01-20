@@ -91,7 +91,7 @@ class PostHandler implements MethodHandlerInterface
         }
 
         $singleResource = $resource->getMetadata()->createResource();
-        $data           = json_decode($controller->getResponse()->getContent(), true);
+        $data           = json_decode($controller->getRequest()->getContent(), true);
 
         $data = $this->validateData($singleResource, $data);
         $data = $this->hydrateData($singleResource, $data);
