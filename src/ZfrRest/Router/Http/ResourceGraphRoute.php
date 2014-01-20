@@ -73,7 +73,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         $this->metadataFactory = $metadataFactory;
         $this->subPathMatcher  = $matcher;
         $this->resource        = $resource;
-        $this->route           = ltrim($route, '/');
+        $this->route           = $route;
     }
 
     /**
@@ -120,7 +120,8 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        if (substr($path, 0, strlen($this->route)) !== $this->route) {
+        $trimmedRoute = ltrim($this->route, '/');
+        if (substr($path, 0, strlen($trimmedRoute)) !== $trimmedRoute) {
             return null;
         }
 
