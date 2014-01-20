@@ -112,7 +112,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         }
 
         $uri  = $request->getUri();
-        $path = trim(substr($uri->getPath(), $pathOffset), '/');
+        $path = substr($uri->getPath(), $pathOffset);
 
         // We must omit the basePath
         if (method_exists($request, 'getBaseUrl') && $baseUrl = $request->getBaseUrl()) {
@@ -120,14 +120,13 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         }
 
         // If the URI does not begin by the route, we can stop immediately
-        $trimmedRoute = ltrim($this->route, '/');
-        if (substr($path, 0, strlen($trimmedRoute)) !== $trimmedRoute) {
+        if (substr($path, 0, strlen($this->route)) !== $this->route) {
             return null;
         }
 
         // If we have only one segment (for instance "users"), then the next path to analyze is in fact
         // an empty string, hence the ternary condition
-        $pathParts = explode('/', $path, 2);
+        $pathParts = explode('/', trim($path, '/'), 2);
         $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath)) {
@@ -138,17 +137,18 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             ]);
         }
 
-        return $this->buildRouteMatch($match->getMatchedResource());
+        return $this->buildRouteMatch($match->getMatchedResource(), strlen($path));
     }
 
     /**
      * Build a route match
      *
      * @param  ResourceInterface $resource
+     * @param  int               $pathLength
      * @throws RuntimeException
      * @return RouteMatch
      */
-    protected function buildRouteMatch(ResourceInterface $resource)
+    protected function buildRouteMatch(ResourceInterface $resource, $pathLength)
     {
         $metadata = $resource->getMetadata();
 
@@ -169,7 +169,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
                 'resource'   => $resource,
                 'controller' => $controllerName
             ],
-            strlen($this->route)
+            $pathLength
         );
     }
 
