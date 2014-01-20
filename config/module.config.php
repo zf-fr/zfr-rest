@@ -57,7 +57,7 @@ return [
 
     'view_manager' => [
         'strategies' => [
-            'ZfrRest\View\Renderer\ResourceRenderer',
+            'ZfrRest\View\Strategy\ResourceStrategy',
             'ViewJsonStrategy'
         ]
     ],
