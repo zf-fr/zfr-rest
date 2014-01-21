@@ -79,7 +79,7 @@ trait DataValidationTrait
 
     /**
      * Allow to format error messages by different strategies
-     * 
+     *
      * @param  array $errorMessages
      * @return array
      */
