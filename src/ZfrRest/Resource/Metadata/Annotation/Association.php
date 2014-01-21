@@ -27,11 +27,6 @@ final class Association implements AnnotationInterface
     /**
      * @var string
      */
-    public $propertyName;
-
-    /**
-     * @var string
-     */
     public $path;
 
     /**
@@ -40,8 +35,7 @@ final class Association implements AnnotationInterface
     public function getValue()
     {
         return [
-            'propertyName' => $this->propertyName,
-            'path'         => $this->path
+            'path' => $this->path
         ];
     }
 }

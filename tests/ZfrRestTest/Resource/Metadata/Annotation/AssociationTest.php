@@ -33,13 +33,9 @@ class ExposeAssociationTest extends PHPUnit_Framework_TestCase
     public function testAnnotation()
     {
         $annotation = new Association();
-        $annotation->propertyName = 'fooBar';
-        $annotation->path         = 'foo-bar';
+        $annotation->path = 'foo-bar';
 
-        $expected = [
-            'propertyName' => 'fooBar',
-            'path'         => 'foo-bar'
-        ];
+        $expected = ['path' => 'foo-bar'];
 
         $this->assertEquals($expected, $annotation->getValue());
     }
