@@ -21,7 +21,6 @@ namespace ZfrRestTest\View\Strategy;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Response as HttpResponse;
 use Zend\View\ViewEvent;
-use ZfrRest\View\Renderer\ResourceRenderer;
 use ZfrRest\View\Strategy\ResourceStrategy;
 
 /**
@@ -39,7 +38,7 @@ class ResourceStrategyTest extends PHPUnit_Framework_TestCase
     protected $resourceStrategy;
 
     /**
-     * @var ResourceRenderer
+     * @var \ZfrRest\View\Renderer\ResourceRendererInterface
      */
     protected $renderer;
 
@@ -50,7 +49,7 @@ class ResourceStrategyTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->renderer         = new ResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
+        $this->renderer         = $this->getMock('ZfrRest\View\Renderer\ResourceRendererInterface');
         $this->resourceStrategy = new ResourceStrategy($this->renderer);
     }
 

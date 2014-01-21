@@ -22,6 +22,7 @@ return [
             /* Factories that do not map to a class */
             'ZfrRest\Cache'                                                   => 'ZfrRest\Factory\CacheFactory',
             'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
+            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\SimpleResourceRendererFactory',
 
             /* Factories that map to a class */
             'ZfrRest\Mvc\HttpExceptionListener'                               => 'ZfrRest\Factory\HttpExceptionListenerFactory',
@@ -29,12 +30,10 @@ return [
             'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
             'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'                  => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\ResourceRendererFactory',
             'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\Factory\ResourceStrategyFactory'
         ],
 
         'invokables' => [
-            'ZfrRest\Mvc\CreateResourceModelListener'              => 'ZfrRest\Mvc\CreateResourceModelListener',
             'ZfrRest\Mvc\HttpMethodOverrideListener'               => 'ZfrRest\Mvc\HttpMethodOverrideListener',
             'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher' => 'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher'
         ]

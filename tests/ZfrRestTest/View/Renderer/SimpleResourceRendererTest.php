@@ -22,14 +22,14 @@ use ArrayIterator;
 use PHPUnit_Framework_TestCase;
 use Zend\View\Model\JsonModel;
 use ZfrRest\View\Model\ResourceModel;
-use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Renderer\SimpleResourceRenderer;
 
 /**
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\View\Renderer\ResourceRenderer
+ * @covers \ZfrRest\View\Renderer\SimpleResourceRenderer
  */
 class ResourceRendererTest extends PHPUnit_Framework_TestCase
 {
@@ -38,7 +38,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
      */
     public function testEngineResolvesToItself()
     {
-        $renderer = new ResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
+        $renderer = new SimpleResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
         $this->assertSame($renderer, $renderer->getEngine());
 
         // Just to add coverage, does nothing
@@ -47,7 +47,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
 
     public function testReturnsNullIfNotResourceModel()
     {
-        $renderer  = new ResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
+        $renderer  = new SimpleResourceRenderer($this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager'));
         $jsonModel = new JsonModel();
 
         $this->assertNull($renderer->render($jsonModel));
@@ -57,12 +57,12 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
     {
         $hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
 
-        $renderer = new ResourceRenderer($hydratorPluginManager);
+        $renderer = new SimpleResourceRenderer($hydratorPluginManager);
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
 
-        $resourceModel = new ResourceModel($resource, $hydrator);
+        $resourceModel = new ResourceModel($resource);
         $data          = new \stdClass();
 
         $expectedData = ['foo' => 'bar'];
@@ -90,7 +90,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
     {
         $hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
 
-        $renderer           = new ResourceRenderer($hydratorPluginManager);
+        $renderer           = new SimpleResourceRenderer($hydratorPluginManager);
         $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata           = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $collectionMetadata = $this->getMock('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface');
@@ -113,7 +113,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
             'limit'  => 10,
             'offset' => 10,
             'total'  => 20,
-            'items'  => [
+            'data'   => [
                 ['foo' => 'bar'],
                 ['foo' => 'bar']
             ]

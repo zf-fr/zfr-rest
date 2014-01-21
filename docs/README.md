@@ -39,6 +39,7 @@ If you are looking for some information that is not listed in the documentation,
     3. [How to specify a custom hydrator?](/docs/07. Cookbook.md)
     4. [How to specify a custom input filter?](/docs/07. Cookbook.md)
     5. [How to filter a collection using query params?](/docs/07. Cookbook.md)
+    6. [How to serialize custom data that do not belong to the entity?](/docs/07. Cookbook.md)
 
 8. [Mapping reference](/docs/08. Mapping reference.md)
     1. [Annotations](/docs/08. Mapping reference.md)

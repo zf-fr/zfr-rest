@@ -20,16 +20,16 @@ namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
-use ZfrRest\Factory\ResourceRendererFactory;
+use ZfrRest\Factory\SimpleResourceRendererFactory;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\Factory\ResourceRendererFactory
+ * @covers \ZfrRest\Factory\SimpleResourceRendererFactory
  */
-class ResourceRendererFactoryTest extends PHPUnit_Framework_TestCase
+class SimpleResourceRendererFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateFromFactory()
     {
@@ -39,9 +39,9 @@ class ResourceRendererFactoryTest extends PHPUnit_Framework_TestCase
             $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager')
         );
 
-        $factory = new ResourceRendererFactory();
+        $factory = new SimpleResourceRendererFactory();
         $result  = $factory->createService($serviceManager);
 
-        $this->assertInstanceOf('ZfrRest\View\Renderer\ResourceRenderer', $result);
+        $this->assertInstanceOf('ZfrRest\View\Renderer\SimpleResourceRenderer', $result);
     }
 }
