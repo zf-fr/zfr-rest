@@ -93,10 +93,12 @@ class AnnotationDriver implements DriverInterface
             // If the data contains a "path" part, then we index it by this one so that the router can fetch it,
             // but we also index it using the original name, to allow route assembling
             $propertyName = $classProperty->getName();
-            $indexBy      = $associationMetadata['path'] ?: $propertyName;
+            $path         = $associationMetadata['path'] ?: $propertyName;
 
-            $resourceMetadata->propertyMetadata['associations'][$indexBy]      = ['path' => $indexBy];
-            $resourceMetadata->propertyMetadata['associations'][$propertyName] = ['path' => $indexBy];
+            $associationMetadata = ['propertyName' => $propertyName, 'path' => $path];
+
+            $resourceMetadata->propertyMetadata['associations'][$path]         = $associationMetadata;
+            $resourceMetadata->propertyMetadata['associations'][$propertyName] = $associationMetadata;
         }
 
         return $resourceMetadata;
