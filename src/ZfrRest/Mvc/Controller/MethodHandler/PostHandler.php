@@ -24,6 +24,7 @@ use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\View\Model\ResourceModel;
 
 /**
  * Handler for the POST method verb
@@ -99,10 +100,11 @@ class PostHandler implements MethodHandlerInterface
         $result = $controller->post($data, $singleResource->getMetadata());
 
         // Set the Location header with the URL of the newly created resource
-        if (is_object($result)) {
-            // @TODO: when we have a functional router, we should be able to automatically set the Location
-            //        header with the URI of the newly created resource
-            $controller->getResponse()->setStatusCode(201);
+        if ($result instanceof ResourceModel) {
+            $location = $controller->url()->fromRoute(null, ['resource' => $result->getResource()]);
+
+            $controller->getResponse()->setStatusCode(201)
+                                      ->getHeaders()->addHeaderLine('Location', $location);
         }
 
         return $result;

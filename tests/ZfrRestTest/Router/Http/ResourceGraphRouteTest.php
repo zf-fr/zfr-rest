@@ -54,9 +54,80 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
             $this->metadataFactory,
             $this->baseSubPathMatcher,
             new \stdClass(),
-            'route'
+            '/route'
         );
 
         $this->assertNull($resourceGraphRoute->match($this->getMock('Zend\Stdlib\RequestInterface')));
+    }
+
+    public function testCanAssembleWithoutResource()
+    {
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->metadataFactory,
+            $this->baseSubPathMatcher,
+            new \stdClass(),
+            '/route'
+        );
+
+        $this->assertEquals('/route', $resourceGraphRoute->assemble());
+    }
+
+    public function testCanAssembleWithResource()
+    {
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->metadataFactory,
+            $this->baseSubPathMatcher,
+            new \stdClass(),
+            '/route'
+        );
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->once())
+                      ->method('getIdentifierValues')
+                      ->will($this->returnValue(['id' => 2]));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $metadata->expects($this->once())->method('getClassMetadata')->will($this->returnValue($classMetadata));
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+
+        $this->assertEquals('/route/2', $resourceGraphRoute->assemble(['resource' => $resource]));
+    }
+
+    public function testCanAssembleWithResourceAndAssociation()
+    {
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->metadataFactory,
+            $this->baseSubPathMatcher,
+            new \stdClass(),
+            '/route'
+        );
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->once())
+                      ->method('getIdentifierValues')
+                      ->will($this->returnValue(['id' => 2]));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $metadata->expects($this->once())->method('getClassMetadata')->will($this->returnValue($classMetadata));
+
+        $metadata->expects($this->once())
+                 ->method('hasAssociationMetadata')
+                 ->with('tweets')
+                 ->will($this->returnValue(true));
+
+        $metadata->expects($this->once())
+                 ->method('getAssociationMetadata')
+                 ->with('tweets')
+                 ->will($this->returnValue(['path' => 'tweets']));
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+
+        $this->assertEquals('/route/2/tweets', $resourceGraphRoute->assemble([
+            'resource'    => $resource,
+            'association' => 'tweets'
+        ]));
     }
 }
