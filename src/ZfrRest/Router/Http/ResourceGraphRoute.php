@@ -81,9 +81,11 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
      */
     public function assemble(array $params = [], array $options = [])
     {
+        $trimmedRoute = trim($this->route, '/');
+
         // If no resource it's equal to "self"
         if (!isset($params['resource'])) {
-            return '/' . $this->route;
+            return '/' . $trimmedRoute;
         }
 
         /* @var \ZfrRest\Resource\ResourceInterface $resource */
@@ -97,9 +99,13 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             throw new RuntimeException('ZfrRest assembling does not support composite identifiers');
         }
 
-        $route = '/' . rtrim($this->route, '/') . '/' . current($identifiers);
+        $route = '/' . $trimmedRoute . '/' . current($identifiers);
 
-        if (!isset($params['association']) || !$resourceMetadata->hasAssociationMetadata($params['association'])) {
+        if (!isset($params['association'])) {
+            return $route;
+        }
+
+        if (!$resourceMetadata->hasAssociationMetadata($params['association'])) {
             throw new RuntimeException(sprintf(
                 'You are trying to generate a URL for the association "%s", which does not exist or is not exposed',
                 $params['association']
