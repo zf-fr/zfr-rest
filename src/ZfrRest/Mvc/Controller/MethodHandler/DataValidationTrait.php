@@ -63,7 +63,7 @@ trait DataValidationTrait
         if (!$inputFilter->isValid()) {
             throw new BadRequestException(
                 'Validation error',
-                $inputFilter->getMessages()
+                $this->formatErrorMessages($inputFilter->getMessages())
             );
         }
 
@@ -76,4 +76,21 @@ trait DataValidationTrait
      * @return ControllerBehavioursOptions
      */
     abstract public function getControllerBehavioursOptions();
+
+    /**
+     * Allow to format error messages by different strategies
+     * 
+     * @param  array $errorMessages
+     * @return array
+     */
+    protected function formatErrorMessages(array $errorMessages)
+    {
+        if ($this->getControllerBehavioursOptions()->getPreserveErrorKeys()) {
+            return $errorMessages;
+        }
+
+        return array_map(function($element) {
+            return array_values($element);
+        }, $errorMessages);
+    }
 }

@@ -48,6 +48,13 @@ class ControllerBehavioursOptions extends AbstractOptions
     protected $autoHydrate = true;
 
     /**
+     * When errors are created by input filter, should we preserve the ZF2 validation error keys?
+     *
+     * @var bool
+     */
+    protected $preserveErrorKeys = false;
+
+    /**
      * @param  bool $autoValidate
      * @return void
      */
@@ -79,5 +86,22 @@ class ControllerBehavioursOptions extends AbstractOptions
     public function getAutoHydrate()
     {
         return $this->autoHydrate;
+    }
+
+    /**
+     * @param  boolean $preserveErrorKeys
+     * @return void
+     */
+    public function setPreserveErrorKeys($preserveErrorKeys)
+    {
+        $this->preserveErrorKeys = (bool) $preserveErrorKeys;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getPreserveErrorKeys()
+    {
+        return $this->preserveErrorKeys;
     }
 }

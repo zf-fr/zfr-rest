@@ -49,10 +49,13 @@ return [
          *
          * NOTE: if you deactivate those things, be sure to manually filter data, otherwise it may be a
          * security issue
+         *
+         * For the preserve_error_keys, it defines the ZF2 keys should be preserved for errors
          */
         // 'controller_behaviours' => [
-            // 'auto_validate' => true,
-            // 'auto_hydrate'  => true
+            // 'auto_validate'       => true,
+            // 'auto_hydrate'        => true,
+            // 'preserve_error_keys' => false
         // ],
 
         /**
