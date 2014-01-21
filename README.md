@@ -6,6 +6,9 @@ ZfrRest
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/badges/quality-score.png?s=78ed408c927e01cb27ab7f3cc04349a770132550)](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/)
 [![Dependency Status](https://www.versioneye.com/package/php--zfr--zfr-rest/badge.png)](https://www.versioneye.com/package/php--zfr--zfr-rest)
 
+> If you are an Ember Data user, I have created a specific renderer that output JSON compliant payload. I didn't
+released it yet as it's not really clean, but if you're interested, please contact me :).
+
 ## Installation
 
 Install the module by typing (or add it to your `composer.json` file):
