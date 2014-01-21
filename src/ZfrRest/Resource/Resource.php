@@ -51,9 +51,7 @@ class Resource implements ResourceInterface
         $this->data     = $data;
         $this->metadata = $metadata;
 
-        $reflectionClass = $metadata->getClassMetadata()->getReflectionClass();
-
-        if (!$this->isCollection() && !$reflectionClass->isInstance($data)) {
+        if (!$this->isCollection() && !$metadata->getReflectionClass()->isInstance($data)) {
             throw new InvalidResourceException(sprintf(
                 'Provided resource of type "%s" is not an instance nor collection of requested type "%s"',
                 is_object($data) ? get_class($data) : gettype($data),

@@ -45,6 +45,14 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
     /**
      * {@inheritDoc}
      */
+    public function getReflectionClass()
+    {
+        return $this->reflection;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getClassMetadata()
     {
         return $this->propertyMetadata['classMetadata'];

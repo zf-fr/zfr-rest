@@ -40,6 +40,13 @@ interface ResourceMetadataInterface
     public function getClassMetadata();
 
     /**
+     * Get the reflection class
+     *
+     * @return \ReflectionClass
+     */
+    public function getReflectionClass();
+
+    /**
      * Get the controller's FQCN
      *
      * @return string|null
