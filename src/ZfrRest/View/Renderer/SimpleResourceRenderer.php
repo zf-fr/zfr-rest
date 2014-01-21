@@ -20,7 +20,6 @@ namespace ZfrRest\View\Renderer;
 
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use Zend\View\Resolver\ResolverInterface;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
@@ -69,13 +68,8 @@ use ZfrRest\View\Model\ResourceModel;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class SimpleResourceRenderer implements ResourceRendererInterface
+class SimpleResourceRenderer extends AbstractResourceRenderer
 {
-    /**
-     * @var ResolverInterface
-     */
-    protected $resolver;
-
     /**
      * @var HydratorPluginManager
      */
@@ -89,22 +83,6 @@ class SimpleResourceRenderer implements ResourceRendererInterface
     public function __construct(HydratorPluginManager $hydratorPluginManager)
     {
         $this->hydratorPluginManager = $hydratorPluginManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getEngine()
-    {
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setResolver(ResolverInterface $resolver)
-    {
-        $this->resolver = $resolver;
     }
 
     /**
