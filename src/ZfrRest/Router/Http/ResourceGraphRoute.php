@@ -93,12 +93,21 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
         $classMetadata = $resourceMetadata->getClassMetadata();
         $identifiers   = $classMetadata->getIdentifierValues($resource->getData());
 
+        if (count($identifiers) > 1) {
+            throw new RuntimeException('ZfrRest assembling does not support composite identifiers');
+        }
+
         $route = '/' . rtrim($this->route, '/') . '/' . current($identifiers);
 
-        if (isset($params['association']) && $resourceMetadata->hasAssociationMetadata($params['association'])) {
-            $associationMetadata = $resourceMetadata->getAssociationMetadata($params['association']);
-            $route               .= '/' . $associationMetadata['path'];
+        if (!isset($params['association']) || !$resourceMetadata->hasAssociationMetadata($params['association'])) {
+            throw new RuntimeException(sprintf(
+                'You are trying to generate a URL for the association "%s", which does not exist or is not exposed',
+                $params['association']
+            ));
         }
+
+        $associationMetadata = $resourceMetadata->getAssociationMetadata($params['association']);
+        $route               .= '/' . $associationMetadata['path'];
 
         return $route;
     }

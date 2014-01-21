@@ -54,9 +54,19 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
             $this->metadataFactory,
             $this->baseSubPathMatcher,
             new \stdClass(),
-            'route'
+            '/route'
         );
 
         $this->assertNull($resourceGraphRoute->match($this->getMock('Zend\Stdlib\RequestInterface')));
+    }
+
+    public function testCanAssembleWithoutResource()
+    {
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $this->metadataFactory,
+            $this->baseSubPathMatcher,
+            new \stdClass(),
+            'route'
+        );
     }
 }
