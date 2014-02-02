@@ -138,15 +138,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
                       ->with($propertyName)
                       ->will($this->returnValue('ZfrRestTest\Asset\Router\AssociationMatcherEntity'));
 
-        $associationClassMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-        $associationClassMetadata->expects($this->once())
-                                 ->method('getReflectionClass')
-                                 ->will($this->returnValue($this->getMock('ReflectionClass', [], [], '', false)));
-
         $associationMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $associationMetadata->expects($this->once())
-                            ->method('getClassMetadata')
-                            ->will($this->returnValue($associationClassMetadata));
 
         $classHierarchy = $this->getMock('Metadata\ClassHierarchyMetadata');
         $classHierarchy->expects($this->once())->method('getOutsideClassMetadata')->will($this->returnValue($associationMetadata));
@@ -156,9 +148,9 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
                               ->with('ZfrRestTest\Asset\Router\AssociationMatcherEntity')
                               ->will($this->returnValue($classHierarchy));
 
-        $classMetadata->expects($this->once())
-                      ->method('getReflectionClass')
-                      ->will($this->returnValue(new ReflectionClass('ZfrRestTest\Asset\Router\AssociationMatcherEntity')));
+        $metadata->expects($this->once())
+                 ->method('getReflectionClass')
+                 ->will($this->returnValue(new ReflectionClass('ZfrRestTest\Asset\Router\AssociationMatcherEntity')));
 
         $metadata->expects($this->once())->method('getClassMetadata')->will($this->returnValue($classMetadata));
 

@@ -34,13 +34,8 @@ class ResourceMetadataTest extends PHPUnit_Framework_TestCase
 {
     public function testCanCreateSimpleResource()
     {
-        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-        $classMetadata->expects($this->once())
-                      ->method('getReflectionClass')
-                      ->will($this->returnValue(new ReflectionClass('ZfrRestTest\Asset\Resource\SimpleResource')));
-
         $resourceMetadata = new ResourceMetadata('ZfrRestTest\Asset\Resource\SimpleResource');
-        $resourceMetadata->propertyMetadata['classMetadata'] = $classMetadata;
+        $resourceMetadata->reflection = new ReflectionClass('ZfrRestTest\Asset\Resource\SimpleResource');
 
         $resource = $resourceMetadata->createResource();
         $this->assertInstanceOf('ZfrRestTest\Asset\Resource\SimpleResource', $resource->getData());
@@ -49,17 +44,8 @@ class ResourceMetadataTest extends PHPUnit_Framework_TestCase
 
     public function testCanCreateComplexResource()
     {
-        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
-        $classMetadata->expects($this->once())
-                      ->method('getReflectionClass')
-                      ->will($this->returnValue(
-                          new ReflectionClass(
-                              'ZfrRestTest\Asset\Resource\SimpleResourceWithParameters'
-                          )
-                      ));
-
         $resourceMetadata = new ResourceMetadata('ZfrRestTest\Asset\Resource\SimpleResourceWithParameters');
-        $resourceMetadata->propertyMetadata['classMetadata'] = $classMetadata;
+        $resourceMetadata->reflection = new ReflectionClass('ZfrRestTest\Asset\Resource\SimpleResourceWithParameters');
 
         $resource = $resourceMetadata->createResource('foo');
         $this->assertInstanceOf('ZfrRestTest\Asset\Resource\SimpleResourceWithParameters', $resource->getData());

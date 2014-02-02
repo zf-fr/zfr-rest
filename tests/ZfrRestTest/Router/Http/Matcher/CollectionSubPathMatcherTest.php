@@ -63,10 +63,9 @@ class CollectionSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $this->prepareResource($resource, true);
 
-        $classMetadata = $resource->getMetadata()->getClassMetadata();
-        $classMetadata->expects($this->once())
-                      ->method('getReflectionClass')
-                      ->will($this->returnValue(new \ReflectionClass('stdClass')));
+        $resource->getMetadata()->expects($this->once())
+                                ->method('getReflectionClass')
+                                ->will($this->returnValue(new \ReflectionClass('stdClass')));
 
         $collectionMatcher = new CollectionSubPathMatcher();
         $result            = $collectionMatcher->matchSubPath($resource, $subPath);

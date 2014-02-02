@@ -83,7 +83,7 @@ class ResourceTest extends PHPUnit_Framework_TestCase
         $metadata         = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
 
         $resourceMetadata->expects($this->any())->method('getClassMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
+        $resourceMetadata->expects($this->any())->method('getReflectionClass')->will($this->returnValue($reflectionClass));
 
         return $resourceMetadata;
     }
