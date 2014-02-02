@@ -89,7 +89,7 @@ trait DataValidationTrait
             return $errorMessages;
         }
 
-        return array_map(function($element) {
+        return array_map(function ($element) {
             return array_values($element);
         }, $errorMessages);
     }
