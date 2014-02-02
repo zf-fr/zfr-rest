@@ -40,8 +40,7 @@
         "zendframework/zend-stdlib": "~2.2"
     },
     "require-dev": {
-        "zendframework/zend-config": "~2.2",
-        "zendframework/zend-serializer": "~2.2",
+        "zendframework/zendframework": "~2.2",
         "doctrine/doctrine-orm-module": "~0.8",
         "phpunit/phpunit": "~3.7",
         "squizlabs/php_codesniffer": "1.4.*",
