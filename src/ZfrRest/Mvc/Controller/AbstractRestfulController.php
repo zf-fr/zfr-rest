@@ -30,6 +30,8 @@ use ZfrRest\Mvc\Exception\RuntimeException;
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ * 
+ * @method \Zend\Paginator\Paginator paginatorWrapper(\Doctrine\Common\Collections\Collection $data, $criteria = [])
  */
 class AbstractRestfulController extends AbstractController
 {
