@@ -47,7 +47,7 @@ class DeleteHandler implements MethodHandlerInterface
             throw new MethodNotAllowedException();
         }
 
-        $result = $controller->delete($resource->getData(), $resource->getMetadata());
+        $result = $controller->delete($resource->getData());
 
         // According to http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7, status code should
         // be 204 if nothing is returned

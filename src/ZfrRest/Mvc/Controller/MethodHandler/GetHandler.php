@@ -50,6 +50,6 @@ class GetHandler implements MethodHandlerInterface
             throw new MethodNotAllowedException();
         }
 
-        return $controller->get($resource->getData(), $resource->getMetadata());
+        return $controller->get($resource->getData());
     }
 }
