@@ -32,7 +32,7 @@ class ModuleOptions extends AbstractOptions
      *
      * @var string|null
      */
-    protected $objectManager;
+    protected $objectManager = 'doctrine.entitymanager.orm_default';
 
     /**
      * Options for all drivers
