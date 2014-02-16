@@ -33,6 +33,7 @@ use ZfrRest\Resource\ResourceInterface;
  * @licence MIT
  *
  * @method \Zend\Paginator\Paginator paginatorWrapper(\Doctrine\Common\Collections\Collection $data, $criteria = [])
+ * @method \ZfrRest\View\Model\ResourceModel resourceModel($data, \ZfrRest\Resource\Metadata\ResourceMetadataInterface $metadata = null)
  */
 class AbstractRestfulController extends AbstractController
 {
