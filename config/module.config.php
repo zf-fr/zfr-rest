@@ -51,7 +51,8 @@ return [
 
     'controller_plugins' => [
         'invokables' => [
-            'paginatorWrapper' => 'ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper'
+            'paginatorWrapper' => 'ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper',
+            'resourceModel'    => 'ZfrRest\Mvc\Controller\Plugin\ResourceModel'
         ]
     ],
 
