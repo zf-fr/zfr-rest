@@ -69,7 +69,39 @@ class BaseSubPathMatcherTest extends TestCase
      */
     public function testReturnPreviousSubMatchIfNoMorePathToParse($subPath)
     {
+        $resource     = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $subPathMatch = $this->getMock('ZfrRest\Router\Http\Matcher\SubPathMatch', [], [], '', false);
+
+        // With no previous match, it should create a new one
+        $this->assertInstanceOf(
+            'ZfrRest\Router\Http\Matcher\SubPathMatch',
+            $this->baseMatcher->matchSubPath($resource, $subPath, $subPathMatch)
+        );
+
+        // With an existing match, it should reuse it
+        $match = $this->getMock('ZfrRest\Router\Http\Matcher\SubPathMatch', [], [], '', false);
+        $this->assertSame($match, $this->baseMatcher->matchSubPath($resource, $subPath, $match));
+    }
+
+    /**
+     * @dataProvider pathEmpty
+     */
+    public function testMatchOnSelectableIfNoPreviousMatch($subPath)
+    {
+        $data = $this->getMock('Doctrine\Common\Collections\Selectable');
+        $data->expects($this->once())
+             ->method('matching')
+             ->with($this->isInstanceOf('Doctrine\Common\Collections\Criteria'))
+             ->will($this->returnValue('Doctrine\Common\Collections\Collection'));
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        //$reflClass = $this->getMock('ReflectionClass', [], [], '', false);
+        //$reflClass->expects($this->once())->method('isInstance')->will($this->returnValue(true));
+
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource->expects($this->once())->method('getData')->will($this->returnValue($data));
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
 
         // With no previous match, it should create a new one
         $this->assertInstanceOf(
