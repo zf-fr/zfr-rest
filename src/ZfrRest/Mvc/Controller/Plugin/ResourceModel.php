@@ -23,7 +23,7 @@ use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\Resource;
-use ZfrRest\View\Model\ResourceModel as ViewResourceModel;
+use ZfrRest\View\Model\ResourceModel as ResourceViewModel;
 
 /**
  * Controller plugin that allows to create a resource model quickly.
@@ -41,7 +41,7 @@ class ResourceModel extends AbstractPlugin
      *
      * @param  mixed                          $data
      * @param  ResourceMetadataInterface|null $resourceMetadata
-     * @return ViewResourceModel
+     * @return ResourceViewModel
      * @throws RuntimeException
      */
     public function __invoke($data, ResourceMetadataInterface $resourceMetadata = null)
@@ -55,6 +55,6 @@ class ResourceModel extends AbstractPlugin
 
         $resourceMetadata = $resourceMetadata ?: $this->controller->getMatchedResource()->getMetadata();
 
-        return new ViewResourceModel(new Resource($data, $resourceMetadata));
+        return new ResourceViewModel(new Resource($data, $resourceMetadata));
     }
 }

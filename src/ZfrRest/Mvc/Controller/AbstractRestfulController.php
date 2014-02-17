@@ -18,22 +18,26 @@
 
 namespace ZfrRest\Mvc\Controller;
 
+use Doctrine\Common\Collections\Collection;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client\NotFoundException;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\View\Model\ResourceModel;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  *
- * @method \Zend\Paginator\Paginator paginatorWrapper(\Doctrine\Common\Collections\Collection $data, $criteria = [])
- * @method \ZfrRest\View\Model\ResourceModel resourceModel($data, \ZfrRest\Resource\Metadata\ResourceMetadataInterface $metadata = null)
+ * @method Paginator paginatorWrapper(Collection $data, $criteria = [])
+ * @method ResourceModel resourceModel($data, ResourceMetadataInterface $metadata = null)
  */
 class AbstractRestfulController extends AbstractController
 {
@@ -78,7 +82,7 @@ class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * @return ResourceInterface
+     * @return ResourceInterface|null
      */
     public function getMatchedResource()
     {
