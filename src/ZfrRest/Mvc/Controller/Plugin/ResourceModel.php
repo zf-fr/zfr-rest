@@ -18,6 +18,9 @@
 
 namespace ZfrRest\Mvc\Controller\Plugin;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use DoctrineModule\Paginator\Adapter\Selectable;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Mvc\Exception\RuntimeException;
@@ -54,6 +57,12 @@ class ResourceModel extends AbstractPlugin
         }
 
         $resourceMetadata = $resourceMetadata ?: $this->controller->getMatchedResource()->getMetadata();
+
+        // When an URI like "/users" is matched, we may receive an ObjectRepository, that is Selectable
+        // BUT NOT iterable. Therefore we force a match with an empty Criteria for those cases
+        if ($data instanceof Selectable && !$data instanceof Collection) {
+            $data = $data->matching(new Criteria());
+        }
 
         return new ResourceViewModel(new Resource($data, $resourceMetadata));
     }
