@@ -90,7 +90,7 @@ class PutHandler implements MethodHandlerInterface
         $data = $this->validateData($resource, $data);
         $data = $this->hydrateData($resource, $data);
 
-        return $controller->put($data, $resource->getMetadata());
+        return $controller->put($data);
     }
 
     /**

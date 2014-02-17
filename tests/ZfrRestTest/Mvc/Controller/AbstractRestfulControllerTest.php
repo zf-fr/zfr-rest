@@ -49,6 +49,7 @@ class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
         $event->setRouteMatch($routeMatch);
 
         $controller = new AbstractRestfulController();
+        $controller->setEvent($event);
 
         $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
         $pluginManager  = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
@@ -76,6 +77,7 @@ class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
         $pluginManager  = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
         $controller->setServiceLocator($serviceLocator);
+        $controller->setEvent($event);
 
         $serviceLocator->expects($this->once())
                        ->method('get')

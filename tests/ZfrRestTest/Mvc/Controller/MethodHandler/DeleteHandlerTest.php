@@ -51,14 +51,9 @@ class DeleteHandlerTest extends PHPUnit_Framework_TestCase
                  ->method('getData')
                  ->will($this->returnValue($data));
 
-        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $resource->expects($this->once())
-                 ->method('getMetadata')
-                 ->will($this->returnValue($metadata));
-
         $controller->expects($this->once())
                    ->method('delete')
-                   ->with($data, $metadata)
+                   ->with($data)
                    ->will($this->returnValue(['foo' => 'bar']));
 
         $controller->expects($this->never())
@@ -84,14 +79,9 @@ class DeleteHandlerTest extends PHPUnit_Framework_TestCase
                  ->method('getData')
                  ->will($this->returnValue($data));
 
-        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $resource->expects($this->once())
-                 ->method('getMetadata')
-                 ->will($this->returnValue($metadata));
-
         $controller->expects($this->once())
                    ->method('delete')
-                   ->with($data, $metadata)
+                   ->with($data)
                    ->will($this->returnValue(null));
 
         $response = new HttpResponse();

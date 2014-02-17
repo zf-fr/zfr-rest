@@ -28,7 +28,7 @@ use ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper;
  * @group Coverage
  * @covers \ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper
  */
-class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
+class PaginatorWrapperTest extends PHPUnit_Framework_TestCase
 {
     public function testCanCreatePaginatorFromCollection()
     {

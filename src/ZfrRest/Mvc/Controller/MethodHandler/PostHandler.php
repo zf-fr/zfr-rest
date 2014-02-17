@@ -97,7 +97,7 @@ class PostHandler implements MethodHandlerInterface
         $data = $this->validateData($singleResource, $data);
         $data = $this->hydrateData($singleResource, $data);
 
-        $result = $controller->post($data, $singleResource->getMetadata());
+        $result = $controller->post($data);
 
         // Set the Location header with the URL of the newly created resource
         if ($result instanceof ResourceModel) {

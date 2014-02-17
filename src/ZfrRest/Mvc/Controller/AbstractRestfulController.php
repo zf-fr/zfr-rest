@@ -18,20 +18,26 @@
 
 namespace ZfrRest\Mvc\Controller;
 
+use Doctrine\Common\Collections\Collection;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client\NotFoundException;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
+use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\View\Model\ResourceModel;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
- * 
- * @method \Zend\Paginator\Paginator paginatorWrapper(\Doctrine\Common\Collections\Collection $data, $criteria = [])
+ *
+ * @method Paginator paginatorWrapper(Collection $data, $criteria = [])
+ * @method ResourceModel resourceModel($data, ResourceMetadataInterface $metadata = null)
  */
 class AbstractRestfulController extends AbstractController
 {
@@ -64,11 +70,8 @@ class AbstractRestfulController extends AbstractController
         $request = $this->getRequest();
         $handler = $this->getMethodHandlerManager()->get($request->getMethod());
 
-        /* @var \ZfrRest\Resource\ResourceInterface $resource */
-        $resource = $event->getRouteMatch()->getParam('resource', null);
-
         // We should always have a resource, otherwise throw an 404 exception
-        if (null === $resource) {
+        if (!$resource = $this->getMatchedResource()) {
             throw new NotFoundException();
         }
 
@@ -76,6 +79,14 @@ class AbstractRestfulController extends AbstractController
         $event->setResult($result);
 
         return $result;
+    }
+
+    /**
+     * @return ResourceInterface|null
+     */
+    public function getMatchedResource()
+    {
+        return $this->getEvent()->getRouteMatch()->getParam('resource', null);
     }
 
     /**
