@@ -18,6 +18,8 @@
 
 namespace ZfrRest\Router\Http\Matcher;
 
+use Doctrine\Common\Collections\Criteria;
+use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -60,7 +62,15 @@ class BaseSubPathMatcher implements SubPathMatcherInterface
 
         // We have traversed the whole path, return the last matched path!
         if (empty($subPath)) {
-            return $previousMatch ?: new SubPathMatch($resource, $subPath);
+            // If we haven't match anything yet, then it means we have a repository as resource data, so
+            // we need to do a matching with empty criteria to make sure we have an iterable result
+            if (null !== $previousMatch) {
+                return $previousMatch;
+            }
+
+            $data = $resource->getData()->matching(new Criteria());
+
+            return new SubPathMatch(new Resource($data, $resource->getMetadata()), $subPath);
         }
 
         if ($resource->isCollection()) {
