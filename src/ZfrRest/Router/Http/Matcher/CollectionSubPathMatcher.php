@@ -88,7 +88,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
         }
 
         $criteria = new Criteria();
-        $criteria->andWhere($criteria->expr()->eq(reset($identifierNames), $identifier));
+        $criteria->where($criteria->expr()->eq(reset($identifierNames), $identifier));
 
         $found = $data->matching($criteria);
 
