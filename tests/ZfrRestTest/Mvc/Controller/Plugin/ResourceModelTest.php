@@ -58,4 +58,25 @@ class ResourceModelTest extends PHPUnit_Framework_TestCase
         $this->assertSame($data, $resourceModel->getResource()->getData());
         $this->assertSame($metadata, $resourceModel->getResource()->getMetadata());
     }
+
+    public function testForceSelectableToBeCollectionIfNotAlready()
+    {
+        $controller = new AbstractRestfulController();
+        $plugin     = new ResourceModel();
+        $plugin->setController($controller);
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $data = $this->getMock('Doctrine\Common\Collections\Selectable');
+        $data->expects($this->once())
+             ->method('matching')
+             ->with($this->isInstanceOf('Doctrine\Common\Collections\Criteria'))
+             ->will($this->returnValue($this->getMock('Doctrine\Common\Collections\Collection')));
+
+        $resourceModel = $plugin($data, $metadata);
+
+        $this->assertInstanceOf('ZfrRest\View\Model\ResourceModel', $resourceModel);
+        //$this->assertInstanceOf('Doctrine\Common\Collections\Collection', $resourceModel->getResource()->getData());
+        $this->assertSame($metadata, $resourceModel->getResource()->getMetadata());
+    }
 }

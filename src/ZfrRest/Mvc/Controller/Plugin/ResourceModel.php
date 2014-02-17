@@ -20,7 +20,7 @@ namespace ZfrRest\Mvc\Controller\Plugin;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
-use DoctrineModule\Paginator\Adapter\Selectable;
+use Doctrine\Common\Collections\Selectable;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Mvc\Exception\RuntimeException;
