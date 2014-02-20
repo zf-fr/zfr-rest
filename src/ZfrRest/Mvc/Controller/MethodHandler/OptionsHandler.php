@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -41,7 +42,7 @@ class OptionsHandler implements MethodHandlerInterface
      *
      * {@inheritDoc}
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource)
     {
         // For the OPTIONS verb, we have an out-of-the box implementation, but if it is
         // defined in the controller we use the user-land method instead

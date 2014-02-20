@@ -19,9 +19,9 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
-use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -43,25 +43,17 @@ class PutHandler implements MethodHandlerInterface
     use DataHydrationTrait;
 
     /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehaviourOptions;
-
-    /**
      * Constructor
      *
-     * @param ControllerBehavioursOptions $controllerBehavioursOptions
      * @param InputFilterPluginManager    $inputFilterPluginManager
      * @param HydratorPluginManager       $hydratorPluginManager
      */
     public function __construct(
-        ControllerBehavioursOptions $controllerBehavioursOptions,
         InputFilterPluginManager $inputFilterPluginManager,
         HydratorPluginManager $hydratorPluginManager
     ) {
-        $this->controllerBehaviourOptions = $controllerBehavioursOptions;
-        $this->inputFilterPluginManager   = $inputFilterPluginManager;
-        $this->hydratorPluginManager      = $hydratorPluginManager;
+        $this->inputFilterPluginManager = $inputFilterPluginManager;
+        $this->hydratorPluginManager    = $hydratorPluginManager;
     }
 
     /**
@@ -78,7 +70,7 @@ class PutHandler implements MethodHandlerInterface
      * {@inheritDoc}
      * @throws MethodNotAllowedException
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource)
     {
         // If no put method is defined on the controller, then we cannot do anything
         if (!method_exists($controller, 'put')) {
@@ -87,19 +79,14 @@ class PutHandler implements MethodHandlerInterface
 
         $data = json_decode($controller->getRequest()->getContent(), true);
 
-        $data = $this->validateData($resource, $data);
-        $data = $this->hydrateData($resource, $data);
+        if ($controller->getAutoValidate()) {
+            $data = $this->validateData($resource, $data);
+        }
+
+        if ($controller->getAutoHydrate()) {
+            $data = $this->hydrateData($resource, $data);
+        }
 
         return $controller->put($data);
-    }
-
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehavioursOptions()
-    {
-        return $this->controllerBehaviourOptions;
     }
 }

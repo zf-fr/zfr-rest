@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -32,9 +33,9 @@ interface MethodHandlerInterface
     /**
      * Handle a method
      *
-     * @param  AbstractController $controller
-     * @param  ResourceInterface  $resource
+     * @param  AbstractRestfulController $controller
+     * @param  ResourceInterface         $resource
      * @return mixed
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource);
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource);
 }

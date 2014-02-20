@@ -34,7 +34,6 @@ return [
         // 'cache' => ['adapter' => 'apc'],
 
         /**
-
          * Allow to map a custom exception to a HTTP exception. For instance:
          *
          *      'exception_map' => [
@@ -42,21 +41,6 @@ return [
          *      ]
          */
         // 'exception_map' => [],
-
-        /**
-         * Configure if the method handlers should automatically validate and/or hydrate incoming POST and
-         * PUT data using the hydrator and input filter defined in your mapping
-         *
-         * NOTE: if you deactivate those things, be sure to manually filter data, otherwise it may be a
-         * security issue
-         *
-         * For the preserve_error_keys, it defines the ZF2 keys should be preserved for errors
-         */
-        // 'controller_behaviours' => [
-            // 'auto_validate'       => true,
-            // 'auto_hydrate'        => true,
-            // 'preserve_error_keys' => false
-        // ],
 
         /**
          * If this listener is registered (it is not by default), it will check if the request contains

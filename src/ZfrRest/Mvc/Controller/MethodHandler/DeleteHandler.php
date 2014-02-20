@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Mvc\Controller\AbstractController;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -40,7 +41,7 @@ class DeleteHandler implements MethodHandlerInterface
      *
      * {@inheritDoc}
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource)
     {
         // If no delete method is defined on the controller, then we cannot do anything
         if (!method_exists($controller, 'delete')) {
