@@ -35,13 +35,6 @@ class PutHandlerFactory implements FactoryInterface
     {
         $parentLocator = $serviceLocator->getServiceLocator();
 
-        /* @var \ZfrRest\Options\ModuleOptions $options */
-        $options = $parentLocator->get('ZfrRest\Options\ModuleOptions');
-
-        return new PutHandler(
-            $options->getControllerBehaviours(),
-            $parentLocator->get('InputFilterManager'),
-            $parentLocator->get('HydratorManager')
-        );
+        return new PutHandler($parentLocator->get('InputFilterManager'), $parentLocator->get('HydratorManager'));
     }
 }

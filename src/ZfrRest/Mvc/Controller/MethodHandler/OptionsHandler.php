@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
-use Zend\Mvc\Controller\AbstractController;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 

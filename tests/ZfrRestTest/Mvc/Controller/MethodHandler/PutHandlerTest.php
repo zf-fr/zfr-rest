@@ -38,7 +38,6 @@ class PutHandlerTest extends PHPUnit_Framework_TestCase
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
 
         $handler = new PutHandler(
-            new ControllerBehavioursOptions(),
             $this->getMock('Zend\InputFilter\InputFilterPluginManager'),
             $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager')
         );

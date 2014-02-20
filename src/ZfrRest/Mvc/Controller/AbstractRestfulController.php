@@ -28,8 +28,8 @@ use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client\NotFoundException;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**

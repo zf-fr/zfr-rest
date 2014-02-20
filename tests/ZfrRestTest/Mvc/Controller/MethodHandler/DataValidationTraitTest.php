@@ -37,33 +37,14 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
     protected $dataValidation;
 
     /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehavioursOptions;
-
-    /**
      * @var \Zend\InputFilter\InputFilterPluginManager
      */
     protected $inputFilterPluginManager;
 
     public function setUp()
     {
-        $this->controllerBehavioursOptions = new ControllerBehavioursOptions();
-        $this->inputFilterPluginManager    = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
-
-        $this->dataValidation = new DataValidationObject(
-            $this->controllerBehavioursOptions,
-            $this->inputFilterPluginManager
-        );
-    }
-
-    public function testReturnUntouchedDataIfDontAutoValidate()
-    {
-        $this->controllerBehavioursOptions->setAutoValidate(false);
-
-        $result = $this->dataValidation->validateData($this->getMock('ZfrRest\Resource\ResourceInterface'), ['foo']);
-
-        $this->assertEquals(['foo'], $result);
+        $this->inputFilterPluginManager = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
+        $this->dataValidation           = new DataValidationObject($this->inputFilterPluginManager);
     }
 
     public function testThrowExceptionIfNoInputFilterNameIsDefined()
@@ -120,7 +101,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
 
         $data          = ['foo'];
-        $errorMessages = ['email' => ['invalid' => 'Email is invalid']];
+        $errorMessages = ['email' => ['Email is invalid']];
 
         $inputFilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
         $inputFilter->expects($this->once())->method('setData')->with($data);
@@ -135,36 +116,5 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                                        ->will($this->returnValue($inputFilter));
 
         $this->dataValidation->validateData($resource, $data);
-    }
-
-    public function testCanPreserveKeys()
-    {
-        // We should not test protected methods but this is the only way I've found
-        $this->controllerBehavioursOptions->setPreserveErrorKeys(true);
-
-        $reflMethod = new \ReflectionMethod($this->dataValidation, 'formatErrorMessages');
-        $reflMethod->setAccessible(true);
-
-        $errorMessages = ['email' => ['invalid' => 'Email is invalid']];
-
-        $result = $reflMethod->invoke($this->dataValidation, $errorMessages);
-
-        $this->assertEquals($errorMessages, $result);
-    }
-
-    public function testCanRemoveKeys()
-    {
-        // We should not test protected methods but this is the only way I've found
-        $this->controllerBehavioursOptions->setPreserveErrorKeys(false);
-
-        $reflMethod = new \ReflectionMethod($this->dataValidation, 'formatErrorMessages');
-        $reflMethod->setAccessible(true);
-
-        $errorMessages    = ['email' => ['invalid' => 'Email is invalid']];
-        $expectedMessages = ['email' => ['Email is invalid']];
-
-        $result = $reflMethod->invoke($this->dataValidation, $errorMessages);
-
-        $this->assertEquals($expectedMessages, $result);
     }
 }

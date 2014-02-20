@@ -22,9 +22,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use Traversable;
-use ZfrRest\Router\Exception\RuntimeException;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Router\Exception\RuntimeException;
 
 /**
  * Matcher for an collection sub-path

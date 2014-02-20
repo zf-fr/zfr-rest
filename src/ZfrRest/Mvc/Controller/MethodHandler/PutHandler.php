@@ -63,9 +63,6 @@ class PutHandler implements MethodHandlerInterface
      *      - we hydrate valid data to update existing resource
      *      - we pass the object to the put method of the controller
      *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
-     * do nothing
-     *
      * {@inheritDoc}
      * @throws MethodNotAllowedException
      */

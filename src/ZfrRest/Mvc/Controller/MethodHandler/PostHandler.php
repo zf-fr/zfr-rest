@@ -19,11 +19,9 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
-use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
@@ -70,9 +68,6 @@ class PostHandler implements MethodHandlerInterface
      *
      * As you can see, the post method have three arguments: the object that is inserted, the resource metadata and
      * the resource itself (which is the Collection where the object is added)
-     *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
-     * do nothing
      *
      * {@inheritDoc}
      * @throws MethodNotAllowedException

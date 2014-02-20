@@ -37,33 +37,14 @@ class DataHydrationTraitTest extends PHPUnit_Framework_TestCase
     protected $dataHydration;
 
     /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehavioursOptions;
-
-    /**
      * @var \Zend\Stdlib\Hydrator\HydratorPluginManager
      */
     protected $hydratorPluginManager;
 
     public function setUp()
     {
-        $this->controllerBehavioursOptions = new ControllerBehavioursOptions();
-        $this->hydratorPluginManager       = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
-
-        $this->dataHydration = new DataHydrationObject(
-            $this->controllerBehavioursOptions,
-            $this->hydratorPluginManager
-        );
-    }
-
-    public function testReturnUntouchedDataIfDontAutoHydrate()
-    {
-        $this->controllerBehavioursOptions->setAutoHydrate(false);
-
-        $result = $this->dataHydration->hydrateData($this->getMock('ZfrRest\Resource\ResourceInterface'), ['foo']);
-
-        $this->assertEquals(['foo'], $result);
+        $this->hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
+        $this->dataHydration         = new DataHydrationObject($this->hydratorPluginManager);
     }
 
     public function testThrowExceptionIfNoHydratorNameIsDefined()
