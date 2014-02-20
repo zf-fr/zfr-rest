@@ -68,10 +68,10 @@ class OptionsHandler implements MethodHandlerInterface
      * By default, it will automatically returns the HTTP methods that are implemented. If you
      * are using custom HTTP verbs, you can override this method and return your own verbs
      *
-     * @param  AbstractController $controller
+     * @param  AbstractRestfulController $controller
      * @return array
      */
-    protected function getAllowedMethods(AbstractController $controller)
+    protected function getAllowedMethods(AbstractRestfulController $controller)
     {
         $genericMethods = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
         $methods        = array_intersect(get_class_methods($controller), $genericMethods);

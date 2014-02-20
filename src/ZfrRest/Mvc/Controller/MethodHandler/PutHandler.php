@@ -22,7 +22,6 @@ use Zend\InputFilter\InputFilterPluginManager;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
 /**

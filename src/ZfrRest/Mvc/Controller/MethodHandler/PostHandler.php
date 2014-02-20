@@ -107,14 +107,4 @@ class PostHandler implements MethodHandlerInterface
 
         return $result;
     }
-
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehavioursOptions()
-    {
-        return $this->controllerBehaviourOptions;
-    }
 }
