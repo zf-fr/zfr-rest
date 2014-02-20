@@ -40,6 +40,14 @@ class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
         $controller->dispatch($this->getMock('Zend\Stdlib\RequestInterface'));
     }
 
+    public function testAssertAutoHydrateAndAutoValidateAreTrueByDefault()
+    {
+        $controller = new AbstractRestfulController();
+
+        $this->assertTrue($controller->getAutoValidate());
+        $this->assertTrue($controller->getAutoHydrate());
+    }
+
     public function testThrowNotFoundExceptionIfNoResourceIsMatched()
     {
         $this->setExpectedException('ZfrRest\Http\Exception\Client\NotFoundException');
