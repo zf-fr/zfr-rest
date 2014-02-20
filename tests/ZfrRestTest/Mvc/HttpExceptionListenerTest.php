@@ -21,8 +21,8 @@ namespace ZfrRestTest\Mvc;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
-use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Http\Exception;
+use ZfrRest\Mvc\HttpExceptionListener;
 
 /**
  * @licence MIT

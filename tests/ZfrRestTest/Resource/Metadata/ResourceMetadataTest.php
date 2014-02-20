@@ -20,7 +20,6 @@ namespace ZfrRestTest\Resource\Metadata;
 
 use PHPUnit_Framework_TestCase;
 use ReflectionClass;
-use ZfrRest\Resource\Metadata\CollectionResourceMetadata;
 use ZfrRest\Resource\Metadata\ResourceMetadata;
 
 /**

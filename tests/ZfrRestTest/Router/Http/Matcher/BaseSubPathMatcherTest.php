@@ -18,11 +18,8 @@
 
 namespace ZfrRestTest\Router\Http\Matcher;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit_Framework_TestCase as TestCase;
-use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\Router\Http\Matcher\BaseSubPathMatcher;
-use ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher;
 use ZfrRest\Router\Http\Matcher\SubPathMatch;
 
 /**
