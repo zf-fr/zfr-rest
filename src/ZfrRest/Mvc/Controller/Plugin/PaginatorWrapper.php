@@ -23,7 +23,6 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
 use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
-use Traversable;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Paginator\Paginator;
 use ZfrRest\Exception\RuntimeException;

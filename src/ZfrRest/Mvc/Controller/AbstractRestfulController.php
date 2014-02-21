@@ -28,8 +28,8 @@ use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception\Client\NotFoundException;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
@@ -45,6 +45,25 @@ class AbstractRestfulController extends AbstractController
      * @var MethodHandlerPluginManager
      */
     protected $methodHandlerManager;
+
+    /**
+     * If this is set to true, then controller will automatically instantiate the input filter specified in
+     * resource metadata (if there is one) - from service locator first, or directly instantiate it if not found -,
+     * and validate data. If data is incorrect, it will return a 400 HTTP error (Bad Request) with the failed
+     * validation messages in it).
+     *
+     * @var bool
+     */
+    protected $autoValidate = true;
+
+    /**
+     * If this is set to true, then controller will automatically instantiate the hydrator specified in resource
+     * metadata (if there is one) - from service locator first, or directly instantiate it if not found - and
+     * hydrate resource object with previously validated data
+     *
+     * @var bool
+     */
+    protected $autoHydrate = true;
 
     /**
      * {@inheritDoc}
@@ -103,5 +122,25 @@ class AbstractRestfulController extends AbstractController
         }
 
         return $this->methodHandlerManager;
+    }
+
+    /**
+     * Should auto validate?
+     *
+     * @return bool
+     */
+    public function getAutoValidate()
+    {
+        return $this->autoValidate;
+    }
+
+    /**
+     * Should auto hydrate?
+     *
+     * @return bool
+     */
+    public function getAutoHydrate()
+    {
+        return $this->autoHydrate;
     }
 }

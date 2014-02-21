@@ -24,7 +24,6 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Factory\PutHandlerFactory;
 use ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager;
-use ZfrRest\Options\ModuleOptions;
 
 /**
  * @licence MIT
@@ -42,7 +41,6 @@ class PutHandlerFactoryTest extends PHPUnit_Framework_TestCase
         $pluginManager  = new MethodHandlerPluginManager();
         $pluginManager->setServiceLocator($serviceManager);
 
-        $serviceManager->setService('ZfrRest\Options\ModuleOptions', new ModuleOptions());
         $serviceManager->setService('InputFilterManager', new InputFilterPluginManager());
         $serviceManager->setService('HydratorManager', new HydratorPluginManager());
 

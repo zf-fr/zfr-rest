@@ -19,8 +19,8 @@
 
 namespace ZfrRestTest\Util;
 
-use Zend\ServiceManager\ServiceManager;
 use Zend\Mvc\Service\ServiceManagerConfig;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Base test case to be used when a new service manager instance is required

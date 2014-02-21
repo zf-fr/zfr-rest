@@ -18,7 +18,7 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
-use Zend\Mvc\Controller\AbstractController;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -41,7 +41,7 @@ class OptionsHandler implements MethodHandlerInterface
      *
      * {@inheritDoc}
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource)
     {
         // For the OPTIONS verb, we have an out-of-the box implementation, but if it is
         // defined in the controller we use the user-land method instead
@@ -67,10 +67,10 @@ class OptionsHandler implements MethodHandlerInterface
      * By default, it will automatically returns the HTTP methods that are implemented. If you
      * are using custom HTTP verbs, you can override this method and return your own verbs
      *
-     * @param  AbstractController $controller
+     * @param  AbstractRestfulController $controller
      * @return array
      */
-    protected function getAllowedMethods(AbstractController $controller)
+    protected function getAllowedMethods(AbstractRestfulController $controller)
     {
         $genericMethods = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
         $methods        = array_intersect(get_class_methods($controller), $genericMethods);

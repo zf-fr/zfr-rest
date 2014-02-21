@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Options;
 
-use Traversable;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -47,13 +46,6 @@ class ModuleOptions extends AbstractOptions
      * @var string|array|null
      */
     protected $cache;
-
-    /**
-     * Controller behaviours
-     *
-     * @var ControllerBehavioursOptions|null
-     */
-    protected $controllerBehaviours;
 
     /**
      * Array that map a custom exception to a HttpExceptionInterface exception
@@ -133,27 +125,6 @@ class ModuleOptions extends AbstractOptions
     public function getCache()
     {
         return $this->cache;
-    }
-
-    /**
-     * @param  array $controllerBehaviours
-     * @return void
-     */
-    public function setControllerBehaviours(array $controllerBehaviours)
-    {
-        $this->controllerBehaviours = new ControllerBehavioursOptions($controllerBehaviours);
-    }
-
-    /**
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehaviours()
-    {
-        if (null === $this->controllerBehaviours) {
-            $this->controllerBehaviours = new ControllerBehavioursOptions();
-        }
-
-        return $this->controllerBehaviours;
     }
 
     /**

@@ -27,29 +27,10 @@ class DataHydrationObject
     use DataHydrationTrait;
 
     /**
-     * @var ControllerBehavioursOptions
+     * @param HydratorPluginManager $hydratorPluginManager
      */
-    protected $controllerBehavioursOptions;
-
-    /**
-     * @param ControllerBehavioursOptions $behavioursOptions
-     * @param HydratorPluginManager       $hydratorPluginManager
-     */
-    public function __construct(
-        ControllerBehavioursOptions $behavioursOptions,
-        HydratorPluginManager $hydratorPluginManager
-    ) {
-        $this->controllerBehavioursOptions = $behavioursOptions;
-        $this->hydratorPluginManager       = $hydratorPluginManager;
-    }
-
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehavioursOptions()
+    public function __construct(HydratorPluginManager $hydratorPluginManager)
     {
-        return $this->controllerBehavioursOptions;
+        $this->hydratorPluginManager = $hydratorPluginManager;
     }
 }

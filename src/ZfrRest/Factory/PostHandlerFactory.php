@@ -35,13 +35,6 @@ class PostHandlerFactory implements FactoryInterface
     {
         $parentLocator = $serviceLocator->getServiceLocator();
 
-        /* @var \ZfrRest\Options\ModuleOptions $options */
-        $options = $parentLocator->get('ZfrRest\Options\ModuleOptions');
-
-        return new PostHandler(
-            $options->getControllerBehaviours(),
-            $parentLocator->get('InputFilterManager'),
-            $parentLocator->get('HydratorManager')
-        );
+        return new PostHandler($parentLocator->get('InputFilterManager'), $parentLocator->get('HydratorManager'));
     }
 }

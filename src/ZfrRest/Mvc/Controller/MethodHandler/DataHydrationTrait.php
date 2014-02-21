@@ -20,7 +20,6 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -46,10 +45,6 @@ trait DataHydrationTrait
      */
     public function hydrateData(ResourceInterface $resource, array $data)
     {
-        if (!$this->getControllerBehavioursOptions()->getAutoHydrate()) {
-            return $data;
-        }
-
         if (!($hydratorName = $resource->getMetadata()->getHydratorName())) {
             throw new RuntimeException('No hydrator name has been found in resource metadata');
         }
@@ -58,11 +53,4 @@ trait DataHydrationTrait
 
         return $hydrator->hydrate($data, $resource->getData());
     }
-
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    abstract public function getControllerBehavioursOptions();
 }

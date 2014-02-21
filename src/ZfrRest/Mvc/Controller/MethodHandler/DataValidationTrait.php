@@ -21,7 +21,6 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Http\Exception\Client\BadRequestException;
 use ZfrRest\Mvc\Exception\RuntimeException;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -48,10 +47,6 @@ trait DataValidationTrait
      */
     public function validateData(ResourceInterface $resource, array $data)
     {
-        if (!$this->getControllerBehavioursOptions()->getAutoValidate()) {
-            return $data;
-        }
-
         if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
             throw new RuntimeException('No input filter name has been found in resource metadata');
         }
@@ -71,24 +66,13 @@ trait DataValidationTrait
     }
 
     /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    abstract public function getControllerBehavioursOptions();
-
-    /**
-     * Allow to format error messages by different strategies
+     * Format error messages. It removes message keys
      *
      * @param  array $errorMessages
      * @return array
      */
     protected function formatErrorMessages(array $errorMessages)
     {
-        if ($this->getControllerBehavioursOptions()->getPreserveErrorKeys()) {
-            return $errorMessages;
-        }
-
         return array_map(function ($element) {
             return array_values($element);
         }, $errorMessages);

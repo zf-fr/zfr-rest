@@ -20,36 +20,17 @@ namespace ZfrRestTest\Asset\Mvc;
 
 use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Mvc\Controller\MethodHandler\DataValidationTrait;
-use ZfrRest\Options\ControllerBehavioursOptions;
 
 class DataValidationObject
 {
     use DataValidationTrait;
 
     /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehavioursOptions;
-
-    /**
-     * @param ControllerBehavioursOptions $behavioursOptions
      * @param InputFilterPluginManager    $inputFilterPluginManager
      */
-    public function __construct(
-        ControllerBehavioursOptions $behavioursOptions,
-        InputFilterPluginManager $inputFilterPluginManager
-    ) {
-        $this->controllerBehavioursOptions = $behavioursOptions;
+    public function __construct(InputFilterPluginManager $inputFilterPluginManager)
+    {
         $this->inputFilterPluginManager    = $inputFilterPluginManager;
     }
 
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehavioursOptions()
-    {
-        return $this->controllerBehavioursOptions;
-    }
 }

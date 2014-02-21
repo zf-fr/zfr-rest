@@ -19,10 +19,9 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
-use Zend\Mvc\Controller\AbstractController;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
-use ZfrRest\Options\ControllerBehavioursOptions;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
@@ -44,25 +43,17 @@ class PostHandler implements MethodHandlerInterface
     use DataHydrationTrait;
 
     /**
-     * @var ControllerBehavioursOptions
-     */
-    protected $controllerBehaviourOptions;
-
-    /**
      * Constructor
      *
-     * @param ControllerBehavioursOptions $controllerBehavioursOptions
-     * @param InputFilterPluginManager    $inputFilterPluginManager
-     * @param HydratorPluginManager       $hydratorPluginManager
+     * @param InputFilterPluginManager $inputFilterPluginManager
+     * @param HydratorPluginManager    $hydratorPluginManager
      */
     public function __construct(
-        ControllerBehavioursOptions $controllerBehavioursOptions,
         InputFilterPluginManager $inputFilterPluginManager,
         HydratorPluginManager $hydratorPluginManager
     ) {
-        $this->controllerBehaviourOptions = $controllerBehavioursOptions;
-        $this->inputFilterPluginManager   = $inputFilterPluginManager;
-        $this->hydratorPluginManager      = $hydratorPluginManager;
+        $this->inputFilterPluginManager = $inputFilterPluginManager;
+        $this->hydratorPluginManager    = $hydratorPluginManager;
     }
 
     /**
@@ -78,13 +69,10 @@ class PostHandler implements MethodHandlerInterface
      * As you can see, the post method have three arguments: the object that is inserted, the resource metadata and
      * the resource itself (which is the Collection where the object is added)
      *
-     * Note that if you have set "auto_validate" and/or "auto_hydrate" to false in ZfrRest config, those steps will
-     * do nothing
-     *
      * {@inheritDoc}
      * @throws MethodNotAllowedException
      */
-    public function handleMethod(AbstractController $controller, ResourceInterface $resource)
+    public function handleMethod(AbstractRestfulController $controller, ResourceInterface $resource)
     {
         // If no post method is defined on the controller, then we cannot do anything
         if (!method_exists($controller, 'post')) {
@@ -94,8 +82,13 @@ class PostHandler implements MethodHandlerInterface
         $singleResource = $resource->getMetadata()->createResource();
         $data           = json_decode($controller->getRequest()->getContent(), true);
 
-        $data = $this->validateData($singleResource, $data);
-        $data = $this->hydrateData($singleResource, $data);
+        if ($controller->getAutoValidate()) {
+            $data = $this->validateData($singleResource, $data);
+        }
+
+        if ($controller->getAutoHydrate()) {
+            $data = $this->hydrateData($singleResource, $data);
+        }
 
         $result = $controller->post($data);
 
@@ -108,15 +101,5 @@ class PostHandler implements MethodHandlerInterface
         }
 
         return $result;
-    }
-
-    /**
-     * Get the controller behaviour options
-     *
-     * @return ControllerBehavioursOptions
-     */
-    public function getControllerBehavioursOptions()
-    {
-        return $this->controllerBehaviourOptions;
     }
 }
