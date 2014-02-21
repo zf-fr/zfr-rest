@@ -20,11 +20,11 @@ namespace ZfrRest\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Driver\DriverChain;
-use Metadata\MetadataFactory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\Driver\AnnotationDriver;
+use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -47,7 +47,7 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
         $doctrineMetadataFactory = $objectManager->getMetadataFactory();
 
         $driverChain             = new DriverChain();
-        $resourceMetadataFactory = new MetadataFactory($driverChain);
+        $resourceMetadataFactory = new ResourceMetadataFactory($doctrineMetadataFactory, $driverChain);
 
         $drivers = $moduleOptions->getDrivers();
         foreach ($drivers as $driverOptions) {
@@ -55,10 +55,8 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
 
             switch($driverOptions->getClass()) {
                 case 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver':
-                    $driver = new AnnotationDriver(
-                        new AnnotationReader(),
-                        $doctrineMetadataFactory
-                    );
+                    $driver = new AnnotationDriver(new AnnotationReader());
+
                     break;
                 default:
                     throw new RuntimeException(sprintf(
