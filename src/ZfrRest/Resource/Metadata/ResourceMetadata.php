@@ -18,8 +18,6 @@
 
 namespace ZfrRest\Resource\Metadata;
 
-use Doctrine\Common\Persistence\Mapping\RuntimeReflectionService;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Metadata\ClassMetadata;
 use ZfrRest\Resource\Exception;
 use ZfrRest\Resource\Resource;
