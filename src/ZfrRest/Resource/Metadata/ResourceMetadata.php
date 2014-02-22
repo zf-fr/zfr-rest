@@ -18,6 +18,8 @@
 
 namespace ZfrRest\Resource\Metadata;
 
+use Doctrine\Common\Persistence\Mapping\RuntimeReflectionService;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Metadata\ClassMetadata;
 use ZfrRest\Resource\Exception;
 use ZfrRest\Resource\Resource;
@@ -108,5 +110,17 @@ class ResourceMetadata extends ClassMetadata implements ResourceMetadataInterfac
         }
 
         return $this->propertyMetadata['associations'][$association];
+    }
+
+    /**
+     * We don't want to serialize ourself the Doctrine class metadata, because it needs
+     * special handing that is performed by the class metadata factory
+     *
+     * @return string
+     */
+    public function serialize()
+    {
+        unset($this->propertyMetadata['classMetadata']);
+        return parent::serialize();
     }
 }

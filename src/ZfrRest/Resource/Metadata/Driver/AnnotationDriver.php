@@ -40,22 +40,13 @@ class AnnotationDriver implements DriverInterface
     protected $annotationReader;
 
     /**
-     * @var ClassMetadataFactory
-     */
-    protected $classMetadataFactory;
-
-    /**
      * Constructor
      *
-     * @param Reader                  $annotationReader
-     * @param ClassMetadataFactory    $classMetadataFactory
+     * @param Reader $annotationReader
      */
-    public function __construct(
-        Reader $annotationReader,
-        ClassMetadataFactory $classMetadataFactory
-    ) {
-        $this->annotationReader     = $annotationReader;
-        $this->classMetadataFactory = $classMetadataFactory;
+    public function __construct(Reader $annotationReader)
+    {
+        $this->annotationReader = $annotationReader;
     }
 
     /**
@@ -64,11 +55,7 @@ class AnnotationDriver implements DriverInterface
     public function loadMetadataForClass(ReflectionClass $class)
     {
         $className        = $class->getName();
-
-        $classMetadata    = $this->classMetadataFactory->getMetadataFor($className);
         $resourceMetadata = new ResourceMetadata($className);
-
-        $resourceMetadata->propertyMetadata['classMetadata'] = $classMetadata;
 
         // Process class level annotations
         $classAnnotations = $this->annotationReader->getClassAnnotations($class);

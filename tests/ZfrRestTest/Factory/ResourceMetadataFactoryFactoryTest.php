@@ -79,6 +79,6 @@ class ResourceMetadataFactoryFactoryTest extends PHPUnit_Framework_TestCase
         $factory = new ResourceMetadataFactoryFactory();
         $result  = $factory->createService($serviceManager);
 
-        $this->assertInstanceOf('Metadata\MetadataFactory', $result);
+        $this->assertInstanceOf('ZfrRest\Resource\Metadata\ResourceMetadataFactory', $result);
     }
 }
