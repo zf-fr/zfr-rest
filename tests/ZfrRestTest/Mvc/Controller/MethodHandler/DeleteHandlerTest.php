@@ -93,7 +93,7 @@ class DeleteHandlerTest extends PHPUnit_Framework_TestCase
         $handler = new DeleteHandler();
         $result  = $handler->handleMethod($controller, $resource);
 
-        $this->assertNull($result);
+        $this->assertSame($response, $result);
         $this->assertEquals(204, $response->getStatusCode());
     }
 }

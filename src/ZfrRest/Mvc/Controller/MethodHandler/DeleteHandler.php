@@ -52,7 +52,10 @@ class DeleteHandler implements MethodHandlerInterface
         // According to http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7, status code should
         // be 204 if nothing is returned
         if (empty($result)) {
-            $controller->getResponse()->setStatusCode(204);
+            $response = $controller->getResponse();
+            $response->setStatusCode(204);
+
+            return $response;
         }
 
         return $result;
