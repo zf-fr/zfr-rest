@@ -19,6 +19,7 @@
 namespace ZfrRest\Resource\Metadata;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
+use Metadata\ClassHierarchyMetadata;
 use Metadata\Driver\DriverInterface;
 use Metadata\MetadataFactory;
 
@@ -50,6 +51,11 @@ class ResourceMetadataFactory extends MetadataFactory
     public function getMetadataForClass($className)
     {
         $resourceMetadata = parent::getMetadataForClass($className);
+
+        if ($resourceMetadata instanceof ClassHierarchyMetadata) {
+            $resourceMetadata = $resourceMetadata->getOutsideClassMetadata();
+        }
+
         $resourceMetadata->propertyMetadata['classMetadata'] = $this->classMetadataFactory->getMetadataFor($className);
 
         return $resourceMetadata;

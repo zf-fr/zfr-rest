@@ -38,8 +38,7 @@ class AnnotationDriverTest extends PHPUnit_Framework_TestCase
         $resourceMetadataFactory = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
 
         /* @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $metadata */
-        $metadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Resource\Metadata\Annotation\A')
-                                            ->getOutsideClassMetadata();
+        $metadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Resource\Metadata\Annotation\A');
 
         $this->assertEquals('ResourceController', $metadata->getControllerName());
         $this->assertEquals('ResourceInputFilter', $metadata->getInputFilterName());
@@ -61,8 +60,7 @@ class AnnotationDriverTest extends PHPUnit_Framework_TestCase
         $resourceMetadataFactory = $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
 
         /* @var \ZfrRest\Resource\Metadata\ResourceMetadataInterface $metadata */
-        $metadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Resource\Metadata\Annotation\D')
-                                            ->getOutsideClassMetadata();
+        $metadata = $resourceMetadataFactory->getMetadataForClass('ZfrRestTest\Asset\Resource\Metadata\Annotation\D');
 
         $this->assertTrue($metadata->hasAssociationMetadata('bb'));
     }

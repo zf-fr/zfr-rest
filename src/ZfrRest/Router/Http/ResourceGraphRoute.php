@@ -231,6 +231,6 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             ));
         }
 
-        return $this->resource = new Resource($this->resource, $metadata->getOutsideClassMetadata());
+        return $this->resource = new Resource($this->resource, $metadata);
     }
 }
