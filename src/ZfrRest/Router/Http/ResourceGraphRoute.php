@@ -166,7 +166,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             // can continue, and that we can do more error handling
             return new RouteMatch([
                 'controller' => $this->resource->getMetadata()->getControllerName()
-            ]);
+            ], strlen($path));
         }
 
         return $this->buildRouteMatch($match->getMatchedResource(), strlen($path));
