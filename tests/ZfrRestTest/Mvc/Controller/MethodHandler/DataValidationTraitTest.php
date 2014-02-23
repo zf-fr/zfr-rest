@@ -92,7 +92,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
     public function testThrowExceptionOnFailedValidation()
     {
-        $this->setExpectedException('ZfrRest\Http\Exception\Client\BadRequestException');
+        $this->setExpectedException('ZfrRest\Http\Exception\Client\UnprocessableEntityException');
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');

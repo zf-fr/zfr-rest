@@ -19,7 +19,7 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
-use ZfrRest\Http\Exception\Client\BadRequestException;
+use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -43,7 +43,7 @@ trait DataValidationTrait
      * @param  array $data
      * @return array
      * @throws RuntimeException If no input filter is bound to the resource
-     * @throws BadRequestException If validation fails
+     * @throws UnprocessableEntityException If validation fails
      */
     public function validateData(ResourceInterface $resource, array $data)
     {
@@ -56,7 +56,7 @@ trait DataValidationTrait
         $inputFilter->setData($data);
 
         if (!$inputFilter->isValid()) {
-            throw new BadRequestException(
+            throw new UnprocessableEntityException(
                 'Validation error',
                 $this->formatErrorMessages($inputFilter->getMessages())
             );
