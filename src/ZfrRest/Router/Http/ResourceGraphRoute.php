@@ -30,6 +30,7 @@ use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\Router\Exception\RuntimeException;
 use ZfrRest\Router\Http\Matcher\BaseSubPathMatcher;
+use ZfrRest\Router\Http\Matcher\SubPathMatch;
 
 /**
  * @license MIT
@@ -169,19 +170,20 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             ], strlen($path));
         }
 
-        return $this->buildRouteMatch($match->getMatchedResource(), strlen($path));
+        return $this->buildRouteMatch($match, strlen($path));
     }
 
     /**
      * Build a route match
      *
-     * @param  ResourceInterface $resource
-     * @param  int               $pathLength
+     * @param  SubPathMatch $match
+     * @param  int          $pathLength
      * @throws RuntimeException
      * @return RouteMatch
      */
-    protected function buildRouteMatch(ResourceInterface $resource, $pathLength)
+    protected function buildRouteMatch(SubPathMatch $match, $pathLength)
     {
+        $resource = $match->getMatchedResource();
         $metadata = $resource->getMetadata();
 
         // If returned $data is a collection, then we use the controller specified in Collection mapping
@@ -196,9 +198,12 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             $controllerName = $metadata->getControllerName();
         }
 
+        $previousMatch = $match->getPreviousMatch();
+
         return new RouteMatch(
             [
                 'resource'   => $resource,
+                'context'    => $previousMatch ? $previousMatch->getMatchedResource() : null,
                 'controller' => $controllerName
             ],
             $pathLength

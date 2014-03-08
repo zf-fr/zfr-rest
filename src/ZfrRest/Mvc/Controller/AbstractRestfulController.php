@@ -109,6 +109,14 @@ class AbstractRestfulController extends AbstractController
     }
 
     /**
+     * @return ResourceInterface|null
+     */
+    public function getContextResource()
+    {
+        return $this->getEvent()->getRouteMatch()->getParam('context', null);
+    }
+
+    /**
      * Get the method handler plugin manager
      *
      * @return MethodHandlerPluginManager
