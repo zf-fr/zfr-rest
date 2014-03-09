@@ -95,6 +95,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
         foreach ($associations as $association) {
             if (!$resourceMetadata->hasAssociationMetadata($association)) {
+                unset($data[$association]);
                 continue;
             }
 
@@ -106,6 +107,10 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $associationHydrator = $associationResourceMetadata->getHydratorName();
 
             switch($associationMetadata['extraction']) {
+                case 'NONE':
+                    unset($data[$association]);
+                    break;
+
                 case 'ID':
                     $data = array_merge($data, [
                         $association => $associationHydrator->extractIdentifiers($data[$association])
