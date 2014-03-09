@@ -30,18 +30,12 @@ final class Collection implements AnnotationInterface
     public $controller;
 
     /**
-     * @var string
-     */
-    public $hydrator;
-
-    /**
      * {@inheritDoc}
      */
     public function getValue()
     {
         return [
-            'controller'  => $this->controller,
-            'hydrator'    => $this->hydrator
+            'controller' => $this->controller
         ];
     }
 }

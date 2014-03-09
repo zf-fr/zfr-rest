@@ -29,8 +29,7 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
  *      hydrator="ResourceHydrator"
  * )
  * @REST\Collection(
- *      controller="CollectionController",
- *      hydrator="CollectionHydrator"
+ *      controller="CollectionController"
  * )
  */
 class A

@@ -32,11 +32,4 @@ interface CollectionResourceMetadataInterface
      * @return string|null
      */
     public function getControllerName();
-
-    /**
-     * Get the hydrator's FQCN to be used for this resource
-     *
-     * @return string|null
-     */
-    public function getHydratorName();
 }

@@ -35,8 +35,7 @@ class ResourceTest extends PHPUnit_Framework_TestCase
         $collectionResourceMetadata = new CollectionResourceMetadata('stdClass');
 
         $data = [
-            'controller' => 'Controller',
-            'hydrator'   => 'Hydrator'
+            'controller' => 'Controller'
         ];
 
         foreach ($data as $key => $value) {
@@ -44,6 +43,5 @@ class ResourceTest extends PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($data['controller'], $collectionResourceMetadata->getControllerName());
-        $this->assertEquals($data['hydrator'], $collectionResourceMetadata->getHydratorName());
     }
 }
