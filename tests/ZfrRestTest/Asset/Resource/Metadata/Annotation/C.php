@@ -31,8 +31,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      hydrator="ResourceHydrator"
  * )
  * @REST\Collection(
- *      controller="CollectionController",
- *      hydrator="CollectionHydrator"
+ *      controller="CollectionController"
  * )
  */
 class C
