@@ -18,8 +18,57 @@
 
 namespace ZfrRest\View\Renderer;
 
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
+use ZfrRest\Resource\ResourceInterface;
 
-class DefaultResourceRenderer
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class DefaultResourceRenderer extends AbstractResourceRenderer
 {
+    /**
+     * @var ResourceMetadataFactory
+     */
+    protected $resourceMetadataFactory;
 
+    /**
+     * @var HydratorPluginManager
+     */
+    protected $hydratorPluginManager;
+
+    /**
+     * @param ResourceMetadataFactory $resourceMetadataFactory
+     * @param HydratorPluginManager   $hydratorManager
+     */
+    public function __construct(ResourceMetadataFactory $resourceMetadataFactory, HydratorPluginManager $hydratorManager)
+    {
+        $this->resourceMetadataFactory = $resourceMetadataFactory;
+        $this->hydratorPluginManager   = $hydratorManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function render($nameOrModel, $values = null)
+    {
+        // TODO: Implement render() method.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function renderItem(ResourceInterface $resource)
+    {
+        // TODO: Implement renderItem() method.
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function renderCollection(ResourceInterface $resource)
+    {
+        // TODO: Implement renderCollection() method.
+    }
 }

@@ -20,19 +20,25 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\View\Renderer\SimpleResourceRenderer;
+use ZfrRest\View\Renderer\DefaultResourceRenderer;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class SimpleResourceRendererFactory implements FactoryInterface
+class DefaultResourceRendererFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new SimpleResourceRenderer($serviceLocator->get('HydratorManager'));
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadataFactory $resourceMetadataFactory */
+        $resourceMetadataFactory = $serviceLocator->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
+
+        /** @var \Zend\Stdlib\Hydrator\HydratorPluginManager $hydratorManager */
+        $hydratorManager = $serviceLocator->get('HydratorManager');
+
+        return new DefaultResourceRenderer($resourceMetadataFactory, $hydratorManager);
     }
 }
