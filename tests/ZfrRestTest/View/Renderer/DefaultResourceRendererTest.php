@@ -18,6 +18,8 @@
 
 namespace ZfrRestTest\View\Renderer;
 
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Resource;
@@ -285,6 +287,54 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                         'country' => 'Italia'
                     ]
                 ]
+            ]
+        ];
+
+        $this->assertEquals($expectedPayload, $payload);
+    }
+
+    public function testCanRenderCollectionResourceAsPaginator()
+    {
+        $address1 = new Address();
+        $address2 = new Address();
+
+        $user1 = new User();
+        $user1->setId(2);
+        $user1->setUsername('bakura');
+        $user1->setAddress($address1);
+
+        $user2 = new User();
+        $user2->setId(3);
+        $user2->setUsername('ocramius');
+        $user2->setAddress($address2);
+
+        $metadata = $this->resourceMetadataFactory->getMetadataForClass(
+            'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
+        );
+
+        // In this test, we enforce that association extraction is set to NONE
+        $metadata->propertyMetadata['associations']['address']['extraction'] = 'NONE';
+
+        $paginator = new Paginator(new ArrayAdapter([$user1, $user2]));
+
+        $resourceModel = new ResourceModel(new Resource($paginator, $metadata));
+        $payload       = $this->resourceRenderer->render($resourceModel);
+
+        $expectedPayload = [
+            'items' => [
+                [
+                    'id'       => 2,
+                    'username' => 'bakura'
+                ],
+                [
+                    'id'       => 3,
+                    'username' => 'ocramius'
+                ]
+            ],
+            'meta' => [
+                'limit'  => 10,
+                'offset' => 0,
+                'total'  => 2
             ]
         ];
 
