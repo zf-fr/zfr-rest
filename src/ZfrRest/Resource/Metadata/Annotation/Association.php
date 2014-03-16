@@ -47,7 +47,7 @@ final class Association implements AnnotationInterface
     public function getValue()
     {
         return [
-            'rootable'   => $this->routable,
+            'routable'   => $this->routable,
             'path'       => $this->path,
             'extraction' => $this->extraction
         ];

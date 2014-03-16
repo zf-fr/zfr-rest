@@ -30,12 +30,16 @@ use ZfrRest\Resource\Metadata\Annotation\Association;
  */
 class ExposeAssociationTest extends PHPUnit_Framework_TestCase
 {
-    public function testAnnotation()
+    public function testAnnotationDefaults()
     {
         $annotation = new Association();
         $annotation->path = 'foo-bar';
 
-        $expected = ['path' => 'foo-bar'];
+        $expected = [
+            'path'       => 'foo-bar',
+            'routable'   => false,
+            'extraction' => 'ID'
+        ];
 
         $this->assertEquals($expected, $annotation->getValue());
     }

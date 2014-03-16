@@ -44,7 +44,7 @@ class A
      * Exposed association
      *
      * @ORM\OneToOne(targetEntity="B")
-     * @REST\Association(path="b")
+     * @REST\Association(path="b", routable=true, extraction="NONE")
      */
     protected $b;
 
