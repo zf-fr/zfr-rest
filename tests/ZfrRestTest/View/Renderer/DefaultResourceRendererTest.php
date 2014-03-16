@@ -26,6 +26,7 @@ use ZfrRest\Resource\Resource;
 use ZfrRest\View\Model\ResourceModel;
 use ZfrRest\View\Renderer\DefaultResourceRenderer;
 use ZfrRestTest\Asset\Resource\Metadata\Annotation\Address;
+use ZfrRestTest\Asset\Resource\Metadata\Annotation\Tweet;
 use ZfrRestTest\Asset\Resource\Metadata\Annotation\User;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
@@ -78,6 +79,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to NONE
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'NONE';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'NONE';
 
         $resourceModel = new ResourceModel(new Resource($user, $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -95,10 +97,18 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $address = new Address();
         $address->setId(43);
 
+        $tweet1 = new Tweet();
+        $tweet1->setId(565);
+
+        $tweet2 = new Tweet();
+        $tweet2->setId(5446);
+
         $user = new User();
         $user->setId(2);
         $user->setUsername('bakura');
         $user->setAddress($address);
+        $user->addTweet($tweet1);
+        $user->addTweet($tweet2);
 
         $metadata = $this->resourceMetadataFactory->getMetadataForClass(
             'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
@@ -106,6 +116,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to ID
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'ID';
+        $metadata->propertyMetadata['tweets']['address']['extraction']       = 'ID';
 
         $resourceModel = new ResourceModel(new Resource($user, $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -113,7 +124,8 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $expectedPayload = [
             'id'       => 2,
             'username' => 'bakura',
-            'address'  => 43
+            'address'  => 43,
+            'tweets'   => [565, 5446]
         ];
 
         $this->assertEquals($expectedPayload, $payload);
@@ -125,10 +137,20 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $address->setId(43);
         $address->setCountry('France');
 
+        $tweet1 = new Tweet();
+        $tweet1->setId(565);
+        $tweet1->setContent('Kung-fu fighting');
+
+        $tweet2 = new Tweet();
+        $tweet2->setId(5446);
+        $tweet2->setContent('Ohayou gozaimasu');
+
         $user = new User();
         $user->setId(2);
         $user->setUsername('bakura');
         $user->setAddress($address);
+        $user->addTweet($tweet1);
+        $user->addTweet($tweet2);
 
         $metadata = $this->resourceMetadataFactory->getMetadataForClass(
             'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
@@ -136,6 +158,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to EMBED
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'EMBED';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'EMBED';
 
         $resourceModel = new ResourceModel(new Resource($user, $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -146,6 +169,10 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
             'address'  => [
                 'id'      => 43,
                 'country' => 'France'
+            ],
+            'tweets' => [
+                ['id' => 565, 'content' => 'Kung-fu fighting', 'user' => 2],
+                ['id' => 5446, 'content' => 'Ohayou gozaimasu', 'user' => 2]
             ]
         ];
 
@@ -157,15 +184,27 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $address1 = new Address();
         $address2 = new Address();
 
+        $tweet1 = new Tweet();
+        $tweet1->setId(565);
+
+        $tweet2 = new Tweet();
+        $tweet2->setId(5446);
+
+        $tweet3 = new Tweet();
+        $tweet3->setId(5565);
+
         $user1 = new User();
         $user1->setId(2);
         $user1->setUsername('bakura');
         $user1->setAddress($address1);
+        $user1->addTweet($tweet1);
+        $user1->addTweet($tweet2);
 
         $user2 = new User();
         $user2->setId(3);
         $user2->setUsername('ocramius');
         $user2->setAddress($address2);
+        $user2->addTweet($tweet3);
 
         $metadata = $this->resourceMetadataFactory->getMetadataForClass(
             'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
@@ -173,6 +212,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to NONE
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'NONE';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'NONE';
 
         $resourceModel = new ResourceModel(new Resource([$user1, $user2], $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -201,15 +241,30 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $address2 = new Address();
         $address2->setId(344);
 
+        $tweet1 = new Tweet();
+        $tweet1->setId(565);
+        $tweet1->setContent('Kung-fu fighting');
+
+        $tweet2 = new Tweet();
+        $tweet2->setId(5446);
+        $tweet2->setContent('Ohayou gozaimasu');
+
+        $tweet3 = new Tweet();
+        $tweet3->setId(5565);
+        $tweet3->setContent('Sayounara');
+
         $user1 = new User();
         $user1->setId(2);
         $user1->setUsername('bakura');
         $user1->setAddress($address1);
+        $user1->addTweet($tweet1);
+        $user1->addTweet($tweet2);
 
         $user2 = new User();
         $user2->setId(3);
         $user2->setUsername('ocramius');
         $user2->setAddress($address2);
+        $user2->addTweet($tweet3);
 
         $metadata = $this->resourceMetadataFactory->getMetadataForClass(
             'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
@@ -217,6 +272,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to ID
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'ID';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'ID';
 
         $resourceModel = new ResourceModel(new Resource([$user1, $user2], $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -226,12 +282,14 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                 [
                     'id'       => 2,
                     'username' => 'bakura',
-                    'address'  => 45
+                    'address'  => 45,
+                    'tweets'   => [565, 5446]
                 ],
                 [
                     'id'       => 3,
                     'username' => 'ocramius',
-                    'address'  => 344
+                    'address'  => 344,
+                    'tweets'   => [5565]
                 ]
             ]
         ];
@@ -249,15 +307,30 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $address2->setId(344);
         $address2->setCountry('Italia');
 
+        $tweet1 = new Tweet();
+        $tweet1->setId(565);
+        $tweet1->setContent('Kung-fu fighting');
+
+        $tweet2 = new Tweet();
+        $tweet2->setId(5446);
+        $tweet2->setContent('Ohayou gozaimasu');
+
+        $tweet3 = new Tweet();
+        $tweet3->setId(5565);
+        $tweet3->setContent('Sayounara');
+
         $user1 = new User();
         $user1->setId(2);
         $user1->setUsername('bakura');
         $user1->setAddress($address1);
+        $user1->addTweet($tweet1);
+        $user1->addTweet($tweet2);
 
         $user2 = new User();
         $user2->setId(3);
         $user2->setUsername('ocramius');
         $user2->setAddress($address2);
+        $user2->addTweet($tweet3);
 
         $metadata = $this->resourceMetadataFactory->getMetadataForClass(
             'ZfrRestTest\Asset\Resource\Metadata\Annotation\User'
@@ -265,6 +338,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to EMBED
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'EMBED';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'EMBED';
 
         $resourceModel = new ResourceModel(new Resource([$user1, $user2], $metadata));
         $payload       = $this->resourceRenderer->render($resourceModel);
@@ -277,6 +351,10 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                     'address'  => [
                         'id'      => 45,
                         'country' => 'France'
+                    ],
+                    'tweets'   => [
+                        ['id' => 565, 'content' => 'Kung-fu fighting', 'user' => 2],
+                        ['id' => 5446, 'content' => 'Ohayou gozaimasu', 'user' => 2]
                     ]
                 ],
                 [
@@ -285,6 +363,9 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                     'address'  => [
                         'id'      => 344,
                         'country' => 'Italia'
+                    ],
+                    'tweets'   => [
+                        ['id' => 5565, 'content' => 'Sayounara', 'user' => 3]
                     ]
                 ]
             ]
@@ -314,6 +395,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
 
         // In this test, we enforce that association extraction is set to NONE
         $metadata->propertyMetadata['associations']['address']['extraction'] = 'NONE';
+        $metadata->propertyMetadata['associations']['tweets']['extraction']  = 'NONE';
 
         $paginator = new Paginator(new ArrayAdapter([$user1, $user2]));
 

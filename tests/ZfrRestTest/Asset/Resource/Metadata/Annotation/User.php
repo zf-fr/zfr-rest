@@ -46,10 +46,10 @@ class User
     protected $address;
 
     /**
-     * @ORM\OneToMany(targetEntity="Tweet")
+     * @ORM\OneToMany(targetEntity="Tweet", mappedBy="user")
      * @REST\Association(extraction="ID")
      */
-    //protected $tweets;
+    protected $tweets;
 
     public function __construct()
     {
@@ -110,14 +110,15 @@ class User
      */
     public function addTweet(Tweet $tweet)
     {
+        $tweet->setUser($this);
         $this->tweets->add($tweet);
     }
 
     /**
      * @return ArrayCollection
      */
-    /*public function getTweets()
+    public function getTweets()
     {
         return $this->tweets;
-    }*/
+    }
 }

@@ -46,6 +46,11 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
     protected $hydratorPluginManager;
 
     /**
+     * @var array
+     */
+    protected $circularChecker = [];
+
+    /**
      * @param ResourceMetadataFactory $resourceMetadataFactory
      * @param HydratorPluginManager   $hydratorManager
      */
@@ -70,6 +75,10 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         $data             = $resource->getData();
         $resourceMetadata = $resource->getMetadata();
 
+        // We start a new extraction context, to avoid circular extraction
+        $extractedClass                         = $resourceMetadata->getReflectionClass()->getName();
+        $this->circularChecker[$extractedClass] = true;
+
         $payload = [];
 
         // If the resource is a collection, we render each item individually
@@ -82,6 +91,9 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         }
 
         $payload = array_merge($this->renderMeta($resource), $payload);
+
+        // We're done with the context of this class
+        unset($this->circularChecker[$extractedClass]);
 
         return $payload;
     }
@@ -139,6 +151,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $isCollectionValued = $classMetadata->isCollectionValuedAssociation($association);
             $data[$association] = $this->renderAssociation(
                 $data[$association],
+                $classMetadata->getAssociationTargetClass($association),
                 $extractionStrategy,
                 $isCollectionValued
             );
@@ -151,19 +164,25 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      * Render a single association of a resource
      *
      * @param  object $object
+     * @param  string $targetClass
      * @param  string $extractionStrategy
      * @param  bool   $isCollectionValued
      * @return array|null
      */
-    protected function renderAssociation($object, $extractionStrategy, $isCollectionValued)
+    protected function renderAssociation($object, $targetClass, $extractionStrategy, $isCollectionValued)
     {
-        $associationResourceMetadata = $this->resourceMetadataFactory->getMetadataForClass(get_class($object));
+        $associationResourceMetadata = $this->resourceMetadataFactory->getMetadataForClass($targetClass);
         $classMetadata               = $associationResourceMetadata->getClassMetadata();
 
         // If the association is not a collection valued, we wrap the object around an array so that we do
         // not need to implement different logic
         if (!$isCollectionValued) {
             $object = [$object];
+        }
+
+        // Avoid circular extraction
+        if (isset($this->circularChecker[$targetClass])) {
+            $extractionStrategy = ResourceInterface::ASSOCIATION_EXTRACTION_ID;
         }
 
         $association = null;

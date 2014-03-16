@@ -34,6 +34,12 @@ class Tweet
     protected $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="tweets")
+     * @REST\Association(extraction="EMBED")
+     */
+    protected $user;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $content;
@@ -52,6 +58,22 @@ class Tweet
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 
     /**
