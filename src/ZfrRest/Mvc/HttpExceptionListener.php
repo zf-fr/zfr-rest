@@ -86,9 +86,16 @@ class HttpExceptionListener extends AbstractListenerAggregate
         // it work because for unknown reasons, the Response get replaced "somewhere" in the MVC workflow,
         // so the simplest is simply to do that
 
+        $content = [
+            'status_code' => $response->getStatusCode(),
+            'message'     => $response->getReasonPhrase()
+        ];
+
         if ($errors = $exception->getErrors()) {
-            $response->setContent(json_encode(['errors' => $errors]));
+            $content['errors'] = $errors;
         }
+
+        $response->setContent(json_encode($content));
 
         $event->setResponse($response);
         $event->setResult($response);

@@ -33,12 +33,4 @@ class CollectionResourceMetadata extends ClassMetadata implements CollectionReso
     {
         return $this->propertyMetadata['controller'];
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getHydratorName()
-    {
-        return $this->propertyMetadata['hydrator'];
-    }
 }

@@ -79,23 +79,22 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
 
     public function testPopulateResponse()
     {
-        $exception = $this->getMock('ZfrRest\Http\Exception\HttpExceptionInterface');
+        $exception = new Exception\Client\BadRequestException('Validation errors', ['email' => 'invalid']);
         $this->event->setParam('exception', $exception);
-
-        $exception->expects($this->once())
-                  ->method('prepareResponse')
-                  ->with($this->isInstanceOf('Zend\Http\Response'));
-
-        $exception->expects($this->once())->method('getErrors')->will($this->returnValue(['email' => 'invalid']));
 
         $this->httpExceptionListener->onDispatchError($this->event);
 
         $response = $this->event->getResponse();
+        $expectedContent = [
+            'status_code' => 400,
+            'message'     => 'Validation errors',
+            'errors'      => ['email' => 'invalid']
+        ];
 
         $this->assertNotSame($this->response, $response, 'Assert response is replaced');
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResult());
-        $this->assertEquals(['errors' => ['email' => 'invalid']], json_decode($this->event->getResponse()->getContent(), true));
+        $this->assertEquals($expectedContent, json_decode($this->event->getResponse()->getContent(), true));
     }
 
     public function testCanCreateFromCustomException()

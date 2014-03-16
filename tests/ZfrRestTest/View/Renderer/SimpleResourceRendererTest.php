@@ -31,7 +31,7 @@ use ZfrRest\View\Renderer\SimpleResourceRenderer;
  * @group Coverage
  * @covers \ZfrRest\View\Renderer\SimpleResourceRenderer
  */
-class ResourceRendererTest extends PHPUnit_Framework_TestCase
+class SimpleResourceRendererTest extends PHPUnit_Framework_TestCase
 {
     /**
      * ResourceRenderer does not really have engine
@@ -90,11 +90,10 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
     {
         $hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
 
-        $renderer           = new SimpleResourceRenderer($hydratorPluginManager);
-        $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $metadata           = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $collectionMetadata = $this->getMock('ZfrRest\Resource\Metadata\CollectionResourceMetadataInterface');
-        $hydrator           = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
+        $renderer = new SimpleResourceRenderer($hydratorPluginManager);
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
 
         $resourceModel = new ResourceModel($resource, $hydrator);
         $paginator     = $this->getMock('Zend\Paginator\Paginator', [], [], '', false);
@@ -123,8 +122,7 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $resource->expects($this->once())->method('getData')->will($this->returnValue($paginator));
 
-        $metadata->expects($this->once())->method('getCollectionMetadata')->will($this->returnValue($collectionMetadata));
-        $collectionMetadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('Hydrator'));
+        $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('Hydrator'));
 
         $hydratorPluginManager->expects($this->once())
                               ->method('get')

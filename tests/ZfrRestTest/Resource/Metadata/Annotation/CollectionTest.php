@@ -33,12 +33,10 @@ class CollectionTest extends PHPUnit_Framework_TestCase
     public function testAnnotation()
     {
         $annotation = new Collection();
-        $annotation->controller  = 'Controller';
-        $annotation->hydrator    = 'Hydrator';
+        $annotation->controller = 'Controller';
 
         $expected = [
-            'controller'  => 'Controller',
-            'hydrator'    => 'Hydrator'
+            'controller' => 'Controller'
         ];
 
         $this->assertEquals($expected, $annotation->getValue());

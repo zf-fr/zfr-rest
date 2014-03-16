@@ -121,7 +121,7 @@ class SimpleResourceRenderer extends AbstractResourceRenderer
      */
     public function renderCollection(ResourceInterface $resource)
     {
-        $hydratorName = $resource->getMetadata()->getCollectionMetadata()->getHydratorName();
+        $hydratorName = $resource->getMetadata()->getHydratorName();
         $hydrator     = $this->hydratorPluginManager->get($hydratorName);
 
         $data    = $resource->getData();
