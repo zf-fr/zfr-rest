@@ -20,7 +20,6 @@ namespace ZfrRest\View\Renderer;
 
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
-use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\Resource;
@@ -28,6 +27,8 @@ use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
+ *
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
@@ -81,7 +82,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
         $payload = array_merge($payload, $this->renderMeta($resource));
 
-        return json_decode($payload);
+        return $payload;
     }
 
     /**
@@ -118,6 +119,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         foreach ($associations as $association) {
             // If the association object is not in the payload or is not defined in mapping... we cannot do anything
             if (!isset($data[$association]) || !$resourceMetadata->hasAssociationMetadata($association)) {
+                unset($data[$association]);
                 continue;
             }
 
@@ -140,6 +142,8 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                 $isCollectionValued
             );
         }
+
+        return $data;
     }
 
     /**
@@ -161,15 +165,19 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $object = [$object];
         }
 
+        $association = null;
+
         switch($extractionStrategy) {
             case 'ID':
                 $identifiers = [];
 
                 foreach ($object as $datum) {
-                    $identifiers[] = reset($classMetadata->getIdentifierValues($datum));
+                    $identifierValues = $classMetadata->getIdentifierValues($datum);
+                    $identifiers[]    = reset($identifierValues);
                 }
 
-                return $identifiers;
+                $association = $identifiers;
+                break;
 
             case 'EMBED':
                 $embedded = [];
@@ -179,10 +187,11 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                     $embedded[] = $this->render(new ResourceModel($associationResource));
                 }
 
-                return $embedded;
+                $association = $embedded;
+                break;
         }
 
-        return null;
+        return $isCollectionValued ? $association : reset($association);
     }
 
     /**

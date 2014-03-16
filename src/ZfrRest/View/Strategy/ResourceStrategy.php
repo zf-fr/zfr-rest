@@ -74,7 +74,7 @@ class ResourceStrategy extends AbstractListenerAggregate
     }
 
     /**
-     * Inject the response with the JSON payload and appropriate Content-Type header
+     * Inject the response as a JSON payload and appropriate Content-Type header
      *
      * @internal
      * @param  ViewEvent $event
@@ -91,15 +91,10 @@ class ResourceStrategy extends AbstractListenerAggregate
 
         $result = $event->getResult();
 
-        if (!is_string($result)) {
-            // We don't have a string, and thus, no JSON
-            return;
-        }
-
         /* @var \Zend\Http\Response $response */
         $response = $event->getResponse();
 
-        $response->setContent($result);
+        $response->setContent(json_encode($result));
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
     }
 }

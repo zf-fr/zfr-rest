@@ -100,7 +100,7 @@ class ResourceStrategyTest extends PHPUnit_Framework_TestCase
         $response = new HttpResponse();
         $viewEvent->setResponse($response);
 
-        $viewEvent->setResult(json_encode(['foo' => 'bar']));
+        $viewEvent->setResult(['foo' => 'bar']);
 
         $this->resourceStrategy->injectResponse($viewEvent);
 
