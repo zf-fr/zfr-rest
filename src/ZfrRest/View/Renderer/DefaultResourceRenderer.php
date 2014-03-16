@@ -22,6 +22,7 @@ use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\Resource;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
@@ -139,7 +140,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      * @param  object $object
      * @param  string $extractionStrategy
      * @param  bool   $isCollectionValued
-     * @return array
+     * @return array|null
      */
     protected function renderAssociation($object, $extractionStrategy, $isCollectionValued)
     {
@@ -163,6 +164,16 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                 return $identifiers;
 
             case 'EMBED':
+                $embedded = [];
+
+                foreach ($object as $datum) {
+                    $associationResource = new Resource($datum, $associationResourceMetadata);
+                    $embedded[] = $this->render(new ResourceModel($associationResource));
+                }
+
+                return $embedded;
         }
+
+        return null;
     }
 }
