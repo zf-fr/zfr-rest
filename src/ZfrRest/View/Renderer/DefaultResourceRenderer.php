@@ -18,11 +18,13 @@
 
 namespace ZfrRest\View\Renderer;
 
+use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\Resource;
+use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
@@ -69,11 +71,13 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         // If the resource is a collection, we render each item individually
         if ($resource->isCollection()) {
             foreach ($data as $item) {
-                $payload[] = $this->renderItem($item, $resourceMetadata);
+                $payload['items'][] = $this->renderItem($item, $resourceMetadata);
             }
         } else {
             $payload = $this->renderItem($data, $resourceMetadata);
         }
+
+        $payload = array_merge($payload, $this->renderMeta($resource));
 
         return json_decode($payload);
     }
@@ -175,5 +179,28 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         }
 
         return null;
+    }
+
+    /**
+     * Render meta
+     * 
+     * @param  ResourceInterface $resource
+     * @return array
+     */
+    protected function renderMeta(ResourceInterface $resource)
+    {
+        $data = $resource->getData();
+
+        if ($data instanceof Paginator) {
+            return [
+                'meta' => [
+                    'limit'  => $data->getItemCountPerPage(),
+                    'offset' => ($data->getCurrentPageNumber() - 1) * $data->getItemCountPerPage(),
+                    'total'  => $data->getTotalItemCount()
+                ]
+            ];
+        }
+
+        return [];
     }
 }
