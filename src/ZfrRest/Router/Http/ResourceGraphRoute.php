@@ -18,7 +18,6 @@
 
 namespace ZfrRest\Router\Http;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use Metadata\MetadataFactory;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteInterface;
