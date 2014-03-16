@@ -68,7 +68,7 @@ class ResourcePluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if (!is_object($plugin)) {
+        if (is_object($plugin)) {
             return; // we're okay
         }
 
