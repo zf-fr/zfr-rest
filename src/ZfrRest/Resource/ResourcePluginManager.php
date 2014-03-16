@@ -16,10 +16,9 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\ObjectRepository;
+namespace ZfrRest\Resource;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\ObjectRepository;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
 use ZfrRest\Exception\RuntimeException;
@@ -32,7 +31,7 @@ use ZfrRest\Exception\RuntimeException;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ObjectRepositoryPluginManager extends AbstractPluginManager
+class ResourcePluginManager extends AbstractPluginManager
 {
     /**
      * @var ObjectManager
@@ -51,10 +50,16 @@ class ObjectRepositoryPluginManager extends AbstractPluginManager
      * Get the repository
      *
      * @param  string $name
-     * @return ObjectRepository
+     * @return object
      */
     public function get($name)
     {
+        // First check if an explicit resource was set
+        if ($this->has($name)) {
+            return $this->get($name);
+        }
+
+        // Otherwise, fallback to the object manager
         return $this->objectManager->getRepository($name);
     }
 
@@ -63,13 +68,13 @@ class ObjectRepositoryPluginManager extends AbstractPluginManager
      */
     public function validatePlugin($plugin)
     {
-        if ($plugin instanceof ObjectRepository) {
+        if (!is_object($plugin)) {
             return; // we're okay
         }
 
         throw new RuntimeException(sprintf(
-            'An object implementing "Doctrine\Common\Persistence\ObjectRepository" was expected; "%s" given',
-            is_object($plugin) ? get_class($plugin) : gettype($plugin)
+            'An object was expected; "%s" given',
+            gettype($plugin)
         ));
     }
 
