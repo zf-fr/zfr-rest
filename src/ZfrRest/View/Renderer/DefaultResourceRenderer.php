@@ -20,6 +20,7 @@ namespace ZfrRest\View\Renderer;
 
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\Resource;
@@ -62,7 +63,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
     public function render($nameOrModel, $values = null)
     {
         if (!$nameOrModel instanceof ResourceModel) {
-            return;
+            throw new RuntimeException('Resource renderer expect a ResourceModel instance');
         }
 
         $resource         = $nameOrModel->getResource();
@@ -80,7 +81,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $payload = $this->renderItem($data, $resourceMetadata);
         }
 
-        $payload = array_merge($payload, $this->renderMeta($resource));
+        $payload = array_merge($this->renderMeta($resource), $payload);
 
         return $payload;
     }
@@ -129,7 +130,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $extractionStrategy  = $associationMetadata['extraction'];
 
             // If set to NONE, we don't even want the association to be in the payload
-            if ($extractionStrategy === 'NONE') {
+            if ($extractionStrategy === ResourceInterface::ASSOCIATION_EXTRACTION_NONE) {
                 unset($data[$association]);
                 continue;
             }
@@ -168,7 +169,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         $association = null;
 
         switch($extractionStrategy) {
-            case 'ID':
+            case ResourceInterface::ASSOCIATION_EXTRACTION_ID:
                 $identifiers = [];
 
                 foreach ($object as $datum) {
@@ -179,7 +180,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                 $association = $identifiers;
                 break;
 
-            case 'EMBED':
+            case ResourceInterface::ASSOCIATION_EXTRACTION_EMBED:
                 $embedded = [];
 
                 foreach ($object as $datum) {

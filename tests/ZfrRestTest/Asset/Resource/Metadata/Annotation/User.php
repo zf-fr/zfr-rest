@@ -49,7 +49,7 @@ class User
      * @ORM\OneToMany(targetEntity="Tweet")
      * @REST\Association(extraction="ID")
      */
-    protected $tweets;
+    //protected $tweets;
 
     public function __construct()
     {
@@ -116,8 +116,8 @@ class User
     /**
      * @return ArrayCollection
      */
-    public function getTweets()
+    /*public function getTweets()
     {
         return $this->tweets;
-    }
+    }*/
 }
