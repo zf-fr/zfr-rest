@@ -19,8 +19,10 @@
 namespace ZfrRest\View\Renderer;
 
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
-use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\View\Model\ResourceModel;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -53,22 +55,114 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      */
     public function render($nameOrModel, $values = null)
     {
-        // TODO: Implement render() method.
+        if (!$nameOrModel instanceof ResourceModel) {
+            return;
+        }
+
+        $resource         = $nameOrModel->getResource();
+        $data             = $resource->getData();
+        $resourceMetadata = $resource->getMetadata();
+
+        $payload = [];
+
+        // If the resource is a collection, we render each item individually
+        if ($resource->isCollection()) {
+            foreach ($data as $item) {
+                $payload[] = $this->renderItem($item, $resourceMetadata);
+            }
+        } else {
+            $payload = $this->renderItem($data, $resourceMetadata);
+        }
+
+        return json_decode($payload);
     }
 
     /**
-     * {@inheritDoc}
+     * Render a single item
+     *
+     * @param  object                    $object
+     * @param  ResourceMetadataInterface $resourceMetadata
+     * @return array
      */
-    public function renderItem(ResourceInterface $resource)
+    public function renderItem($object, ResourceMetadataInterface $resourceMetadata)
     {
-        // TODO: Implement renderItem() method.
+        /** @var \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
+        $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
+
+        $data = $hydrator->extract($object);
+        $data = $this->renderAssociations($data, $resourceMetadata);
+
+        return $data;
     }
 
     /**
-     * {@inheritDoc}
+     * Traverses the entity extracted data, and handle each association depending on the Doctrine
+     * class metadata
+     *
+     * @param  array                     $data
+     * @param  ResourceMetadataInterface $resourceMetadata
+     * @return array
      */
-    public function renderCollection(ResourceInterface $resource)
+    protected function renderAssociations(array $data, ResourceMetadataInterface $resourceMetadata)
     {
-        // TODO: Implement renderCollection() method.
+        $classMetadata = $resourceMetadata->getClassMetadata();
+        $associations  = $classMetadata->getAssociationNames();
+
+        foreach ($associations as $association) {
+            // If the association object is not in the payload or is not defined in mapping... we cannot do anything
+            if (!isset($data[$association]) || !$resourceMetadata->hasAssociationMetadata($association)) {
+                continue;
+            }
+
+            // Otherwise, we allow to render an association if and only the resource mapping contains the association
+            // and is not set to "NONE" strategy
+            $associationMetadata = $resourceMetadata->getAssociationMetadata($association);
+            $extractionStrategy  = $associationMetadata['extraction'];
+
+            // If set to NONE, we don't even want the association to be in the payload
+            if ($extractionStrategy === 'NONE') {
+                unset($data[$association]);
+                continue;
+            }
+
+            // Otherwise, we render the association
+            $isCollectionValued = $classMetadata->isCollectionValuedAssociation($association);
+            $data[$association] = $this->renderAssociation(
+                $data[$association], $extractionStrategy, $isCollectionValued
+            );
+        }
+    }
+
+    /**
+     * Render a single association of a resource
+     *
+     * @param  object $object
+     * @param  string $extractionStrategy
+     * @param  bool   $isCollectionValued
+     * @return array
+     */
+    protected function renderAssociation($object, $extractionStrategy, $isCollectionValued)
+    {
+        $associationResourceMetadata = $this->resourceMetadataFactory->getMetadataForClass(get_class($object));
+        $classMetadata               = $associationResourceMetadata->getClassMetadata();
+
+        // If the association is not a collection valued, we wrap the object around an array so that we do
+        // not need to implement different logic
+        if (!$isCollectionValued) {
+            $object = [$object];
+        }
+
+        switch($extractionStrategy) {
+            case 'ID':
+                $identifiers = [];
+
+                foreach ($object as $datum) {
+                    $identifiers[] = reset($classMetadata->getIdentifierValues($datum));
+                }
+
+                return $identifiers;
+
+            case 'EMBED':
+        }
     }
 }
