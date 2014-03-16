@@ -20,7 +20,7 @@ namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
-use ZfrRest\Factory\ObjectRepositoryPluginManagerFactory;
+use ZfrRest\Factory\ResourcePluginManagerFactory;
 use ZfrRest\Options\ModuleOptions;
 
 /**
@@ -28,9 +28,9 @@ use ZfrRest\Options\ModuleOptions;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\Factory\ObjectRepositoryPluginManagerFactory
+ * @covers \ZfrRest\Factory\ResourcePluginManagerFactory
  */
-class ObjectRepositoryPluginManagerFactoryTest extends PHPUnit_Framework_TestCase
+class ResourcePluginManagerFactoryTest extends PHPUnit_Framework_TestCase
 {
     public function testCreateFromFactory()
     {
@@ -40,10 +40,10 @@ class ObjectRepositoryPluginManagerFactoryTest extends PHPUnit_Framework_TestCas
         $serviceManager->setService('ZfrRest\Options\ModuleOptions', $moduleOptions);
         $serviceManager->setService('my_object_manager', $this->getMock('Doctrine\Common\Persistence\ObjectManager'));
 
-        $factory = new ObjectRepositoryPluginManagerFactory();
+        $factory = new ResourcePluginManagerFactory();
         $result  = $factory->createService($serviceManager);
 
-        $this->assertInstanceOf('ZfrRest\ObjectRepository\ObjectRepositoryPluginManager', $result);
+        $this->assertInstanceOf('ZfrRest\Resource\ResourcePluginManager', $result);
         $this->assertSame($serviceManager, $result->getServiceLocator());
     }
 }

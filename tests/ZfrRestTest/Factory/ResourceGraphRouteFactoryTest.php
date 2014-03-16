@@ -64,8 +64,8 @@ class ResourceGraphRouteFactoryTest extends PHPUnit_Framework_TestCase
             $this->getMock('Metadata\MetadataFactory', [], [], '', false)
         );
         $serviceManager->setService(
-            'ZfrRest\ObjectRepository\ObjectRepositoryPluginManager',
-            $this->getMock('ZfrRest\ObjectRepository\ObjectRepositoryPluginManager', [], [], '', false)
+            'ZfrRest\Resource\ResourcePluginManager',
+            $this->getMock('ZfrRest\Resource\ResourcePluginManager', [], [], '', false)
         );
         $serviceManager->setService(
             'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher',

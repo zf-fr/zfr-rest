@@ -20,15 +20,15 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\ObjectRepository\ObjectRepositoryPluginManager;
+use ZfrRest\Resource\ResourcePluginManager;
 
 /**
- * Factory to create an ObjectRepositoryPluginManager
+ * Factory to create an ResourcePluginManager
  *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ObjectRepositoryPluginManagerFactory implements FactoryInterface
+class ResourcePluginManagerFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
@@ -41,7 +41,7 @@ class ObjectRepositoryPluginManagerFactory implements FactoryInterface
         /* @var \Doctrine\Common\Persistence\ObjectManager $objectManager */
         $objectManager = $serviceLocator->get($moduleOptions->getObjectManager());
 
-        $pluginManager = new ObjectRepositoryPluginManager($objectManager);
+        $pluginManager = new ResourcePluginManager($objectManager);
         $pluginManager->setServiceLocator($serviceLocator);
 
         return $pluginManager;

@@ -56,10 +56,10 @@ class ResourcePluginManager extends AbstractPluginManager
     {
         // First check if an explicit resource was set
         if ($this->has($name)) {
-            return $this->get($name);
+            return parent::get($name);
         }
 
-        // Otherwise, fallback to the object manager
+        // Otherwise, fallback to getting an object repository
         return $this->objectManager->getRepository($name);
     }
 

@@ -17,21 +17,34 @@
  */
 
 namespace ZfrRestTest\ObjectRepository;
-use ZfrRest\ObjectRepository\ObjectRepositoryPluginManager;
+
+use ZfrRest\Resource\ResourcePluginManager;
 
 /**
  * @licence MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\ObjectRepository\ObjectRepositoryPluginManager
+ * @covers \ZfrRest\Resource\ResourcePluginManager
  */
-class ObjectRepositoryPluginManagerTest extends \PHPUnit_Framework_TestCase
+class ResourcePluginManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCanRetrieveObjectRepository()
+    public function testFirstCheckForService()
     {
         $objectManager = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
-        $pluginManager = new ObjectRepositoryPluginManager($objectManager);
+        $pluginManager = new ResourcePluginManager($objectManager);
+
+        $object = new \stdClass();
+        $pluginManager->setService('Foo', $object);
+
+        $resource = $pluginManager->get('Foo');
+        $this->assertSame($object, $resource);
+    }
+
+    public function testCanFallbackToObjectRepository()
+    {
+        $objectManager = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
+        $pluginManager = new ResourcePluginManager($objectManager);
 
         $objectManager->expects($this->once())
                       ->method('getRepository')

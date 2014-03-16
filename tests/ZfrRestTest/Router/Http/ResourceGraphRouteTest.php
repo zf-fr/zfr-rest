@@ -50,7 +50,7 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->metadataFactory    = $this->getMock('Metadata\MetadataFactory', [], [], '', false);
-        $this->pluginManager      = $this->getMock('ZfrRest\ObjectRepository\ObjectRepositoryPluginManager', [], [], '', false);
+        $this->pluginManager      = $this->getMock('ZfrRest\Resource\ResourcePluginManager', [], [], '', false);
         $this->baseSubPathMatcher = $this->getMock('ZfrRest\Router\Http\Matcher\BaseSubPathMatcher', [], [], '', false);
     }
 

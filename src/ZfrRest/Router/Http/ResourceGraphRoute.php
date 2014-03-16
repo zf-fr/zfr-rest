@@ -23,9 +23,9 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface;
-use ZfrRest\ObjectRepository\ObjectRepositoryPluginManager;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
+use ZfrRest\Resource\ResourcePluginManager;
 use ZfrRest\Router\Exception\RuntimeException;
 use ZfrRest\Router\Http\Matcher\BaseSubPathMatcher;
 use ZfrRest\Router\Http\Matcher\SubPathMatch;
@@ -43,9 +43,9 @@ class ResourceGraphRoute implements RouteInterface
     protected $metadataFactory;
 
     /**
-     * @var ObjectRepositoryPluginManager
+     * @var ResourcePluginManager
      */
-    protected $objectRepositoryPluginManager;
+    protected $resourcePluginManager;
 
     /**
      * @var mixed
@@ -65,24 +65,24 @@ class ResourceGraphRoute implements RouteInterface
     /**
      * Constructor
      *
-     * @param MetadataFactory               $metadataFactory
-     * @param ObjectRepositoryPluginManager $objectRepositoryPluginManager
-     * @param BaseSubPathMatcher            $matcher
-     * @param mixed                         $resource
-     * @param string                        $route
+     * @param MetadataFactory       $metadataFactory
+     * @param ResourcePluginManager $resourcePluginManager
+     * @param BaseSubPathMatcher    $matcher
+     * @param mixed                 $resource
+     * @param string                $route
      */
     public function __construct(
         MetadataFactory $metadataFactory,
-        ObjectRepositoryPluginManager $objectRepositoryPluginManager,
+        ResourcePluginManager $resourcePluginManager,
         BaseSubPathMatcher $matcher,
         $resource,
         $route
     ) {
-        $this->metadataFactory               = $metadataFactory;
-        $this->objectRepositoryPluginManager = $objectRepositoryPluginManager;
-        $this->subPathMatcher                = $matcher;
-        $this->resource                      = $resource;
-        $this->route                         = $route;
+        $this->metadataFactory       = $metadataFactory;
+        $this->resourcePluginManager = $resourcePluginManager;
+        $this->subPathMatcher        = $matcher;
+        $this->resource              = $resource;
+        $this->route                 = $route;
     }
 
     /**
@@ -239,7 +239,7 @@ class ResourceGraphRoute implements RouteInterface
         }
 
         // Lazy-load the object repository for the resource class name
-        $repository = $this->objectRepositoryPluginManager->get($this->resource);
+        $repository = $this->resourcePluginManager->get($this->resource);
         $metadata   = $this->metadataFactory->getMetadataForClass($this->resource);
 
         return $this->resource = new Resource($repository, $metadata);
