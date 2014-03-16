@@ -28,7 +28,49 @@ use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\View\Model\ResourceModel;
 
 /**
+ * This is a very simple renderer that only outputs the resource as JSON, either directly in the payload for a single
+ * resource, or wrapping it around a "data" top-level attributes for multiple resources
  *
+ * This renderer does not assume to render any links, it's voluntarily simple. Here is an example of the generated
+ * payload when asking a simple resource like GET /posts/1:
+ *
+ * {
+ *     "id": 1,
+ *     "title": "ZfrRest is awesome",
+ *     "author": {
+ *         "id": 50,
+ *         "name": "Michaël Gallego"
+ *     }
+ * }
+ *
+ * Or when using a collection:
+ *
+ * {
+ *     "limit": 10,
+ *     "offset": 50,
+ *     "total": 600,
+ *     "data": [
+ *         {
+ *             "id": 1,
+ *             "title": "PHP will domine the world!",
+ *             "author": {
+ *                 "id": 56,
+ *                 "name": "Marco Pivetta"
+ *             }
+ *         },
+ *         {
+ *             "id": 2,
+ *             "title": "PHP generators are awesome",
+ *             "author": {
+ *                 "id": 95,
+ *                 "name": "Daniel Gimenes"
+ *             }
+ *         }
+ *     ]
+ * }
+ *
+ * Note that this renderer can recursively extracts any association, based on your mapping information. It also
+ * handles edge-cases like circular extraction
  *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
@@ -84,7 +126,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         // If the resource is a collection, we render each item individually
         if ($resource->isCollection()) {
             foreach ($data as $item) {
-                $payload['items'][] = $this->renderItem($item, $resourceMetadata);
+                $payload['data'][] = $this->renderItem($item, $resourceMetadata);
             }
         } else {
             $payload = $this->renderItem($data, $resourceMetadata);

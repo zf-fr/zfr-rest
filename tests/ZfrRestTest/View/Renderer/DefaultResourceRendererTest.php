@@ -218,7 +218,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $payload       = $this->resourceRenderer->render($resourceModel);
 
         $expectedPayload = [
-            'items' => [
+            'data' => [
                 [
                     'id'       => 2,
                     'username' => 'bakura'
@@ -278,7 +278,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $payload       = $this->resourceRenderer->render($resourceModel);
 
         $expectedPayload = [
-            'items' => [
+            'data' => [
                 [
                     'id'       => 2,
                     'username' => 'bakura',
@@ -344,7 +344,7 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $payload       = $this->resourceRenderer->render($resourceModel);
 
         $expectedPayload = [
-            'items' => [
+            'data' => [
                 [
                     'id'       => 2,
                     'username' => 'bakura',
@@ -403,7 +403,12 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $payload       = $this->resourceRenderer->render($resourceModel);
 
         $expectedPayload = [
-            'items' => [
+            'meta' => [
+                'limit'  => 10,
+                'offset' => 0,
+                'total'  => 2
+            ],
+            'data' => [
                 [
                     'id'       => 2,
                     'username' => 'bakura'
@@ -412,11 +417,6 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                     'id'       => 3,
                     'username' => 'ocramius'
                 ]
-            ],
-            'meta' => [
-                'limit'  => 10,
-                'offset' => 0,
-                'total'  => 2
             ]
         ];
 
