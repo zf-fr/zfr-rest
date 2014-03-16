@@ -47,8 +47,10 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      * @param ResourceMetadataFactory $resourceMetadataFactory
      * @param HydratorPluginManager   $hydratorManager
      */
-    public function __construct(ResourceMetadataFactory $resourceMetadataFactory, HydratorPluginManager $hydratorManager)
-    {
+    public function __construct(
+        ResourceMetadataFactory $resourceMetadataFactory,
+        HydratorPluginManager $hydratorManager
+    ) {
         $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->hydratorPluginManager   = $hydratorManager;
     }
@@ -133,7 +135,9 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             // Otherwise, we render the association
             $isCollectionValued = $classMetadata->isCollectionValuedAssociation($association);
             $data[$association] = $this->renderAssociation(
-                $data[$association], $extractionStrategy, $isCollectionValued
+                $data[$association],
+                $extractionStrategy,
+                $isCollectionValued
             );
         }
     }
@@ -183,7 +187,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
     /**
      * Render meta
-     * 
+     *
      * @param  ResourceInterface $resource
      * @return array
      */
