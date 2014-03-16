@@ -33,18 +33,24 @@ use ZfrRest\Router\Http\ResourceGraphRoute;
 class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var MetadataFactory
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $metadataFactory;
 
     /**
-     * @var BaseSubPathMatcher
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $pluginManager;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $baseSubPathMatcher;
 
     public function setUp()
     {
         $this->metadataFactory    = $this->getMock('Metadata\MetadataFactory', [], [], '', false);
+        $this->pluginManager      = $this->getMock('ZfrRest\ObjectRepository\ObjectRepositoryPluginManager', [], [], '', false);
         $this->baseSubPathMatcher = $this->getMock('ZfrRest\Router\Http\Matcher\BaseSubPathMatcher', [], [], '', false);
     }
 
@@ -52,6 +58,7 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
     {
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->metadataFactory,
+            $this->pluginManager,
             $this->baseSubPathMatcher,
             new \stdClass(),
             '/route'
@@ -64,6 +71,7 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
     {
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->metadataFactory,
+            $this->pluginManager,
             $this->baseSubPathMatcher,
             new \stdClass(),
             '/route'
@@ -76,6 +84,7 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
     {
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->metadataFactory,
+            $this->pluginManager,
             $this->baseSubPathMatcher,
             new \stdClass(),
             '/route'
@@ -99,6 +108,7 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
     {
         $resourceGraphRoute = new ResourceGraphRoute(
             $this->metadataFactory,
+            $this->pluginManager,
             $this->baseSubPathMatcher,
             new \stdClass(),
             '/route'

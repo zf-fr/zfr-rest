@@ -20,12 +20,11 @@ namespace ZfrRest\Router\Http;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Metadata\MetadataFactory;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Router\Http\RouteInterface;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface;
+use ZfrRest\ObjectRepository\ObjectRepositoryPluginManager;
 use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 use ZfrRest\Router\Exception\RuntimeException;
@@ -37,14 +36,17 @@ use ZfrRest\Router\Http\Matcher\SubPathMatch;
  * @author  Marco Pivetta <ocramius@gmail.com>
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  */
-class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
+class ResourceGraphRoute implements RouteInterface
 {
-    use EventManagerAwareTrait;
-
     /**
      * @var MetadataFactory
      */
     protected $metadataFactory;
+
+    /**
+     * @var ObjectRepositoryPluginManager
+     */
+    protected $objectRepositoryPluginManager;
 
     /**
      * @var mixed
@@ -64,17 +66,24 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
     /**
      * Constructor
      *
-     * @param MetadataFactory    $metadataFactory
-     * @param BaseSubPathMatcher $matcher
-     * @param mixed              $resource
-     * @param string             $route
+     * @param MetadataFactory               $metadataFactory
+     * @param ObjectRepositoryPluginManager $objectRepositoryPluginManager
+     * @param BaseSubPathMatcher            $matcher
+     * @param mixed                         $resource
+     * @param string                        $route
      */
-    public function __construct(MetadataFactory $metadataFactory, BaseSubPathMatcher $matcher, $resource, $route)
-    {
-        $this->metadataFactory = $metadataFactory;
-        $this->subPathMatcher  = $matcher;
-        $this->resource        = $resource;
-        $this->route           = $route;
+    public function __construct(
+        MetadataFactory $metadataFactory,
+        ObjectRepositoryPluginManager $objectRepositoryPluginManager,
+        BaseSubPathMatcher $matcher,
+        $resource,
+        $route
+    ) {
+        $this->metadataFactory               = $metadataFactory;
+        $this->objectRepositoryPluginManager = $objectRepositoryPluginManager;
+        $this->subPathMatcher                = $matcher;
+        $this->resource                      = $resource;
+        $this->route                         = $route;
     }
 
     /**
@@ -211,9 +220,7 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
     }
 
     /**
-     * Initialize the resource to create an object implementing the ResourceInterface interface. A resource can
-     * be anything: an entity, a collection, a Selectable... However, any ResourceInterface object contains both
-     * the resource AND metadata associated to it. This metadata is usually extracted from the entity name
+     * Initialize the resource to create an object implementing the ResourceInterface interface
      *
      * @throws RuntimeException
      * @return ResourceInterface
@@ -225,17 +232,17 @@ class ResourceGraphRoute implements RouteInterface, EventManagerAwareInterface
             return $this->resource;
         }
 
-        if ($this->resource instanceof ObjectRepository) {
-            $metadata = $this->metadataFactory->getMetadataForClass($this->resource->getClassName());
-        } elseif (is_string($this->resource)) {
-            $metadata = $this->metadataFactory->getMetadataForClass($this->resource);
-        } else {
+        if (!is_string($this->resource)) {
             throw new RuntimeException(sprintf(
-                'Resource "%s" is not supported: either specify an ObjectRepository instance, or an entity class name',
+                'Resource "%s" is not supported: you must specify an entity class name',
                 is_object($this->resource) ? get_class($this->resource) : gettype($this->resource)
             ));
         }
 
-        return $this->resource = new Resource($this->resource, $metadata);
+        // Lazy-load the object repository for the resource class name
+        $repository = $this->objectRepositoryPluginManager->get($this->resource);
+        $metadata   = $this->metadataFactory->getMetadataForClass($this->resource);
+
+        return $this->resource = new Resource($repository, $metadata);
     }
 }

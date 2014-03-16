@@ -62,10 +62,12 @@ class ResourceGraphRouteFactory implements FactoryInterface, MutableCreationOpti
         $parentLocator   = $serviceLocator->getServiceLocator();
         $resource        = $parentLocator->get($this->creationOptions['resource']);
         $metadataFactory = $parentLocator->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
+        $pluginManager   = $parentLocator->get('ZfrRest\ObjectRepository\ObjectRepositoryPluginManager');
         $matcher         = $parentLocator->get('ZfrRest\Router\Http\Matcher\BaseSubPathMatcher');
 
         return new ResourceGraphRoute(
             $metadataFactory,
+            $pluginManager,
             $matcher,
             $resource,
             $this->creationOptions['route']
