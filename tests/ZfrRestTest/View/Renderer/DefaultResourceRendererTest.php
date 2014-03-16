@@ -141,7 +141,10 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
         $expectedPayload = [
             'id'       => 2,
             'username' => 'bakura',
-            'address'  => 43
+            'address'  => [
+                'id'      => 43,
+                'country' => 'France'
+            ]
         ];
 
         $this->assertEquals($expectedPayload, $payload);

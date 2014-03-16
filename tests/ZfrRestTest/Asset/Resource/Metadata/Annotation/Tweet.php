@@ -18,8 +18,55 @@
 
 namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
+/**
+ * @ORM\Entity
+ * @REST\Resource(hydrator="ClassMethods")
+ */
 class Tweet
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     */
+    protected $id;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $content;
+
+    /**
+     * @param (int) $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int) $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = (string) $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 }

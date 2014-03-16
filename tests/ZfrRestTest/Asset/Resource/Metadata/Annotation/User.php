@@ -18,6 +18,7 @@
 
 namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ZfrRest\Resource\Metadata\Annotation as REST;
 
@@ -43,6 +44,17 @@ class User
      * @REST\Association(extraction="ID")
      */
     protected $address;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Tweet")
+     * @REST\Association(extraction="ID")
+     */
+    protected $tweets;
+
+    public function __construct()
+    {
+        $this->tweets = new ArrayCollection();
+    }
 
     /**
      * @param (int) $id
@@ -90,5 +102,22 @@ class User
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * @param  Tweet $tweet
+     * @return void
+     */
+    public function addTweet(Tweet $tweet)
+    {
+        $this->tweets->add($tweet);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTweets()
+    {
+        return $this->tweets;
     }
 }
