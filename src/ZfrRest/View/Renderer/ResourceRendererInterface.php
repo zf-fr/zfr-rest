@@ -19,7 +19,6 @@
 namespace ZfrRest\View\Renderer;
 
 use Zend\View\Renderer\RendererInterface;
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
