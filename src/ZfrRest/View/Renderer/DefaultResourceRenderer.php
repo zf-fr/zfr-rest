@@ -18,6 +18,7 @@
 
 namespace ZfrRest\View\Renderer;
 
+use Zend\Filter\Word\CamelCaseToUnderscore;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Exception\RuntimeException;
@@ -88,6 +89,11 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
     protected $hydratorPluginManager;
 
     /**
+     * @var bool
+     */
+    protected $underscoreSeparatedKeys;
+
+    /**
      * @var array
      */
     protected $circularChecker = [];
@@ -95,13 +101,16 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
     /**
      * @param ResourceMetadataFactory $resourceMetadataFactory
      * @param HydratorPluginManager   $hydratorManager
+     * @param bool                    $underscoreSeparatedKeys
      */
     public function __construct(
         ResourceMetadataFactory $resourceMetadataFactory,
-        HydratorPluginManager $hydratorManager
+        HydratorPluginManager $hydratorManager,
+        $underscoreSeparatedKeys = true
     ) {
         $this->resourceMetadataFactory = $resourceMetadataFactory;
         $this->hydratorPluginManager   = $hydratorManager;
+        $this->underscoreSeparatedKeys = (bool) $underscoreSeparatedKeys;
     }
 
     /**
@@ -168,10 +177,16 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      */
     protected function renderAssociations(array $data, ResourceMetadataInterface $resourceMetadata)
     {
+        $inflector = new CamelCaseToUnderscore();
+
         $classMetadata = $resourceMetadata->getClassMetadata();
         $associations  = $classMetadata->getAssociationNames();
 
         foreach ($associations as $association) {
+            if ($this->underscoreSeparatedKeys) {
+                $association = strtolower($inflector->filter($association));
+            }
+
             // If the association object is not in the payload or is not defined in mapping... we cannot do anything
             if (!isset($data[$association]) || !$resourceMetadata->hasAssociationMetadata($association)) {
                 unset($data[$association]);
