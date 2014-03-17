@@ -20,6 +20,7 @@ namespace ZfrRest\View\Renderer;
 
 use Zend\View\Renderer\RendererInterface;
 use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use ZfrRest\Resource\ResourceInterface;
 
 /**
  * Interface for all resource renderers
@@ -30,11 +31,10 @@ use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 interface ResourceRendererInterface extends RendererInterface
 {
     /**
-     * Render a single item
+     * Render a resource
      *
-     * @param  object                    $object
-     * @param  ResourceMetadataInterface $resourceMetadata
+     * @param  ResourceInterface $resource
      * @return array
      */
-    public function renderItem($object, ResourceMetadataInterface $resourceMetadata);
+    public function renderResource(ResourceInterface $resource);
 }

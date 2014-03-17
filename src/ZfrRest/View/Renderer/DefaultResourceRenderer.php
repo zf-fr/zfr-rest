@@ -122,7 +122,14 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             throw new RuntimeException('Resource renderer expect a ResourceModel instance');
         }
 
-        $resource         = $nameOrModel->getResource();
+        return $this->renderResource($nameOrModel->getResource());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function renderResource(ResourceInterface $resource)
+    {
         $data             = $resource->getData();
         $resourceMetadata = $resource->getMetadata();
 
@@ -156,7 +163,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      * @param  ResourceMetadataInterface $resourceMetadata
      * @return array
      */
-    public function renderItem($object, ResourceMetadataInterface $resourceMetadata)
+    protected function renderItem($object, ResourceMetadataInterface $resourceMetadata)
     {
         /** @var \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
         $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
@@ -261,7 +268,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
                 foreach ($object as $datum) {
                     $associationResource = new Resource($datum, $associationResourceMetadata);
-                    $embedded[] = $this->render(new ResourceModel($associationResource));
+                    $embedded[] = $this->renderResource($associationResource);
                 }
 
                 $association = $embedded;
