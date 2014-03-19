@@ -18,6 +18,8 @@
 
 namespace ZfrRest\Resource\Metadata\Annotation;
 
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+
 /**
  * @Annotation
  * @Target({"PROPERTY"})
@@ -39,7 +41,7 @@ final class Association implements AnnotationInterface
      *
      * @Enum({"NONE", "EMBED", "ID"})
      */
-    public $extraction = 'ID';
+    public $extraction = ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID;
 
     /**
      * {@inheritDoc}

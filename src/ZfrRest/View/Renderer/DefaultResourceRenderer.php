@@ -134,7 +134,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         $resourceMetadata = $resource->getMetadata();
 
         // We start a new extraction context, to avoid circular extraction
-        $extractedClass                         = $resourceMetadata->getReflectionClass()->getName();
+        $extractedClass                         = $resourceMetadata->name;
         $this->circularChecker[$extractedClass] = true;
 
         $payload = [];
@@ -168,10 +168,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         /** @var \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
         $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
 
-        $data = $hydrator->extract($object);
-        $data = $this->renderAssociations($data, $resourceMetadata);
-
-        return $data;
+        return $this->renderAssociations($hydrator->extract($object), $resourceMetadata);
     }
 
     /**
@@ -206,7 +203,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             $extractionStrategy  = $associationMetadata['extraction'];
 
             // If set to NONE, we don't even want the association to be in the payload
-            if ($extractionStrategy === ResourceInterface::ASSOCIATION_EXTRACTION_NONE) {
+            if ($extractionStrategy === ResourceMetadataInterface::ASSOCIATION_EXTRACTION_NONE) {
                 unset($data[$association]);
                 continue;
             }
@@ -246,13 +243,13 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
         // Avoid circular extraction
         if (isset($this->circularChecker[$targetClass])) {
-            $extractionStrategy = ResourceInterface::ASSOCIATION_EXTRACTION_ID;
+            $extractionStrategy = ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID;
         }
 
         $association = null;
 
         switch($extractionStrategy) {
-            case ResourceInterface::ASSOCIATION_EXTRACTION_ID:
+            case ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID:
                 $identifiers = [];
 
                 foreach ($object as $datum) {
@@ -263,7 +260,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                 $association = $identifiers;
                 break;
 
-            case ResourceInterface::ASSOCIATION_EXTRACTION_EMBED:
+            case ResourceMetadataInterface::ASSOCIATION_EXTRACTION_EMBED:
                 $embedded = [];
 
                 foreach ($object as $datum) {

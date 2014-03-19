@@ -27,16 +27,9 @@ namespace ZfrRest\Resource;
 interface ResourceInterface
 {
     /**
-     * Extraction constants that define how extraction associations are rendered
-     */
-    const ASSOCIATION_EXTRACTION_NONE  = 'NONE';
-    const ASSOCIATION_EXTRACTION_EMBED = 'EMBED';
-    const ASSOCIATION_EXTRACTION_ID    = 'ID';
-
-    /**
      * Get the resource metadata
      *
-     * @return Metadata\ResourceMetadataInterface
+     * @return Metadata\ResourceMetadataInterface|\Metadata\ClassMetadata
      */
     public function getMetadata();
 

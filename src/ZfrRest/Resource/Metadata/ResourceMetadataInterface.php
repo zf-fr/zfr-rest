@@ -26,6 +26,13 @@ namespace ZfrRest\Resource\Metadata;
 interface ResourceMetadataInterface
 {
     /**
+     * Extraction constants that define how extraction associations are rendered
+     */
+    const ASSOCIATION_EXTRACTION_NONE  = 'NONE';
+    const ASSOCIATION_EXTRACTION_EMBED = 'EMBED';
+    const ASSOCIATION_EXTRACTION_ID    = 'ID';
+
+    /**
      * Create a new resource from the metadata
      *
      * @return \ZfrRest\Resource\ResourceInterface
