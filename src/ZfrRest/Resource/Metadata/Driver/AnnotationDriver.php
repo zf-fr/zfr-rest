@@ -82,7 +82,9 @@ class AnnotationDriver implements DriverInterface
             $propertyName = $classProperty->getName();
             $path         = $associationMetadata['path'] ?: $propertyName;
 
-            $associationMetadata = ['propertyName' => $propertyName, 'path' => $path];
+            $associationMetadata = array_merge($associationMetadata, [
+                'propertyName' => $propertyName, 'path' => $path
+            ]);
 
             $resourceMetadata->propertyMetadata['associations'][$path]         = $associationMetadata;
             $resourceMetadata->propertyMetadata['associations'][$propertyName] = $associationMetadata;

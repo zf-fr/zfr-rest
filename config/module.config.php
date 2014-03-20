@@ -21,7 +21,7 @@ return [
         'factories' => [
             /* Factories that do not map to a class */
             'ZfrRest\Cache'                                                   => 'ZfrRest\Factory\CacheFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\SimpleResourceRendererFactory',
+            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\DefaultResourceRendererFactory',
 
             /* Factories that map to a class */
             'ZfrRest\Mvc\HttpExceptionListener'                               => 'ZfrRest\Factory\HttpExceptionListenerFactory',

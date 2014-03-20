@@ -30,18 +30,10 @@ use ZfrRest\Resource\ResourceInterface;
 interface ResourceRendererInterface extends RendererInterface
 {
     /**
-     * Render a single resource
+     * Render a resource
      *
      * @param  ResourceInterface $resource
      * @return array
      */
-    public function renderItem(ResourceInterface $resource);
-
-    /**
-     * Render a multiple resources
-     *
-     * @param  ResourceInterface $resource
-     * @return array
-     */
-    public function renderCollection(ResourceInterface $resource);
+    public function renderResource(ResourceInterface $resource);
 }

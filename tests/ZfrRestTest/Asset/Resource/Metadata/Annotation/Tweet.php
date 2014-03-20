@@ -23,16 +23,9 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
  * @ORM\Entity
- * @REST\Resource(
- *      controller="ResourceController",
- *      inputFilter="ResourceInputFilter",
- *      hydrator="ResourceHydrator"
- * )
- * @REST\Collection(
- *      controller="CollectionController"
- * )
+ * @REST\Resource(hydrator="ClassMethods")
  */
-class A
+class Tweet
 {
     /**
      * @ORM\Id
@@ -41,17 +34,61 @@ class A
     protected $id;
 
     /**
-     * Exposed association
-     *
-     * @ORM\OneToOne(targetEntity="B")
-     * @REST\Association(path="b", routable=true, extraction="NONE")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="tweets")
+     * @REST\Association(extraction="EMBED")
      */
-    protected $b;
+    protected $user;
 
     /**
-     * Non exposed association
-     *
-     * @ORM\OneToOne(targetEntity="C")
+     * @ORM\Column(type="string")
      */
-    protected $c;
+    protected $content;
+
+    /**
+     * @param (int) $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int) $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = (string) $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 }

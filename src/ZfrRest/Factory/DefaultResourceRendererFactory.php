@@ -16,42 +16,29 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
+namespace ZfrRest\Factory;
 
-use Doctrine\ORM\Mapping as ORM;
-use ZfrRest\Resource\Metadata\Annotation as REST;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\View\Renderer\DefaultResourceRenderer;
 
 /**
- * @ORM\Entity
- * @REST\Resource(
- *      controller="ResourceController",
- *      inputFilter="ResourceInputFilter",
- *      hydrator="ResourceHydrator"
- * )
- * @REST\Collection(
- *      controller="CollectionController"
- * )
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
  */
-class A
+class DefaultResourceRendererFactory implements FactoryInterface
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
+     * {@inheritDoc}
      */
-    protected $id;
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /** @var \ZfrRest\Resource\Metadata\ResourceMetadataFactory $resourceMetadataFactory */
+        $resourceMetadataFactory = $serviceLocator->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory');
 
-    /**
-     * Exposed association
-     *
-     * @ORM\OneToOne(targetEntity="B")
-     * @REST\Association(path="b", routable=true, extraction="NONE")
-     */
-    protected $b;
+        /** @var \Zend\Stdlib\Hydrator\HydratorPluginManager $hydratorManager */
+        $hydratorManager = $serviceLocator->get('HydratorManager');
 
-    /**
-     * Non exposed association
-     *
-     * @ORM\OneToOne(targetEntity="C")
-     */
-    protected $c;
+        return new DefaultResourceRenderer($resourceMetadataFactory, $hydratorManager);
+    }
 }

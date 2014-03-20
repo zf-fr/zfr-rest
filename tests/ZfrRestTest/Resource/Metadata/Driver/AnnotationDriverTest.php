@@ -49,6 +49,10 @@ class AnnotationDriverTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($metadata->hasAssociationMetadata('b'));
         $this->assertFalse($metadata->hasAssociationMetadata('c'));
+
+        $associationMetadata = $metadata->getAssociationMetadata('b');
+        $this->assertTrue($associationMetadata['routable']);
+        $this->assertEquals('NONE', $associationMetadata['extraction']);
     }
 
     public function testAssertAssociationMetadataIsIndexedByPath()

@@ -18,6 +18,8 @@
 
 namespace ZfrRest\Resource\Metadata\Annotation;
 
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+
 /**
  * @Annotation
  * @Target({"PROPERTY"})
@@ -25,9 +27,21 @@ namespace ZfrRest\Resource\Metadata\Annotation;
 final class Association implements AnnotationInterface
 {
     /**
+     * @var boolean
+     */
+    public $routable = false;
+
+    /**
      * @var string
      */
     public $path;
+
+    /**
+     * @var string
+     *
+     * @Enum({"NONE", "EMBED", "ID"})
+     */
+    public $extraction = ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID;
 
     /**
      * {@inheritDoc}
@@ -35,7 +49,9 @@ final class Association implements AnnotationInterface
     public function getValue()
     {
         return [
-            'path' => $this->path
+            'routable'   => $this->routable,
+            'path'       => $this->path,
+            'extraction' => $this->extraction
         ];
     }
 }

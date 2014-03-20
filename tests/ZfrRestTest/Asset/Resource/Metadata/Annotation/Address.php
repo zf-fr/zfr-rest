@@ -16,23 +16,57 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\View\Renderer\SimpleResourceRenderer;
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- * @licence MIT
+ * @ORM\Entity
+ * @REST\Resource(hydrator="ClassMethods")
  */
-class SimpleResourceRendererFactory implements FactoryInterface
+class Address
 {
     /**
-     * {@inheritDoc}
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $country;
+
+    /**
+     * @param (int) $id
+     */
+    public function setId($id)
     {
-        return new SimpleResourceRenderer($serviceLocator->get('HydratorManager'));
+        $this->id = (int) $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $country
+     */
+    public function setCountry($country)
+    {
+        $this->country = (string) $country;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
     }
 }

@@ -29,7 +29,7 @@ interface ResourceInterface
     /**
      * Get the resource metadata
      *
-     * @return Metadata\ResourceMetadataInterface
+     * @return Metadata\ResourceMetadataInterface|\Metadata\ClassMetadata
      */
     public function getMetadata();
 

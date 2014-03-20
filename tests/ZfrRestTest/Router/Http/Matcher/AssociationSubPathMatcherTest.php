@@ -140,13 +140,10 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 
         $associationMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
-        $classHierarchy = $this->getMock('Metadata\ClassHierarchyMetadata');
-        $classHierarchy->expects($this->once())->method('getOutsideClassMetadata')->will($this->returnValue($associationMetadata));
-
         $this->metadataFactory->expects($this->once())
                               ->method('getMetadataForClass')
                               ->with('ZfrRestTest\Asset\Router\AssociationMatcherEntity')
-                              ->will($this->returnValue($classHierarchy));
+                              ->will($this->returnValue($associationMetadata));
 
         $metadata->expects($this->once())
                  ->method('getReflectionClass')
