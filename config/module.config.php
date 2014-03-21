@@ -28,6 +28,7 @@ return [
             'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
             'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
             'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
+            'ZfrRest\Resource\ResourcePluginManager'                          => 'ZfrRest\Factory\ResourcePluginManagerFactory',
             'ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
             'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'                  => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
             'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\Factory\ResourceStrategyFactory'
