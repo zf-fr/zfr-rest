@@ -16,22 +16,20 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Asset\Mvc;
+namespace ZfrRest\Mvc\Controller;
 
-use Zend\InputFilter\InputFilterPluginManager;
-use ZfrRest\Mvc\Controller\MethodHandler\DataValidationTrait;
-
-class DataValidationObject
+/**
+ * Interface that allows to provide validation group, indexed by HTTP verb
+ *
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+interface ValidationGroupProviderInterface
 {
-    use DataValidationTrait;
-
-    protected $controller;
-
     /**
-     * @param InputFilterPluginManager $inputFilterPluginManager
+     * Get the validation group specification
+     *
+     * @return array
      */
-    public function __construct(InputFilterPluginManager $inputFilterPluginManager)
-    {
-        $this->inputFilterPluginManager = $inputFilterPluginManager;
-    }
+    public function getValidationGroupSpecification();
 }

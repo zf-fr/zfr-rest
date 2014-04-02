@@ -117,4 +117,40 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
         $this->dataValidation->validateData($resource, $data);
     }
+
+    public function testCanUseValidationGroup()
+    {
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\ValidationGroupProviderInterface');
+
+        $reflProperty = new \ReflectionProperty($this->dataValidation, 'controller');
+        $reflProperty->setAccessible(true);
+        $reflProperty->setValue($this->dataValidation, 'controller');
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
+
+        $data = ['foo'];
+
+        $inputFilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
+        $inputFilter->expects($this->once())->method('setData')->with($data);
+        $inputFilter->expects($this->once())
+                    ->method('isValid')
+                    ->will($this->returnValue(true));
+
+        $this->inputFilterPluginManager->expects($this->once())
+                                       ->method('get')
+                                       ->with('inputFilter')
+                                       ->will($this->returnValue($inputFilter));
+
+        $inputFilter->expects($this->once())
+                    ->method('getValues')
+                    ->will($this->returnValue(['filtered']));
+
+        $result = $this->dataValidation->validateData($resource, $data, 'post');
+
+        $this->assertEquals(['filtered'], $result);
+    }
 }
