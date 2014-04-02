@@ -124,13 +124,17 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
         $reflProperty = new \ReflectionProperty($this->dataValidation, 'controller');
         $reflProperty->setAccessible(true);
-        $reflProperty->setValue($this->dataValidation, 'controller');
+        $reflProperty->setValue($this->dataValidation, $controller);
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
+
+        $controller->expects($this->once())
+                   ->method('getValidationGroupSpecification')
+                   ->will($this->returnValue(['post' => ['field']]));
 
         $data = ['foo'];
 
@@ -139,6 +143,10 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $inputFilter->expects($this->once())
                     ->method('isValid')
                     ->will($this->returnValue(true));
+
+        $inputFilter->expects($this->once())
+                    ->method('setValidationGroup')
+                    ->with(['field']);
 
         $this->inputFilterPluginManager->expects($this->once())
                                        ->method('get')
