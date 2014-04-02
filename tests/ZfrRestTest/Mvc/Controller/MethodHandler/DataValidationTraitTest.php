@@ -78,20 +78,15 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                     ->method('isValid')
                     ->will($this->returnValue(true));
 
-        $this->inputFilterPluginManager->expects($this->once())
-                                       ->method('get')
-                                       ->with('inputFilter')
-                                       ->will($this->returnValue($inputFilter));
-
         $inputFilter->expects($this->once())
                     ->method('getValues')
                     ->will($this->returnValue(['filtered']));
 
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
         $controller->expects($this->once())
-                   ->method('configureInputFilter')
-                   ->with($this->isInstanceOf('Zend\InputFilter\InputFilterInterface'))
-                   ->will($this->returnArgument(0));
+                   ->method('getInputFilter')
+                   ->with($this->inputFilterPluginManager, 'inputFilter')
+                   ->will($this->returnValue($inputFilter));
 
         $result = $this->dataValidation->validateData($resource, $data, $controller);
 
@@ -118,16 +113,11 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                     ->method('isValid')
                     ->will($this->returnValue(false));
 
-        $this->inputFilterPluginManager->expects($this->once())
-                                       ->method('get')
-                                       ->with('inputFilter')
-                                       ->will($this->returnValue($inputFilter));
-
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
         $controller->expects($this->once())
-                   ->method('configureInputFilter')
-                   ->with($this->isInstanceOf('Zend\InputFilter\InputFilterInterface'))
-                   ->will($this->returnArgument(0));
+                   ->method('getInputFilter')
+                   ->with($this->inputFilterPluginManager, 'inputFilter')
+                   ->will($this->returnValue($inputFilter));
 
         $this->dataValidation->validateData($resource, $data, $controller);
     }
