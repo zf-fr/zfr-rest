@@ -120,11 +120,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
     public function testCanUseValidationGroup()
     {
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\ValidationGroupProviderInterface');
-
-        $reflProperty = new \ReflectionProperty($this->dataValidation, 'controller');
-        $reflProperty->setAccessible(true);
-        $reflProperty->setValue($this->dataValidation, $controller);
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
 
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
@@ -157,7 +153,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                     ->method('getValues')
                     ->will($this->returnValue(['filtered']));
 
-        $result = $this->dataValidation->validateData($resource, $data, 'post');
+        $result = $this->dataValidation->validateData($resource, $data, $controller, 'post');
 
         $this->assertEquals(['filtered'], $result);
     }

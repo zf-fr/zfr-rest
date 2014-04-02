@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
+use Zend\Mvc\Controller\AbstractController;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRest\Mvc\Controller\ValidationGroupProviderInterface;
 use ZfrRest\Mvc\Exception\RuntimeException;
@@ -40,15 +41,20 @@ trait DataValidationTrait
     /**
      * Filter and validate the data
      *
-     * @param  ResourceInterface $resource
-     * @param  array             $data
-     * @param  string|null       $validationGroupName
+     * @param  ResourceInterface       $resource
+     * @param  array                   $data
+     * @param  AbstractController|null $controller
+     * @param  string|null             $validationGroupName
      * @return array
      * @throws RuntimeException If no input filter is bound to the resource
      * @throws UnprocessableEntityException If validation fails
      */
-    public function validateData(ResourceInterface $resource, array $data, $validationGroupName = null)
-    {
+    public function validateData(
+        ResourceInterface $resource,
+        array $data,
+        AbstractController $controller = null,
+        $validationGroupName = null
+    ) {
         if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
             throw new RuntimeException('No input filter name has been found in resource metadata');
         }
@@ -57,8 +63,8 @@ trait DataValidationTrait
         $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
         $inputFilter->setData($data);
 
-        if ($this->controller instanceof ValidationGroupProviderInterface && $validationGroupName) {
-            $validationGroups = $this->controller->getValidationGroupSpecification();
+        if ($controller instanceof ValidationGroupProviderInterface && $validationGroupName) {
+            $validationGroups = $controller->getValidationGroupSpecification();
 
             if (isset($validationGroups[$validationGroupName])) {
                 $inputFilter->setValidationGroup($validationGroups[$validationGroupName]);
