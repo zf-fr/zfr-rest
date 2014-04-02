@@ -54,9 +54,7 @@ trait DataValidationTrait
         }
 
         /* @var \Zend\InputFilter\InputFilter $inputFilter */
-        $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
-        $inputFilter = $controller->configureInputFilter($inputFilter);
-
+        $inputFilter = $controller->getInputFilter($this->inputFilterPluginManager, $inputFilterName);
         $inputFilter->setData($data);
 
         if (!$inputFilter->isValid()) {

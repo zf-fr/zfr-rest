@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\Controller;
 use Doctrine\Common\Collections\Collection;
 use Zend\Http\Request as HttpRequest;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\InputFilter\InputFilterPluginManager;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use Zend\Paginator\Paginator;
@@ -136,12 +137,13 @@ class AbstractRestfulController extends AbstractController
     /**
      * Hook to configure an input filter fetched/created by ZfrRest
      *
-     * @param  InputFilterInterface $inputFilter
+     * @param  InputFilterPluginManager $inputFilterPluginManager
+     * @param  string                   $inputFilterName
      * @return InputFilterInterface
      */
-    public function configureInputFilter(InputFilterInterface $inputFilter)
+    public function getInputFilter(InputFilterPluginManager $inputFilterPluginManager, $inputFilterName)
     {
-        return $inputFilter;
+        return $inputFilterPluginManager->get($inputFilterName);
     }
 
     /**
