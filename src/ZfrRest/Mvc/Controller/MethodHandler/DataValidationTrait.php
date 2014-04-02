@@ -20,6 +20,7 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -39,20 +40,21 @@ trait DataValidationTrait
     /**
      * Filter and validate the data
      *
-     * @param  ResourceInterface $resource
-     * @param  array $data
+     * @param  ResourceInterface         $resource
+     * @param  array                     $data
+     * @param  AbstractRestfulController $controller
      * @return array
      * @throws RuntimeException If no input filter is bound to the resource
      * @throws UnprocessableEntityException If validation fails
      */
-    public function validateData(ResourceInterface $resource, array $data)
+    public function validateData(ResourceInterface $resource, array $data, AbstractRestfulController $controller)
     {
         if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
             throw new RuntimeException('No input filter name has been found in resource metadata');
         }
 
         /* @var \Zend\InputFilter\InputFilter $inputFilter */
-        $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
+        $inputFilter = $controller->getInputFilter($this->inputFilterPluginManager, $inputFilterName);
         $inputFilter->setData($data);
 
         if (!$inputFilter->isValid()) {

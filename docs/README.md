@@ -24,6 +24,8 @@ If you are looking for some information that is not listed in the documentation,
 4. [Controllers](/docs/04. Controllers.md)
     1. [Understanding method handlers](/docs/04. Controllers.md#method-handlers)
     2. [Configuring controller behaviours](/docs/04. Controllers.md#configuring-controller-behaviours)
+    3. [Context resource](/docs/04. Controllers.md#context-resource)
+    4. [Configuring input filters based on context](/docs/04. Controllers.md#configuring-input-filters-based-on-context)
 
 5. [Built-in listeners](/docs/05. Built-in listeners.md)
     1. [CreateResourceModelListener](/docs/05. Built-in listeners.md)

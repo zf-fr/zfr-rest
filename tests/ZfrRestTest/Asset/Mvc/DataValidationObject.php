@@ -26,11 +26,10 @@ class DataValidationObject
     use DataValidationTrait;
 
     /**
-     * @param InputFilterPluginManager    $inputFilterPluginManager
+     * @param InputFilterPluginManager $inputFilterPluginManager
      */
     public function __construct(InputFilterPluginManager $inputFilterPluginManager)
     {
-        $this->inputFilterPluginManager    = $inputFilterPluginManager;
+        $this->inputFilterPluginManager = $inputFilterPluginManager;
     }
-
 }

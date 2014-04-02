@@ -19,7 +19,6 @@
 namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Options\ControllerBehavioursOptions;
 use ZfrRestTest\Asset\Mvc\DataValidationObject;
 
 /**
@@ -57,7 +56,10 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue(null));
 
-        $this->dataValidation->validateData($resource, []);
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
+        $controller->expects($this->never())->method('configureInputFilter');
+
+        $this->dataValidation->validateData($resource, [], $controller);
     }
 
     public function testCanValidateData()
@@ -76,16 +78,17 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                     ->method('isValid')
                     ->will($this->returnValue(true));
 
-        $this->inputFilterPluginManager->expects($this->once())
-                                       ->method('get')
-                                       ->with('inputFilter')
-                                       ->will($this->returnValue($inputFilter));
-
         $inputFilter->expects($this->once())
                     ->method('getValues')
                     ->will($this->returnValue(['filtered']));
 
-        $result = $this->dataValidation->validateData($resource, $data);
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
+        $controller->expects($this->once())
+                   ->method('getInputFilter')
+                   ->with($this->inputFilterPluginManager, 'inputFilter')
+                   ->will($this->returnValue($inputFilter));
+
+        $result = $this->dataValidation->validateData($resource, $data, $controller);
 
         $this->assertEquals(['filtered'], $result);
     }
@@ -110,11 +113,12 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                     ->method('isValid')
                     ->will($this->returnValue(false));
 
-        $this->inputFilterPluginManager->expects($this->once())
-                                       ->method('get')
-                                       ->with('inputFilter')
-                                       ->will($this->returnValue($inputFilter));
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
+        $controller->expects($this->once())
+                   ->method('getInputFilter')
+                   ->with($this->inputFilterPluginManager, 'inputFilter')
+                   ->will($this->returnValue($inputFilter));
 
-        $this->dataValidation->validateData($resource, $data);
+        $this->dataValidation->validateData($resource, $data, $controller);
     }
 }
