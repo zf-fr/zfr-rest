@@ -19,10 +19,8 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\InputFilter\InputFilterPluginManager;
-use Zend\Mvc\Controller\AbstractController;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Mvc\Controller\ValidationGroupProviderInterface;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
