@@ -25,8 +25,6 @@ class DataValidationObject
 {
     use DataValidationTrait;
 
-    protected $controller;
-
     /**
      * @param InputFilterPluginManager $inputFilterPluginManager
      */
