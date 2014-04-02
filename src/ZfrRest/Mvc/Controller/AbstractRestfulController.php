@@ -134,7 +134,7 @@ class AbstractRestfulController extends AbstractController
     }
 
     /**
-     * Hook to configure an input filter depending on the method
+     * Hook to configure an input filter fetched/created by ZfrRest
      *
      * @param  InputFilterInterface $inputFilter
      * @return InputFilterInterface
