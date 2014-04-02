@@ -20,6 +20,7 @@ namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase;
 use ZfrRest\Options\ControllerBehavioursOptions;
+use ZfrRestTest\Asset\Mvc\ControllerWithValidationGroupSpec;
 use ZfrRestTest\Asset\Mvc\DataValidationObject;
 
 /**
@@ -120,17 +121,11 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
     public function testCanUseValidationGroup()
     {
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
-
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
-
-        $controller->expects($this->once())
-                   ->method('getValidationGroupSpecification')
-                   ->will($this->returnValue(['post' => ['field']]));
 
         $data = ['foo'];
 
@@ -152,6 +147,8 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $inputFilter->expects($this->once())
                     ->method('getValues')
                     ->will($this->returnValue(['filtered']));
+
+        $controller = new ControllerWithValidationGroupSpec();
 
         $result = $this->dataValidation->validateData($resource, $data, $controller, 'post');
 
