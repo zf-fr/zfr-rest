@@ -11,11 +11,12 @@ If you are looking for some information that is not listed in the documentation,
     4. [Current limitations](/docs/01. Introduction.md#current-limitations)
 
 2. [Quick Start](/docs/02. Quick Start.md)
-    1. [Creating your entity](/docs/02. Quick Start.md#creating-your-entity)
-    2. [Adding ZfrRest mapping](/docs/02. Quick Start.md#adding-zfrrest-mapping)
-    3. [Adding a route](/docs/02. Quick Start.md#adding-a-route)
-    4. [Adding a controller](/docs/02. Quick Start.md#adding-controllers)
-    5. [Associations](/docs/02. Quick Start.md#associations)
+    1. [Configuring ZfrRest](/docs/02. Quick Start.md#configuring-zfrrest)
+    2. [Creating your entity](/docs/02. Quick Start.md#creating-your-entity)
+    3. [Adding ZfrRest mapping](/docs/02. Quick Start.md#adding-zfrrest-mapping)
+    4. [Adding a route](/docs/02. Quick Start.md#adding-a-route)
+    5. [Adding a controller](/docs/02. Quick Start.md#adding-controllers)
+    6. [Associations](/docs/02. Quick Start.md#associations)
 
 3. [Using HTTP exceptions for reporting errors](/docs/03. Using HTTP exceptions for reporting errors.md)
     1. [Built-in exceptions](/docs/03. Using HTTP exceptions for reporting errors.md#built-in-exceptions)
@@ -42,6 +43,7 @@ If you are looking for some information that is not listed in the documentation,
     4. [How to specify a custom input filter?](/docs/07. Cookbook.md)
     5. [How to filter a collection using query params?](/docs/07. Cookbook.md)
     6. [How to serialize custom data that do not belong to the entity?](/docs/07. Cookbook.md)
+    7. [Tuning ZfrRest for production](/docs/07. Cookbook.md)
 
 8. [Mapping reference](/docs/08. Mapping reference.md)
     1. [Annotations](/docs/08. Mapping reference.md)
