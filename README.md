@@ -13,7 +13,7 @@ released it yet as it's not really clean, but if you're interested, please conta
 
 Install the module by typing (or add it to your `composer.json` file):
 
-`php composer.phar require zfr/zfr-rest:0.1.*`
+`php composer.phar require zfr/zfr-rest:0.2.*`
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
 `zfr_rest.global.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!).
