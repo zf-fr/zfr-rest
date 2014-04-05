@@ -95,6 +95,7 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResult());
         $this->assertEquals($expectedContent, json_decode($this->event->getResponse()->getContent(), true));
+        $this->assertTrue($this->event->propagationIsStopped());
     }
 
     public function testCanCreateFromCustomException()
@@ -109,5 +110,6 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
         $this->assertEquals('An error', $this->event->getResponse()->getReasonPhrase());
+        $this->assertTrue($this->event->propagationIsStopped());
     }
 }
