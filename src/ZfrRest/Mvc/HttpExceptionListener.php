@@ -99,6 +99,7 @@ class HttpExceptionListener extends AbstractListenerAggregate
 
         $event->setResponse($response);
         $event->setResult($response);
+        $event->stopPropagation(true);
     }
 
     /**
