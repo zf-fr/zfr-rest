@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1
+
+* HttpExceptionListener now stops propagation if it can handle a specific exception.
+
 ## 0.2.0
 
 * [FEATURE] You can now override the `getInputFilter` method in your controllers so that you can specify custom
