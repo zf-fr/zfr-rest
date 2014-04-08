@@ -128,6 +128,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
                  ->method('getAssociationMetadata')
                  ->with($associationPath)
                  ->will($this->returnValue([
+                    'routable'     => true,
                     'propertyName' => $propertyName,
                     'path'         => $associationPath
                 ]));
@@ -159,5 +160,24 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertSame($associationMetadata, $result->getMatchedResource()->getMetadata());
         $this->assertEquals($associationPath, $result->getMatchedPath());
         $this->assertNull($result->getPreviousMatch());
+    }
+
+    public function testWontMatchWhenRoutableIsSetToFalse()
+    {
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())
+                 ->method('hasAssociationMetadata')
+                 ->with('bar')
+                 ->will($this->returnValue(true));
+
+        $metadata->expects($this->once())
+                 ->method('getAssociationMetadata')
+                 ->with('bar')
+                 ->will($this->returnValue(['routable' => false]));
+
+        $this->assertNull($this->associationMatcher->matchSubPath($resource, 'bar'));
     }
 }
