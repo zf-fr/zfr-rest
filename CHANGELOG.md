@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.2
+
+* `routable` metadata is now correctly taken into account by the router, so it won't route to the associated
+resource if the parameter is set to false.
+
 ## 0.2.1
 
 * HttpExceptionListener now stops propagation if it can handle a specific exception.

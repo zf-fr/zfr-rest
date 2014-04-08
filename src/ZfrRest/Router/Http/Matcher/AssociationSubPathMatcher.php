@@ -63,10 +63,16 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
             return null;
         }
 
+        // We first need to check if the association is routable
+        $associationMetadata = $resourceMetadata->getAssociationMetadata($associationPath);
+
+        if (!isset($associationMetadata['routable']) || !$associationMetadata['routable']) {
+            return null;
+        }
+
         // User may specify a different path for a given association, however we need to retrieve the real
         // property name to be used by Doctrine, so we use the association metadata
-        $associationMetadata = $resourceMetadata->getAssociationMetadata($associationPath);
-        $associationName     = $associationMetadata['propertyName'];
+        $associationName = $associationMetadata['propertyName'];
 
         $classMetadata               = $resourceMetadata->getClassMetadata();
         $associationTargetClass      = $classMetadata->getAssociationTargetClass($associationName);
