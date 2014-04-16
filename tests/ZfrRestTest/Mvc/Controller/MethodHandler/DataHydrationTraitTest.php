@@ -19,7 +19,7 @@
 namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Options\ControllerBehavioursOptions;
+use ZfrRest\Mvc\Controller\Event\HydrationEvent;
 use ZfrRestTest\Asset\Mvc\DataHydrationObject;
 
 /**
@@ -36,55 +36,112 @@ class DataHydrationTraitTest extends PHPUnit_Framework_TestCase
      */
     protected $dataHydration;
 
-    /**
-     * @var \Zend\Stdlib\Hydrator\HydratorPluginManager
-     */
-    protected $hydratorPluginManager;
-
     public function setUp()
     {
-        $this->hydratorPluginManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
-        $this->dataHydration         = new DataHydrationObject($this->hydratorPluginManager);
+        $this->resource              = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $this->controller            = $this->getMock('Zend\EventManager\EventManagerAwareInterface');
+        $this->eventManager          = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $this->hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $this->dataHydration         = new DataHydrationObject($this->hydratorManager);
+
+        $this->controller->expects($this->once())->method('getEventManager')->will($this->returnValue($this->eventManager));
+    }
+
+    public function testTriggerEventAndSkipIfAutoHydrationDisabled()
+    {
+        $data = ['foo' => 'bar'];
+
+        $callback = function ($event) {
+            return ($event instanceof HydrationEvent)
+                && ($event->getTarget() === $this->controller)
+                && ($event->getResource() === $this->resource)
+                && ($event->getHydratorManager() === $this->hydratorManager);
+        };
+
+        $callback->bindTo($this);
+
+        $this->eventManager->expects($this->once())->method('trigger')->with(
+            $this->equalTo(HydrationEvent::EVENT_HYDRATE_PRE),
+            $this->callback($callback)
+        )->will($this->returnCallback(function ($name, $event) {
+            // Disable auto hydration
+            $event->setAutoHydrate(false);
+        }));
+
+        $result = $this->dataHydration->hydrateData($this->resource, $data, $this->controller);
+
+        $this->assertSame($data, $result);
     }
 
     public function testThrowExceptionIfNoHydratorNameIsDefined()
     {
         $this->setExpectedException('ZfrRest\Mvc\Exception\RuntimeException');
 
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $this->resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue(null));
 
-        $this->dataHydration->hydrateData($resource, []);
+        $this->dataHydration->hydrateData($this->resource, [], $this->controller);
     }
 
-    public function testCanHydrateData()
+    public function testHydrateWithCustomHydrator()
     {
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $data     = ['foo' => 'bar'];
+        $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
+        $object   = new \stdClass();
+
+        $this->eventManager->expects($this->at(0))->method('trigger')->with(
+            $this->equalTo(HydrationEvent::EVENT_HYDRATE_PRE)
+        )->will($this->returnCallback(function ($name, $event) use ($hydrator) {
+            // Set custom hydrator
+            $event->setHydrator($hydrator);
+        }));
+
+        $this->resource->expects($this->once())->method('getData')->will($this->returnValue($object));
+        $hydrator->expects($this->once())
+                 ->method('hydrate')
+                 ->with($data, $object)
+                 ->will($this->returnValue($object));
+
+        $this->eventManager->expects($this->at(1))->method('trigger')->with(HydrationEvent::EVENT_HYDRATE_POST);
+
+        $result = $this->dataHydration->hydrateData($this->resource, $data, $this->controller);
+
+        $this->assertSame($object, $result);
+    }
+
+    public function testHydrateWithDefaultHydrator()
+    {
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('hydrator'));
+        $this->resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('FooHydrator'));
 
         $data         = ['foo'];
         $resourceData = new \stdClass();
-        $resource->expects($this->once())->method('getData')->will($this->returnValue($resourceData));
+        $this->resource->expects($this->once())->method('getData')->will($this->returnValue($resourceData));
 
         $hydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
         $hydrator->expects($this->once())
                  ->method('hydrate')
                  ->with($data, $resourceData)
-                 ->will($this->returnValue(['bar']));
+                 ->will($this->returnValue($resourceData));
 
-        $this->hydratorPluginManager->expects($this->once())
+        $this->hydratorManager->expects($this->once())
                                     ->method('get')
-                                    ->with('hydrator')
+                                    ->with('FooHydrator')
                                     ->will($this->returnValue($hydrator));
 
-        $result = $this->dataHydration->hydrateData($resource, $data);
+        $this->eventManager->expects($this->at(1))->method('trigger')->with(
+            HydrationEvent::EVENT_HYDRATE_POST,
+            $this->callback(function ($event) use ($hydrator) {
+                return ($event instanceof HydrationEvent && $event->getHydrator() === $hydrator);
+            })
+        );
 
-        $this->assertEquals(['bar'], $result);
+        $result = $this->dataHydration->hydrateData($this->resource, $data, $this->controller);
+
+        $this->assertSame($resourceData, $result);
     }
 }

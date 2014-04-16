@@ -18,7 +18,10 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\ServiceManager\AbstractPluginManager;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use ZfrRest\Mvc\Controller\Event\HydrationEvent;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -31,25 +34,47 @@ use ZfrRest\Resource\ResourceInterface;
 trait DataHydrationTrait
 {
     /**
-     * @var HydratorPluginManager
+     * @var AbstractPluginManager
      */
     protected $hydratorPluginManager;
 
     /**
      * Hydrate the object bound to the data
      *
-     * @param  ResourceInterface $resource
-     * @param  array             $data
+     * @param  ResourceInterface          $resource
+     * @param  array                      $data
+     * @param  EventManagerAwareInterface $controller
      * @return array|object
      * @throws RuntimeException
      */
-    public function hydrateData(ResourceInterface $resource, array $data)
+    public function hydrateData(ResourceInterface $resource, array $data, EventManagerAwareInterface $controller)
     {
-        if (!($hydratorName = $resource->getMetadata()->getHydratorName())) {
-            throw new RuntimeException('No hydrator name has been found in resource metadata');
+        /* @var EventManagerInterface $eventManager */
+        $eventManager = $controller->getEventManager();
+
+        $event = new HydrationEvent($resource, $this->hydratorPluginManager);
+        $event->setTarget($controller);
+
+        $eventManager->trigger(HydrationEvent::EVENT_HYDRATE_PRE, $event);
+
+        if (!$event->getAutoHydrate()) {
+            return $data;
         }
 
-        $hydrator = $this->hydratorPluginManager->get($hydratorName);
+        /* @var HydratorInterface $inputFilter */
+        $hydrator = $event->getHydrator();
+
+        if (!$hydrator instanceof HydratorInterface) {
+            if (!($hydratorName = $resource->getMetadata()->getHydratorName())) {
+                throw new RuntimeException('No hydrator name has been found in resource metadata');
+            }
+
+            $hydrator = $this->hydratorPluginManager->get($hydratorName);
+
+            $event->setHydrator($hydrator);
+        }
+
+        $eventManager->trigger(HydrationEvent::EVENT_HYDRATE_POST, $event);
 
         return $hydrator->hydrate($data, $resource->getData());
     }
