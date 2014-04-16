@@ -18,18 +18,17 @@
 
 namespace ZfrRestTest\Asset\Mvc;
 
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use Zend\ServiceManager\AbstractPluginManager;
 use ZfrRest\Mvc\Controller\MethodHandler\DataHydrationTrait;
-use ZfrRest\Options\ControllerBehavioursOptions;
 
 class DataHydrationObject
 {
     use DataHydrationTrait;
 
     /**
-     * @param HydratorPluginManager $hydratorPluginManager
+     * @param AbstractPluginManager $hydratorPluginManager
      */
-    public function __construct(HydratorPluginManager $hydratorPluginManager)
+    public function __construct(AbstractPluginManager $hydratorPluginManager)
     {
         $this->hydratorPluginManager = $hydratorPluginManager;
     }

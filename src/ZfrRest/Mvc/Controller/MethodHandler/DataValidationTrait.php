@@ -18,10 +18,12 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\InputFilter\InputFilterPluginManager;
+use Zend\ServiceManager\AbstractPluginManager;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
-use ZfrRest\Mvc\Controller\AbstractRestfulController;
+use ZfrRest\Mvc\Controller\Event\ValidationEvent;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
@@ -34,38 +36,59 @@ use ZfrRest\Resource\ResourceInterface;
 trait DataValidationTrait
 {
     /**
-     * @var InputFilterPluginManager
+     * @var AbstractPluginManager
      */
     protected $inputFilterPluginManager;
 
     /**
      * Filter and validate the data
      *
-     * @param  ResourceInterface         $resource
-     * @param  array                     $data
-     * @param  AbstractRestfulController $controller
+     * @param  ResourceInterface          $resource
+     * @param  array                      $data
+     * @param  EventManagerAwareInterface $controller
      * @return array
      * @throws RuntimeException If no input filter is bound to the resource
      * @throws UnprocessableEntityException If validation fails
      */
-    public function validateData(ResourceInterface $resource, array $data, AbstractRestfulController $controller)
+    public function validateData(ResourceInterface $resource, array $data, EventManagerAwareInterface $controller)
     {
-        if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
-            throw new RuntimeException('No input filter name has been found in resource metadata');
+        /* @var EventManagerInterface $eventManager */
+        $eventManager = $controller->getEventManager();
+
+        $event = new ValidationEvent($resource, $this->inputFilterPluginManager);
+        $event->setTarget($controller);
+
+        $eventManager->trigger(ValidationEvent::EVENT_VALIDATE_PRE, $event);
+
+        if (!$event->getAutoValidate()) {
+            return $data;
         }
 
-        /* @var \Zend\InputFilter\InputFilter $inputFilter */
-        $inputFilter = $controller->getInputFilter($this->inputFilterPluginManager, $inputFilterName);
+        /* @var InputFilterInterface $inputFilter */
+        $inputFilter = $event->getInputFilter();
+
+        if (!$inputFilter instanceof InputFilterInterface) {
+            if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
+                throw new RuntimeException('No input filter name has been found in resource metadata');
+            }
+
+            $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
+
+            $event->setInputFilter($inputFilter);
+        }
+
         $inputFilter->setData($data);
 
-        $validationContext = $resource->getData();
+        if (!$inputFilter->isValid($resource->getData())) {
+            $eventManager->trigger(ValidationEvent::EVENT_VALIDATE_ERROR, $event);
 
-        if (!$inputFilter->isValid($validationContext)) {
             throw new UnprocessableEntityException(
                 'Validation error',
                 $this->extractErrorMessages($inputFilter)
             );
         }
+
+        $eventManager->trigger(ValidationEvent::EVENT_VALIDATE_SUCCESS, $event);
 
         return $inputFilter->getValues();
     }
