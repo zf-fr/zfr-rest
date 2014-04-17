@@ -66,7 +66,9 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
     {
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $context  = new \stdClass;
 
+        $resource->expects($this->once())->method('getData')->will($this->returnValue($context));
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
 
@@ -76,6 +78,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $inputFilter->expects($this->once())->method('setData')->with($data);
         $inputFilter->expects($this->once())
                     ->method('isValid')
+                    ->with($context)
                     ->will($this->returnValue(true));
 
         $inputFilter->expects($this->once())
