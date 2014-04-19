@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.3
+
+* `paginatorWrapper` controller plugin now supports the resource data to be a plain PHP array.
+
 ## 0.2.2
 
 * `routable` metadata is now correctly taken into account by the router, so it won't route to the associated

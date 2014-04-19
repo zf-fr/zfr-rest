@@ -30,6 +30,17 @@ use ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper;
  */
 class PaginatorWrapperTest extends PHPUnit_Framework_TestCase
 {
+    public function testCanCreatePaginatorFromArray()
+    {
+        $collection = [];
+        $plugin     = new PaginatorWrapper();
+
+        $paginator = $plugin($collection);
+
+        $this->assertInstanceOf('Zend\Paginator\Paginator', $paginator);
+        $this->assertInstanceOf('Zend\Paginator\Adapter\ArrayAdapter', $paginator->getAdapter());
+    }
+
     public function testCanCreatePaginatorFromCollection()
     {
         $collection = $this->getMock('Doctrine\Common\Collections\Collection');

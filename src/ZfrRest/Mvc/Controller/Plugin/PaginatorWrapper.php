@@ -24,6 +24,7 @@ use Doctrine\Common\Collections\Selectable;
 use DoctrineModule\Paginator\Adapter\Collection as CollectionAdapter;
 use DoctrineModule\Paginator\Adapter\Selectable as SelectableAdapter;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
 use ZfrRest\Exception\RuntimeException;
 
@@ -37,8 +38,8 @@ use ZfrRest\Exception\RuntimeException;
 class PaginatorWrapper extends AbstractPlugin
 {
     /**
-     * @param  Collection|Selectable $data
-     * @param  Criteria|array        $criteria
+     * @param  Collection|Selectable|array $data
+     * @param  Criteria|array              $criteria
      * @return Paginator
      * @throws RuntimeException
      */
@@ -48,6 +49,8 @@ class PaginatorWrapper extends AbstractPlugin
             return new Paginator(new SelectableAdapter($data, $this->createCriteria($criteria)));
         } elseif ($data instanceof Collection) {
             return new Paginator(new CollectionAdapter($data));
+        } elseif (is_array($data)) {
+            return new Paginator(new ArrayAdapter($data));
         }
 
         throw new RuntimeException(sprintf(
