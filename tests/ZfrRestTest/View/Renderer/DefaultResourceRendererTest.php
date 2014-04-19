@@ -18,6 +18,7 @@
 
 namespace ZfrRestTest\View\Renderer;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Zend\Paginator\Adapter\ArrayAdapter;
 use Zend\Paginator\Paginator;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
@@ -26,8 +27,10 @@ use ZfrRest\Resource\Resource;
 use ZfrRest\View\Model\ResourceModel;
 use ZfrRest\View\Renderer\DefaultResourceRenderer;
 use ZfrRestTest\Asset\Resource\Metadata\Annotation\Address;
+use ZfrRestTest\Asset\Resource\Metadata\Annotation\Role;
 use ZfrRestTest\Asset\Resource\Metadata\Annotation\Tweet;
 use ZfrRestTest\Asset\Resource\Metadata\Annotation\User;
+use ZfrRestTest\Asset\Resource\Metadata\Annotation\UserWithRoles;
 use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
@@ -418,6 +421,36 @@ class DefaultResourceRendererTest extends \PHPUnit_Framework_TestCase
                     'username' => 'ocramius'
                 ]
             ]
+        ];
+
+        $this->assertEquals($expectedPayload, $payload);
+    }
+
+    public function testCanRenderResourceWithPassThruExtraction()
+    {
+        $role = new Role();
+        $role->setId(1);
+        $role->setName('member');
+
+        $user = new UserWithRoles();
+        $user->setId(2);
+        $user->setUsername('bakura');
+        $user->setRoles(new ArrayCollection([$role]));
+
+        $metadata = $this->resourceMetadataFactory->getMetadataForClass(
+            'ZfrRestTest\Asset\Resource\Metadata\Annotation\UserWithRoles'
+        );
+
+        // In this test, we enforce that association extraction is set to PASS_THRU
+        $metadata->propertyMetadata['associations']['roles']['extraction'] = 'PASS_THRU';
+
+        $resourceModel = new ResourceModel(new Resource($user, $metadata));
+        $payload       = $this->resourceRenderer->render($resourceModel);
+
+        $expectedPayload = [
+            'id'       => 2,
+            'username' => 'bakura',
+            'roles'    => ['member']
         ];
 
         $this->assertEquals($expectedPayload, $payload);

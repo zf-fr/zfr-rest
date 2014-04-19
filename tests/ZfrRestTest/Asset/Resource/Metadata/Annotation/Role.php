@@ -16,42 +16,56 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
- * @Annotation
- * @Target({"PROPERTY"})
+ * @ORM\Entity
  */
-final class Association implements AnnotationInterface
+class Role
 {
     /**
-     * @var boolean
+     * @ORM\Id
+     * @ORM\Column(type="integer")
      */
-    public $routable = false;
+    protected $id;
 
     /**
-     * @var string
+     * @ORM\Column(type="string")
      */
-    public $path;
+    protected $name;
 
     /**
-     * @var string
-     *
-     * @Enum({"NONE", "EMBED", "ID", "PASS_THRU"})
+     * @param (int) $id
      */
-    public $extraction = ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
+    public function setId($id)
     {
-        return [
-            'routable'   => $this->routable,
-            'path'       => $this->path,
-            'extraction' => $this->extraction
-        ];
+        $this->id = (int) $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = (string) $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

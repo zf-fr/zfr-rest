@@ -208,6 +208,11 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
                 continue;
             }
 
+            // If set to PASS_THRU, we let the parent hydrator do its own transform
+            if ($extractionStrategy === ResourceMetadataInterface::ASSOCIATION_EXTRACTION_PASS_THRU) {
+                continue;
+            }
+
             // Otherwise, we render the association
             $isCollectionValued = $classMetadata->isCollectionValuedAssociation($association);
             $data[$association] = $this->renderAssociation(
