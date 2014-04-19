@@ -57,7 +57,9 @@ trait DataValidationTrait
         $inputFilter = $controller->getInputFilter($this->inputFilterPluginManager, $inputFilterName);
         $inputFilter->setData($data);
 
-        if (!$inputFilter->isValid()) {
+        $validationContext = $resource->getData();
+
+        if (!$inputFilter->isValid($validationContext)) {
             throw new UnprocessableEntityException(
                 'Validation error',
                 $this->formatErrorMessages($inputFilter->getMessages())
