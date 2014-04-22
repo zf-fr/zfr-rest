@@ -38,7 +38,7 @@ class Role
     protected $name;
 
     /**
-     * @param (int) $id
+     * @param int $id
      */
     public function setId($id)
     {
