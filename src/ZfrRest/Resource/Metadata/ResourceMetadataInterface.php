@@ -28,9 +28,10 @@ interface ResourceMetadataInterface
     /**
      * Extraction constants that define how extraction associations are rendered
      */
-    const ASSOCIATION_EXTRACTION_NONE  = 'NONE';
-    const ASSOCIATION_EXTRACTION_EMBED = 'EMBED';
-    const ASSOCIATION_EXTRACTION_ID    = 'ID';
+    const ASSOCIATION_EXTRACTION_NONE      = 'NONE';
+    const ASSOCIATION_EXTRACTION_EMBED     = 'EMBED';
+    const ASSOCIATION_EXTRACTION_ID        = 'ID';
+    const ASSOCIATION_EXTRACTION_PASS_THRU = 'PASS_THRU';
 
     /**
      * Create a new resource from the metadata

@@ -16,42 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Resource\Metadata\Annotation;
+namespace ZfrRestTest\Asset\Hydrator;
 
-use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
+use Zend\Stdlib\Exception;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
- * @Annotation
- * @Target({"PROPERTY"})
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
  */
-final class Association implements AnnotationInterface
+class UserWithRoleHydrator extends ClassMethods
 {
-    /**
-     * @var boolean
-     */
-    public $routable = false;
-
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var string
-     *
-     * @Enum({"NONE", "EMBED", "ID", "PASS_THRU"})
-     */
-    public $extraction = ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getValue()
+    public function extract($object)
     {
-        return [
-            'routable'   => $this->routable,
-            'path'       => $this->path,
-            'extraction' => $this->extraction
-        ];
+        $payload = parent::extract($object);
+        $roles   = $object->getRoles();
+
+        $payload['roles'] = []; // Clear automatic extraction from ClassMethods
+
+        foreach ($roles as $role) {
+            $payload['roles'][] = $role->getName();
+        }
+
+        return $payload;
     }
 }
