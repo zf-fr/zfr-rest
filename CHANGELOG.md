@@ -2,6 +2,8 @@
 
 ## 0.2.3
 
+* Assocations can now have an extraction strategy set to `PASS_THRU`. This allows a parent hydrator to manually
+renders an association, and let the renderers reuse this result for the given association.
 * `paginatorWrapper` controller plugin now supports the resource data to be a plain PHP array.
 
 ## 0.2.2
