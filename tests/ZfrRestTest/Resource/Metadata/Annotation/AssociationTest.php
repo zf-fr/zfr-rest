@@ -20,6 +20,7 @@ namespace ZfrRestTest\Resource\Metadata\Annotation;
 
 use PHPUnit_Framework_TestCase;
 use ZfrRest\Resource\Metadata\Annotation\Association;
+use ZfrRest\Resource\Metadata\ResourceMetadataInterface;
 
 /**
  * @licence MIT
@@ -32,13 +33,17 @@ class ExposeAssociationTest extends PHPUnit_Framework_TestCase
 {
     public function testAnnotationDefaults()
     {
-        $annotation = new Association();
-        $annotation->path = 'foo-bar';
+        $annotation                       = new Association();
+        $annotation->path                 = 'foo-bar';
+        $annotation->resourceController   = 'ResourceController';
+        $annotation->collectionController = 'CollectionController';
 
         $expected = [
-            'path'       => 'foo-bar',
-            'routable'   => false,
-            'extraction' => 'ID'
+            'path'                 => 'foo-bar',
+            'routable'             => false,
+            'resourceController'   => 'ResourceController',
+            'collectionController' => 'CollectionController',
+            'extraction'           => ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID
         ];
 
         $this->assertEquals($expected, $annotation->getValue());

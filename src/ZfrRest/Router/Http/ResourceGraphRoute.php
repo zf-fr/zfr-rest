@@ -191,28 +191,13 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildRouteMatch(SubPathMatch $match, $pathLength)
     {
-        $resource = $match->getMatchedResource();
-        $metadata = $resource->getMetadata();
-
-        // If returned $data is a collection, then we use the controller specified in Collection mapping
-        if ($resource->isCollection()) {
-            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
-                throw new RuntimeException(
-                    'No collection metadata could be found. Did you make sure you added the Collection annotation?'
-                );
-            }
-            $controllerName = $collectionMetadata->getControllerName();
-        } else {
-            $controllerName = $metadata->getControllerName();
-        }
-
         $previousMatch = $match->getPreviousMatch();
 
         return new RouteMatch(
             [
-                'resource'   => $resource,
+                'resource'   => $match->getMatchedResource(),
                 'context'    => $previousMatch ? $previousMatch->getMatchedResource() : null,
-                'controller' => $controllerName
+                'controller' => $this->extractControllerFromPathMatch($match)
             ],
             $pathLength
         );
@@ -243,5 +228,30 @@ class ResourceGraphRoute implements RouteInterface
         $metadata   = $this->metadataFactory->getMetadataForClass($this->resource);
 
         return $this->resource = new Resource($repository, $metadata);
+    }
+
+    /**
+     * @param  SubPathMatch $match
+     * @return string
+     * @throws RuntimeException
+     */
+    private function extractControllerFromPathMatch(SubPathMatch $match)
+    {
+        $resource = $match->getMatchedResource();
+        $metadata = $resource->getMetadata();
+
+        // If returned $data is a collection, then we use the controller specified in Collection mapping
+        if ($resource->isCollection()) {
+            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
+                throw new RuntimeException(
+                    'No collection metadata could be found. Did you make sure you added the Collection annotation?'
+                );
+            }
+            $controllerName = $collectionMetadata->getControllerName();
+        } else {
+            $controllerName = $metadata->getControllerName();
+        }
+
+        return $controllerName;
     }
 }
