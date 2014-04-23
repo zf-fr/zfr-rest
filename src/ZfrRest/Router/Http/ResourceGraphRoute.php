@@ -237,10 +237,35 @@ class ResourceGraphRoute implements RouteInterface
      */
     private function extractControllerFromPathMatch(SubPathMatch $match)
     {
-        $resource = $match->getMatchedResource();
-        $metadata = $resource->getMetadata();
+        $resource      = $match->getMatchedResource();
+        $previousMatch = $match->getPreviousMatch();
+        $metadata      = $resource->getMetadata();
 
-        // If returned $data is a collection, then we use the controller specified in Collection mapping
+        $controllerName = null;
+
+        // If a previous match is set, we try to check if there is an override of the controller on the "association"
+        // mapping for the association
+        if ($previousMatch) {
+            $previousPath     = trim($previousMatch->getMatchedPath(), '/');
+            $previousMetadata = $previousMatch->getMatchedResource()->getMetadata();
+
+            if ($previousMetadata->hasAssociationMetadata($previousPath)) {
+                $associationMetadata = $previousMetadata->getAssociationMetadata($previousPath);
+
+                if ($resource->isCollection()) {
+                    $controllerName = $associationMetadata['collectionController'];
+                } else {
+                    $controllerName = $associationMetadata['resourceController'];
+                }
+            }
+        }
+
+        // Maybe we already have a controller based on previous logic...
+        if ($controllerName) {
+            return $controllerName;
+        }
+
+        // Otherwise, we fallback to traditional method
         if ($resource->isCollection()) {
             if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
                 throw new RuntimeException(
