@@ -1,8 +1,14 @@
 # CHANGELOG
 
+## 0.3.0
+
+* Association mapping can now accept one new property: `collectionController`. It allows to map a specific
+association resource to a specific controller, instead of using the target entity mapping.
+* Add a doc section about optimizing ZfrRest for performance
+
 ## 0.2.3
 
-* Assocations can now have an extraction strategy set to `PASS_THRU`. This allows a parent hydrator to manually
+* Associations can now have an extraction strategy set to `PASS_THRU`. This allows a parent hydrator to manually
 renders an association, and let the renderers reuse this result for the given association.
 * `paginatorWrapper` controller plugin now supports the resource data to be a plain PHP array.
 

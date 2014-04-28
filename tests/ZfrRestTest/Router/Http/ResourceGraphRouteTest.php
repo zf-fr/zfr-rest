@@ -18,10 +18,12 @@
 
 namespace ZfrRestTest\Router\Http;
 
-use Metadata\MetadataFactory;
+use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Router\Http\Matcher\BaseSubPathMatcher;
+use Zend\Http\Request as HttpRequest;
 use ZfrRest\Router\Http\ResourceGraphRoute;
+use ZfrRestTest\Asset\Resource\Metadata\Annotation\User;
+use ZfrRestTest\Util\ServiceManagerFactory;
 
 /**
  * @licence MIT
@@ -139,5 +141,52 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
             'resource'    => $resource,
             'association' => 'tweets'
         ]));
+    }
+
+    public function testCanMatchControllerWhenOverridenOnAssociation()
+    {
+        $serviceManager     = ServiceManagerFactory::getServiceManager();
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory'),
+            $serviceManager->get('ZfrRest\Resource\ResourcePluginManager'),
+            $serviceManager->get('ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'),
+            'ZfrRestTest\Asset\Resource\Metadata\Annotation\User',
+            '/users'
+        );
+
+        $user = new User();
+        $user->setUsername('Foo');
+
+        $objectManager = $this->getObjectManager();
+        $objectManager->persist($user);
+        $objectManager->flush();
+
+        $httpRequest = new HttpRequest();
+        $httpRequest->setUri('/users/' . $user->getId() . '/tweets');
+
+        $match = $resourceGraphRoute->match($httpRequest);
+
+        $this->assertInstanceOf('Zend\Mvc\Router\Http\RouteMatch', $match);
+        $this->assertEquals('UserTweetListController', $match->getParam('controller'));
+
+        $context = $match->getParam('context');
+        $this->assertInstanceOf('ZfrRest\Resource\Resource', $context);
+        $this->assertInstanceOf('ZfrRestTest\Asset\Resource\Metadata\Annotation\User', $context->getData());
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    private function getObjectManager()
+    {
+        $serviceManager = ServiceManagerFactory::getServiceManager();
+
+        /* @var $entityManager \Doctrine\ORM\EntityManager */
+        $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $schemaTool    = new SchemaTool($entityManager);
+        $schemaTool->dropDatabase();
+        $schemaTool->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
+
+        return $entityManager;
     }
 }

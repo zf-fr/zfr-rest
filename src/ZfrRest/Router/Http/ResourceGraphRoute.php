@@ -191,28 +191,13 @@ class ResourceGraphRoute implements RouteInterface
      */
     protected function buildRouteMatch(SubPathMatch $match, $pathLength)
     {
-        $resource = $match->getMatchedResource();
-        $metadata = $resource->getMetadata();
-
-        // If returned $data is a collection, then we use the controller specified in Collection mapping
-        if ($resource->isCollection()) {
-            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
-                throw new RuntimeException(
-                    'No collection metadata could be found. Did you make sure you added the Collection annotation?'
-                );
-            }
-            $controllerName = $collectionMetadata->getControllerName();
-        } else {
-            $controllerName = $metadata->getControllerName();
-        }
-
         $previousMatch = $match->getPreviousMatch();
 
         return new RouteMatch(
             [
-                'resource'   => $resource,
+                'resource'   => $match->getMatchedResource(),
                 'context'    => $previousMatch ? $previousMatch->getMatchedResource() : null,
-                'controller' => $controllerName
+                'controller' => $this->extractControllerFromPathMatch($match)
             ],
             $pathLength
         );
@@ -243,5 +228,50 @@ class ResourceGraphRoute implements RouteInterface
         $metadata   = $this->metadataFactory->getMetadataForClass($this->resource);
 
         return $this->resource = new Resource($repository, $metadata);
+    }
+
+    /**
+     * @param  SubPathMatch $match
+     * @return string
+     * @throws RuntimeException
+     */
+    private function extractControllerFromPathMatch(SubPathMatch $match)
+    {
+        $resource      = $match->getMatchedResource();
+        $previousMatch = $match->getPreviousMatch();
+        $metadata      = $resource->getMetadata();
+
+        $controllerName = null;
+
+        // If a previous match is set, we try to check if there is an override of the controller on the "association"
+        // mapping for the association
+        if ($previousMatch && $resource->isCollection()) {
+            $associationName  = $match->getMatchedPath();
+            $previousMetadata = $previousMatch->getMatchedResource()->getMetadata();
+
+            if ($previousMetadata->hasAssociationMetadata($associationName)) {
+                $associationMetadata = $previousMetadata->getAssociationMetadata($associationName);
+                $controllerName      = $associationMetadata['collectionController'];
+            }
+        }
+
+        // Maybe we already have a controller based on previous logic...
+        if ($controllerName) {
+            return $controllerName;
+        }
+
+        // Otherwise, we fallback to traditional method
+        if ($resource->isCollection()) {
+            if (!$collectionMetadata = $metadata->getCollectionMetadata()) {
+                throw new RuntimeException(
+                    'No collection metadata could be found. Did you make sure you added the Collection annotation?'
+                );
+            }
+            $controllerName = $collectionMetadata->getControllerName();
+        } else {
+            $controllerName = $metadata->getControllerName();
+        }
+
+        return $controllerName;
     }
 }

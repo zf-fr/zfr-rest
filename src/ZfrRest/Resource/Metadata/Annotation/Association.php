@@ -38,6 +38,11 @@ final class Association implements AnnotationInterface
 
     /**
      * @var string
+     */
+    public $collectionController;
+
+    /**
+     * @var string
      *
      * @Enum({"NONE", "EMBED", "ID", "PASS_THRU"})
      */
@@ -49,9 +54,10 @@ final class Association implements AnnotationInterface
     public function getValue()
     {
         return [
-            'routable'   => $this->routable,
-            'path'       => $this->path,
-            'extraction' => $this->extraction
+            'routable'             => $this->routable,
+            'path'                 => $this->path,
+            'collectionController' => $this->collectionController,
+            'extraction'           => $this->extraction
         ];
     }
 }
