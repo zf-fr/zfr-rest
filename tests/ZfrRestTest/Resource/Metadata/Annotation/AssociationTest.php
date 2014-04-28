@@ -35,13 +35,11 @@ class ExposeAssociationTest extends PHPUnit_Framework_TestCase
     {
         $annotation                       = new Association();
         $annotation->path                 = 'foo-bar';
-        $annotation->resourceController   = 'ResourceController';
         $annotation->collectionController = 'CollectionController';
 
         $expected = [
             'path'                 => 'foo-bar',
             'routable'             => false,
-            'resourceController'   => 'ResourceController',
             'collectionController' => 'CollectionController',
             'extraction'           => ResourceMetadataInterface::ASSOCIATION_EXTRACTION_ID
         ];

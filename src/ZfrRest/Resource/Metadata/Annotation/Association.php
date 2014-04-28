@@ -39,11 +39,6 @@ final class Association implements AnnotationInterface
     /**
      * @var string
      */
-    public $resourceController;
-
-    /**
-     * @var string
-     */
     public $collectionController;
 
     /**
@@ -61,7 +56,6 @@ final class Association implements AnnotationInterface
         return [
             'routable'             => $this->routable,
             'path'                 => $this->path,
-            'resourceController'   => $this->resourceController,
             'collectionController' => $this->collectionController,
             'extraction'           => $this->extraction
         ];

@@ -2,8 +2,8 @@
 
 ## 0.3.0
 
-* Association mapping can now accept two new properties: `resourceController` and `collectionController`. They
-allow to map a specific association resource to a specific controller, instead of using the target entity mapping.
+* Association mapping can now accept one new property: `collectionController`. It allows to map a specific
+association resource to a specific controller, instead of using the target entity mapping.
 * Add a doc section about optimizing ZfrRest for performance
 
 ## 0.2.3
