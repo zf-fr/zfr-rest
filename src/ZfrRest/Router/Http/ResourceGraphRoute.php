@@ -246,11 +246,11 @@ class ResourceGraphRoute implements RouteInterface
         // If a previous match is set, we try to check if there is an override of the controller on the "association"
         // mapping for the association
         if ($previousMatch && $resource->isCollection()) {
-            $previousPath     = trim($previousMatch->getMatchedPath(), '/');
+            $associationName  = $match->getMatchedPath();
             $previousMetadata = $previousMatch->getMatchedResource()->getMetadata();
 
-            if ($previousMetadata->hasAssociationMetadata($previousPath)) {
-                $associationMetadata = $previousMetadata->getAssociationMetadata($previousPath);
+            if ($previousMetadata->hasAssociationMetadata($associationName)) {
+                $associationMetadata = $previousMetadata->getAssociationMetadata($associationName);
                 $controllerName      = $associationMetadata['collectionController'];
             }
         }

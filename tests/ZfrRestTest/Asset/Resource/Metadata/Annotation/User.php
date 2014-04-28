@@ -30,6 +30,7 @@ class User
 {
     /**
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
     protected $id;
@@ -47,7 +48,7 @@ class User
 
     /**
      * @ORM\OneToMany(targetEntity="Tweet", mappedBy="user")
-     * @REST\Association(extraction="ID")
+     * @REST\Association(routable=true, extraction="ID", collectionController="UserTweetListController")
      */
     protected $tweets;
 

@@ -41,7 +41,7 @@ return [
                     'dbname'        => null,
                     'driver'        => 'pdo_sqlite',
                     'driverClass'   => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
-                    'path'          => null,
+                    'path'          => 'db.sqlite',
                     'memory'        => true,
                 ],
             ],

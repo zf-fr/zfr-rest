@@ -19,11 +19,9 @@
 namespace ZfrRestTest\Asset\Resource\Metadata\Annotation;
 
 use Doctrine\ORM\Mapping as ORM;
+use ZfrRest\Resource\Metadata\Annotation as REST;
 
 /**
- * @author  Michaël Gallego <mic.gallego@gmail.com>
- * @licence MIT
- *
  * @ORM\Entity
  * @REST\Resource(
  *      controller="ResourceController",
@@ -38,6 +36,7 @@ class C
 {
     /**
      * @ORM\Id
+     * @ORM\Column(type="integer")
      */
     protected $id;
 }
