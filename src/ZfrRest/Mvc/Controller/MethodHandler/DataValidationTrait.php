@@ -80,7 +80,7 @@ trait DataValidationTrait
     {
         $errorMessages = $inputFilter->getMessages();
 
-        array_walk($errorMessages, function(&$value, $key) use ($inputFilter) {
+        array_walk($errorMessages, function (&$value, $key) use ($inputFilter) {
             if ($inputFilter->has($key) && $inputFilter->get($key) instanceof InputFilterInterface) {
                 $value = $this->extractErrorMessages($inputFilter->get($key));
             } else {
