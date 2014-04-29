@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
+use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
@@ -62,7 +63,7 @@ trait DataValidationTrait
         if (!$inputFilter->isValid($validationContext)) {
             throw new UnprocessableEntityException(
                 'Validation error',
-                $this->formatErrorMessages($inputFilter->getMessages())
+                $this->extractErrorMessages($inputFilter)
             );
         }
 
@@ -70,15 +71,23 @@ trait DataValidationTrait
     }
 
     /**
-     * Format error messages. It removes message keys
+     * Extract error messages from the input filter
      *
-     * @param  array $errorMessages
+     * @param  InputFilterInterface $inputFilter
      * @return array
      */
-    protected function formatErrorMessages(array $errorMessages)
+    protected function extractErrorMessages(InputFilterInterface $inputFilter)
     {
-        return array_map(function ($element) {
-            return array_values($element);
-        }, $errorMessages);
+        $errorMessages = $inputFilter->getMessages();
+
+        array_walk($errorMessages, function(&$value, $key) use ($inputFilter) {
+            if ($inputFilter->has($key) && $inputFilter->get($key) instanceof InputFilterInterface) {
+                $value = $this->extractErrorMessages($inputFilter->get($key));
+            } else {
+                $value = array_values($value);
+            }
+        });
+
+        return $errorMessages;
     }
 }

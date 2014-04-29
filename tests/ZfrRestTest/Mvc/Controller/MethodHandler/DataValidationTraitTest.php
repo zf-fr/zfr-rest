@@ -19,6 +19,8 @@
 namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 
 use PHPUnit_Framework_TestCase;
+use Zend\InputFilter\InputFilter;
+use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRestTest\Asset\Mvc\DataValidationObject;
 
 /**
@@ -98,23 +100,19 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
 
     public function testThrowExceptionOnFailedValidation()
     {
-        $this->setExpectedException('ZfrRest\Http\Exception\Client\UnprocessableEntityException');
-
         $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
         $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
 
-        $data          = ['foo'];
-        $errorMessages = ['email' => ['Email is invalid']];
+        $data = ['foo'];
 
-        $inputFilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
-        $inputFilter->expects($this->once())->method('setData')->with($data);
-        $inputFilter->expects($this->once())->method('getMessages')->will($this->returnValue($errorMessages));
-        $inputFilter->expects($this->once())
-                    ->method('isValid')
-                    ->will($this->returnValue(false));
+        $inputFilter = new InputFilter();
+        $inputFilter->add([
+            'name'     => 'email',
+            'required' => true
+        ]);
 
         $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
         $controller->expects($this->once())
@@ -122,6 +120,63 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
                    ->with($this->inputFilterPluginManager, 'inputFilter')
                    ->will($this->returnValue($inputFilter));
 
-        $this->dataValidation->validateData($resource, $data, $controller);
+        $exceptionTriggered = false;
+        $errorMessages      = ['email' => ['Value is required and can\'t be empty']];
+
+        try {
+            $this->dataValidation->validateData($resource, $data, $controller);
+        } catch(UnprocessableEntityException $exception) {
+            $exceptionTriggered = true;
+            $this->assertEquals($errorMessages, $exception->getErrors());
+        }
+
+        $this->assertTrue($exceptionTriggered);
+    }
+
+    public function testThrowExceptionOnFailedValidationWithNestedInputFilter()
+    {
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
+
+        $data = ['foo'];
+
+        $inputFilter = new InputFilter();
+        $inputFilter->add([
+            'name'     => 'email',
+            'required' => true
+        ]);
+
+        $inputFilter->add([
+            'type' => 'Zend\InputFilter\InputFilter',
+            'city' => [
+                'name' => 'address'
+            ]
+        ], 'address');
+
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
+        $controller->expects($this->once())
+            ->method('getInputFilter')
+            ->with($this->inputFilterPluginManager, 'inputFilter')
+            ->will($this->returnValue($inputFilter));
+
+        $exceptionTriggered = false;
+        $errorMessages      = [
+            'email'   => ['Value is required and can\'t be empty'],
+            'address' => [
+                'city' => ['Value is required and can\'t be empty']
+            ]
+        ];
+
+        try {
+            $this->dataValidation->validateData($resource, $data, $controller);
+        } catch(UnprocessableEntityException $exception) {
+            $exceptionTriggered = true;
+            $this->assertEquals($errorMessages, $exception->getErrors());
+        }
+
+        $this->assertTrue($exceptionTriggered);
     }
 }
