@@ -5,6 +5,7 @@
 * Association mapping can now accept one new property: `collectionController`. It allows to map a specific
 association resource to a specific controller, instead of using the target entity mapping.
 * Add a doc section about optimizing ZfrRest for performance
+* Nested input filters are now supported when errors occur on POST on PUT
 
 ## 0.2.3
 
