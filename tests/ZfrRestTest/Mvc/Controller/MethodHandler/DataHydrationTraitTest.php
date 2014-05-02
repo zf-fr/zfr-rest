@@ -41,7 +41,7 @@ class DataHydrationTraitTest extends PHPUnit_Framework_TestCase
         $this->resource              = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $this->controller            = $this->getMock('Zend\EventManager\EventManagerAwareInterface');
         $this->eventManager          = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $this->hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $this->hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $this->dataHydration         = new DataHydrationObject($this->hydratorManager);
 
         $this->controller->expects($this->once())->method('getEventManager')->will($this->returnValue($this->eventManager));

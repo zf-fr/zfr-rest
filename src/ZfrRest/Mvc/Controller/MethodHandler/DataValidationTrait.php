@@ -21,7 +21,7 @@ namespace ZfrRest\Mvc\Controller\MethodHandler;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 use ZfrRest\Mvc\Controller\Event\ValidationEvent;
 use ZfrRest\Mvc\Exception\RuntimeException;
@@ -36,7 +36,7 @@ use ZfrRest\Resource\ResourceInterface;
 trait DataValidationTrait
 {
     /**
-     * @var AbstractPluginManager
+     * @var InputFilterPluginManager
      */
     protected $inputFilterPluginManager;
 

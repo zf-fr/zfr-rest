@@ -19,8 +19,8 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\EventManager\EventManagerAwareInterface;
-use Zend\ServiceManager\AbstractPluginManager;
 use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Mvc\Controller\Event\HydrationEvent;
 use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
@@ -34,7 +34,7 @@ use ZfrRest\Resource\ResourceInterface;
 trait DataHydrationTrait
 {
     /**
-     * @var AbstractPluginManager
+     * @var HydratorPluginManager
      */
     protected $hydratorPluginManager;
 
