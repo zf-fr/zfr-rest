@@ -33,7 +33,7 @@ class HydrationEventTest extends TestCase
     public function testConstructorStoreParameters()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
         $this->assertAttributeEquals($resource, 'resource', $event);
@@ -43,7 +43,7 @@ class HydrationEventTest extends TestCase
     public function testSetGetAutoHydrate()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
         $this->assertTrue($event->getAutoHydrate());
@@ -56,7 +56,7 @@ class HydrationEventTest extends TestCase
     public function testSetGetHydrator()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $hydrator        = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
@@ -70,7 +70,7 @@ class HydrationEventTest extends TestCase
     public function testGetResource()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
         $this->assertSame($resource, $event->getResource());
@@ -79,7 +79,7 @@ class HydrationEventTest extends TestCase
     public function testSetGetHydratorManager()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
         $this->assertSame($hydratorManager, $event->gethydratorManager());

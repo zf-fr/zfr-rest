@@ -18,7 +18,7 @@
 
 namespace ZfrRestTest\Asset\Mvc;
 
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Mvc\Controller\MethodHandler\DataValidationTrait;
 
 class DataValidationObject
@@ -26,9 +26,9 @@ class DataValidationObject
     use DataValidationTrait;
 
     /**
-     * @param AbstractPluginManager $inputFilterPluginManager
+     * @param InputFilterPluginManager $inputFilterPluginManager
      */
-    public function __construct(AbstractPluginManager $inputFilterPluginManager)
+    public function __construct(InputFilterPluginManager $inputFilterPluginManager)
     {
         $this->inputFilterPluginManager = $inputFilterPluginManager;
     }

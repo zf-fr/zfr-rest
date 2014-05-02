@@ -20,7 +20,7 @@ namespace ZfrRest\Mvc\Controller\Event;
 
 use Zend\EventManager\Event;
 use Zend\Stdlib\Hydrator\HydratorInterface;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -46,7 +46,7 @@ class HydrationEvent extends Event
     protected $resource;
 
     /**
-     * @var AbstractPluginManager
+     * @var HydratorPluginManager
      */
     protected $hydratorManager;
 
@@ -57,9 +57,9 @@ class HydrationEvent extends Event
 
     /**
      * @param ResourceInterface     $resource
-     * @param AbstractPluginManager $hydratorManager
+     * @param HydratorPluginManager $hydratorManager
      */
-    public function __construct(ResourceInterface $resource, AbstractPluginManager $hydratorManager)
+    public function __construct(ResourceInterface $resource, HydratorPluginManager $hydratorManager)
     {
         $this->resource        = $resource;
         $this->hydratorManager = $hydratorManager;
@@ -90,7 +90,7 @@ class HydrationEvent extends Event
     }
 
     /**
-     * @return AbstractPluginManager
+     * @return HydratorPluginManager
      */
     public function getHydratorManager()
     {

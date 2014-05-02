@@ -20,7 +20,7 @@ namespace ZfrRest\Mvc\Controller\Event;
 
 use Zend\EventManager\Event;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\ServiceManager\AbstractPluginManager;
+use Zend\InputFilter\InputFilterPluginManager;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -47,7 +47,7 @@ class ValidationEvent extends Event
     protected $resource;
 
     /**
-     * @var AbstractPluginManager
+     * @var InputFilterPluginManager
      */
     protected $inputFilterManager;
 
@@ -57,10 +57,10 @@ class ValidationEvent extends Event
     protected $inputFilter;
 
     /**
-     * @param ResourceInterface     $resource
-     * @param AbstractPluginManager $inputFilterManager
+     * @param ResourceInterface        $resource
+     * @param InputFilterPluginManager $inputFilterManager
      */
-    public function __construct(ResourceInterface $resource, AbstractPluginManager $inputFilterManager)
+    public function __construct(ResourceInterface $resource, InputFilterPluginManager $inputFilterManager)
     {
         $this->resource           = $resource;
         $this->inputFilterManager = $inputFilterManager;
@@ -91,7 +91,7 @@ class ValidationEvent extends Event
     }
 
     /**
-     * @return AbstractPluginManager
+     * @return InputFilterPluginManager
      */
     public function getInputFilterManager()
     {

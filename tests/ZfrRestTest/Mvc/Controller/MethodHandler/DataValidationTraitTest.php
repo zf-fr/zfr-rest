@@ -43,7 +43,7 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         $this->resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $this->controller         = $this->getMock('Zend\EventManager\EventManagerAwareInterface');
         $this->eventManager       = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $this->inputFilterManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $this->inputFilterManager = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
         $this->dataValidation     = new DataValidationObject($this->inputFilterManager);
 
         $this->controller->expects($this->once())->method('getEventManager')->will($this->returnValue($this->eventManager));
