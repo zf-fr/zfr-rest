@@ -83,27 +83,11 @@ class ValidationEvent extends Event
     }
 
     /**
-     * @param ResourceInterface $resource
-     */
-    public function setResource(ResourceInterface $resource)
-    {
-        $this->resource = $resource;
-    }
-
-    /**
      * @return ResourceInterface
      */
     public function getResource()
     {
         return $this->resource;
-    }
-
-    /**
-     * @param AbstractPluginManager $inputFilterManager
-     */
-    public function setInputFilterManager(AbstractPluginManager $inputFilterManager)
-    {
-        $this->inputFilterManager = $inputFilterManager;
     }
 
     /**

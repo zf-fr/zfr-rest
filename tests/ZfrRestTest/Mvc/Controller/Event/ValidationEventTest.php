@@ -67,31 +67,21 @@ class ValidationEventTest extends TestCase
         $this->assertSame($inputFilter, $event->getInputFilter());
     }
 
-    public function testSetGetResource()
+    public function testGetResource()
     {
-        $resourceA          = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $resourceB          = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $inputFilterManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $event              = new ValidationEvent($resourceA, $inputFilterManager);
+        $event              = new ValidationEvent($resource, $inputFilterManager);
 
-        $this->assertSame($resourceA, $event->getResource());
-
-        $event->setResource($resourceB);
-
-        $this->assertSame($resourceB, $event->getResource());
+        $this->assertSame($resource, $event->getResource());
     }
 
-    public function testSetGetInputFilterManager()
+    public function testGetInputFilterManager()
     {
-        $resource            = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $inputFilterManagerA = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $inputFilterManagerB = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $event               = new ValidationEvent($resource, $inputFilterManagerA);
+        $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $inputFilterManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $event              = new ValidationEvent($resource, $inputFilterManager);
 
-        $this->assertSame($inputFilterManagerA, $event->getInputFilterManager());
-
-        $event->setInputFilterManager($inputFilterManagerB);
-
-        $this->assertSame($inputFilterManagerB, $event->getInputFilterManager());
+        $this->assertSame($inputFilterManager, $event->getInputFilterManager());
     }
 }
