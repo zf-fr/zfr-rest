@@ -67,31 +67,21 @@ class HydrationEventTest extends TestCase
         $this->assertSame($hydrator, $event->getHydrator());
     }
 
-    public function testSetGetResource()
+    public function testGetResource()
     {
-        $resourceA       = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $resourceB       = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $event           = new HydrationEvent($resourceA, $hydratorManager);
+        $event           = new HydrationEvent($resource, $hydratorManager);
 
-        $this->assertSame($resourceA, $event->getResource());
-
-        $event->setResource($resourceB);
-
-        $this->assertSame($resourceB, $event->getResource());
+        $this->assertSame($resource, $event->getResource());
     }
 
     public function testSetGetHydratorManager()
     {
-        $resource         = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $hydratorManagerA = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $hydratorManagerB = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
-        $event            = new HydrationEvent($resource, $hydratorManagerA);
+        $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $hydratorManager = $this->getMock('Zend\ServiceManager\AbstractPluginManager');
+        $event           = new HydrationEvent($resource, $hydratorManager);
 
-        $this->assertSame($hydratorManagerA, $event->gethydratorManager());
-
-        $event->sethydratorManager($hydratorManagerB);
-
-        $this->assertSame($hydratorManagerB, $event->gethydratorManager());
+        $this->assertSame($hydratorManager, $event->gethydratorManager());
     }
 }

@@ -82,27 +82,11 @@ class HydrationEvent extends Event
     }
 
     /**
-     * @param ResourceInterface $resource
-     */
-    public function setResource(ResourceInterface $resource)
-    {
-        $this->resource = $resource;
-    }
-
-    /**
      * @return ResourceInterface
      */
     public function getResource()
     {
         return $this->resource;
-    }
-
-    /**
-     * @param AbstractPluginManager $hydratorManager
-     */
-    public function setHydratorManager(AbstractPluginManager $hydratorManager)
-    {
-        $this->hydratorManager = $hydratorManager;
     }
 
     /**
