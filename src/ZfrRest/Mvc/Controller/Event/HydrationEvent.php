@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\Controller\Event;
 use Zend\EventManager\Event;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -106,10 +107,21 @@ class HydrationEvent extends Event
     }
 
     /**
+     * Lazy load the hydrator from plugin manager (or retrieve the one that is set)
+     *
      * @return null|HydratorInterface
+     * @throws RuntimeException
      */
     public function getHydrator()
     {
+        if (!$this->hydrator instanceof HydratorInterface) {
+            if (!($hydratorName = $this->resource->getMetadata()->getHydratorName())) {
+                throw new RuntimeException('No hydrator name has been found in resource metadata');
+            }
+
+            $this->hydrator = $this->hydratorManager->get($hydratorName);
+        }
+
         return $this->hydrator;
     }
 }

@@ -19,6 +19,7 @@
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
 use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Stdlib\Hydrator\HydratorInterface;
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Mvc\Controller\Event\HydrationEvent;
@@ -63,16 +64,6 @@ trait DataHydrationTrait
 
         /* @var HydratorInterface $inputFilter */
         $hydrator = $event->getHydrator();
-
-        if (!$hydrator instanceof HydratorInterface) {
-            if (!($hydratorName = $resource->getMetadata()->getHydratorName())) {
-                throw new RuntimeException('No hydrator name has been found in resource metadata');
-            }
-
-            $hydrator = $this->hydratorPluginManager->get($hydratorName);
-
-            $event->setHydrator($hydrator);
-        }
 
         $eventManager->trigger(HydrationEvent::EVENT_HYDRATE_POST, $event);
 

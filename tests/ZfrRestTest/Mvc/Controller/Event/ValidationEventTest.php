@@ -56,11 +56,21 @@ class ValidationEventTest extends TestCase
     public function testSetGetInputFilter()
     {
         $resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata           = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $inputFilterManager = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
         $inputFilter        = $this->getMock('Zend\InputFilter\InputFilterInterface');
         $event              = new ValidationEvent($resource, $inputFilterManager);
 
-        $this->assertNull($event->getInputFilter());
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('MyInputFilter'));
+
+        $expectedInputfilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
+        $inputFilterManager->expects($this->once())
+            ->method('get')
+            ->with('MyInputFilter')
+            ->will($this->returnValue($expectedInputfilter));
+
+        $this->assertSame($expectedInputfilter, $event->getInputFilter());
 
         $event->setInputFilter($inputFilter);
 

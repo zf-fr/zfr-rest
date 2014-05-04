@@ -21,6 +21,7 @@ namespace ZfrRest\Mvc\Controller\Event;
 use Zend\EventManager\Event;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterPluginManager;
+use ZfrRest\Mvc\Exception\RuntimeException;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -107,10 +108,21 @@ class ValidationEvent extends Event
     }
 
     /**
+     * Lazy load the hydrator from plugin manager (or retrieve the one that is set)
+     *
      * @return null|InputFilterInterface
+     * @throws RuntimeException
      */
     public function getInputFilter()
     {
+        if (!$this->inputFilter instanceof InputFilterInterface) {
+            if (!($inputFilterName = $this->resource->getMetadata()->getInputFilterName())) {
+                throw new RuntimeException('No input filter name has been found in resource metadata');
+            }
+
+            $this->inputFilter = $this->inputFilterManager->get($inputFilterName);
+        }
+
         return $this->inputFilter;
     }
 }

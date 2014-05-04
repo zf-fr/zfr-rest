@@ -56,11 +56,22 @@ class HydrationEventTest extends TestCase
     public function testSetGetHydrator()
     {
         $resource        = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata        = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $hydrator        = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
-        $this->assertNull($event->getHydrator());
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())->method('getHydratorName')->will($this->returnValue('MyHydrator'));
+
+        $expectedHydrator = $this->getMock('Zend\Stdlib\Hydrator\HydratorInterface');
+        $hydratorManager->expects($this->once())
+            ->method('get')
+            ->with('MyHydrator')
+            ->will($this->returnValue($expectedHydrator));
+
+        // We first assert it can retrieves by default the one attached to the resource
+        $this->assertSame($expectedHydrator, $event->getHydrator());
 
         $event->setHydrator($hydrator);
 
@@ -82,6 +93,6 @@ class HydrationEventTest extends TestCase
         $hydratorManager = $this->getMock('Zend\Stdlib\Hydrator\HydratorPluginManager');
         $event           = new HydrationEvent($resource, $hydratorManager);
 
-        $this->assertSame($hydratorManager, $event->gethydratorManager());
+        $this->assertSame($hydratorManager, $event->getHydratorManager());
     }
 }

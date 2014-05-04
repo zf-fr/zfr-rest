@@ -66,17 +66,6 @@ trait DataValidationTrait
 
         /* @var InputFilterInterface $inputFilter */
         $inputFilter = $event->getInputFilter();
-
-        if (!$inputFilter instanceof InputFilterInterface) {
-            if (!($inputFilterName = $resource->getMetadata()->getInputFilterName())) {
-                throw new RuntimeException('No input filter name has been found in resource metadata');
-            }
-
-            $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
-
-            $event->setInputFilter($inputFilter);
-        }
-
         $inputFilter->setData($data);
 
         if (!$inputFilter->isValid($resource->getData())) {
