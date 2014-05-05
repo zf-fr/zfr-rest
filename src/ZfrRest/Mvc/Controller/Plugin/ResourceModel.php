@@ -49,7 +49,7 @@ class ResourceModel extends AbstractPlugin
      */
     public function __invoke($data, ResourceMetadataInterface $resourceMetadata = null)
     {
-        if (!$this->controller instanceof AbstractRestfulController) {
+        if (null === $resourceMetadata && !$this->controller instanceof AbstractRestfulController) {
             throw new RuntimeException(
                 'You tried to use the ResourceModel controller plugin on a controller instance that does
                  not extend "ZfrRest\Mvc\Controller\AbstractRestfulController"'
