@@ -144,6 +144,10 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             foreach ($data as $item) {
                 $payload['data'][] = $this->renderItem($item, $resourceMetadata);
             }
+
+            if (!isset($payload['data'])) {
+                $payload['data'] = [];
+            }
         } else {
             $payload = $this->renderItem($data, $resourceMetadata);
         }
