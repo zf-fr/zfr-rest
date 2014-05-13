@@ -83,11 +83,11 @@ class PostHandler implements MethodHandlerInterface
         $data           = json_decode($controller->getRequest()->getContent(), true) ?: [];
 
         if ($controller->getAutoValidate()) {
-            $data = $this->validateData($singleResource, $data ?: [], $controller);
+            $data = $this->validateData($singleResource, $data, $controller);
         }
 
         if ($controller->getAutoHydrate()) {
-            $data = $this->hydrateData($singleResource, $data ?: []);
+            $data = $this->hydrateData($singleResource, $data);
         }
 
         $result = $controller->post($data);
