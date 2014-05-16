@@ -44,4 +44,25 @@ class PutHandlerTest extends PHPUnit_Framework_TestCase
 
         $handler->handleMethod($controller, $this->getMock('ZfrRest\Resource\ResourceInterface'));
     }
+
+    public function testCreateEmptyDataIfNoBodyIsPassed()
+    {
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', ['put']);
+
+        $handler = $this->getMock(
+            'ZfrRest\Mvc\Controller\MethodHandler\PutHandler',
+            ['validateData', 'hydrateData'],
+            [],
+            '',
+            false
+        );
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $handler->expects($this->once())
+                ->method('validateData')
+                ->with($resource, [], $controller)
+                ->will($this->returnValue([]));
+
+        $handler->handleMethod($controller, $resource);
+    }
 }

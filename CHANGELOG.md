@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.1
+
+* ZfrRest now returns input errors correctly if no data was given in the body
+
 ## 0.3.0
 
 * Association mapping can now accept one new property: `collectionController`. It allows to map a specific

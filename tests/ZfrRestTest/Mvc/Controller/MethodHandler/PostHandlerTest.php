@@ -44,4 +44,36 @@ class PostHandlerTest extends PHPUnit_Framework_TestCase
 
         $handler->handleMethod($controller, $this->getMock('ZfrRest\Resource\ResourceInterface'));
     }
+
+    public function testCreateEmptyDataIfNoBodyIsPassed()
+    {
+        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', ['post']);
+
+        $handler = $this->getMock(
+            'ZfrRest\Mvc\Controller\MethodHandler\PostHandler',
+            ['validateData', 'hydrateData'],
+            [],
+            '',
+            false
+        );
+
+        $singleResource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $metadata->expects($this->once())
+                 ->method('createResource')
+                 ->will($this->returnValue($singleResource));
+
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $resource->expects($this->once())
+                 ->method('getMetadata')
+                 ->will($this->returnValue($metadata));
+
+        $handler->expects($this->once())
+                ->method('validateData')
+                ->with($singleResource, [], $controller)
+                ->will($this->returnValue([]));
+
+        $handler->handleMethod($controller, $resource);
+    }
 }

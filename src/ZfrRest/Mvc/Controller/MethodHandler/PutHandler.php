@@ -73,7 +73,7 @@ class PutHandler implements MethodHandlerInterface
             throw new MethodNotAllowedException();
         }
 
-        $data = json_decode($controller->getRequest()->getContent(), true);
+        $data = json_decode($controller->getRequest()->getContent(), true) ?: [];
 
         if ($controller->getAutoValidate()) {
             $data = $this->validateData($resource, $data, $controller);
