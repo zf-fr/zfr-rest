@@ -83,10 +83,12 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
 
         $associationData = $reflectionProperty->getValue($resource->getData());
 
-        return new SubPathMatch(
-            new Resource($associationData, $associationResourceMetadata),
-            $associationPath,
-            $previousMatch
-        );
+        if ($associationData === null && $classMetadata->isSingleValuedAssociation($associationName)) {
+            $resource = $associationResourceMetadata->createResource();
+        } else {
+            $resource = new Resource($associationData, $associationResourceMetadata);
+        }
+
+        return new SubPathMatch($resource, $associationPath, $previousMatch);
     }
 }

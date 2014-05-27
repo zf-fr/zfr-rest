@@ -180,4 +180,65 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($this->associationMatcher->matchSubPath($resource, 'bar'));
     }
+
+    public function testCanCreateEmptyResourceForSingleValuedAssociation()
+    {
+        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+
+        $data = new AssociationMatcherEntity();
+
+        $resource->expects($this->once())->method('getData')->will($this->returnValue($data));
+        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $metadata->expects($this->once())
+                 ->method('hasAssociationMetadata')
+                 ->with('card')
+                 ->will($this->returnValue(true));
+
+        $metadata->expects($this->once())
+                 ->method('getAssociationMetadata')
+                 ->with('card')
+                 ->will($this->returnValue([
+                     'routable'     => true,
+                     'propertyName' => 'card',
+                     'path'         => 'card'
+                 ]));
+
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
+        $classMetadata->expects($this->once())
+                      ->method('getAssociationTargetClass')
+                      ->with('card')
+                      ->will($this->returnValue('Card'));
+
+        $associationMetadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $associationMetadata->expects($this->once())
+                            ->method('createResource')
+                            ->will($this->returnValue($this->getMock('ZfrRest\Resource\ResourceInterface')));
+
+        $this->metadataFactory->expects($this->once())
+                              ->method('getMetadataForClass')
+                              ->with('Card')
+                              ->will($this->returnValue($associationMetadata));
+
+        $reflectionProperty = $this->getMock('ReflectionProperty', [], [], '', false);
+        $reflectionProperty->expects($this->once())->method('getValue')->will($this->returnValue(null));
+
+        $reflectionClass = $this->getMock('ReflectionClass', [], [], '', false);
+        $reflectionClass->expects($this->once())->method('getProperty')->will($this->returnValue($reflectionProperty));
+
+        $metadata->expects($this->once())
+                 ->method('getReflectionClass')
+                 ->will($this->returnValue($reflectionClass));
+
+        $metadata->expects($this->once())->method('getClassMetadata')->will($this->returnValue($classMetadata));
+        $classMetadata->expects($this->once())
+                      ->method('isSingleValuedAssociation')
+                      ->with('card')
+                      ->will($this->returnValue(true));
+
+        $result = $this->associationMatcher->matchSubPath($resource, 'card');
+
+        $this->assertInstanceOf('ZfrRest\Router\Http\Matcher\SubPathMatch', $result);
+        $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $result->getMatchedResource());
+    }
 }
