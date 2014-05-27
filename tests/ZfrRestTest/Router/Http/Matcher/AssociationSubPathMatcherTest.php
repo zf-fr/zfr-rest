@@ -160,6 +160,7 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
         $this->assertSame($associationMetadata, $result->getMatchedResource()->getMetadata());
         $this->assertEquals($associationPath, $result->getMatchedPath());
         $this->assertNull($result->getPreviousMatch());
+        $this->assertFalse($result->isTerminal());
     }
 
     public function testWontMatchWhenRoutableIsSetToFalse()
@@ -240,5 +241,6 @@ class AssociationSubPathMatcherTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('ZfrRest\Router\Http\Matcher\SubPathMatch', $result);
         $this->assertInstanceOf('ZfrRest\Resource\ResourceInterface', $result->getMatchedResource());
+        $this->assertTrue($result->isTerminal());
     }
 }

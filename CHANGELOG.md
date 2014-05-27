@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.3.2
+
+* Added support for OneToOne association (assuming you have a "User" entity with a OneToOne association to
+a "Card" entity, you can now do a POST request like "/users/4/card")
+
 ## 0.3.1
 
 * ZfrRest now returns input errors correctly if no data was given in the body

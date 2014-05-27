@@ -82,13 +82,18 @@ class AssociationSubPathMatcher implements SubPathMatcherInterface
         $reflectionProperty->setAccessible(true);
 
         $associationData = $reflectionProperty->getValue($resource->getData());
+        $terminal        = false;
 
         if ($associationData === null && $classMetadata->isSingleValuedAssociation($associationName)) {
             $resource = $associationResourceMetadata->createResource();
+
+            // We set this match as terminal, so that paths like "/user/4/twitter/tweets/123" don't end
+            // up creating a lot of "non-existant" resources, that would be very strange to handle
+            $terminal = true;
         } else {
             $resource = new Resource($associationData, $associationResourceMetadata);
         }
 
-        return new SubPathMatch($resource, $associationPath, $previousMatch);
+        return new SubPathMatch($resource, $associationPath, $previousMatch, $terminal);
     }
 }
