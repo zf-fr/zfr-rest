@@ -59,7 +59,7 @@ class BaseSubPathMatcher implements SubPathMatcherInterface
         $subPath = trim($subPath, '/');
 
         // We have traversed the whole path, return the last matched path!
-        if (empty($subPath)) {
+        if (empty($subPath) || ($previousMatch && $previousMatch->isTerminal())) {
             return $previousMatch ?: new SubPathMatch($resource, $subPath);
         }
 

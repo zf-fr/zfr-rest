@@ -45,15 +45,26 @@ class SubPathMatch
     protected $previousMatch;
 
     /**
+     * @var bool
+     */
+    protected $terminal;
+
+    /**
      * @param ResourceInterface $matchedResource
      * @param string            $matchedPath
      * @param SubPathMatch|null $previousMatch
+     * @param bool              $terminal
      */
-    public function __construct(ResourceInterface $matchedResource, $matchedPath, SubPathMatch $previousMatch = null)
-    {
+    public function __construct(
+        ResourceInterface $matchedResource,
+        $matchedPath,
+        SubPathMatch $previousMatch = null,
+        $terminal = false
+    ) {
         $this->matchedResource = $matchedResource;
         $this->matchedPath     = $matchedPath;
         $this->previousMatch   = $previousMatch;
+        $this->terminal        = (bool) $terminal;
     }
 
     /**
@@ -84,5 +95,15 @@ class SubPathMatch
     public function getPreviousMatch()
     {
         return $this->previousMatch;
+    }
+
+    /**
+     * Get if this sub path match is a terminal path
+     *
+     * @return bool
+     */
+    public function isTerminal()
+    {
+        return $this->terminal;
     }
 }
