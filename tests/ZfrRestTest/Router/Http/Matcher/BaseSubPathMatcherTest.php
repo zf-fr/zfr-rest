@@ -129,4 +129,18 @@ class BaseSubPathMatcherTest extends TestCase
         $this->assertSame($secondMatch, $result);
         $this->assertSame($secondMatchedResource, $result->getMatchedResource());
     }
+
+    public function testReturnsMatchIfTerminalEvenIfPathIsNotFullyConsumed()
+    {
+        $baseResource  = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $previousMatch = $this->getMock('ZfrRest\Router\Http\Matcher\SubPathMatch', [], [], '', false);
+        $previousMatch->expects($this->once())->method('isTerminal')->will($this->returnValue(true));
+
+        $this->associationMatcher->expects($this->never())->method('matchSubPath');
+        $this->collectionMatcher->expects($this->never())->method('matchSubPath');
+        
+        $result = $this->baseMatcher->matchSubPath($baseResource, '/tweets/123', $previousMatch);
+
+        $this->assertSame($result, $previousMatch);
+    }
 }
