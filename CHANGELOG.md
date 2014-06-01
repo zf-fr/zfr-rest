@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.3
+
+* Fix an issue with camelCased associations when rendering a resource
+
 ## 0.3.2
 
 * Added support for OneToOne association (assuming you have a "User" entity with a OneToOne association to

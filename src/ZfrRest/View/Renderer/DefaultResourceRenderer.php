@@ -191,13 +191,15 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
         $associations  = $classMetadata->getAssociationNames();
 
         foreach ($associations as $association) {
+            $inflectedAssociation = $association;
+
             if ($this->underscoreSeparatedKeys) {
-                $association = strtolower($inflector->filter($association));
+                $inflectedAssociation = strtolower($inflector->filter($association));
             }
 
             // If the association object is not in the payload or is not defined in mapping... we cannot do anything
-            if (!isset($data[$association]) || !$resourceMetadata->hasAssociationMetadata($association)) {
-                unset($data[$association]);
+            if (!isset($data[$inflectedAssociation]) || !$resourceMetadata->hasAssociationMetadata($association)) {
+                unset($data[$inflectedAssociation]);
                 continue;
             }
 
@@ -208,7 +210,7 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
 
             // If set to NONE, we don't even want the association to be in the payload
             if ($extractionStrategy === ResourceMetadataInterface::ASSOCIATION_EXTRACTION_NONE) {
-                unset($data[$association]);
+                unset($data[$inflectedAssociation]);
                 continue;
             }
 
@@ -218,9 +220,9 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
             }
 
             // Otherwise, we render the association
-            $isCollectionValued = $classMetadata->isCollectionValuedAssociation($association);
-            $data[$association] = $this->renderAssociation(
-                $data[$association],
+            $isCollectionValued          = $classMetadata->isCollectionValuedAssociation($association);
+            $data[$inflectedAssociation] = $this->renderAssociation(
+                $data[$inflectedAssociation],
                 $classMetadata->getAssociationTargetClass($association),
                 $extractionStrategy,
                 $isCollectionValued
