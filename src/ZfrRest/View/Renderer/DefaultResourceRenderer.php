@@ -169,6 +169,20 @@ class DefaultResourceRenderer extends AbstractResourceRenderer
      */
     protected function renderItem($object, ResourceMetadataInterface $resourceMetadata)
     {
+        if (is_array($object)) {
+            $result = [];
+
+            foreach ($object as $prop => $value) {
+                if (is_object($value)) {
+                    $result[$prop] = $this->renderItem($value, $resourceMetadata);
+                } else {
+                    $result[$prop] = $value;
+                }
+            }
+
+            return $result;
+        }
+        
         /** @var \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
         $hydrator = $this->hydratorPluginManager->get($resourceMetadata->getHydratorName());
 
