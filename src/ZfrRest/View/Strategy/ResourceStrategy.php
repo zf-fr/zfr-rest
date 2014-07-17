@@ -95,6 +95,6 @@ class ResourceStrategy extends AbstractListenerAggregate
         $response = $event->getResponse();
 
         $response->setContent(json_encode($result));
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json; charset=utf-8');
     }
 }

@@ -19,6 +19,7 @@
 namespace ZfrRestTest\View\Strategy;
 
 use PHPUnit_Framework_TestCase;
+use Zend\Http\Header\ContentType;
 use Zend\Http\Response as HttpResponse;
 use Zend\View\ViewEvent;
 use ZfrRest\View\Strategy\ResourceStrategy;
@@ -105,6 +106,11 @@ class ResourceStrategyTest extends PHPUnit_Framework_TestCase
         $this->resourceStrategy->injectResponse($viewEvent);
 
         $this->assertTrue($response->getHeaders()->has('Content-Type'));
+
+        /** @var ContentType $header */
+        $header = $response->getHeaders()->get('Content-Type');
+
+        $this->assertEquals('application/json; charset=utf-8', $header->getFieldValue());
         $this->assertEquals(['foo' => 'bar'], json_decode($response->getContent(), true));
     }
 }
