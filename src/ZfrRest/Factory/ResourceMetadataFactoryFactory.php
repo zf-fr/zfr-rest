@@ -24,6 +24,7 @@ use Metadata\Driver\FileLocator;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Exception\RuntimeException;
+use ZfrRest\Options\Driver\PhpDriverOptions;
 use ZfrRest\Resource\Metadata\Driver\AnnotationDriver;
 use ZfrRest\Resource\Metadata\Driver\PhpDriver;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
@@ -61,7 +62,9 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
                     break;
 
                 case 'ZfrRest\Resource\Metadata\Driver\PhpDriver':
-                    $driver = new PhpDriver(new FileLocator($driverOptions->getOptions()['dirs']));
+                    /** @var PhpDriverOptions $options */
+                    $options = $driverOptions->getOptionsClass();
+                    $driver = new PhpDriver(new FileLocator($options->getDirs()));
                     break;
                 default:
                     throw new RuntimeException(sprintf(

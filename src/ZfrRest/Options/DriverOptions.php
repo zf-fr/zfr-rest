@@ -19,6 +19,8 @@
 namespace ZfrRest\Options;
 
 use Zend\Stdlib\AbstractOptions;
+use ZfrRest\Exception\DomainException;
+use ZfrRest\Options\Driver\PhpDriverOptions;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -69,5 +71,22 @@ class DriverOptions extends AbstractOptions
     public function setOptions(array $options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * Retrieve the options class based on the driver class
+     *
+     * @return AbstractOptions
+     */
+    public function getOptionsClass()
+    {
+        switch($this->class)
+        {
+            case 'ZfrRest\Resource\Metadata\Driver\PhpDriver':
+                return new PhpDriverOptions($this->options);
+
+            default:
+                throw new DomainException('No options class available for "%s"', $this->class);
+        }
     }
 }
