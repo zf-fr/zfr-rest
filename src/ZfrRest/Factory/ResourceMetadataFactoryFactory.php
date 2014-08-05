@@ -20,10 +20,12 @@ namespace ZfrRest\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Metadata\Driver\DriverChain;
+use Metadata\Driver\FileLocator;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Resource\Metadata\Driver\AnnotationDriver;
+use ZfrRest\Resource\Metadata\Driver\PhpDriver;
 use ZfrRest\Resource\Metadata\ResourceMetadataFactory;
 
 /**
@@ -56,7 +58,10 @@ class ResourceMetadataFactoryFactory implements FactoryInterface
             switch($driverOptions->getClass()) {
                 case 'ZfrRest\Resource\Metadata\Driver\AnnotationDriver':
                     $driver = new AnnotationDriver(new AnnotationReader());
+                    break;
 
+                case 'ZfrRest\Resource\Metadata\Driver\PhpDriver':
+                    $driver = new PhpDriver(new FileLocator($driverOptions->getOptions()['dirs']));
                     break;
                 default:
                     throw new RuntimeException(sprintf(

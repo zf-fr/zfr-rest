@@ -34,6 +34,11 @@ class DriverOptions extends AbstractOptions
     protected $class;
 
     /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
      * @param  string $class
      * @return void
      */
@@ -48,5 +53,21 @@ class DriverOptions extends AbstractOptions
     public function getClass()
     {
         return $this->class;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 }

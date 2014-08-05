@@ -19,7 +19,6 @@
 namespace ZfrRest\Resource\Metadata\Driver;
 
 use Doctrine\Common\Annotations\Reader;
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Metadata\Driver\DriverInterface;
 use ReflectionClass;
 use ZfrRest\Resource\Metadata\Annotation;
