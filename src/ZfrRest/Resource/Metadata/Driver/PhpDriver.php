@@ -37,6 +37,18 @@ class PhpDriver extends AbstractFileDriver
             );
         }
 
+        if ($metadata->getReflectionClass()->name != $class->name) {
+            throw new DomainException(
+                sprintf(
+                    'Configuration miss-match the file "%s" should return a metadata configuration for "%s"' .
+                    'but returned for "%s"',
+                    $file,
+                    $class->name,
+                    $metadata->name
+                )
+            );
+        }
+
         return $metadata;
     }
 
