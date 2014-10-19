@@ -50,6 +50,17 @@ return [
         // 'register_http_method_override_listener' => false,
 
         /**
+         * If enabled, it allows the REST router to filter a collection list by identifiers. For instance, considering
+         * a query /customers?$ids[]=1&$ids[]=2, it will be able to return a filtered collections
+         */
+        // 'enable_coalesce_filtering' => false,
+
+        /**
+         * The coalesce filtering query key
+         */
+        // 'coalesce_filtering_query_key' => '$ids',
+
+        /**
          * Service manager configuration to configure the method handlers. A method handler handles a HTTP request
          * like GET, PUT...
          */

@@ -19,6 +19,7 @@
 namespace ZfrRest\Options;
 
 use Zend\Stdlib\AbstractOptions;
+use ZfrRest\Exception\InvalidArgumentException;
 
 /**
  * @author Michaël Gallego <mic.gallego@gmail.com>
@@ -60,6 +61,23 @@ class ModuleOptions extends AbstractOptions
      * @var bool
      */
     protected $registerHttpMethodOverrideListener = false;
+
+    /**
+     * Is the enable coalesce filtering enabled?
+     *
+     * If enabled, it allows the REST router to filter a collection list by identifiers. For instance, considering
+     * a query /customers?$ids[]=1&$ids[]=2, it will be able to return a filtered collections
+     *
+     * @var bool
+     */
+    protected $enableCoalesceFiltering = false;
+
+    /**
+     * The coalesce filtering query key
+     *
+     * @var string
+     */
+    protected $coalesceFilteringQueryKey = '$ids';
 
     /**
      * @param array|null $options
@@ -159,5 +177,42 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterHttpMethodOverrideListener()
     {
         return $this->registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @param boolean $enableCoalesceFiltering
+     */
+    public function setEnableCoalesceFiltering($enableCoalesceFiltering)
+    {
+        $this->enableCoalesceFiltering = (bool) $enableCoalesceFiltering;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEnableCoalesceFiltering()
+    {
+        return $this->enableCoalesceFiltering;
+    }
+
+    /**
+     * @param  string $coalesceFilteringQueryKey
+     * @throws InvalidArgumentException
+     */
+    public function setCoalesceFilteringQueryKey($coalesceFilteringQueryKey)
+    {
+        if (empty($coalesceFilteringQueryKey)) {
+            throw new InvalidArgumentException('Coalesce filtering key cannot be an empty value');
+        }
+
+        $this->coalesceFilteringQueryKey = (string) $coalesceFilteringQueryKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCoalesceFilteringQueryKey()
+    {
+        return $this->coalesceFilteringQueryKey;
     }
 }
