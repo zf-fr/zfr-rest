@@ -160,15 +160,16 @@ class ResourceGraphRoute implements RouteInterface
             $path = substr($path, strlen(trim($baseUrl, '/')));
         }
 
-        // If the URI does not begin by the route, we can stop immediately
-        if (substr($path, 0, strlen($this->route)) !== $this->route) {
+        $pathParts = explode('/', trim($path, '/'), 2);
+
+        // If the first path part does not match the entry point, we can stop immediately
+        if ($pathParts[0] !== trim($this->route, '/')) {
             return null;
         }
 
         // If we have only one segment (for instance "users"), then the next path to analyze is in fact
         // an empty string, hence the ternary condition
-        $pathParts = explode('/', trim($path, '/'), 2);
-        $subPath   = count($pathParts) === 1 ? '' : end($pathParts);
+        $subPath = count($pathParts) === 1 ? '' : end($pathParts);
 
         if (!$match = $this->subPathMatcher->matchSubPath($this->getResource(), $subPath)) {
             // Although this is an error, we still want to create a route match, so that the request

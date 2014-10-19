@@ -25,6 +25,7 @@ use ZfrRest\Resource\Metadata\Annotation as REST;
 /**
  * @ORM\Entity
  * @REST\Resource(hydrator="ClassMethods")
+ * @REST\Collection(controller="UserListController")
  */
 class User
 {
