@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.3.4
+
+* Fix a bug with entry points. Previously, if you had an entry point configured as "/users", ZfrRest used to
+match URLs like "/userssssss".
+
 ## 0.3.3
 
 * Fix an issue with camelCased associations when rendering a resource

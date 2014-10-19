@@ -143,6 +143,31 @@ class ResourceGraphRouteTest extends PHPUnit_Framework_TestCase
         ]));
     }
 
+    public function testCanOnlyMatchExactEntryPoint()
+    {
+        $serviceManager     = ServiceManagerFactory::getServiceManager();
+        $resourceGraphRoute = new ResourceGraphRoute(
+            $serviceManager->get('ZfrRest\Resource\Metadata\ResourceMetadataFactory'),
+            $serviceManager->get('ZfrRest\Resource\ResourcePluginManager'),
+            $serviceManager->get('ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'),
+            'ZfrRestTest\Asset\Resource\Metadata\Annotation\User',
+            '/users'
+        );
+
+        $httpRequest = new HttpRequest();
+        $httpRequest->setUri('/users/');
+
+        $match = $resourceGraphRoute->match($httpRequest);
+        $this->assertInternalType('string', $match->getParam('controller'));
+
+        // Now, with the entrypoint "/userssssss/", it should fail!
+
+        $httpRequest->setUri('/usersssss/');
+
+        $match = $resourceGraphRoute->match($httpRequest);
+        $this->assertNull($match);
+    }
+
     public function testCanMatchControllerWhenOverridenOnAssociation()
     {
         $serviceManager     = ServiceManagerFactory::getServiceManager();
