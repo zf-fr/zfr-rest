@@ -34,6 +34,7 @@ class GetHandlerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        /** @var ServiceLocatorInterface $parentLocator */
         $parentLocator = $serviceLocator->getServiceLocator();
 
         return new GetHandler($parentLocator->get('ZfrRest\Options\ModuleOptions'));

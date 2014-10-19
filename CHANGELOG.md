@@ -5,6 +5,8 @@
 * ZfrRest now supports coalesce filtering for "hasMany" or "findMany" requests type through the new, optional
 `enable_coalesce_filtering` module option. If enabled, ZfrRest will be able to respond to queries like
 /customers?ids[]=5&ids[]=64, where `ids` is a configurable primary key name.
+* Fix a bug with entry points. Previously, if you had an entry point configured as "/users", ZfrRest used to
+match URLs like "/userssssss".
 
 ## 0.3.3
 

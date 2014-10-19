@@ -73,15 +73,18 @@ class GetHandler implements MethodHandlerInterface
         if ($this->moduleOptions->isEnableCoalesceFiltering() && $data instanceof Selectable) {
             /** @var \Zend\Http\Request $request */
             $request = $controller->getRequest();
-            $idsKey  = $this->moduleOptions->getCoalesceFilteringKey();
+            $idsKey  = $this->moduleOptions->getCoalesceFilteringQueryKey();
 
-            if ($ids = $request->getQuery($idsKey, null)) {
+            if (is_array($ids = $request->getQuery($idsKey, null))) {
+                $metadata      = $resource->getMetadata();
+                $identifierKey = $metadata->getClassMetadata()->getIdentifierFieldNames();
+
                 $criteria = new Criteria();
-                $criteria->where($criteria->expr()->in($idsKey, $ids));
+                $criteria->where($criteria->expr()->in(current($identifierKey), $ids));
 
                 // @TODO: maybe it would make more sense to allow to change the data from a resource, instead of
                 //        having to recreate a new one everytime
-                $resource = new Resource($data->matching($criteria), $resource->getMetadata());
+                $resource = new Resource($data->matching($criteria), $metadata);
                 $controller->getEvent()->getRouteMatch()->setParam('resource', $resource);
             }
         }

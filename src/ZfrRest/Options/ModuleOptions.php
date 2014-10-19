@@ -19,6 +19,7 @@
 namespace ZfrRest\Options;
 
 use Zend\Stdlib\AbstractOptions;
+use ZfrRest\Exception\InvalidArgumentException;
 
 /**
  * @author Michaël Gallego <mic.gallego@gmail.com>
@@ -65,18 +66,18 @@ class ModuleOptions extends AbstractOptions
      * Is the enable coalesce filtering enabled?
      *
      * If enabled, it allows the REST router to filter a collection list by identifiers. For instance, considering
-     * a query /customers?ids[]=1&ids[]=2, it will be able to return a filtered collections
+     * a query /customers?$ids[]=1&$ids[]=2, it will be able to return a filtered collections
      *
      * @var bool
      */
     protected $enableCoalesceFiltering = false;
 
     /**
-     * The coalesce filtering key
+     * The coalesce filtering query key
      *
      * @var string
      */
-    protected $coalesceFilteringKey = 'ids';
+    protected $coalesceFilteringQueryKey = '$ids';
 
     /**
      * @param array|null $options
@@ -195,18 +196,23 @@ class ModuleOptions extends AbstractOptions
     }
 
     /**
-     * @param string $coalesceFilteringKey
+     * @param  string $coalesceFilteringQueryKey
+     * @throws InvalidArgumentException
      */
-    public function setCoalesceFilteringKey($coalesceFilteringKey)
+    public function setCoalesceFilteringQueryKey($coalesceFilteringQueryKey)
     {
-        $this->coalesceFilteringKey = (string) $coalesceFilteringKey;
+        if (empty($coalesceFilteringQueryKey)) {
+            throw new InvalidArgumentException('Coalesce filtering key cannot be an empty value');
+        }
+
+        $this->coalesceFilteringQueryKey = (string) $coalesceFilteringQueryKey;
     }
 
     /**
      * @return string
      */
-    public function getCoalesceFilteringKey()
+    public function getCoalesceFilteringQueryKey()
     {
-        return $this->coalesceFilteringKey;
+        return $this->coalesceFilteringQueryKey;
     }
 }

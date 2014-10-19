@@ -46,7 +46,7 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
             'object_manager'                         => 'doctrine',
             'register_http_method_override_listener' => false,
             'enable_coalesce_filtering'              => true,
-            'coalesce_filtering_key'                 => 'id',
+            'coalesce_filtering_query_key'           => 'id',
             'drivers'                                => [
                 ['class' => 'foo']
             ],
@@ -56,7 +56,7 @@ class ModuleOptionsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('doctrine', $options->getObjectManager());
         $this->assertFalse($options->getRegisterHttpMethodOverrideListener());
         $this->assertTrue($options->isEnableCoalesceFiltering());
-        $this->assertEquals('id', $options->getCoalesceFilteringKey());
+        $this->assertEquals('id', $options->getCoalesceFilteringQueryKey());
         $this->assertEquals('myCache', $options->getCache());
         $this->assertCount(1, $options->getDrivers());
 

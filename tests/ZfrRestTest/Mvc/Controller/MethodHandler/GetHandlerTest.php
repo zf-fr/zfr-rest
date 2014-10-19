@@ -109,12 +109,13 @@ class GetHandlerTest extends PHPUnit_Framework_TestCase
         $options = new ModuleOptions();
         $options->setEnableCoalesceFiltering(true);
 
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', ['get', 'getEvent', 'getRequest']);
-        $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $metadata   = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $controller    = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController', ['get', 'getEvent', 'getRequest']);
+        $resource      = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $metadata      = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
+        $classMetadata = $this->getMock('Doctrine\Common\Persistence\Mapping\ClassMetadata');
 
         $request = new Request();
-        $request->setQuery(new Parameters(['ids' => [1, 2]]));
+        $request->setQuery(new Parameters(['$ids' => [1, 2]]));
 
         $data = $this->getMock('Doctrine\Common\Collections\Selectable');
 
@@ -138,6 +139,14 @@ class GetHandlerTest extends PHPUnit_Framework_TestCase
                  ->method('getMetadata')
                  ->will($this->returnValue($metadata));
 
+        $metadata->expects($this->once())
+                 ->method('getClassMetadata')
+                 ->will($this->returnValue($classMetadata));
+
+        $classMetadata->expects($this->once())
+                      ->method('getIdentifierFieldNames')
+                      ->will($this->returnValue(['id']));
+
         $data->expects($this->once())
              ->method('matching')
              ->with($this->callback(function(Criteria $criteria) {
@@ -145,7 +154,7 @@ class GetHandlerTest extends PHPUnit_Framework_TestCase
                  $comparison = $criteria->getWhereExpression();
 
                  $this->assertInstanceOf('Doctrine\Common\Collections\Expr\Comparison', $comparison);
-                 $this->assertEquals('ids', $comparison->getField());
+                 $this->assertEquals('id', $comparison->getField());
                  $this->assertEquals([1, 2], $comparison->getValue()->getValue());
 
                  return true;
