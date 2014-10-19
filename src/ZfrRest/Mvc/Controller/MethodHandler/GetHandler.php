@@ -79,7 +79,10 @@ class GetHandler implements MethodHandlerInterface
                 $criteria = new Criteria();
                 $criteria->where($criteria->expr()->in($idsKey, $ids));
 
+                // @TODO: maybe it would make more sense to allow to change the data from a resource, instead of
+                //        having to recreate a new one everytime
                 $resource = new Resource($data->matching($criteria), $resource->getMetadata());
+                $controller->getEvent()->getRouteMatch()->setParam('resource', $resource);
             }
         }
 
