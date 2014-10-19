@@ -45,7 +45,8 @@ If you are looking for some information that is not listed in the documentation,
     5. [How to serialize custom data that do not belong to the entity?](/docs/07. Cookbook.md#how-to-serialize-custom-data-that-do-not-belong-to-the-entity)
     6. [How to deal with actions?](/docs/07. Cookbook.md#how-to-deal-with-actions)
     7. [How to call custom repository methods?](/docs/07. Cookbook.md#how-to-call-custom-repository-methods)
-    8. [Tuning ZfrRest for production](/docs/07. Cookbook.md#tuning-zfrrest-for-production)
+    8. [How to enable coalesce filtering for efficient retrieval by id?](/docs/07. Cookbook.md#how-to-enable-coalesce-filtering-for-efficient-retrieval-by-id)
+    9. [Tuning ZfrRest for production](/docs/07. Cookbook.md#tuning-zfrrest-for-production)
 
 8. [Mapping reference](/docs/08. Mapping reference.md)
     1. [Annotations](/docs/08. Mapping reference.md)
