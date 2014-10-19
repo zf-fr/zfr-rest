@@ -33,7 +33,6 @@ class MethodHandlerPluginManager extends AbstractPluginManager
      */
     protected $invokableClasses = [
         'delete'  => 'ZfrRest\Mvc\Controller\MethodHandler\DeleteHandler',
-        'get'     => 'ZfrRest\Mvc\Controller\MethodHandler\GetHandler',
         'options' => 'ZfrRest\Mvc\Controller\MethodHandler\OptionsHandler'
     ];
 
@@ -41,6 +40,7 @@ class MethodHandlerPluginManager extends AbstractPluginManager
      * @var array
      */
     protected $factories = [
+        'get'  => 'ZfrRest\Factory\GetHandlerFactory',
         'post' => 'ZfrRest\Factory\PostHandlerFactory',
         'put'  => 'ZfrRest\Factory\PutHandlerFactory'
     ];

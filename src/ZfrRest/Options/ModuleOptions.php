@@ -62,6 +62,23 @@ class ModuleOptions extends AbstractOptions
     protected $registerHttpMethodOverrideListener = false;
 
     /**
+     * Is the enable coalesce filtering enabled?
+     *
+     * If enabled, it allows the REST router to filter a collection list by identifiers. For instance, considering
+     * a query /customers?ids[]=1&ids[]=2, it will be able to return a filtered collections
+     *
+     * @var bool
+     */
+    protected $enableCoalesceFiltering = false;
+
+    /**
+     * The coalesce filtering key
+     *
+     * @var string
+     */
+    protected $coalesceFilteringKey = 'ids';
+
+    /**
      * @param array|null $options
      */
     public function __construct($options = null)
@@ -159,5 +176,37 @@ class ModuleOptions extends AbstractOptions
     public function getRegisterHttpMethodOverrideListener()
     {
         return $this->registerHttpMethodOverrideListener;
+    }
+
+    /**
+     * @param boolean $enableCoalesceFiltering
+     */
+    public function setEnableCoalesceFiltering($enableCoalesceFiltering)
+    {
+        $this->enableCoalesceFiltering = (bool) $enableCoalesceFiltering;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEnableCoalesceFiltering()
+    {
+        return $this->enableCoalesceFiltering;
+    }
+
+    /**
+     * @param string $coalesceFilteringKey
+     */
+    public function setCoalesceFilteringKey($coalesceFilteringKey)
+    {
+        $this->coalesceFilteringKey = (string) $coalesceFilteringKey;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCoalesceFilteringKey()
+    {
+        return $this->coalesceFilteringKey;
     }
 }

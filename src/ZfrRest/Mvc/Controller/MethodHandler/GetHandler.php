@@ -18,8 +18,12 @@
 
 namespace ZfrRest\Mvc\Controller\MethodHandler;
 
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Selectable;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
 use ZfrRest\Mvc\Controller\AbstractRestfulController;
+use ZfrRest\Options\ModuleOptions;
+use ZfrRest\Resource\Resource;
 use ZfrRest\Resource\ResourceInterface;
 
 /**
@@ -33,6 +37,19 @@ use ZfrRest\Resource\ResourceInterface;
  */
 class GetHandler implements MethodHandlerInterface
 {
+    /**
+     * @var ModuleOptions
+     */
+    protected $moduleOptions;
+
+    /**
+     * @param ModuleOptions $moduleOptions
+     */
+    public function __construct(ModuleOptions $moduleOptions)
+    {
+        $this->moduleOptions = $moduleOptions;
+    }
+
     /**
      * Handler for GET method
      *
@@ -48,6 +65,22 @@ class GetHandler implements MethodHandlerInterface
         // If no get method is defined on the controller, then we cannot do anything
         if (!method_exists($controller, 'get')) {
             throw new MethodNotAllowedException();
+        }
+
+        // If coalesce filtering is enabled and resource is a selectable collection, we automatically filter data
+        $data = $resource->getData();
+
+        if ($this->moduleOptions->isEnableCoalesceFiltering() && $data instanceof Selectable) {
+            /** @var \Zend\Http\Request $request */
+            $request = $controller->getRequest();
+            $idsKey  = $this->moduleOptions->getCoalesceFilteringKey();
+
+            if ($ids = $request->getQuery($idsKey, null)) {
+                $criteria = new Criteria();
+                $criteria->where($criteria->expr()->in($idsKey, $ids));
+
+                $resource = new Resource($data->matching($criteria), $resource->getMetadata());
+            }
         }
 
         return $controller->get($resource->getData());
