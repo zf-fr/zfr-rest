@@ -37,4 +37,4 @@ really think it's a nice product too. So give it a try to both products, and cho
 
 ## Documentation
 
-The official documentation is available is the [/docs](/docs) folder.
+The official documentation is available in the [/docs](/docs) folder.
