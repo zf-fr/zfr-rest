@@ -74,14 +74,8 @@ class PutHandler implements MethodHandlerInterface
         }
 
         $data = json_decode($controller->getRequest()->getContent(), true) ?: [];
-
-        if ($controller->getAutoValidate()) {
-            $data = $this->validateData($resource, $data, $controller);
-        }
-
-        if ($controller->getAutoHydrate()) {
-            $data = $this->hydrateData($resource, $data);
-        }
+        $data = $this->validateData($resource, $data, $controller);
+        $data = $this->hydrateData($resource, $data);
 
         return $controller->put($data);
     }

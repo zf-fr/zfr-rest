@@ -20,7 +20,6 @@ namespace ZfrRestTest\Asset\Mvc;
 
 use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use ZfrRest\Mvc\Controller\MethodHandler\DataHydrationTrait;
-use ZfrRest\Options\ControllerBehavioursOptions;
 
 class DataHydrationObject
 {

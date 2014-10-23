@@ -21,6 +21,7 @@ namespace ZfrRestTest\Mvc\Controller\MethodHandler;
 use PHPUnit_Framework_TestCase;
 use Zend\InputFilter\InputFilter;
 use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
+use ZfrRest\Mvc\Controller\Event\ValidationEvent;
 use ZfrRestTest\Asset\Mvc\DataValidationObject;
 
 /**
@@ -37,76 +38,123 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
      */
     protected $dataValidation;
 
-    /**
-     * @var \Zend\InputFilter\InputFilterPluginManager
-     */
-    protected $inputFilterPluginManager;
-
     public function setUp()
     {
-        $this->inputFilterPluginManager = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
-        $this->dataValidation           = new DataValidationObject($this->inputFilterPluginManager);
+        $this->resource           = $this->getMock('ZfrRest\Resource\ResourceInterface');
+        $this->controller         = $this->getMock('Zend\EventManager\EventManagerAwareInterface');
+        $this->eventManager       = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $this->inputFilterManager = $this->getMock('Zend\InputFilter\InputFilterPluginManager');
+        $this->dataValidation     = new DataValidationObject($this->inputFilterManager);
+
+        $this->controller->expects($this->once())->method('getEventManager')->will($this->returnValue($this->eventManager));
     }
 
     public function testThrowExceptionIfNoInputFilterNameIsDefined()
     {
         $this->setExpectedException('ZfrRest\Mvc\Exception\RuntimeException');
 
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
         $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
 
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
+        $this->resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
         $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue(null));
 
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
-        $controller->expects($this->never())->method('configureInputFilter');
-
-        $this->dataValidation->validateData($resource, [], $controller);
+        $this->dataValidation->validateData($this->resource, [], $this->controller);
     }
 
-    public function testCanValidateData()
+    public function testTriggerEventAndSkipIfAutoValidationDisabled()
     {
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-        $context  = new \stdClass;
+        $rawData = ['foo' => 'bar'];
 
-        $resource->expects($this->once())->method('getData')->will($this->returnValue($context));
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
+        $callback = function ($event) {
+            return ($event instanceof ValidationEvent)
+                && ($event->getTarget() === $this->controller)
+                && ($event->getResource() === $this->resource)
+                && ($event->getInputFilterManager() === $this->inputFilterManager);
+        };
 
-        $data = ['foo'];
+        $callback->bindTo($this);
 
+        $this->eventManager->expects($this->once())->method('trigger')->with(
+            $this->equalTo(ValidationEvent::EVENT_VALIDATE_PRE),
+            $this->callback($callback)
+        )->will($this->returnCallback(function ($name, $event) {
+            // Disable auto validation
+            $event->setAutoValidate(false);
+        }));
+
+        $result = $this->dataValidation->validateData($this->resource, $rawData, $this->controller);
+
+        $this->assertSame($rawData, $result);
+    }
+
+    public function testValidateWithCustomInputFilter()
+    {
+        $rawData           = ['foo' => 'bar'];
+        $validData         = ['foo' => 'baz'];
+        $customInputFilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
+
+        $this->eventManager->expects($this->at(0))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_PRE))->will(
+            $this->returnCallback(function ($name, $event) use ($customInputFilter) {
+                // Set custom InputFilter
+                $event->setInputFilter($customInputFilter);
+            })
+        );
+
+        $customInputFilter->expects($this->once())->method('setData')->with($this->equalTo($rawData));
+        $customInputFilter->expects($this->once())->method('isValid')->will($this->returnValue(true));
+        $customInputFilter->expects($this->once())->method('getValues')->will($this->returnValue($validData));
+
+        $this->eventManager->expects($this->at(1))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_SUCCESS));
+
+        $result = $this->dataValidation->validateData($this->resource, $rawData, $this->controller);
+
+        $this->assertSame($validData, $result);
+    }
+
+    public function testValidateWithDefaultInputFilter()
+    {
+        $metadata    = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
         $inputFilter = $this->getMock('Zend\InputFilter\InputFilterInterface');
-        $inputFilter->expects($this->once())->method('setData')->with($data);
-        $inputFilter->expects($this->once())
-                    ->method('isValid')
-                    ->with($context)
-                    ->will($this->returnValue(true));
+        $rawData     = ['foo' => 'bar'];
+        $validData   = ['foo' => 'baz'];
+        $context     = new \stdClass();
 
-        $inputFilter->expects($this->once())
-                    ->method('getValues')
-                    ->will($this->returnValue(['filtered']));
+        $this->resource->expects($this->once())
+            ->method('getData')
+            ->will($this->returnValue($context));
 
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
-        $controller->expects($this->once())
-                   ->method('getInputFilter')
-                   ->with($this->inputFilterPluginManager, 'inputFilter')
-                   ->will($this->returnValue($inputFilter));
+        $this->resource->expects($this->once())
+            ->method('getMetadata')
+            ->will($this->returnValue($metadata));
 
-        $result = $this->dataValidation->validateData($resource, $data, $controller);
+        $metadata->expects($this->once())
+            ->method('getInputFilterName')
+            ->will($this->returnValue('FooInputFilter'));
 
-        $this->assertEquals(['filtered'], $result);
+        $this->inputFilterManager->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('FooInputFilter'))
+            ->will($this->returnValue($inputFilter));
+
+        $inputFilter->expects($this->once())->method('setData')->with($this->equalTo($rawData));
+        $inputFilter->expects($this->once())->method('isValid')->with($this->equalTo($context))->will($this->returnValue(true));
+        $inputFilter->expects($this->once())->method('getValues')->will($this->returnValue($validData));
+
+        $this->eventManager->expects($this->at(1))->method('trigger')->with(
+            $this->equalTo(ValidationEvent::EVENT_VALIDATE_SUCCESS),
+            $this->callback(function ($event) use ($inputFilter) {
+                return ($event instanceof ValidationEvent && $event->getInputFilter() === $inputFilter);
+            })
+        );
+
+        $result = $this->dataValidation->validateData($this->resource, $rawData, $this->controller);
+
+        $this->assertSame($validData, $result);
     }
 
     public function testThrowExceptionOnFailedValidation()
     {
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
-
-        $data = ['foo'];
+        $this->setExpectedException('ZfrRest\Http\Exception\Client\UnprocessableEntityException');
 
         $inputFilter = new InputFilter();
         $inputFilter->add([
@@ -114,34 +162,29 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
             'required' => true
         ]);
 
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
-        $controller->expects($this->once())
-                   ->method('getInputFilter')
-                   ->with($this->inputFilterPluginManager, 'inputFilter')
-                   ->will($this->returnValue($inputFilter));
+        $this->eventManager->expects($this->at(0))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_PRE))->will(
+            $this->returnCallback(function ($name, $event) use ($inputFilter) {
+                // Set InputFilter
+                $event->setInputFilter($inputFilter);
+            })
+        );
 
-        $exceptionTriggered = false;
-        $errorMessages      = ['email' => ['Value is required and can\'t be empty']];
+        $this->eventManager->expects($this->at(1))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_ERROR));
+
+        $errorMessages = ['email' => ['Value is required and can\'t be empty']];
 
         try {
-            $this->dataValidation->validateData($resource, $data, $controller);
-        } catch(UnprocessableEntityException $exception) {
-            $exceptionTriggered = true;
+            $this->dataValidation->validateData($this->resource, ['foo'], $this->controller);
+        } catch (UnprocessableEntityException $exception) {
             $this->assertEquals($errorMessages, $exception->getErrors());
-        }
 
-        $this->assertTrue($exceptionTriggered);
+            throw $exception;
+        }
     }
 
     public function testThrowExceptionOnFailedValidationWithNestedInputFilter()
     {
-        $resource = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $metadata = $this->getMock('ZfrRest\Resource\Metadata\ResourceMetadataInterface');
-
-        $resource->expects($this->once())->method('getMetadata')->will($this->returnValue($metadata));
-        $metadata->expects($this->once())->method('getInputFilterName')->will($this->returnValue('inputFilter'));
-
-        $data = ['foo'];
+        $this->setExpectedException('ZfrRest\Http\Exception\Client\UnprocessableEntityException');
 
         $inputFilter = new InputFilter();
         $inputFilter->add([
@@ -156,14 +199,16 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
             ]
         ], 'address');
 
-        $controller = $this->getMock('ZfrRest\Mvc\Controller\AbstractRestfulController');
-        $controller->expects($this->once())
-            ->method('getInputFilter')
-            ->with($this->inputFilterPluginManager, 'inputFilter')
-            ->will($this->returnValue($inputFilter));
+        $this->eventManager->expects($this->at(0))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_PRE))->will(
+            $this->returnCallback(function ($name, $event) use ($inputFilter) {
+                // Set InputFilter
+                $event->setInputFilter($inputFilter);
+            })
+        );
 
-        $exceptionTriggered = false;
-        $errorMessages      = [
+        $this->eventManager->expects($this->at(1))->method('trigger')->with($this->equalTo(ValidationEvent::EVENT_VALIDATE_ERROR));
+
+        $errorMessages = [
             'email'   => ['Value is required and can\'t be empty'],
             'address' => [
                 'city' => ['Value is required and can\'t be empty']
@@ -171,12 +216,11 @@ class DataValidationTraitTest extends PHPUnit_Framework_TestCase
         ];
 
         try {
-            $this->dataValidation->validateData($resource, $data, $controller);
-        } catch(UnprocessableEntityException $exception) {
-            $exceptionTriggered = true;
+            $this->dataValidation->validateData($this->resource, ['foo'], $this->controller);
+        } catch (UnprocessableEntityException $exception) {
             $this->assertEquals($errorMessages, $exception->getErrors());
-        }
 
-        $this->assertTrue($exceptionTriggered);
+            throw $exception;
+        }
     }
 }
