@@ -81,6 +81,7 @@ class CollectionSubPathMatcher implements SubPathMatcherInterface
             throw new RuntimeException(get_class($this) . ' does not support composite identifiers');
         }
 
+
         $data = $resource->getData();
 
         if (!$data instanceof Selectable && $data instanceof Traversable) {
