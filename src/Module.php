@@ -22,6 +22,9 @@ use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
+use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Mvc\HttpMethodOverrideListener;
+use ZfrRest\Options\ModuleOptions;
 
 /**
  * Module
@@ -43,13 +46,13 @@ class Module implements
         $serviceManager = $application->getServiceManager();
         $eventManager   = $application->getEventManager();
 
-        /* @var \ZfrRest\Options\ModuleOptions $moduleOptions */
-        $moduleOptions = $serviceManager->get('ZfrRest\Options\ModuleOptions');
+        /* @var ModuleOptions $moduleOptions */
+        $moduleOptions = $serviceManager->get(ModuleOptions::class);
 
-        $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpExceptionListener'));
+        $eventManager->attachAggregate($serviceManager->get(HttpExceptionListener::class));
 
         if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
-            $eventManager->attachAggregate($serviceManager->get('ZfrRest\Mvc\HttpMethodOverrideListener'));
+            $eventManager->attachAggregate($serviceManager->get(HttpMethodOverrideListener::class));
         }
     }
 
@@ -58,7 +61,7 @@ class Module implements
      */
     public function getConfig()
     {
-        return include __DIR__ . '/../../config/module.config.php';
+        return include __DIR__ . '/../config/module.config.php';
     }
 
     /**

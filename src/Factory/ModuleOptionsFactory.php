@@ -16,18 +16,23 @@
  * and is licensed under the MIT license.
  */
 
-use ZfrRest\Factory\HttpExceptionListenerFactory;
-use ZfrRest\Factory\ModuleOptionsFactory;
-use ZfrRest\Mvc\HttpExceptionListener;
+namespace ZfrRest\Factory;
+
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Options\ModuleOptions;
 
-return [
-    'service_manager' => [
-        'factories' => [
-            HttpExceptionListener::class => HttpExceptionListenerFactory::class,
-            ModuleOptions::class         => ModuleOptionsFactory::class
-        ]
-    ],
-
-    'zfr_rest' => []
-];
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class ModuleOptionsFactory implements FactoryInterface
+{
+    /**
+     * {@inheritDoc}
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return new ModuleOptions($serviceLocator->get('Config')['zfr_rest']);
+    }
+}
