@@ -27,20 +27,29 @@ use Zend\View\Model\ViewModel;
 class ResourceViewModel extends ViewModel
 {
     /**
-     * @var object
+     * @var bool
      */
-    protected $resource = null;
+    protected $terminate = true;
 
     /**
-     * @var int
+     * @var string|null
      */
-    protected $cacheInSeconds = 0;
+    protected $version = null;
 
     /**
-     * @param object $resource
+     * @param array $variables
+     * @param array $options
      */
-    public function __construct($resource)
+    public function __construct(array $variables = [], array $options = [])
     {
-        $this->resource = $resource;
+        $this->setVariables($variables, true);
+
+        foreach ($options as $key => $value) {
+            switch ($key) {
+                case 'version':
+                    $this->version = (string) $value;
+                    break;
+            }
+        }
     }
 }

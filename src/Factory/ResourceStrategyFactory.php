@@ -16,15 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\View\PostProcessor;
+namespace ZfrRest\Factory;
 
-class PaginationPostProcessor implements PostProcessorInterface
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Strategy\ResourceStrategy;
+
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class ResourceStrategyFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function postProcess(array $data)
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        // TODO: Implement postProcess() method.
+        $renderer = $serviceLocator->get(ResourceRenderer::class);
+
+        return new ResourceStrategy($renderer);
     }
 }

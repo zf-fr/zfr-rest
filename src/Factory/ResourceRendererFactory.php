@@ -16,24 +16,26 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\View\PostProcessor;
+namespace ZfrRest\Factory;
 
-use Zend\Http\Request as HttpRequest;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\View\Renderer\ResourceRenderer;
 
 /**
- * Interface for view post processors
- *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-interface PostProcessorInterface 
+class ResourceRendererFactory implements FactoryInterface
 {
     /**
-     * Post-process the data and return the new data
-     *
-     * @param  array       $data
-     * @param  HttpRequest $request
-     * @return array
+     * {@inheritDoc}
      */
-    public function postProcess(array $data, HttpRequest $request);
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        /** @var \Zend\View\Resolver\ResolverInterface $resolver */
+        $resolver = $serviceLocator->get('ViewResolver');
+
+        return new ResourceRenderer($resolver);
+    }
 }

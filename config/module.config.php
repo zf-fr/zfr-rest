@@ -18,14 +18,26 @@
 
 use ZfrRest\Factory\HttpExceptionListenerFactory;
 use ZfrRest\Factory\ModuleOptionsFactory;
+use ZfrRest\Factory\ResourceRendererFactory;
+use ZfrRest\Factory\ResourceStrategyFactory;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Options\ModuleOptions;
+use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Strategy\ResourceStrategy;
 
 return [
     'service_manager' => [
         'factories' => [
             HttpExceptionListener::class => HttpExceptionListenerFactory::class,
-            ModuleOptions::class         => ModuleOptionsFactory::class
+            ModuleOptions::class         => ModuleOptionsFactory::class,
+            ResourceRenderer::class      => ResourceRendererFactory::class,
+            ResourceStrategy::class      => ResourceStrategyFactory::class
+        ]
+    ],
+
+    'view_manager' => [
+        'strategies' => [
+            ResourceStrategy::class
         ]
     ],
 

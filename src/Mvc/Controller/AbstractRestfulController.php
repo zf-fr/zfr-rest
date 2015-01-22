@@ -42,21 +42,26 @@ class AbstractRestfulController extends AbstractController
     /**
      * {@inheritDoc}
      */
-    public function onDispatch(MvcEvent $e)
+    public function onDispatch(MvcEvent $event)
     {
-        $request = $e->getRequest();
+        $request = $event->getRequest();
 
         if (!$request instanceof HttpRequest) {
             throw new RuntimeException('RESTful controller from ZfrRest can only handle HTTP requests');
         }
 
-        $method = $request->getMethod();
+        $method = strtolower($request->getMethod());
 
-        if (method_exists($this, $method)) {
+        if (!method_exists($this, $method)) {
             throw new MethodNotAllowedException();
         }
 
-        $this->$method($this->params()->fromRoute(null, []));
+        $routeParameters = $this->params()->fromRoute(null, []);
+        unset($routeParameters['controller']);
+
+        $result = $this->$method($routeParameters);
+
+        $event->setResult($result);
     }
 
     /**
