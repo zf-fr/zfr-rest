@@ -18,37 +18,29 @@
 
 namespace ZfrRest\View\Helper;
 
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
+use Zend\Paginator\Paginator;
 use Zend\View\Helper\AbstractHelper;
 
 /**
+ * Render data about a paginator
+ *
+ * It renders the "limit", "offset" and "title" attributes
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class RenderResourceHelper extends AbstractHelper
+class RenderPaginator extends AbstractHelper
 {
     /**
-     * @var HydratorPluginManager
-     */
-    protected $hydratorPluginManager;
-
-    /**
-     * @param HydratorPluginManager $hydratorPluginManager
-     */
-    public function __construct(HydratorPluginManager $hydratorPluginManager)
-    {
-        $this->hydratorPluginManager = $hydratorPluginManager;
-    }
-
-    /**
-     * Render a resource using the hydrator
-     *
-     * @param  string $hydratorName
-     * @param  object $resource
+     * @param  Paginator $paginator
      * @return array
      */
-    public function __invoke($hydratorName, $resource)
+    public function __invoke(Paginator $paginator)
     {
-        return $this->hydratorPluginManager->get($hydratorName)->extract($resource);
+        return [
+            'limit'  => $paginator->getItemCountPerPage(),
+            'offset' => ($paginator->getCurrentPageNumber() - 1) * $paginator->getItemCountPerPage(),
+            'total'  => $paginator->getTotalItemCount()
+        ];
     }
 }

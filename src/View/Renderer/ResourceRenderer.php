@@ -18,6 +18,7 @@
 
 namespace ZfrRest\View\Renderer;
 
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\ResolverInterface;
 
@@ -28,16 +29,28 @@ use Zend\View\Resolver\ResolverInterface;
 class ResourceRenderer implements RendererInterface
 {
     /**
+     * @var array
+     */
+    private $__vars = [];
+
+    /**
      * @var ResolverInterface
      */
     private $resolver;
 
     /**
-     * @param ResolverInterface $resolver
+     * @var HelperPluginManager
      */
-    public function __construct(ResolverInterface $resolver)
+    private $helperPluginManager;
+
+    /**
+     * @param ResolverInterface   $resolver
+     * @param HelperPluginManager $helperPluginManager
+     */
+    public function __construct(ResolverInterface $resolver, HelperPluginManager $helperPluginManager)
     {
-        $this->setResolver($resolver);
+        $this->resolver            = $resolver;
+        $this->helperPluginManager = $helperPluginManager;
     }
 
     /**
@@ -57,13 +70,35 @@ class ResourceRenderer implements RendererInterface
     }
 
     /**
+     * @param  string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return isset($this->__vars[$name]) ? $this->__vars[$name] : null;
+    }
+
+    /**
+     * @param  string $name
+     * @param  mixed  $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        /** @var callable $helper */
+        $helper = $this->helperPluginManager->get($name);
+
+        return call_user_func_array($helper, $arguments);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function render($nameOrModel, $values = null)
     {
-        $template = $this->resolver->resolve($nameOrModel->getTemplate());
+        $template     = $this->resolver->resolve($nameOrModel->getTemplate());
+        $this->__vars = $nameOrModel->getVariables();
 
         return include $template;
-        // TODO: Implement render() method.
     }
 }

@@ -18,10 +18,13 @@
 
 use ZfrRest\Factory\HttpExceptionListenerFactory;
 use ZfrRest\Factory\ModuleOptionsFactory;
+use ZfrRest\Factory\RenderResourceHelperFactory;
 use ZfrRest\Factory\ResourceRendererFactory;
 use ZfrRest\Factory\ResourceStrategyFactory;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Options\ModuleOptions;
+use ZfrRest\View\Helper\RenderPaginator;
+use ZfrRest\View\Helper\RenderResource;
 use ZfrRest\View\Renderer\ResourceRenderer;
 use ZfrRest\View\Strategy\ResourceStrategy;
 
@@ -32,6 +35,21 @@ return [
             ModuleOptions::class         => ModuleOptionsFactory::class,
             ResourceRenderer::class      => ResourceRendererFactory::class,
             ResourceStrategy::class      => ResourceStrategyFactory::class
+        ]
+    ],
+
+    'view_helpers' => [
+        'invokables' => [
+            RenderPaginator::class => RenderPaginator::class
+        ],
+
+        'factories' => [
+            RenderResource::class => RenderResourceHelperFactory::class
+        ],
+
+        'aliases' => [
+            'renderPaginator' => RenderPaginator::class,
+            'renderResource'  => RenderResource::class
         ]
     ],
 

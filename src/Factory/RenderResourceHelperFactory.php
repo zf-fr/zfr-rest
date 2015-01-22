@@ -20,25 +20,25 @@ namespace ZfrRest\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Helper\RenderResource;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class ResourceRendererFactory implements FactoryInterface
+class RenderResourceHelperFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /** @var \Zend\View\Resolver\ResolverInterface $resolver */
-        $resolver = $serviceLocator->get('ViewResolver');
+        /** @var ServiceLocatorInterface $parentLocator */
+        $parentLocator = $serviceLocator->getServiceLocator();
 
-        /** @var \Zend\View\HelperPluginManager $helperPluginManager */
-        $helperPluginManager = $serviceLocator->get('ViewHelperManager');
+        $routes        = $parentLocator->get('Router');
+        //$ff = $router->match('users/user');
 
-        return new ResourceRenderer($resolver, $helperPluginManager);
+        return new RenderResource();
     }
 }

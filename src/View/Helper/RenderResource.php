@@ -18,44 +18,26 @@
 
 namespace ZfrRest\View\Helper;
 
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
 use Zend\View\Helper\AbstractHelper;
 
 /**
+ * Render another resource
+ *
+ * This helper delegates the rendering to a template, by inferring the template from the
+ * router and the API version
+ *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class RenderCollectionHelper extends AbstractHelper
+class RenderResource extends AbstractHelper
 {
     /**
-     * @var HydratorPluginManager
+     * @param string      $template
+     * @param array       $variables
+     * @param string|null $version
      */
-    protected $hydratorPluginManager;
-
-    /**
-     * @param HydratorPluginManager $hydratorPluginManager
-     */
-    public function __construct(HydratorPluginManager $hydratorPluginManager)
+    public function __invoke($template, array $variables, $version = null)
     {
-        $this->hydratorPluginManager = $hydratorPluginManager;
-    }
 
-    /**
-     * Render a collection of resources using the hydrator
-     *
-     * @param  string          $hydratorName
-     * @param  array|\Iterator $resources
-     * @return array
-     */
-    public function __invoke($hydratorName, $resources)
-    {
-        $hydrator = $this->hydratorPluginManager->get($hydratorName);
-        $result   = [];
-
-        foreach ($resources as $resource) {
-            $result[] = $hydrator->extract($resource);
-        }
-
-        return $result;
     }
 }
