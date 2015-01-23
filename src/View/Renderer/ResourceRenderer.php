@@ -98,6 +98,19 @@ class ResourceRenderer implements RendererInterface
     }
 
     /**
+     * Check if the current context is the "root" tempalte
+     *
+     * @return bool
+     */
+    public function isRootTemplate()
+    {
+        /** @var \Zend\View\Helper\ViewModel $viewModel */
+        $viewModelHelper = $this->helperPluginManager->get('viewModel');
+
+        return $viewModelHelper->getRoot() === $viewModelHelper->getCurrent();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function render($nameOrModel, $values = null)
