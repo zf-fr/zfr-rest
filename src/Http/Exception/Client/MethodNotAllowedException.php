@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Http\Exception\Client;
 
+use Zend\Http\Response as HttpResponse;
 use ZfrRest\Http\Exception\ClientErrorException;
 
 /**
@@ -34,11 +35,35 @@ class MethodNotAllowedException extends ClientErrorException
     const DEFAULT_MESSAGE = 'A request was made using a HTTP method not supported by that resource';
 
     /**
+     * @var array
+     */
+    private $allowedMethods = [];
+
+    /**
      * @param string $message
      * @param mixed  $errors
+     * @param array  $allowedMethods
      */
-    public function __construct($message = '', $errors = null)
+    public function __construct($message = '', $errors = null, $allowedMethods = [])
     {
         parent::__construct(405, $message, $errors);
+        $this->allowedMethods = $allowedMethods;
+    }
+
+    /**
+     * Add the available methods (if any) to the Allow header
+     *
+     * {@inheritDoc}
+     */
+    public function prepareResponse(HttpResponse $response)
+    {
+        parent::prepareResponse($response);
+
+        if (empty($this->allowedMethods)) {
+            return;
+        }
+
+        $headers = $response->getHeaders();
+        $headers->addHeaderLine('Allow', implode(', ', $this->allowedMethods));
     }
 }

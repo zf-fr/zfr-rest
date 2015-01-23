@@ -49,6 +49,10 @@ class ResourceViewModel extends ViewModel
                 case 'version':
                     $this->version = (string) $value;
                     break;
+
+                case 'template':
+                    $this->template = (string) $options['template'];
+                    break;
             }
         }
     }

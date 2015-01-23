@@ -38,7 +38,7 @@ class UnauthorizedException extends ClientErrorException
     /**
      * @var string
      */
-    protected $challenge = 'Basic';
+    private $challenge = 'Basic';
 
     /**
      * @param string $message

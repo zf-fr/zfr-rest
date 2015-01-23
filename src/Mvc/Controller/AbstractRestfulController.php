@@ -50,14 +50,21 @@ class AbstractRestfulController extends AbstractController
             throw new RuntimeException('RESTful controller from ZfrRest can only handle HTTP requests');
         }
 
-        $method = strtolower($request->getMethod());
+        // ZfrRest RESTful controller allows usage of action, in order to avoid controller duplication for things
+        // that do not map well to REST. It does by checking the ":action" parameter. If present, it will use it
+        // like standard action controller
+        if ($action = $this->params('action')) {
+            $method = strtolower($action) . 'Action';
+        } else {
+            $method = strtolower($request->getMethod());
+        }
 
         if (!method_exists($this, $method)) {
-            throw new MethodNotAllowedException();
+            throw new MethodNotAllowedException('', null, $this->getAllowedVerbs());
         }
 
         $routeParameters = $this->params()->fromRoute(null, []);
-        unset($routeParameters['controller']);
+        unset($routeParameters['controller'], $routeParameters['action']);
 
         $result = $this->$method($routeParameters);
 
@@ -73,15 +80,12 @@ class AbstractRestfulController extends AbstractController
      */
     public function options()
     {
-        $genericVerbs    = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
-        $supportedVerbs  = array_intersect(get_class_methods($this), $genericVerbs);
-
         /** @var HttpResponse $response */
         $response = $this->getResponse();
 
         $response->setContent('');
         $response->setStatusCode(200);
-        $response->getHeaders()->addHeaderLine('Allow', implode(', ', $supportedVerbs));
+        $response->getHeaders()->addHeaderLine('Allow', implode(', ', $this->getAllowedVerbs()));
 
         return $response;
     }
@@ -145,5 +149,21 @@ class AbstractRestfulController extends AbstractController
         });
 
         return $errorMessages;
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllowedVerbs()
+    {
+        $genericVerbs   = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
+        $supportedVerbs = array_intersect(get_class_methods($this), $genericVerbs);
+
+        // We normalize the verbs by uppercasing them, as this is common practice for HTTP verbs
+        foreach ($supportedVerbs as &$supportedVerb) {
+            $supportedVerb = strtoupper($supportedVerb);
+        }
+
+        return $supportedVerbs;
     }
 }
