@@ -31,7 +31,7 @@ class ResourceRenderer implements RendererInterface
     /**
      * @var array
      */
-    private $__vars = [];
+    private $templateVariables = [];
 
     /**
      * @var ResolverInterface
@@ -77,7 +77,7 @@ class ResourceRenderer implements RendererInterface
      */
     public function __get($name)
     {
-        return isset($this->__vars[$name]) ? $this->__vars[$name] : null;
+        return isset($this->templateVariables[$name]) ? $this->templateVariables[$name] : null;
     }
 
     /**
@@ -119,16 +119,16 @@ class ResourceRenderer implements RendererInterface
         // properties in the view by comparing the root and nested view model
         $this->viewModel()->setCurrent($nameOrModel);
 
-        $template     = $this->resolver->resolve($nameOrModel->getTemplate());
+        $template = $this->resolver->resolve($nameOrModel->getTemplate());
 
         // We need to save and restore the previous variables, because the same renderer can be used inside
         // multiple contexts
-        $previousVars = $this->__vars;
-        $this->__vars = $nameOrModel->getVariables();
+        $previousTemplateVariables = $this->templateVariables;
+        $this->templateVariables   = $nameOrModel->getVariables();
 
         $result = include $template;
 
-        $this->__vars = $previousVars;
+        $this->templateVariables = $previousTemplateVariables;
 
         return $result;
     }
