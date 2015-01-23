@@ -7,11 +7,11 @@ If you are looking for some information that is not listed in the documentation,
 1. [Installation and configuration](/docs/01. Installation and configuration.md)
 
 2. [Controllers](/docs/02. Controllers.md)
-    1. [Simple Example](/docs/02. Quick Start.md#simple-example)
-    2. [Validation](/docs/02. Quick Start.md#validation)
-    3. [Hydration](/docs/02. Quick Start.md#hydration)
-    4. [View rendering](/docs/02. Quick Start.md#view-rendering)
-    5. [Combining HTTP verbs and actions](/docs/02. Quick Start.md#combining-http-verbs-and-actions)
+    1. [Simple Example](/docs/02. Controllers.md#simple-example)
+    2. [Validation](/docs/02. Controllers.md#validation)
+    3. [Hydration](/docs/02. Controllers.md#hydration)
+    4. [View rendering](/docs/02. Controllers.md#view-rendering)
+    5. [Combining HTTP verbs and actions](/docs/02. Controllers.md#combining-http-verbs-and-actions)
 
 3. [View layer](/docs/03. View layer.md)
     1. [Configuring your views](/docs/03. View layer.md#configuring-your-views)
