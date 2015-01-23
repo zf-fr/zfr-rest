@@ -19,11 +19,8 @@
 namespace ZfrRestTest\View\Helper;
 
 use PHPUnit_Framework_TestCase;
-use Zend\Paginator\Adapter\ArrayAdapter;
-use Zend\Paginator\Paginator;
 use Zend\View\Helper\ViewModel as ViewModelHelper;
 use Zend\View\Renderer\RendererInterface;
-use ZfrRest\View\Helper\RenderPaginator;
 use ZfrRest\View\Helper\RenderResource;
 use ZfrRest\View\Model\ResourceViewModel;
 

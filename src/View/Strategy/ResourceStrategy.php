@@ -20,7 +20,6 @@ namespace ZfrRest\View\Strategy;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\DispatchableInterface;
 use Zend\View\ViewEvent;

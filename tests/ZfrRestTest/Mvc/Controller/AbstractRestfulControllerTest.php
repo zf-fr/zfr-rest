@@ -19,18 +19,15 @@
 namespace ZfrRestTest\Mvc\Controller;
 
 use PHPUnit_Framework_TestCase;
-use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\RouteMatch;
 use Zend\Stdlib\RequestInterface;
-use ZfrRest\Http\Exception;
 use ZfrRest\Exception\RuntimeException;
+use ZfrRest\Http\Exception;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
-use ZfrRest\Mvc\Controller\AbstractRestfulController;
-use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRestTest\Asset\Controller\SimpleController;
 
 /**

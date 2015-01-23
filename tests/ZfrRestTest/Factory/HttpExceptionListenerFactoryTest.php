@@ -16,29 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRest\Factory;
+namespace ZfrRestTest\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
+use PHPUnit_Framework_TestCase;
+use Zend\Http\Response as HttpResponse;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfrRest\View\Helper\RenderResource;
+use ZfrRest\Factory\HttpExceptionListenerFactory;
+use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Options\ModuleOptions;
+use ZfrRestTest\Asset\HttpException\SimpleException;
 
 /**
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
- * @licence MIT
+ *
+ * @group Coverage
+ * @covers \ZfrRest\Factory\HttpExceptionListenerFactory
  */
-class RenderResourceHelperFactory implements FactoryInterface
+class HttpExceptionListenerFactoryTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function testFactory()
     {
-        /** @var ServiceLocatorInterface $parentLocator */
-        $parentLocator = $serviceLocator->getServiceLocator();
+        $serviceLocator = $this->getMock(ServiceLocatorInterface::class);
 
-        $routes        = $parentLocator->get('Router');
-        //$ff = $router->match('users/user');
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->with(ModuleOptions::class)
+                       ->will($this->returnValue(new ModuleOptions()));
 
-        return new RenderResource();
+        $factory  = new HttpExceptionListenerFactory();
+        $instance = $factory->createService($serviceLocator);
+
+        $this->assertInstanceOf(HttpExceptionListener::class, $instance);
     }
 }

@@ -19,8 +19,6 @@
 namespace ZfrRestTest\View\Model;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Exception\InvalidArgumentException;
-use ZfrRest\Http\Exception\ClientErrorException;
 use ZfrRest\View\Model\ResourceViewModel;
 
 /**

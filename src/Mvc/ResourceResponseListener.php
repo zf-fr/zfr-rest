@@ -20,10 +20,8 @@ namespace ZfrRest\Mvc;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
-use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
-use ZfrRest\View\Model\ResourceViewModel;
 
 /**
  * HttpExceptionListener

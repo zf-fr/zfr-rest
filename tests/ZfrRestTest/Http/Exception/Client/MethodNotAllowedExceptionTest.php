@@ -21,7 +21,6 @@ namespace ZfrRestTest\Http\Exception\Client;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Response as HttpResponse;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
-use ZfrRest\Http\Exception\Client\UnauthorizedException;
 
 /**
  * @license MIT

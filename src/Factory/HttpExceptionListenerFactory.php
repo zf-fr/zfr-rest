@@ -21,6 +21,7 @@ namespace ZfrRest\Factory;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Options\ModuleOptions;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -34,7 +35,7 @@ class HttpExceptionListenerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         /* @var \ZfrRest\Options\ModuleOptions $options */
-        $options = $serviceLocator->get('ZfrRest\Options\ModuleOptions');
+        $options = $serviceLocator->get(ModuleOptions::class);
 
         return new HttpExceptionListener($options->getExceptionMap());
     }

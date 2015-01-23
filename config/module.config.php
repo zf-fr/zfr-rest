@@ -45,11 +45,8 @@ return [
 
     'view_helpers' => [
         'invokables' => [
-            RenderPaginator::class => RenderPaginator::class
-        ],
-
-        'factories' => [
-            RenderResource::class => RenderResourceHelperFactory::class
+            RenderPaginator::class => RenderPaginator::class,
+            RenderResource::class  => RenderResource::class
         ],
 
         'aliases' => [
