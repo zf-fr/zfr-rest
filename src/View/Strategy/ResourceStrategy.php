@@ -20,6 +20,8 @@ namespace ZfrRest\View\Strategy;
 
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\DispatchableInterface;
 use Zend\View\ViewEvent;
@@ -116,11 +118,31 @@ class ResourceStrategy extends AbstractListenerAggregate
             return;
         }
 
-        $result = $event->getResult();
-
-        /* @var \Zend\Http\Response $response */
+        /** @var HttpRequest $request */
+        $request = $event->getRequest();
+        /* @var HttpResponse $response */
         $response = $event->getResponse();
-        $response->setContent(json_encode($result));
+
+        $result = json_encode($event->getResult());
+
+        // If we have a GET request, we compute an ETag, and check against the current ETag, if any
+        if ($request->getMethod() === HttpRequest::METHOD_GET) {
+            $etag = md5($result);
+            $response->getHeaders()->addHeaderLine('Etag', $etag);
+
+            // Let's compare the If-None-Match value (if any) with the computed Etag to check if we can return early
+            // an empty response
+            $ifNoneMatch = $request->getHeader('If-None-Match');
+
+            if ($ifNoneMatch && $ifNoneMatch->getFieldValue() === $etag) {
+                $response->setContent('');
+                $response->setStatusCode(304);
+
+                return;
+            }
+        }
+
+        $response->setContent($result);
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/json; charset=utf-8');
     }
 
