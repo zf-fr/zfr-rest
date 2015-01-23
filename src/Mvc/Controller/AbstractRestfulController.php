@@ -37,7 +37,7 @@ use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  */
-class AbstractRestfulController extends AbstractController
+abstract class AbstractRestfulController extends AbstractController
 {
     /**
      * {@inheritDoc}
@@ -156,14 +156,8 @@ class AbstractRestfulController extends AbstractController
      */
     private function getAllowedVerbs()
     {
-        $genericVerbs   = ['get', 'head', 'put', 'post', 'patch', 'delete', 'options'];
-        $supportedVerbs = array_intersect(get_class_methods($this), $genericVerbs);
+        $genericVerbs = ['delete', 'get', 'head', 'options', 'patch', 'post', 'put'];
 
-        // We normalize the verbs by uppercasing them, as this is common practice for HTTP verbs
-        foreach ($supportedVerbs as &$supportedVerb) {
-            $supportedVerb = strtoupper($supportedVerb);
-        }
-
-        return $supportedVerbs;
+        return array_intersect(get_class_methods($this), $genericVerbs);
     }
 }

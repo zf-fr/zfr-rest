@@ -16,32 +16,37 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace ZfrRestTest\View\Helper;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+use PHPUnit_Framework_TestCase;
+use Zend\Paginator\Adapter\ArrayAdapter;
+use Zend\Paginator\Paginator;
+use ZfrRest\View\Helper\RenderPaginator;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+/**
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\View\Helper\RenderPaginator
+ */
+class RenderPaginatorTest extends PHPUnit_Framework_TestCase
+{
+    public function testCanOutputPaginator()
+    {
+        $paginator = new Paginator(new ArrayAdapter([1, 2, 3, 4, 5, 6]));
+        $paginator->setItemCountPerPage(3);
+        $paginator->setCurrentPageNumber(2);
 
-        break;
+        $helper = new RenderPaginator();
+        $result = $helper($paginator);
+
+        $expected = [
+            'limit'  => 3,
+            'offset' => 3,
+            'total'  => 6
+        ];
+
+        $this->assertEquals($expected, $result);
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-unset($files, $file, $loader, $configFiles, $configFile, $config);

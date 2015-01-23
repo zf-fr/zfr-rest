@@ -50,15 +50,13 @@ class ResourceResponseListener extends AbstractListenerAggregate
      */
     public function finishResponse(MvcEvent $event)
     {
-        $request   = $event->getRequest();
-        $viewModel = $event->getViewModel();
+        $response = $event->getResponse();
 
-        if (!$request instanceof HttpRequest || !$viewModel instanceof ResourceViewModel) {
+        if (!$response instanceof HttpResponse) {
             return;
         }
 
-        $method   = strtolower($request->getMethod());
-        $response = $event->getResponse();
+        $method = strtolower($event->getRequest()->getMethod());
 
         switch ($method) {
             case 'delete':

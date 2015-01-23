@@ -16,45 +16,31 @@
  * and is licensed under the MIT license.
  */
 
-namespace ZfrRestTest\Http\Exception;
+namespace ZfrRestTest\Http\Exception\Client;
 
 use PHPUnit_Framework_TestCase;
-use ZfrRest\Exception\InvalidArgumentException;
-use ZfrRest\Http\Exception\ClientErrorException;
+use Zend\Http\Response as HttpResponse;
+use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
+use ZfrRest\Http\Exception\Client\UnauthorizedException;
 
 /**
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
- * @covers \ZfrRest\Http\Exception\ClientErrorException
+ * @covers \ZfrRest\Http\Exception\Client\MethodNotAllowedException
  */
-class ClientExceptionTest extends PHPUnit_Framework_TestCase
+class MethodNotAllowedExceptionTest extends PHPUnit_Framework_TestCase
 {
-    public function testThrowExceptionIfStatusCodeIsOverRange()
+    public function testFillResponse()
     {
-        $this->setExpectedException(
-            InvalidArgumentException::class,
-            'Status code for client errors must be between 400 and 499, "500" given'
-        );
+        $exception = new MethodNotAllowedException('', null, ['OPTIONS', 'GET', 'POST']);
+        $response  = new HttpResponse();
 
-        new ClientErrorException(500);
-    }
+        $exception->prepareResponse($response);
 
-    public function testThrowExceptionIfStatusCodeIsBelowRange()
-    {
-        $this->setExpectedException(
-            InvalidArgumentException::class,
-            'Status code for client errors must be between 400 and 499, "399" given'
-        );
-
-        new ClientErrorException(399);
-    }
-
-    public function testAlwaysContainDefaultMessage()
-    {
-        $exception = new ClientErrorException(401);
-
-        $this->assertContains('A client error occurred', $exception->getMessage());
+        $this->assertEquals(405, $response->getStatusCode());
+        $this->assertEquals(MethodNotAllowedException::DEFAULT_MESSAGE, $response->getReasonPhrase());
+        $this->assertTrue($response->getHeaders()->has('Allow'));
     }
 }

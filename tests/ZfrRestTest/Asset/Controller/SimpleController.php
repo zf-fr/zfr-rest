@@ -16,32 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace ZfrRestTest\Asset\Controller;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+use ZfrRest\Mvc\Controller\AbstractRestfulController;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+/**
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ * @licence MIT
+ */
+class SimpleController extends AbstractRestfulController
+{
+    public function get($params)
+    {
+        return 'get:' . $params['user_id'];
+    }
 
-        break;
+    public function delete()
+    {
+        return 'delete';
+    }
+
+    public function fooAction()
+    {
+        return 'fooAction';
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-unset($files, $file, $loader, $configFiles, $configFile, $config);

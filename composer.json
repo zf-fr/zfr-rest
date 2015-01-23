@@ -26,10 +26,6 @@
     "minimum-stability": "beta",
     "require": {
         "php": ">=5.5",
-        "jms/metadata": "~1.5",
-        "doctrine/common": "~2.4",
-        "doctrine/doctrine-module": "~0.8",
-        "zendframework/zend-cache": "~2.2",
         "zendframework/zend-http": "~2.2",
         "zendframework/zend-inputfilter": "~2.2",
         "zendframework/zend-mvc": "~2.2",
@@ -41,8 +37,7 @@
     },
     "require-dev": {
         "zendframework/zendframework": "~2.2",
-        "doctrine/doctrine-orm-module": "~0.8",
-        "phpunit/phpunit": "~4.4",
+        "phpunit/phpunit": "~4.1",
         "squizlabs/php_codesniffer": "1.4.*"
     },
     "autoload": {

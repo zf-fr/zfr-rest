@@ -19,7 +19,9 @@
 namespace ZfrRestTest\Mvc;
 
 use PHPUnit_Framework_TestCase;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
+use Zend\Http\Response;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Http\Exception;
 use ZfrRest\Mvc\HttpExceptionListener;
@@ -66,7 +68,7 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
 
     public function testAttachToCorrectEvent()
     {
-        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $eventManager = $this->getMock(EventManagerInterface::class);
         $eventManager->expects($this->once())->method('attach')->with(MvcEvent::EVENT_DISPATCH_ERROR);
 
         $this->httpExceptionListener->attach($eventManager);
@@ -92,8 +94,8 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
         ];
 
         $this->assertNotSame($this->response, $response, 'Assert response is replaced');
-        $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
-        $this->assertInstanceOf('Zend\Http\Response', $this->event->getResult());
+        $this->assertInstanceOf(Response::class, $this->event->getResponse());
+        $this->assertInstanceOf(Response::class, $this->event->getResult());
         $this->assertEquals($expectedContent, json_decode($this->event->getResponse()->getContent(), true));
         $this->assertTrue($this->event->propagationIsStopped());
     }
@@ -101,14 +103,14 @@ class HttpExceptionListenerTest extends PHPUnit_Framework_TestCase
     public function testCanCreateFromCustomException()
     {
         $httpExceptionListener = new HttpExceptionListener([
-            'InvalidArgumentException' => 'ZfrRest\Http\Exception\Client\NotFoundException'
+            \InvalidArgumentException::class => Exception\Client\NotFoundException::class
         ]);
 
         $this->event->setParam('exception', new \InvalidArgumentException('An error'));
 
         $httpExceptionListener->onDispatchError($this->event);
 
-        $this->assertInstanceOf('Zend\Http\Response', $this->event->getResponse());
+        $this->assertInstanceOf(Response::class, $this->event->getResponse());
         $this->assertEquals('An error', $this->event->getResponse()->getReasonPhrase());
         $this->assertTrue($this->event->propagationIsStopped());
     }

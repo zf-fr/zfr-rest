@@ -16,32 +16,28 @@
  * and is licensed under the MIT license.
  */
 
-ini_set('error_reporting', E_ALL);
+namespace ZfrRestTest\View\Model;
 
-$files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+use PHPUnit_Framework_TestCase;
+use ZfrRest\Exception\InvalidArgumentException;
+use ZfrRest\Http\Exception\ClientErrorException;
+use ZfrRest\View\Model\ResourceViewModel;
 
-foreach ($files as $file) {
-    if (file_exists($file)) {
-        $loader = require $file;
+/**
+ * @license MIT
+ * @author  Michaël Gallego <mic.gallego@gmail.com>
+ *
+ * @group Coverage
+ * @covers \ZfrRest\View\Model\ResourceViewModel
+ */
+class ResourceViewModelTest extends PHPUnit_Framework_TestCase
+{
+    public function testConstructor()
+    {
+        $resourceViewModel = new ResourceViewModel(['foo' => 'bar'], ['version' => 'v2', 'template' => 'users/user']);
 
-        break;
+        $this->assertEquals(['foo' => 'bar'], $resourceViewModel->getVariables());
+        $this->assertEquals('users/user', $resourceViewModel->getTemplate());
+        $this->assertEquals('v2', $resourceViewModel->getVersion());
     }
 }
-
-if (! isset($loader)) {
-    throw new RuntimeException('vendor/autoload.php could not be found. Did you install via composer?');
-}
-
-$loader->add('ZfrRestTest\\', __DIR__);
-
-$configFiles = [__DIR__ . '/TestConfiguration.php', __DIR__ . '/TestConfiguration.php.dist'];
-
-foreach ($configFiles as $configFile) {
-    if (file_exists($configFile)) {
-        $config = require $configFile;
-
-        break;
-    }
-}
-
-unset($files, $file, $loader, $configFiles, $configFile, $config);

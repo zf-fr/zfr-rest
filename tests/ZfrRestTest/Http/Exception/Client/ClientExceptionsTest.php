@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Http\Exception\Client;
 
 use PHPUnit_Framework_TestCase;
+use ZfrRest\Http\Exception;
 
 /**
  * @license MIT
@@ -39,31 +40,31 @@ class ClientExceptionsTest extends PHPUnit_Framework_TestCase
     {
         return [
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\BadRequestException',
+                'exception'  => Exception\Client\BadRequestException::class,
                 'statusCode' => 400
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\ConflictException',
+                'exception'  => Exception\Client\ConflictException::class,
                 'statusCode' => 409
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\ForbiddenException',
+                'exception'  => Exception\Client\ForbiddenException::class,
                 'statusCode' => 403
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\GoneException',
+                'exception'  => Exception\Client\GoneException::class,
                 'statusCode' => 410
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\MethodNotAllowedException',
+                'exception'  => Exception\Client\MethodNotAllowedException::class,
                 'statusCode' => 405
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\NotFoundException',
+                'exception'  => Exception\Client\NotFoundException::class,
                 'statusCode' => 404
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Client\UnauthorizedException',
+                'exception'  => Exception\Client\UnauthorizedException::class,
                 'statusCode' => 401
             ]
         ];
