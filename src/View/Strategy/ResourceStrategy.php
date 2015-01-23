@@ -70,12 +70,9 @@ class ResourceStrategy extends AbstractListenerAggregate
             return;
         }
 
-        // We need to append the request method to the template name, and setting the proper API version
-        $version = $this->getApiVersion($event->getRequest());
-
-        $method   = strtolower($event->getRequest()->getMethod());
-        $template = explode('/', $model->getTemplate(), 2);
-        $template = $template[0] . '/' . $version . '/' . $template[1] . '/' . $method . '.php';
+        // We need to prepend the template by the version
+        $version  = $this->extractApiVersion($event);
+        $template = $version . '/' . $model->getTemplate() . '.php';
 
         $model->setTemplate($template);
     }
@@ -94,11 +91,18 @@ class ResourceStrategy extends AbstractListenerAggregate
             return;
         }
 
+        // If we have a ResourceViewModel, we set it as the "root" view model in the view model helper. This allows
+        // to differentiate between a nested context or not, in the view
+        /** @var \Zend\View\Helper\ViewModel $viewModel */
+        $viewModel = $this->renderer->viewModel();
+        $viewModel->setRoot($event->getModel());
+
         return $this->renderer;
     }
 
     /**
-     * Inject the response as a JSON payload and appropriate Content-Type header
+     * Inject the response as a JSON payload and appropriate Content-Type header. It also sets proper
+     * header response based on the request method
      *
      * @internal
      * @param  ViewEvent $event
@@ -126,11 +130,23 @@ class ResourceStrategy extends AbstractListenerAggregate
      *
      * @TODO: for now we do not do versioning, but this can be used to parse Accept header or read API
      *
-     * @param  HttpRequest $request
+     * @param  MvcEvent $event
      * @return string
      */
-    private function getApiVersion(HttpRequest $request)
+    private function extractApiVersion(MvcEvent $event)
     {
-        return 'default';
+        /** @var ResourceViewModel $viewModel */
+        $viewModel = $event->getResult();
+
+        // If a version has explicitly been set, it takes precedence over any other version
+        if ($version = $viewModel->getVersion()) {
+            return $version;
+        }
+
+        // @TODO: extract from URL or headers
+        $version = 'default';
+        $viewModel->setVersion($version);
+
+        return $version;
     }
 }

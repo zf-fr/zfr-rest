@@ -49,7 +49,9 @@ class ResourceRenderer implements RendererInterface
      */
     public function __construct(ResolverInterface $resolver, HelperPluginManager $helperPluginManager)
     {
-        $this->resolver            = $resolver;
+        $this->resolver = $resolver;
+
+        $helperPluginManager->setRenderer($this);
         $this->helperPluginManager = $helperPluginManager;
     }
 
@@ -83,12 +85,16 @@ class ResourceRenderer implements RendererInterface
      * @param  mixed  $arguments
      * @return mixed
      */
-    public function __call($name, $arguments)
+    public function __call($name, $arguments = [])
     {
         /** @var callable $helper */
         $helper = $this->helperPluginManager->get($name);
 
-        return call_user_func_array($helper, $arguments);
+        if (is_callable($helper)) {
+            return call_user_func_array($helper, $arguments);
+        }
+
+        return $helper;
     }
 
     /**
@@ -96,9 +102,21 @@ class ResourceRenderer implements RendererInterface
      */
     public function render($nameOrModel, $values = null)
     {
+        // We set the currently rendered view model into the viewModel helper. This allows to render additional
+        // properties in the view by comparing the root and nested view model
+        $this->viewModel()->setCurrent($nameOrModel);
+
         $template     = $this->resolver->resolve($nameOrModel->getTemplate());
+
+        // We need to save and restore the previous variables, because the same renderer can be used inside
+        // multiple contexts
+        $previousVars = $this->__vars;
         $this->__vars = $nameOrModel->getVariables();
 
-        return include $template;
+        $result = include $template;
+
+        $this->__vars = $previousVars;
+
+        return $result;
     }
 }

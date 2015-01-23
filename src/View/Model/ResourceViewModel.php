@@ -52,4 +52,25 @@ class ResourceViewModel extends ViewModel
             }
         }
     }
+
+    /**
+     * Explicitly set a version
+     *
+     * @param  string $version
+     * @return void
+     */
+    public function setVersion($version)
+    {
+        $this->version = (string) $version;
+    }
+
+    /**
+     * Get the version (null if none is explicitly set)
+     *
+     * @return string|null
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
 }

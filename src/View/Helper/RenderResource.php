@@ -19,6 +19,7 @@
 namespace ZfrRest\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
+use ZfrRest\View\Model\ResourceViewModel;
 
 /**
  * Render another resource
@@ -32,12 +33,37 @@ use Zend\View\Helper\AbstractHelper;
 class RenderResource extends AbstractHelper
 {
     /**
-     * @param string      $template
-     * @param array       $variables
-     * @param string|null $version
+     * @param  string      $template
+     * @param  array       $variables
+     * @param  string|null $version
+     * @return array
      */
     public function __invoke($template, array $variables, $version = null)
     {
+        // If a version name has explicitly been set, we reuse this one, otherwise we use the one
+        // defined in the "current view model"
+        $templatePath = $this->inflectTemplatePath($template, $version);
 
+        // We create a new resource view model
+        $resourceViewModel = new ResourceViewModel($variables, ['version' => 'default']);
+        $resourceViewModel->setTemplate($templatePath);
+
+        return $this->view->render($resourceViewModel);
+    }
+
+    /**
+     * Inflect a template path from template and version
+     *
+     * @param  string      $template
+     * @param  string|null $version
+     * @return string
+     */
+    private function inflectTemplatePath($template, $version = null)
+    {
+        if (null === $version) {
+            $version = $this->view->viewModel()->getCurrent()->getVersion();
+        }
+
+        return $version . '/' . $template . '.php';
     }
 }

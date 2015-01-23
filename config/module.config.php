@@ -22,6 +22,7 @@ use ZfrRest\Factory\RenderResourceHelperFactory;
 use ZfrRest\Factory\ResourceRendererFactory;
 use ZfrRest\Factory\ResourceStrategyFactory;
 use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Mvc\ResourceResponseListener;
 use ZfrRest\Options\ModuleOptions;
 use ZfrRest\View\Helper\RenderPaginator;
 use ZfrRest\View\Helper\RenderResource;
@@ -30,6 +31,10 @@ use ZfrRest\View\Strategy\ResourceStrategy;
 
 return [
     'service_manager' => [
+        'invokables' => [
+            ResourceResponseListener::class => ResourceResponseListener::class
+        ],
+
         'factories' => [
             HttpExceptionListener::class => HttpExceptionListenerFactory::class,
             ModuleOptions::class         => ModuleOptionsFactory::class,

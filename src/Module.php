@@ -24,6 +24,7 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\DependencyIndicatorInterface;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
+use ZfrRest\Mvc\ResourceResponseListener;
 use ZfrRest\Options\ModuleOptions;
 
 /**
@@ -50,6 +51,7 @@ class Module implements
         $moduleOptions = $serviceManager->get(ModuleOptions::class);
 
         $eventManager->attachAggregate($serviceManager->get(HttpExceptionListener::class));
+        $eventManager->attachAggregate($serviceManager->get(ResourceResponseListener::class));
 
         if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
             $eventManager->attachAggregate($serviceManager->get(HttpMethodOverrideListener::class));
