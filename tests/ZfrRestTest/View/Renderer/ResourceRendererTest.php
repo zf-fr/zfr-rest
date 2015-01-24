@@ -45,14 +45,6 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
         $this->resolver = $this->getMock(ResolverInterface::class);
     }
 
-    public function testSetRendererToHelperPluginManager()
-    {
-        $helperPluginManager = new HelperPluginManager();
-        $resourceRenderer    = new ResourceRenderer($this->resolver, $helperPluginManager);
-
-        $this->assertSame($resourceRenderer, $helperPluginManager->getRenderer());
-    }
-
     public function testCanCheckRootModel()
     {
         $viewModel = $this->getMock(ModelInterface::class);

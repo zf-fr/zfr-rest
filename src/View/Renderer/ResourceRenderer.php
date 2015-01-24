@@ -49,9 +49,7 @@ class ResourceRenderer implements RendererInterface
      */
     public function __construct(ResolverInterface $resolver, HelperPluginManager $helperPluginManager)
     {
-        $this->resolver = $resolver;
-
-        $helperPluginManager->setRenderer($this);
+        $this->resolver            = $resolver;
         $this->helperPluginManager = $helperPluginManager;
     }
 
@@ -69,6 +67,14 @@ class ResourceRenderer implements RendererInterface
     public function setResolver(ResolverInterface $resolver)
     {
         $this->resolver = $resolver;
+    }
+
+    /**
+     * @return HelperPluginManager
+     */
+    public function getHelperPluginManager()
+    {
+        return $this->helperPluginManager;
     }
 
     /**

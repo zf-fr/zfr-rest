@@ -92,6 +92,10 @@ class ResourceStrategy extends AbstractListenerAggregate
             return;
         }
 
+        /** @var \Zend\View\HelperPluginManager $helperPluginManager */
+        $helperPluginManager = $this->renderer->getHelperPluginManager();
+        $helperPluginManager->setRenderer($this->renderer);
+
         // If we have a ResourceViewModel, we set it as the "root" view model in the view model helper. This allows
         // to differentiate between a nested context or not, in the view
         /** @var \Zend\View\Helper\ViewModel $viewModel */
