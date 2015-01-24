@@ -19,6 +19,12 @@
 namespace ZfrRestTest\View\Renderer;
 
 use PHPUnit_Framework_TestCase;
+use Zend\View\Helper\ViewModel as ViewModelHelper;
+use Zend\View\HelperPluginManager;
+use Zend\View\Model\ModelInterface;
+use Zend\View\Resolver\ResolverInterface;
+use ZfrRest\View\Model\ResourceViewModel;
+use ZfrRest\View\Renderer\ResourceRenderer;
 
 /**
  * @license MIT
@@ -29,8 +35,71 @@ use PHPUnit_Framework_TestCase;
  */
 class ResourceRendererTest extends PHPUnit_Framework_TestCase
 {
-    public function testFoo()
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resolver;
+
+    public function setUp()
     {
-        
+        $this->resolver = $this->getMock(ResolverInterface::class);
+    }
+
+    public function testSetRendererToHelperPluginManager()
+    {
+        $helperPluginManager = new HelperPluginManager();
+        $resourceRenderer    = new ResourceRenderer($this->resolver, $helperPluginManager);
+
+        $this->assertSame($resourceRenderer, $helperPluginManager->getRenderer());
+    }
+
+    public function testCanCheckRootModel()
+    {
+        $viewModel = $this->getMock(ModelInterface::class);
+
+        $viewModelHelper = new ViewModelHelper();
+        $viewModelHelper->setRoot($viewModel);
+        $viewModelHelper->setCurrent($viewModel);
+
+        $helperPluginManager = $this->getMock(HelperPluginManager::class, [], [], '', false);
+        $helperPluginManager->expects($this->any())
+                            ->method('get')
+                            ->with('viewModel')
+                            ->will($this->returnValue($viewModelHelper));
+
+        $resourceRenderer = new ResourceRenderer($this->resolver, $helperPluginManager);
+
+        $this->assertTrue($resourceRenderer->isRootTemplate());
+
+        // Set another model for the current
+        $viewModelHelper->setCurrent($this->getMock(ModelInterface::class));
+
+        $this->assertFalse($resourceRenderer->isRootTemplate());
+    }
+
+    public function testCanRender()
+    {
+        $viewModel = new ResourceViewModel(['foo' => 'bar'], ['template' => 'foo']);
+
+        $viewModelHelper = $this->getMock(ViewModelHelper::class, [], [], '', false);
+
+        $helperPluginManager = $this->getMock(HelperPluginManager::class, [], [], '', false);
+        $helperPluginManager->expects($this->any())
+                            ->method('get')
+                            ->with('viewModel')
+                            ->will($this->returnValue($viewModelHelper));
+
+        $viewModelHelper->expects($this->once())->method('setCurrent')->with($viewModel);
+
+        $this->resolver->expects($this->once())
+                       ->method('resolve')
+                       ->with('foo')
+                       ->will($this->returnValue(__DIR__ . '/../../Asset/view/foo.php'));
+
+        $resourceRenderer = new ResourceRenderer($this->resolver, $helperPluginManager);
+
+        $result = $resourceRenderer->render($viewModel);
+
+        $this->assertEquals(['foo' => 'bar'], $result);
     }
 }

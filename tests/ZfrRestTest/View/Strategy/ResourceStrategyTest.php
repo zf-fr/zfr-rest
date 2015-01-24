@@ -19,6 +19,16 @@
 namespace ZfrRestTest\View\Strategy;
 
 use PHPUnit_Framework_TestCase;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManagerInterface;
+use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\DispatchableInterface;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ModelInterface;
+use Zend\View\ViewEvent;
+use ZfrRest\View\Model\ResourceViewModel;
+use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Strategy\ResourceStrategy;
 
 /**
  * @license MIT
@@ -29,8 +39,46 @@ use PHPUnit_Framework_TestCase;
  */
 class ResourceStrategyTest extends PHPUnit_Framework_TestCase
 {
-    public function testFoo()
-    {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resourceRenderer;
 
+    /**
+     * @var ResourceStrategy
+     */
+    private $resourceStrategy;
+
+    public function setUp()
+    {
+        $this->resourceRenderer = $this->getMock(ResourceRenderer::class, [], [], '', false);
+        $this->resourceStrategy = new ResourceStrategy($this->resourceRenderer);
+    }
+
+    public function testAttachToCorrectEvents()
+    {
+        $sharedManager = $this->getMock(SharedEventManagerInterface::class);
+        $eventManager  = $this->getMock(EventManagerInterface::class);
+
+        $eventManager->expects($this->at(0))->method('getSharedManager')->will($this->returnValue($sharedManager));
+        $eventManager->expects($this->at(1))->method('attach')->with(ViewEvent::EVENT_RENDERER);
+        $eventManager->expects($this->at(2))->method('attach')->with(ViewEvent::EVENT_RESPONSE);
+
+        $sharedManager->expects($this->once())
+                     ->method('attach')
+                     ->with(DispatchableInterface::class, MvcEvent::EVENT_DISPATCH);
+
+        $this->resourceStrategy->attach($eventManager);
+    }
+
+    public function testDoNotSetTemplateIfNotResourceViewModel()
+    {
+        $model = $this->getMock(ModelInterface::class);
+        $model->expects($this->never())->method('setTemplate');
+
+        $mvcEvent = new MvcEvent();
+        $mvcEvent->setResult($model);
+
+        $this->resourceStrategy->setTemplate($mvcEvent);
     }
 }
