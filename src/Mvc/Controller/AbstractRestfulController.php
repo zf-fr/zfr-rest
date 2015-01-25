@@ -94,7 +94,7 @@ abstract class AbstractRestfulController extends AbstractController
     /**
      * @return array
      */
-    private function getAllowedVerbs()
+    protected function getAllowedVerbs()
     {
         $genericVerbs = ['delete', 'get', 'head', 'options', 'patch', 'post', 'put'];
 

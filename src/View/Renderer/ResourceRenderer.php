@@ -54,7 +54,7 @@ class ResourceRenderer implements RendererInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return null
      */
     public function getEngine()
     {

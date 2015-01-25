@@ -56,6 +56,8 @@ class ResourceResponseListener extends AbstractListenerAggregate
 
         $method = strtolower($event->getRequest()->getMethod());
 
+        // @TODO: this approach is not really extensible, we should fix that
+
         switch ($method) {
             case 'delete':
                 // According to http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.7, status code should
