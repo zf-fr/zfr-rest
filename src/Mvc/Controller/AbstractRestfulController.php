@@ -20,12 +20,10 @@ namespace ZfrRest\Mvc\Controller;
 
 use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
-use Zend\InputFilter\InputFilterInterface;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
-use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
 
 /**
  * Base RESTful controller
@@ -36,6 +34,9 @@ use ZfrRest\Http\Exception\Client\UnprocessableEntityException;
  *
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
+ *
+ * @method array validateIncomingData($inputFilterName, array $validationGroup = [])
+ * @method object hydrateObject($hydratorName, $object, array $values)
  */
 abstract class AbstractRestfulController extends AbstractController
 {
@@ -88,67 +89,6 @@ abstract class AbstractRestfulController extends AbstractController
         $response->getHeaders()->addHeaderLine('Allow', implode(', ', $this->getAllowedVerbs()));
 
         return $response;
-    }
-
-    /**
-     * @TODO: when we have the new input filter, we should use named validation group and context
-     *
-     * @param  string $inputFilterName
-     * @param  array  $validationGroup
-     * @return array
-     * @throws
-     */
-    protected function validateIncomingData($inputFilterName, array $validationGroup = [])
-    {
-        /** @var \Zend\InputFilter\InputFilterInterface $inputFilter */
-        $inputFilter = $this->serviceLocator->get('InputFilterManager')->get($inputFilterName);
-
-        if (!empty($validationGroup)) {
-            $inputFilter->setValidationGroup($validationGroup);
-        }
-
-        $data = json_decode($this->request->getContent(), true);
-        $inputFilter->setData($data);
-
-        if ($inputFilter->isValid()) {
-            return $inputFilter->getValues();
-        }
-
-        throw new UnprocessableEntityException('Validation error', $this->extractErrorMessages($inputFilter));
-    }
-
-    /**
-     * @param  string $hydratorName
-     * @param  object $object
-     * @param  array  $values
-     * @return object
-     */
-    protected function hydrateData($hydratorName, $object, array $values)
-    {
-        /** @var \Zend\Stdlib\Hydrator\HydratorInterface $hydrator */
-        $hydrator = $this->serviceLocator->get('HydratorManager')->get($hydratorName);
-        $object   = $hydrator->hydrate($values, $object);
-
-        return $object;
-    }
-
-    /**
-     * @param  InputFilterInterface $inputFilter
-     * @return array
-     */
-    private function extractErrorMessages(InputFilterInterface $inputFilter)
-    {
-        $errorMessages = $inputFilter->getMessages();
-
-        array_walk($errorMessages, function (&$value, $key) use ($inputFilter) {
-            if ($inputFilter->has($key) && $inputFilter->get($key) instanceof InputFilterInterface) {
-                $value = $this->extractErrorMessages($inputFilter->get($key));
-            } else {
-                $value = array_values($value);
-            }
-        });
-
-        return $errorMessages;
     }
 
     /**

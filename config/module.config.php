@@ -17,10 +17,13 @@
  */
 
 use ZfrRest\Factory\HttpExceptionListenerFactory;
+use ZfrRest\Factory\HydrateObjectPluginFactory;
 use ZfrRest\Factory\ModuleOptionsFactory;
-use ZfrRest\Factory\RenderResourceHelperFactory;
 use ZfrRest\Factory\ResourceRendererFactory;
 use ZfrRest\Factory\ResourceStrategyFactory;
+use ZfrRest\Factory\ValidateIncomingDataPluginFactory;
+use ZfrRest\Mvc\Controller\Plugin\HydrateObject;
+use ZfrRest\Mvc\Controller\Plugin\ValidateIncomingData;
 use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Mvc\ResourceResponseListener;
 use ZfrRest\Options\ModuleOptions;
@@ -40,6 +43,18 @@ return [
             ModuleOptions::class         => ModuleOptionsFactory::class,
             ResourceRenderer::class      => ResourceRendererFactory::class,
             ResourceStrategy::class      => ResourceStrategyFactory::class
+        ]
+    ],
+
+    'controller_plugins' => [
+        'factories' => [
+            ValidateIncomingData::class => ValidateIncomingDataPluginFactory::class,
+            HydrateObject::class          => HydrateObjectPluginFactory::class
+        ],
+
+        'aliases' => [
+            'validateIncomingData' => ValidateIncomingData::class,
+            'hydrateObject'        => HydrateObject::class
         ]
     ],
 
