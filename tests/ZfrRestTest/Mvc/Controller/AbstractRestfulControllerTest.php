@@ -19,9 +19,16 @@
 namespace ZfrRestTest\Mvc\Controller;
 
 use PHPUnit_Framework_TestCase;
+use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
+use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\Http\RouteMatch;
-use ZfrRest\Mvc\Controller\AbstractRestfulController;
+use Zend\Stdlib\RequestInterface;
+use ZfrRest\Exception\RuntimeException;
+use ZfrRest\Http\Exception;
+use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
+use ZfrRestTest\Asset\Controller\SimpleController;
 
 /**
  * @licence MIT
@@ -32,79 +39,101 @@ use ZfrRest\Mvc\Controller\AbstractRestfulController;
  */
 class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
 {
-    public function testThrowExceptionIfNotHttpRequest()
-    {
-        $this->setExpectedException('ZfrRest\Mvc\Exception\RuntimeException');
+    /**
+     * @var SimpleController
+     */
+    private $simpleController;
 
-        $controller = new AbstractRestfulController();
-        $controller->dispatch($this->getMock('Zend\Stdlib\RequestInterface'));
+    /**
+     * @var MvcEvent
+     */
+    private $mvcEvent;
+
+    /**
+     * Set up
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->mvcEvent = new MvcEvent();
+
+        $this->simpleController = new SimpleController();
+        $this->simpleController->setPluginManager(new PluginManager());
+        $this->simpleController->setEvent($this->mvcEvent);
     }
 
-    public function testAssertAutoHydrateAndAutoValidateAreTrueByDefault()
+    public function testRestCanOnlyHandleHttp()
     {
-        $controller = new AbstractRestfulController();
+        $this->setExpectedException(RuntimeException::class);
 
-        $this->assertTrue($controller->getAutoValidate());
-        $this->assertTrue($controller->getAutoHydrate());
+        $this->mvcEvent->setRequest($this->getMock(RequestInterface::class));
+
+        $this->simpleController->onDispatch($this->mvcEvent);
     }
 
-    public function testThrowNotFoundExceptionIfNoResourceIsMatched()
+    public function testCanDispatchAction()
     {
-        $this->setExpectedException('ZfrRest\Http\Exception\Client\NotFoundException');
+        $this->mvcEvent->setRequest(new HttpRequest());
+        $routeMatch = new RouteMatch(['action' => 'foo']);
+        $this->mvcEvent->setRouteMatch($routeMatch);
 
-        $event      = new MvcEvent();
+        $this->simpleController->onDispatch($this->mvcEvent);
+
+        $this->assertEquals($this->simpleController->fooAction(), $this->mvcEvent->getResult());
+    }
+
+    public function testCanDispatchVerb()
+    {
+        $request = new HttpRequest();
+        $request->setMethod('DELETE');
+
+        $this->mvcEvent->setRequest($request);
         $routeMatch = new RouteMatch([]);
-        $event->setRouteMatch($routeMatch);
+        $this->mvcEvent->setRouteMatch($routeMatch);
 
-        $controller = new AbstractRestfulController();
-        $controller->setEvent($event);
+        $this->simpleController->onDispatch($this->mvcEvent);
 
-        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
-        $pluginManager  = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
-
-        $controller->setServiceLocator($serviceLocator);
-
-        $serviceLocator->expects($this->once())
-                       ->method('get')
-                       ->with('ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager')
-                       ->will($this->returnValue($pluginManager));
-
-        $controller->onDispatch($event);
+        $this->assertEquals($this->simpleController->delete(), $this->mvcEvent->getResult());
     }
 
-    public function testCanSetResultIfResource()
+    public function testProperlyDispatchRouteParams()
     {
-        $resource   = $this->getMock('ZfrRest\Resource\ResourceInterface');
-        $event      = new MvcEvent();
-        $routeMatch = new RouteMatch(['resource' => $resource]);
-        $event->setRouteMatch($routeMatch);
+        $request = new HttpRequest();
+        $request->setMethod('GET');
 
-        $controller = new AbstractRestfulController();
+        $this->mvcEvent->setRequest($request);
+        $routeMatch = new RouteMatch(['user_id' => 2]);
+        $this->mvcEvent->setRouteMatch($routeMatch);
 
-        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
-        $pluginManager  = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+        $this->simpleController->onDispatch($this->mvcEvent);
 
-        $controller->setServiceLocator($serviceLocator);
-        $controller->setEvent($event);
+        $this->assertEquals($this->simpleController->get(['user_id' => 2]), $this->mvcEvent->getResult());
+    }
 
-        $serviceLocator->expects($this->once())
-                       ->method('get')
-                       ->with('ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager')
-                       ->will($this->returnValue($pluginManager));
+    public function testThrowExceptionIfUnknownMethod()
+    {
+        $this->setExpectedException(MethodNotAllowedException::class);
 
-        $handler = $this->getMock('ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerInterface');
+        $request = new HttpRequest();
+        $request->setMethod('PATCH');
 
-        $pluginManager->expects($this->once())
-                      ->method('get')
-                      ->with('GET')
-                      ->will($this->returnValue($handler));
+        $this->mvcEvent->setRequest($request);
+        $routeMatch = new RouteMatch([]);
+        $this->mvcEvent->setRouteMatch($routeMatch);
 
-        $handler->expects($this->once())
-                ->method('handleMethod')
-                ->with($controller, $resource)
-                ->will($this->returnValue('foo'));
+        $this->simpleController->onDispatch($this->mvcEvent);
+    }
 
-        $this->assertEquals('foo', $controller->onDispatch($event));
-        $this->assertEquals('foo', $event->getResult());
+    public function testOptionsCanGetVerbs()
+    {
+        $response = $this->simpleController->options();
+
+        $this->assertInstanceOf(HttpResponse::class, $response);
+        $this->assertTrue($response->getHeaders()->has('Allow'));
+
+        $allowMethods = $response->getHeaders()->get('Allow')->getFieldValue();
+
+        $this->assertEquals('OPTIONS, GET, DELETE', $allowMethods);
     }
 }

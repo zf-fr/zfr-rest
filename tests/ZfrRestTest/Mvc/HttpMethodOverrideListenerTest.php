@@ -19,8 +19,10 @@
 namespace ZfrRestTest\Mvc;
 
 use PHPUnit_Framework_TestCase;
+use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\RequestInterface;
 use ZfrRest\Mvc\HttpMethodOverrideListener;
 
 /**
@@ -44,7 +46,7 @@ class HttpMethodOverrideListenerTest extends PHPUnit_Framework_TestCase
 
     public function testAttachToCorrectEvent()
     {
-        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $eventManager = $this->getMock(EventManagerInterface::class);
         $eventManager->expects($this->once())->method('attach')->with(MvcEvent::EVENT_ROUTE);
 
         $this->httpMethodOverrideListener->attach($eventManager);
@@ -68,7 +70,7 @@ class HttpMethodOverrideListenerTest extends PHPUnit_Framework_TestCase
         $event = new MvcEvent();
 
         /* @var \Zend\Stdlib\RequestInterface $request */
-        $request = $this->getMock('Zend\Stdlib\RequestInterface');
+        $request = $this->getMock(RequestInterface::class);
 
         $event->setRequest($request);
 

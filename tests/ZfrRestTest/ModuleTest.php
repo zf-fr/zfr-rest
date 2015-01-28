@@ -19,8 +19,14 @@
 namespace ZfrRestTest;
 
 use PHPUnit_Framework_TestCase;
+use Zend\EventManager\EventInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Application;
 use Zend\ServiceManager\ServiceManager;
 use ZfrRest\Module;
+use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Mvc\HttpMethodOverrideListener;
+use ZfrRest\Mvc\ResourceResponseListener;
 use ZfrRest\Options\ModuleOptions;
 
 /**
@@ -50,12 +56,6 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         $this->assertSame($module->getConfig(), unserialize(serialize($module->getConfig())), 'Config is serializable');
     }
 
-    public function testDependency()
-    {
-        $module = new Module();
-        $this->assertEquals(['DoctrineModule'], $module->getModuleDependencies());
-    }
-
     public function testListenersAreRegistered()
     {
         $event   = $this->getEvent();
@@ -63,31 +63,43 @@ class ModuleTest extends PHPUnit_Framework_TestCase
             'register_http_method_override_listener' => true
         ]);
 
-        $this->serviceLocator->setService('ZfrRest\Options\ModuleOptions', $options);
+        $this->serviceLocator->setService(ModuleOptions::class, $options);
 
         // --------------------------------------------------------------------------------
         // Test that HTTP exception listener is registered
         // --------------------------------------------------------------------------------
-        $this->serviceLocator->setService(
-            'ZfrRest\Mvc\HttpExceptionListener',
-            $this->getMock('ZfrRest\Mvc\HttpExceptionListener')
-        );
+
+        $this->serviceLocator->setService(HttpExceptionListener::class, $this->getMock(HttpExceptionListener::class));
 
         $this->eventManager->expects($this->at(0))
                            ->method('attachAggregate')
-                           ->with($this->isInstanceOf('ZfrRest\Mvc\HttpExceptionListener'));
+                           ->with($this->isInstanceOf(HttpExceptionListener::class));
 
         // --------------------------------------------------------------------------------
-        // Test the HTTP method override listener is registered
+        // Test that HTTP response listener is registered
         // --------------------------------------------------------------------------------
+
         $this->serviceLocator->setService(
-            'ZfrRest\Mvc\HttpMethodOverrideListener',
-            $this->getMock('ZfrRest\Mvc\HttpMethodOverrideListener')
+            ResourceResponseListener::class,
+            $this->getMock(ResourceResponseListener::class)
         );
 
         $this->eventManager->expects($this->at(1))
                            ->method('attachAggregate')
-                           ->with($this->isInstanceOf('ZfrRest\Mvc\HttpMethodOverrideListener'));
+                           ->with($this->isInstanceOf(ResourceResponseListener::class));
+
+        // --------------------------------------------------------------------------------
+        // Test the HTTP method override listener is registered
+        // --------------------------------------------------------------------------------
+
+        $this->serviceLocator->setService(
+            HttpMethodOverrideListener::class,
+            $this->getMock(HttpMethodOverrideListener::class)
+        );
+
+        $this->eventManager->expects($this->at(2))
+                           ->method('attachAggregate')
+                           ->with($this->isInstanceOf(HttpMethodOverrideListener::class));
 
         $module = new Module();
         $module->onBootstrap($event);
@@ -99,9 +111,9 @@ class ModuleTest extends PHPUnit_Framework_TestCase
     private function getEvent()
     {
         $this->serviceLocator = new ServiceManager();
-        $this->eventManager   = $this->getMock('Zend\EventManager\EventManagerInterface');
+        $this->eventManager   = $this->getMock(EventManagerInterface::class);
 
-        $application = $this->getMock('Zend\Mvc\Application', [], [], '', false);
+        $application = $this->getMock(Application::class, [], [], '', false);
         $application->expects($this->any())
                     ->method('getServiceManager')
                     ->will($this->returnValue($this->serviceLocator));
@@ -110,7 +122,7 @@ class ModuleTest extends PHPUnit_Framework_TestCase
                     ->method('getEventManager')
                     ->will($this->returnValue($this->eventManager));
 
-        $event = $this->getMock('Zend\EventManager\EventInterface');
+        $event = $this->getMock(EventInterface::class);
         $event->expects($this->any())->method('getTarget')->will($this->returnValue($application));
 
         return $event;

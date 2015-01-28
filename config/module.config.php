@@ -16,56 +16,65 @@
  * and is licensed under the MIT license.
  */
 
+use ZfrRest\Factory\HttpExceptionListenerFactory;
+use ZfrRest\Factory\HydrateObjectPluginFactory;
+use ZfrRest\Factory\ModuleOptionsFactory;
+use ZfrRest\Factory\ResourceRendererFactory;
+use ZfrRest\Factory\ResourceStrategyFactory;
+use ZfrRest\Factory\ValidateIncomingDataPluginFactory;
+use ZfrRest\Mvc\Controller\Plugin\HydrateObject;
+use ZfrRest\Mvc\Controller\Plugin\ValidateIncomingData;
+use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Mvc\ResourceResponseListener;
+use ZfrRest\Options\ModuleOptions;
+use ZfrRest\View\Helper\RenderPaginator;
+use ZfrRest\View\Helper\RenderResource;
+use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Strategy\ResourceStrategy;
+
 return [
     'service_manager' => [
-        'factories' => [
-            /* Factories that do not map to a class */
-            'ZfrRest\Cache'                                                   => 'ZfrRest\Factory\CacheFactory',
-            'ZfrRest\View\Renderer\ResourceRenderer'                          => 'ZfrRest\Factory\DefaultResourceRendererFactory',
-
-            /* Factories that map to a class */
-            'ZfrRest\Mvc\HttpExceptionListener'                               => 'ZfrRest\Factory\HttpExceptionListenerFactory',
-            'ZfrRest\Mvc\Controller\MethodHandler\MethodHandlerPluginManager' => 'ZfrRest\Factory\MethodHandlerPluginManagerFactory',
-            'ZfrRest\Options\ModuleOptions'                                   => 'ZfrRest\Factory\ModuleOptionsFactory',
-            'ZfrRest\Resource\Metadata\ResourceMetadataFactory'               => 'ZfrRest\Factory\ResourceMetadataFactoryFactory',
-            'ZfrRest\Resource\ResourcePluginManager'                          => 'ZfrRest\Factory\ResourcePluginManagerFactory',
-            'ZfrRest\Router\Http\Matcher\AssociationSubPathMatcher'           => 'ZfrRest\Factory\AssociationSubPathMatcherFactory',
-            'ZfrRest\Router\Http\Matcher\BaseSubPathMatcher'                  => 'ZfrRest\Factory\BaseSubPathMatcherFactory',
-            'ZfrRest\View\Strategy\ResourceStrategy'                          => 'ZfrRest\Factory\ResourceStrategyFactory'
+        'invokables' => [
+            ResourceResponseListener::class => ResourceResponseListener::class
         ],
 
-        'invokables' => [
-            'ZfrRest\Mvc\HttpMethodOverrideListener'               => 'ZfrRest\Mvc\HttpMethodOverrideListener',
-            'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher' => 'ZfrRest\Router\Http\Matcher\CollectionSubPathMatcher'
+        'factories' => [
+            HttpExceptionListener::class => HttpExceptionListenerFactory::class,
+            ModuleOptions::class         => ModuleOptionsFactory::class,
+            ResourceRenderer::class      => ResourceRendererFactory::class,
+            ResourceStrategy::class      => ResourceStrategyFactory::class
         ]
     ],
 
-    'route_manager' => [
+    'controller_plugins' => [
         'factories' => [
-            'ZfrRest\Router\Http\ResourceGraphRoute' => 'ZfrRest\Factory\ResourceGraphRouteFactory'
+            ValidateIncomingData::class => ValidateIncomingDataPluginFactory::class,
+            HydrateObject::class          => HydrateObjectPluginFactory::class
         ],
 
         'aliases' => [
-            'resourceGraphRoute' => 'ZfrRest\Router\Http\ResourceGraphRoute'
-        ],
+            'validateIncomingData' => ValidateIncomingData::class,
+            'hydrateObject'        => HydrateObject::class
+        ]
     ],
 
-    'controller_plugins' => [
+    'view_helpers' => [
         'invokables' => [
-            'paginatorWrapper' => 'ZfrRest\Mvc\Controller\Plugin\PaginatorWrapper',
-            'resourceModel'    => 'ZfrRest\Mvc\Controller\Plugin\ResourceModel'
+            RenderPaginator::class => RenderPaginator::class,
+            RenderResource::class  => RenderResource::class
+        ],
+
+        'aliases' => [
+            'renderPaginator' => RenderPaginator::class,
+            'renderResource'  => RenderResource::class
         ]
     ],
 
     'view_manager' => [
         'strategies' => [
-            'ZfrRest\View\Strategy\ResourceStrategy',
-            'ViewJsonStrategy'
+            ResourceStrategy::class
         ]
     ],
 
-    'zfr_rest' => [
-        // Plugin managers configurations
-        'method_handlers' => []
-    ]
+    'zfr_rest' => []
 ];

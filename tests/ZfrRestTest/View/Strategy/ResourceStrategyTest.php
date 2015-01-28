@@ -19,9 +19,15 @@
 namespace ZfrRestTest\View\Strategy;
 
 use PHPUnit_Framework_TestCase;
-use Zend\Http\Header\ContentType;
-use Zend\Http\Response as HttpResponse;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManagerInterface;
+use Zend\Mvc\MvcEvent;
+use Zend\Stdlib\DispatchableInterface;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ModelInterface;
 use Zend\View\ViewEvent;
+use ZfrRest\View\Model\ResourceViewModel;
+use ZfrRest\View\Renderer\ResourceRenderer;
 use ZfrRest\View\Strategy\ResourceStrategy;
 
 /**
@@ -34,83 +40,45 @@ use ZfrRest\View\Strategy\ResourceStrategy;
 class ResourceStrategyTest extends PHPUnit_Framework_TestCase
 {
     /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $resourceRenderer;
+
+    /**
      * @var ResourceStrategy
      */
-    protected $resourceStrategy;
+    private $resourceStrategy;
 
-    /**
-     * @var \ZfrRest\View\Renderer\ResourceRendererInterface
-     */
-    protected $renderer;
-
-    /**
-     * Set up
-     */
     public function setUp()
     {
-        parent::setUp();
-
-        $this->renderer         = $this->getMock('ZfrRest\View\Renderer\ResourceRendererInterface');
-        $this->resourceStrategy = new ResourceStrategy($this->renderer);
+        $this->resourceRenderer = $this->getMock(ResourceRenderer::class, [], [], '', false);
+        $this->resourceStrategy = new ResourceStrategy($this->resourceRenderer);
     }
 
-    public function testAttachToCorrectEvent()
+    public function testAttachToCorrectEvents()
     {
-        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
-        $eventManager->expects($this->at(0))->method('attach')->with(ViewEvent::EVENT_RENDERER);
-        $eventManager->expects($this->at(1))->method('attach')->with(ViewEvent::EVENT_RESPONSE);
+        $sharedManager = $this->getMock(SharedEventManagerInterface::class);
+        $eventManager  = $this->getMock(EventManagerInterface::class);
+
+        $eventManager->expects($this->at(0))->method('getSharedManager')->will($this->returnValue($sharedManager));
+        $eventManager->expects($this->at(1))->method('attach')->with(ViewEvent::EVENT_RENDERER);
+        $eventManager->expects($this->at(2))->method('attach')->with(ViewEvent::EVENT_RESPONSE);
+
+        $sharedManager->expects($this->once())
+                     ->method('attach')
+                     ->with(DispatchableInterface::class, MvcEvent::EVENT_DISPATCH);
 
         $this->resourceStrategy->attach($eventManager);
     }
 
-    public function testCanSelectRenderer()
+    public function testDoNotSetTemplateIfNotResourceViewModel()
     {
-        // If not a ResourceModel, should return null
-        $viewEvent = new ViewEvent();
-        $viewEvent->setModel($this->getMock('Zend\View\Model\ModelInterface'));
+        $model = $this->getMock(ModelInterface::class);
+        $model->expects($this->never())->method('setTemplate');
 
-        $this->assertNull($this->resourceStrategy->selectRenderer($viewEvent));
+        $mvcEvent = new MvcEvent();
+        $mvcEvent->setResult($model);
 
-        // If a ResourceModel, should return the renderer
-        $viewEvent->setModel($this->getMock('ZfrRest\View\Model\ResourceModel', [], [], '', false));
-        $this->assertSame($this->renderer, $this->resourceStrategy->selectRenderer($viewEvent));
-    }
-
-    public function testShouldReturnNullIfNotSameRenderer()
-    {
-        $viewEvent = new ViewEvent();
-        $viewEvent->setRenderer($this->getMock('Zend\View\Renderer\RendererInterface'));
-
-        $this->assertNull($this->resourceStrategy->injectResponse($viewEvent));
-    }
-
-    public function testDoNothingIfResultIsNotAString()
-    {
-        $viewEvent = new ViewEvent();
-        $viewEvent->setRenderer($this->renderer);
-        $viewEvent->setResponse(new HttpResponse());
-
-        $this->assertNull($this->resourceStrategy->injectResponse($viewEvent));
-    }
-
-    public function testPopulateResponse()
-    {
-        $viewEvent = new ViewEvent();
-        $viewEvent->setRenderer($this->renderer);
-
-        $response = new HttpResponse();
-        $viewEvent->setResponse($response);
-
-        $viewEvent->setResult(['foo' => 'bar']);
-
-        $this->resourceStrategy->injectResponse($viewEvent);
-
-        $this->assertTrue($response->getHeaders()->has('Content-Type'));
-
-        /** @var ContentType $header */
-        $header = $response->getHeaders()->get('Content-Type');
-
-        $this->assertEquals('application/json; charset=utf-8', $header->getFieldValue());
-        $this->assertEquals(['foo' => 'bar'], json_decode($response->getContent(), true));
+        $this->resourceStrategy->setTemplate($mvcEvent);
     }
 }

@@ -19,12 +19,15 @@
 namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Http\Response as HttpResponse;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\HttpExceptionListenerFactory;
+use ZfrRest\Mvc\HttpExceptionListener;
 use ZfrRest\Options\ModuleOptions;
+use ZfrRestTest\Asset\HttpException\SimpleException;
 
 /**
- * @licence MIT
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
@@ -32,20 +35,18 @@ use ZfrRest\Options\ModuleOptions;
  */
 class HttpExceptionListenerFactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreateFromFactory()
+    public function testFactory()
     {
-        $moduleOptions = new ModuleOptions([
-            'exception_map' => [
-                'Foo' => 'Bar'
-            ]
-        ]);
+        $serviceLocator = $this->getMock(ServiceLocatorInterface::class);
 
-        $serviceManager = new ServiceManager();
-        $serviceManager->setService('ZfrRest\Options\ModuleOptions', $moduleOptions);
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->with(ModuleOptions::class)
+                       ->will($this->returnValue(new ModuleOptions()));
 
         $factory  = new HttpExceptionListenerFactory();
-        $listener = $factory->createService($serviceManager);
+        $instance = $factory->createService($serviceLocator);
 
-        $this->assertInstanceOf('ZfrRest\Mvc\HttpExceptionListener', $listener);
+        $this->assertInstanceOf(HttpExceptionListener::class, $instance);
     }
 }

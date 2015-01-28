@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.0
+
+* Complete rewrite of ZfrRest. All the concepts have been changed in favour of an explicit module, please read the
+new docs.
+* PHP dependency has been raised to PHP 5.5
+
 ## 0.3.4
 
 * ZfrRest now supports coalesce filtering for "hasMany" or "findMany" requests type through the new, optional

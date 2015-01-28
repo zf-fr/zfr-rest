@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Http\Exception\Client;
 
 use PHPUnit_Framework_TestCase;
+use ZfrRest\Http\Exception;
 
 /**
  * @license MIT
@@ -35,15 +36,15 @@ class ServerExceptionsTest extends PHPUnit_Framework_TestCase
     {
         return [
             [
-                'exception'  => 'ZfrRest\Http\Exception\Server\InternalServerErrorException',
+                'exception'  => Exception\Server\InternalServerErrorException::class,
                 'statusCode' => 500
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Server\NotImplementedException',
+                'exception'  => Exception\Server\NotImplementedException::class,
                 'statusCode' => 501
             ],
             [
-                'exception'  => 'ZfrRest\Http\Exception\Server\ServiceUnavailableException',
+                'exception'  => Exception\Server\ServiceUnavailableException::class,
                 'statusCode' => 503
             ],
         ];

@@ -8,32 +8,38 @@ ZfrRest
 [![Total Downloads](https://poser.pugx.org/zfr/zfr-rest/downloads.png)](https://packagist.org/packages/zfr/zfr-rest)
 [![Dependency Status](https://www.versioneye.com/package/php--zfr--zfr-rest/badge.png)](https://www.versioneye.com/package/php--zfr--zfr-rest)
 
-> If you are an Ember Data user, I have created a specific renderer that output JSON compliant payload. I didn't
-released it yet as it's not really clean, but if you're interested, please contact me :).
-
 ## Installation
 
 Install the module by typing (or add it to your `composer.json` file):
 
-`php composer.phar require zfr/zfr-rest:0.3.*`
+`php composer.phar require zfr/zfr-rest:0.4.*`
 
 Then, add the keys "ZfrRest" to your modules list in `application.config.php` file, and copy-paste the file
 `zfr_rest.global.php.dist` into your `autoload` folder (don't forget to remove the .dist extension at the end!).
+
+## ZfrRest 0.4+ vs ZfrRest 0.3
+
+Starting from version 0.4, ZfrRest has been completely rewritten from scratch. Previously, ZfrRest used to do a lot
+of things automatically for you, from rendering, to automatic routing and creation of routes. However, while nice for
+very simple use cases, it was actually very hard to extend, introduced a lot of performance problems and was quite
+unflexible.
+
+Now, ZfrRest is more a "small REST utility". It provides a simple way to handle HTTP exceptions, a lightweight
+controller that can both handle action and HTTP verbs, and a view layer adapted for resource rendering (that can
+optionally use versioning to render a resource differently based on the version). You can consider ZfrRest as a
+module that you can use if you want to create a REST API, instead of a full-blown module like Apigility or previous
+ZfrRest versions.
+
+Additionally, dependency to Doctrine has been completely remove and can be used by anyone.
 
 ## ZfrRest vs Apigility
 
 [Apigility](http://www.apigility.org) is a Zend Framework 2 API builder that also aims to simplify the creation of
 REST APIs.
 
-ZfrRest and Apigility philosophies are completely different. ZfrRest is Doctrine only, and focuses only on a very
-small subset on your REST API: it provides routing, validation and hydration.
-
-On the other hand, Apigility comes with a graphical user interface, versioning support, authorization, authentication
-HAL, content negotiation... ZfrRest will never provide **all** those functionalities, so if you need them, just go
-with Apigility.
-
-ZfrRest's scope is much more limited (although I'd really like to add support for versioning and links), but I
-really think it's a nice product too. So give it a try to both products, and choose the one you prefer!
+Starting from ZfrRest 0.4+, there is actually nothing in common between those two libraries. Apigility is a full-blown
+module that does a lot of things, from headers negotiation, automatic rendering, link generation, a code-generator...
+On the other hand, ZfrRest is the bare metal, and leave most of the responsability and power to you.
 
 ## Documentation
 

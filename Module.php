@@ -5,4 +5,4 @@
  * It allows usage of this module even without composer.
  * The original Module.php is in 'src/ZfrRest' in order to respect PSR-0
  */
-require_once __DIR__ . '/src/ZfrRest/Module.php';
+require_once __DIR__ . '/src/Module.php';

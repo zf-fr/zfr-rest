@@ -19,11 +19,16 @@
 namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Http\Response as HttpResponse;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZfrRest\Factory\HttpExceptionListenerFactory;
 use ZfrRest\Factory\ModuleOptionsFactory;
+use ZfrRest\Mvc\HttpExceptionListener;
+use ZfrRest\Options\ModuleOptions;
+use ZfrRestTest\Asset\HttpException\SimpleException;
 
 /**
- * @licence MIT
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
@@ -31,20 +36,29 @@ use ZfrRest\Factory\ModuleOptionsFactory;
  */
 class ModuleOptionsFactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreateFromFactory()
+    public function testFactory()
     {
-        $config = [
+        $options = [
             'zfr_rest' => [
-                'options' => []
+                'exception_map' => [
+                    'foo' => 'bar'
+                ],
+                'register_http_method_override_listener' => true
             ]
         ];
 
-        $serviceManager = new ServiceManager();
-        $serviceManager->setService('Config', $config);
+        $serviceLocator = $this->getMock(ServiceLocatorInterface::class);
 
-        $factory = new ModuleOptionsFactory();
-        $result  = $factory->createService($serviceManager);
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->with('Config')
+                       ->will($this->returnValue($options));
 
-        $this->assertInstanceOf('ZfrRest\Options\ModuleOptions', $result);
+        $factory  = new ModuleOptionsFactory();
+        $instance = $factory->createService($serviceLocator);
+
+        $this->assertInstanceOf(ModuleOptions::class, $instance);
+        $this->assertEquals($options['zfr_rest']['exception_map'], $instance->getExceptionMap());
+        $this->assertTrue($instance->getRegisterHttpMethodOverrideListener());
     }
 }

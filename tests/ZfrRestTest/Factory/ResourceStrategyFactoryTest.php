@@ -19,11 +19,14 @@
 namespace ZfrRestTest\Factory;
 
 use PHPUnit_Framework_TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Http\Response as HttpResponse;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Factory\ResourceStrategyFactory;
+use ZfrRest\View\Renderer\ResourceRenderer;
+use ZfrRest\View\Strategy\ResourceStrategy;
 
 /**
- * @licence MIT
+ * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
  * @group Coverage
@@ -31,17 +34,18 @@ use ZfrRest\Factory\ResourceStrategyFactory;
  */
 class ResourceStrategyFactoryTest extends PHPUnit_Framework_TestCase
 {
-    public function testCreateFromFactory()
+    public function testFactory()
     {
-        $serviceManager = new ServiceManager();
-        $serviceManager->setService(
-            'ZfrRest\View\Renderer\ResourceRenderer',
-            $this->getMock('ZfrRest\View\Renderer\ResourceRendererInterface')
-        );
+        $serviceLocator = $this->getMock(ServiceLocatorInterface::class);
 
-        $factory = new ResourceStrategyFactory();
-        $result  = $factory->createService($serviceManager);
+        $serviceLocator->expects($this->once())
+                       ->method('get')
+                       ->with(ResourceRenderer::class)
+                       ->will($this->returnValue($this->getMock(ResourceRenderer::class, [], [], '', false)));
 
-        $this->assertInstanceOf('ZfrRest\View\Strategy\ResourceStrategy', $result);
+        $factory  = new ResourceStrategyFactory();
+        $instance = $factory->createService($serviceLocator);
+
+        $this->assertInstanceOf(ResourceStrategy::class, $instance);
     }
 }

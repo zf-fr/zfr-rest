@@ -16,8 +16,6 @@
  * and is licensed under the MIT license.
  */
 
-use ZfrRestTest\Util\ServiceManagerFactory;
-
 ini_set('error_reporting', E_ALL);
 
 $files = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
@@ -46,5 +44,4 @@ foreach ($configFiles as $configFile) {
     }
 }
 
-ServiceManagerFactory::setApplicationConfig($config);
 unset($files, $file, $loader, $configFiles, $configFile, $config);

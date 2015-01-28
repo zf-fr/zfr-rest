@@ -19,6 +19,7 @@
 namespace ZfrRestTest\Http\Exception;
 
 use PHPUnit_Framework_TestCase;
+use ZfrRest\Exception\InvalidArgumentException;
 use ZfrRest\Http\Exception\ServerErrorException;
 
 /**
@@ -33,7 +34,7 @@ class ServerErrorExceptionTest extends PHPUnit_Framework_TestCase
     public function testThrowExceptionIfStatusCodeIsOverRange()
     {
         $this->setExpectedException(
-            'ZfrRest\Exception\InvalidArgumentException',
+            InvalidArgumentException::class,
             'Status code for server errors must be between 500 and 599, "600" given'
         );
 
@@ -43,7 +44,7 @@ class ServerErrorExceptionTest extends PHPUnit_Framework_TestCase
     public function testThrowExceptionIfStatusCodeIsBelowRange()
     {
         $this->setExpectedException(
-            'ZfrRest\Exception\InvalidArgumentException',
+            InvalidArgumentException::class,
             'Status code for server errors must be between 500 and 599, "499" given'
         );
 
