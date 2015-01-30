@@ -49,10 +49,11 @@ class ValidateIncomingData extends AbstractPlugin
      *
      * @param  string $inputFilterName
      * @param  array  $validationGroup
+     * @param  mixed  $context
      * @return array
      * @throws UnprocessableEntityException
      */
-    public function __invoke($inputFilterName, array $validationGroup = [])
+    public function __invoke($inputFilterName, array $validationGroup = [], $context = null)
     {
         /** @var \Zend\InputFilter\InputFilterInterface $inputFilter */
         $inputFilter = $this->inputFilterPluginManager->get($inputFilterName);
@@ -64,7 +65,7 @@ class ValidateIncomingData extends AbstractPlugin
         $data = json_decode($this->controller->getRequest()->getContent(), true);
         $inputFilter->setData($data);
 
-        if ($inputFilter->isValid()) {
+        if ($inputFilter->isValid($context)) {
             return $inputFilter->getValues();
         }
 
