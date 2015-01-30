@@ -21,3 +21,5 @@ If you are looking for some information that is not listed in the documentation,
 4. [Using HTTP exceptions for reporting errors](/docs/04. Using HTTP exceptions for reporting errors.md)
     1. [Built-in exceptions](/docs/04. Using HTTP exceptions for reporting errors.md#built-in-exceptions)
     2. [Mapping custom exceptions](/docs/04. Using HTTP exceptions for reporting errors.md#mapping-custom-exceptions)
+
+5. [Best Practices](/docs/05. Best practices.md)
