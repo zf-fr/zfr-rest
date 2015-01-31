@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.1
+
+* Make sure validation does not fail be setting an empty value if no body is present in the request
+
 ## 0.4.0
 
 * Complete rewrite of ZfrRest. All the concepts have been changed in favour of an explicit module, please read the
