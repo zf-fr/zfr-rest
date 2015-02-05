@@ -86,6 +86,12 @@ class ResourceResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->resourceResponseListener->finishResponse($this->event));
     }
 
+    public function testReturnIfContainsException()
+    {
+        $this->event->setParam('exception', new \RuntimeException());
+        $this->assertNull($this->resourceResponseListener->finishResponse($this->event));
+    }
+
     public function testSet204StatusCodeIfDeleteAndNoBody()
     {
         $request = new HttpRequest();

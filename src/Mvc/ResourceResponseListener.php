@@ -50,7 +50,7 @@ class ResourceResponseListener extends AbstractListenerAggregate
     {
         $response = $event->getResponse();
 
-        if (!$response instanceof HttpResponse) {
+        if (!$response instanceof HttpResponse || null !== $event->getParam('exception')) {
             return;
         }
 

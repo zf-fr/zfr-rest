@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.2
+
+* Does not modify status code response if an exception is contained into the MvcEvent
+
 ## 0.4.1
 
 * Make sure validation does not fail be setting an empty value if no body is present in the request
