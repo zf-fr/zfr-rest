@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.3
+
+* `isRootTemplate` now work even if you have called the `renderResource` helper inside a view
+
 ## 0.4.2
 
 * Does not modify status code response if an exception is contained into the MvcEvent

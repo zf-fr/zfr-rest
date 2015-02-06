@@ -23,6 +23,8 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\DispatchableInterface;
+use Zend\View\Helper\ViewModel;
+use Zend\View\HelperPluginManager;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ModelInterface;
 use Zend\View\ViewEvent;
@@ -80,5 +82,35 @@ class ResourceStrategyTest extends PHPUnit_Framework_TestCase
         $mvcEvent->setResult($model);
 
         $this->resourceStrategy->setTemplate($mvcEvent);
+    }
+
+    public function testDoNotSelectRenderIfNotResourceViewModel()
+    {
+        $model = $this->getMock(ModelInterface::class);
+
+        $viewEvent = new ViewEvent();
+        $viewEvent->setModel($model);
+
+        $this->assertNull($this->resourceStrategy->selectRenderer($viewEvent));
+    }
+
+    public function testProperlyFillViewModelHelperIfRendererIsSelected()
+    {
+        $model = new ResourceViewModel();
+
+        $viewEvent = new ViewEvent();
+        $viewEvent->setModel($model);
+
+        $viewModelHelper = $this->getMock(ViewModel::class, [], [], '', false);
+        $viewModelHelper->expects($this->once())->method('setRoot')->with($model);
+        $viewModelHelper->expects($this->once())->method('setCurrent')->with($model);
+
+        $helperManager = $this->getMock(HelperPluginManager::class, [], [], '', false);
+        $helperManager->expects($this->once())->method('setRenderer')->with($this->resourceRenderer);
+        $helperManager->expects($this->once())->method('get')->with('viewModel')->willReturn($viewModelHelper);
+
+        $this->resourceRenderer->expects($this->once())->method('getHelperPluginManager')->willReturn($helperManager);
+
+        $this->assertSame($this->resourceRenderer, $this->resourceStrategy->selectRenderer($viewEvent));
     }
 }

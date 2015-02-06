@@ -121,20 +121,24 @@ class ResourceRenderer implements RendererInterface
      */
     public function render($nameOrModel, $values = null)
     {
-        // We set the currently rendered view model into the viewModel helper. This allows to render additional
-        // properties in the view by comparing the root and nested view model
-        $this->viewModel()->setCurrent($nameOrModel);
+        /** @var \Zend\View\Helper\ViewModel $viewModelHelper */
+        $viewModelHelper = $this->helperPluginManager->get('viewModel');
+
+        // Because templates can be rendered recursively, we need to save the current context
+        $previousViewModel = $viewModelHelper->getCurrent();
 
         $template = $this->resolver->resolve($nameOrModel->getTemplate());
 
         // We need to save and restore the previous variables, because the same renderer can be used inside
         // multiple contexts
-        $previousTemplateVariables = $this->templateVariables;
-        $this->templateVariables   = $nameOrModel->getVariables();
+        $viewModelHelper->setCurrent($nameOrModel);
+        $this->templateVariables = $nameOrModel->getVariables();
 
         $result = include $template;
 
-        $this->templateVariables = $previousTemplateVariables;
+        // Restore the previous context
+        $this->templateVariables = $previousViewModel->getVariables();
+        $viewModelHelper->setCurrent($previousViewModel);
 
         return $result;
     }
