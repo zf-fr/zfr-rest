@@ -71,9 +71,12 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
 
     public function testCanRender()
     {
-        $viewModel = new ResourceViewModel(['foo' => 'bar'], ['template' => 'foo']);
+        $previousViewModel = new ResourceViewModel(['bar' => 'baz']);
+        $viewModel         = new ResourceViewModel(['foo' => 'bar'], ['template' => 'foo']);
 
         $viewModelHelper = $this->getMock(ViewModelHelper::class, [], [], '', false);
+
+        $viewModelHelper->expects($this->at(0))->method('getCurrent')->willReturn($previousViewModel);
 
         $helperPluginManager = $this->getMock(HelperPluginManager::class, [], [], '', false);
         $helperPluginManager->expects($this->any())
@@ -81,7 +84,8 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
                             ->with('viewModel')
                             ->will($this->returnValue($viewModelHelper));
 
-        $viewModelHelper->expects($this->once())->method('setCurrent')->with($viewModel);
+        $viewModelHelper->expects($this->at(1))->method('setCurrent')->with($viewModel);
+        $viewModelHelper->expects($this->at(2))->method('setCurrent')->with($previousViewModel); // Make sure it reset
 
         $this->resolver->expects($this->once())
                        ->method('resolve')
