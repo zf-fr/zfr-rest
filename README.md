@@ -2,7 +2,6 @@ ZfrRest
 =======
 
 [![Build Status](https://travis-ci.org/zf-fr/zfr-rest.png?branch=master)](https://travis-ci.org/zf-fr/zfr-rest)
-[![Coverage Status](https://coveralls.io/repos/zf-fr/zfr-rest/badge.png?branch=master)](https://coveralls.io/r/zf-fr/zfr-rest?branch=master)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/badges/quality-score.png?s=78ed408c927e01cb27ab7f3cc04349a770132550)](https://scrutinizer-ci.com/g/zf-fr/zfr-rest/)
 [![Latest Stable Version](https://poser.pugx.org/zfr/zfr-rest/v/stable.png)](https://packagist.org/packages/zfr/zfr-rest)
 [![Total Downloads](https://poser.pugx.org/zfr/zfr-rest/downloads.png)](https://packagist.org/packages/zfr/zfr-rest)
