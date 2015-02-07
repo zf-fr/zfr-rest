@@ -22,6 +22,7 @@ use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
+use ZfrRest\View\Model\ResourceViewModel;
 
 /**
  * HttpExceptionListener
@@ -48,9 +49,13 @@ class ResourceResponseListener extends AbstractListenerAggregate
      */
     public function finishResponse(MvcEvent $event)
     {
-        $response = $event->getResponse();
+        $response  = $event->getResponse();
+        $viewModel = $event->getViewModel();
 
-        if (!$response instanceof HttpResponse || null !== $event->getParam('exception')) {
+        if (!$response instanceof HttpResponse
+            || null !== $event->getParam('exception')
+            || !$viewModel instanceof ResourceViewModel
+        ) {
             return;
         }
 

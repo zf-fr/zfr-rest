@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.4
+
+* `ResourceResponseListener` only modifies response if it is a ResourceViewModel
+
 ## 0.4.3
 
 * `isRootTemplate` now work even if you have called the `renderResource` helper inside a view
