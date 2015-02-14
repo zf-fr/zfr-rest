@@ -16,12 +16,14 @@
  * and is licensed under the MIT license.
  */
 
+use ZfrRest\Factory\ComputeAlteredInputsPluginFactory;
 use ZfrRest\Factory\HttpExceptionListenerFactory;
 use ZfrRest\Factory\HydrateObjectPluginFactory;
 use ZfrRest\Factory\ModuleOptionsFactory;
 use ZfrRest\Factory\ResourceRendererFactory;
 use ZfrRest\Factory\ResourceStrategyFactory;
 use ZfrRest\Factory\ValidateIncomingDataPluginFactory;
+use ZfrRest\Mvc\Controller\Plugin\ComputeAlteredInputs;
 use ZfrRest\Mvc\Controller\Plugin\HydrateObject;
 use ZfrRest\Mvc\Controller\Plugin\ValidateIncomingData;
 use ZfrRest\Mvc\HttpExceptionListener;
@@ -48,11 +50,13 @@ return [
 
     'controller_plugins' => [
         'factories' => [
+            ComputeAlteredInputs::class => ComputeAlteredInputsPluginFactory::class,
             ValidateIncomingData::class => ValidateIncomingDataPluginFactory::class,
-            HydrateObject::class          => HydrateObjectPluginFactory::class
+            HydrateObject::class        => HydrateObjectPluginFactory::class
         ],
 
         'aliases' => [
+            'computeAlteredInputs' => ComputeAlteredInputs::class,
             'validateIncomingData' => ValidateIncomingData::class,
             'hydrateObject'        => HydrateObject::class
         ]
