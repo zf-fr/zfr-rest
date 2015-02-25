@@ -27,6 +27,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface;
 use ZfrRest\Http\Exception;
 use ZfrRest\Mvc\ResourceResponseListener;
+use ZfrRest\View\Model\ResourceViewModel;
 
 /**
  * @licence MIT
@@ -66,6 +67,7 @@ class ResourceResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->event = new MvcEvent();
         $this->event->setResponse($this->response);
+        $this->event->setViewModel(new ResourceViewModel());
     }
 
     public function testAttachToCorrectEvent()

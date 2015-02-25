@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.4.5
+
+* Remove automatic 304 Etag as it causes a lot more problems as it solves
+
 ## 0.4.4
 
 * `ResourceResponseListener` only modifies response if it is a ResourceViewModel
