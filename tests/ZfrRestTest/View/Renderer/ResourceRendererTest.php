@@ -25,13 +25,14 @@ use Zend\View\Model\ModelInterface;
 use Zend\View\Resolver\ResolverInterface;
 use ZfrRest\View\Model\ResourceViewModel;
 use ZfrRest\View\Renderer\ResourceRenderer;
+use Zend\View\Exception\RuntimeException;
 
 /**
  * @license MIT
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  *
- * @group Coverage
- * @covers \ZfrRest\View\Renderer\ResourceRenderer
+ * @group   Coverage
+ * @covers  \ZfrRest\View\Renderer\ResourceRenderer
  */
 class ResourceRendererTest extends PHPUnit_Framework_TestCase
 {
@@ -97,5 +98,31 @@ class ResourceRendererTest extends PHPUnit_Framework_TestCase
         $result = $resourceRenderer->render($viewModel);
 
         $this->assertEquals(['foo' => 'bar'], $result);
+    }
+
+    public function testThrowExceptionIfTemplateNotFound()
+    {
+        $this->setExpectedException(RuntimeException::class);
+
+        $viewModel = new ResourceViewModel(['foo' => 'bar'], ['template' => 'bar']);
+
+        $viewModelHelper = $this->getMock(ViewModelHelper::class, [], [], '', false);
+
+        $viewModelHelper->expects($this->at(0))->method('getCurrent')->willReturn($viewModel);
+
+        $helperPluginManager = $this->getMock(HelperPluginManager::class, [], [], '', false);
+        $helperPluginManager->expects($this->any())
+                            ->method('get')
+                            ->with('viewModel')
+                            ->will($this->returnValue($viewModelHelper));
+
+        $this->resolver->expects($this->once())
+                       ->method('resolve')
+                       ->with('bar')
+                       ->will($this->returnValue(false));
+
+        $resourceRenderer = new ResourceRenderer($this->resolver, $helperPluginManager);
+
+        $resourceRenderer->render($viewModel);
     }
 }
