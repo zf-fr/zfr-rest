@@ -21,6 +21,7 @@ namespace ZfrRest\View\Renderer;
 use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\RendererInterface;
 use Zend\View\Resolver\ResolverInterface;
+use Zend\View\Exception;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
@@ -128,6 +129,14 @@ class ResourceRenderer implements RendererInterface
         $previousViewModel = $viewModelHelper->getCurrent();
 
         $template = $this->resolver->resolve($nameOrModel->getTemplate());
+        
+        if (!$template) {
+            throw new Exception\RuntimeException(sprintf(
+                '%s: Unable to render template "%s"; resolver could not resolve to a file',
+                __METHOD__,
+                $nameOrModel->getTemplate()
+            ));
+        }
 
         // We need to save and restore the previous variables, because the same renderer can be used inside
         // multiple contexts
