@@ -62,7 +62,10 @@ class ValidateIncomingData extends AbstractPlugin
             $inputFilter->setValidationGroup($validationGroup);
         }
 
-        $data = json_decode($this->controller->getRequest()->getContent(), true) ?: [];
+        $data = array_merge(
+            json_decode($this->controller->getRequest()->getContent(), true) ?: [],
+            $this->controller->getRequest()->getPost()->toArray()
+        );
         $inputFilter->setData($data);
 
         if ($inputFilter->isValid($context)) {
