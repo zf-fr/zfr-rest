@@ -43,30 +43,6 @@ use ZfrRestTest\Asset\InputFilter\SimpleInputFilter;
 class ValidateIncomingDataTest extends PHPUnit_Framework_TestCase
 {
 
-    /**
-     * @var SimpleController
-     */
-    private $simpleController;
-
-    /**
-     * @var MvcEvent
-     */
-    private $mvcEvent;
-
-    /**
-     * Set up
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->mvcEvent = new MvcEvent();
-
-        $this->simpleController = new SimpleController();
-        $this->simpleController->setPluginManager(new PluginManager());
-        $this->simpleController->setEvent($this->mvcEvent);
-    }
-
     public function testValidateIncomingData()
     {
         $inputFilter = new SimpleInputFilter();
