@@ -19,7 +19,7 @@ Then, add the keys "ZfrRest" to your modules list in `application.config.php` fi
 ## ZfrRest 0.4+ vs ZfrRest 0.3
 
 Starting from version 0.4, ZfrRest has been completely rewritten from scratch. Previously, ZfrRest used to do a lot
-of things automatically for you, from rendering, to automatic routing and creation of routes. However, while nice for
+of things automatically for you, from rendering, to automatic routing and creation of routes. While it was nice for
 very simple use cases, it was actually very hard to extend, introduced a lot of performance problems and was quite
 unflexible.
 
@@ -29,7 +29,7 @@ optionally use versioning to render a resource differently based on the version)
 module that you can use if you want to create a REST API, instead of a full-blown module like Apigility or previous
 ZfrRest versions.
 
-Additionally, dependency to Doctrine has been completely remove and can be used by anyone.
+Additionally, dependency to Doctrine has been completely removed and can be used by anyone.
 
 ## ZfrRest vs Apigility
 
@@ -38,7 +38,7 @@ REST APIs.
 
 Starting from ZfrRest 0.4+, there is actually nothing in common between those two libraries. Apigility is a full-blown
 module that does a lot of things, from headers negotiation, automatic rendering, link generation, a code-generator...
-On the other hand, ZfrRest is the bare metal, and leave most of the responsability and power to you.
+On the other hand, ZfrRest is the bare metal, and leave most of the responsibility and power to you.
 
 ## Documentation
 
