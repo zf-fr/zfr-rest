@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.5.0
+
+* Support for `Zend\Stdlib 2.7` and `Zend\Hydrator`
+
 ## 0.4.5
 
 * Remove automatic 304 Etag as it causes a lot more problems as it solves
