@@ -18,8 +18,8 @@
 
 namespace ZfrRest\Mvc\Controller\Plugin;
 
+use Zend\Hydrator\HydratorPluginManager;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\Stdlib\Hydrator\HydratorPluginManager;
 
 /**
  * @author  Michaël Gallego <mic.gallego@gmail.com>
