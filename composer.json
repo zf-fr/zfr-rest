@@ -1,53 +1,53 @@
 {
-    "name": "zfr/zfr-rest",
-    "description": "Zend Framework 2 REST Module.",
-    "type": "library",
-    "license": "MIT",
-    "keywords": [
-        "zf2",
-        "zend framework",
-        "rest",
-        "restful",
-        "api"
-    ],
-    "homepage": "https://github.com/zf-fr/zfr-rest",
-    "authors": [
-        {
-            "name": "Michaël Gallego",
-            "email": "mic.gallego@gmail.com",
-            "homepage": "http://www.michaelgallego.fr/"
-        },
-        {
-            "name": "Marco Pivetta",
-            "email": "ocramius@gmail.com",
-            "homepage": "http://marco-pivetta.com/"
-        }
-    ],
-    "minimum-stability": "beta",
-    "require": {
-        "php": ">=5.5",
-        "zendframework/zend-http": "~2.2",
-        "zendframework/zend-inputfilter": "~2.2",
-        "zendframework/zend-mvc": "~2.2",
-        "zendframework/zend-modulemanager": "~2.2",
-        "zendframework/zend-paginator": "~2.2",
-        "zendframework/zend-servicemanager": "~2.2",
-        "zendframework/zend-view": "~2.2",
-        "zendframework/zend-stdlib": "^2.7 || ^3.0"
+  "name": "zfr/zfr-rest",
+  "description": "Zend Framework 2 REST Module.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "zf2",
+    "zend framework",
+    "rest",
+    "restful",
+    "api"
+  ],
+  "homepage": "https://github.com/zf-fr/zfr-rest",
+  "authors": [
+    {
+      "name": "Michaël Gallego",
+      "email": "mic.gallego@gmail.com",
+      "homepage": "http://www.michaelgallego.fr/"
     },
-    "require-dev": {
-        "zendframework/zendframework": "~2.2",
-        "phpunit/phpunit": "~4.1",
-        "squizlabs/php_codesniffer": "1.4.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "ZfrRest\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZfrRestTest\\": "tests/"
-        }
+    {
+      "name": "Marco Pivetta",
+      "email": "ocramius@gmail.com",
+      "homepage": "http://marco-pivetta.com/"
     }
+  ],
+  "minimum-stability": "beta",
+  "require": {
+    "php": ">=5.5",
+    "zendframework/zend-http": "~2.2",
+    "zendframework/zend-inputfilter": "~2.2",
+    "zendframework/zend-mvc": "~2.2 || ^3.0",
+    "zendframework/zend-modulemanager": "~2.2",
+    "zendframework/zend-paginator": "~2.2",
+    "zendframework/zend-servicemanager": "~2.2 || ^3.0",
+    "zendframework/zend-view": "~2.2",
+    "zendframework/zend-stdlib": "^2.7 || ^3.0"
+  },
+  "require-dev": {
+    "zendframework/zendframework": "~2.2 || ^3.0",
+    "phpunit/phpunit": "~4.1",
+    "squizlabs/php_codesniffer": "1.4.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZfrRest\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ZfrRestTest\\": "tests/"
+    }
+  }
 }
