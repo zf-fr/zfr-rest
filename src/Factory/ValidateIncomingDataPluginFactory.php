@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Mvc\Controller\Plugin\ValidateIncomingData;
@@ -38,6 +39,17 @@ class ValidateIncomingDataPluginFactory implements FactoryInterface
 
         /** @var \Zend\InputFilter\InputFilterPluginManager $inputFilterPluginManager */
         $inputFilterPluginManager = $parentLocator->get('InputFilterManager');
+
+        return new ValidateIncomingData($inputFilterPluginManager);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        /** @var \Zend\InputFilter\InputFilterPluginManager $inputFilterPluginManager */
+        $inputFilterPluginManager = $container->get('InputFilterManager');
 
         return new ValidateIncomingData($inputFilterPluginManager);
     }

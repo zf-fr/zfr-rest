@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\View\Renderer\ResourceRenderer;
@@ -38,6 +39,20 @@ class ResourceRendererFactory implements FactoryInterface
 
         /** @var \Zend\View\HelperPluginManager $helperPluginManager */
         $helperPluginManager = $serviceLocator->get('ViewHelperManager');
+
+        return new ResourceRenderer($resolver, $helperPluginManager);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        /** @var \Zend\View\Resolver\ResolverInterface $resolver */
+        $resolver = $container->get('ViewResolver');
+
+        /** @var \Zend\View\HelperPluginManager $helperPluginManager */
+        $helperPluginManager = $container->get('ViewHelperManager');
 
         return new ResourceRenderer($resolver, $helperPluginManager);
     }

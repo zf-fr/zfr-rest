@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Mvc\Controller\Plugin\HydrateObject;
@@ -38,6 +39,17 @@ class HydrateObjectPluginFactory implements FactoryInterface
 
         /** @var \Zend\Stdlib\Hydrator\HydratorPluginManager $hydratorPluginManager */
         $hydratorPluginManager = $parentLocator->get('HydratorManager');
+
+        return new HydrateObject($hydratorPluginManager);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        /** @var \Zend\Stdlib\Hydrator\HydratorPluginManager $hydratorPluginManager */
+        $hydratorPluginManager = $container->get('HydratorManager');
 
         return new HydrateObject($hydratorPluginManager);
     }

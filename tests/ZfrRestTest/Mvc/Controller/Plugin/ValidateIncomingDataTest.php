@@ -25,6 +25,7 @@ use Zend\InputFilter\BaseInputFilter;
 use Zend\InputFilter\InputFilterPluginManager;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\Parameters;
 use Zend\Stdlib\RequestInterface;
 use ZfrRest\Http\Exception;
@@ -47,7 +48,7 @@ class ValidateIncomingDataTest extends PHPUnit_Framework_TestCase
     {
         $inputFilter = new SimpleInputFilter();
 
-        $inputFilterPluginManager = $this->getMock(InputFilterPluginManager::class);
+        $inputFilterPluginManager = $this->getMock(InputFilterPluginManager::class, [], [new ServiceManager()]);
         $inputFilterPluginManager->expects($this->any())
                                  ->method('get')
                                  ->with(SimpleInputFilter::class)

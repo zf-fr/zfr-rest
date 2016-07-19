@@ -28,15 +28,15 @@
         "php": ">=5.5",
         "zendframework/zend-http": "~2.2",
         "zendframework/zend-inputfilter": "~2.2",
-        "zendframework/zend-mvc": "~2.2",
+        "zendframework/zend-mvc": "~2.2 || ^3.0",
         "zendframework/zend-modulemanager": "~2.2",
         "zendframework/zend-paginator": "~2.2",
-        "zendframework/zend-servicemanager": "~2.2",
+        "zendframework/zend-servicemanager": "~2.2 || ^3.0",
         "zendframework/zend-view": "~2.2",
         "zendframework/zend-stdlib": "^2.7 || ^3.0"
     },
     "require-dev": {
-        "zendframework/zendframework": "~2.2",
+        "zendframework/zendframework": "~2.2 || ^3.0",
         "phpunit/phpunit": "~4.1",
         "squizlabs/php_codesniffer": "1.4.*"
     },

@@ -46,11 +46,11 @@ class Module implements BootstrapListenerInterface, ConfigProviderInterface
         /* @var ModuleOptions $moduleOptions */
         $moduleOptions = $serviceManager->get(ModuleOptions::class);
 
-        $eventManager->attachAggregate($serviceManager->get(HttpExceptionListener::class));
-        $eventManager->attachAggregate($serviceManager->get(ResourceResponseListener::class));
+        $serviceManager->get(HttpExceptionListener::class)->attach($eventManager);
+        $serviceManager->get(ResourceResponseListener::class)->attach($eventManager);
 
         if ($moduleOptions->getRegisterHttpMethodOverrideListener()) {
-            $eventManager->attachAggregate($serviceManager->get(HttpMethodOverrideListener::class));
+            $serviceManager->get(HttpMethodOverrideListener::class)->attach($eventManager);
         }
     }
 

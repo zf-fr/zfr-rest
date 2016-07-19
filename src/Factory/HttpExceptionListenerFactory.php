@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\Mvc\HttpExceptionListener;
@@ -37,6 +38,16 @@ class HttpExceptionListenerFactory implements FactoryInterface
         /* @var \ZfrRest\Options\ModuleOptions $options */
         $options = $serviceLocator->get(ModuleOptions::class);
 
+        return new HttpExceptionListener($options->getExceptionMap());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        /* @var \ZfrRest\Options\ModuleOptions $options */
+        $options = $container->get(ModuleOptions::class);
         return new HttpExceptionListener($options->getExceptionMap());
     }
 }

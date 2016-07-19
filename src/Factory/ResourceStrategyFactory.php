@@ -18,6 +18,7 @@
 
 namespace ZfrRest\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZfrRest\View\Renderer\ResourceRenderer;
@@ -36,6 +37,17 @@ class ResourceStrategyFactory implements FactoryInterface
     {
         /** @var ResourceRenderer $renderer */
         $renderer = $serviceLocator->get(ResourceRenderer::class);
+
+        return new ResourceStrategy($renderer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        /** @var ResourceRenderer $renderer */
+        $renderer = $container->get(ResourceRenderer::class);
 
         return new ResourceStrategy($renderer);
     }
