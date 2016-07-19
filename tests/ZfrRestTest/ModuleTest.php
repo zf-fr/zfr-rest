@@ -69,11 +69,12 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         // Test that HTTP exception listener is registered
         // --------------------------------------------------------------------------------
 
-        $this->serviceLocator->setService(HttpExceptionListener::class, $this->getMock(HttpExceptionListener::class));
+        $this->serviceLocator->setService(HttpExceptionListener::class, $httpExceptionMock = $this->getMock(HttpExceptionListener::class));
 
-        $this->eventManager->expects($this->at(0))
-                           ->method('attachAggregate')
-                           ->with($this->isInstanceOf(HttpExceptionListener::class));
+        $httpExceptionMock
+            ->expects($this->at(0))
+            ->method('attach')
+            ->with($this->isInstanceOf(get_class($this->eventManager)));
 
         // --------------------------------------------------------------------------------
         // Test that HTTP response listener is registered
@@ -81,12 +82,13 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
         $this->serviceLocator->setService(
             ResourceResponseListener::class,
-            $this->getMock(ResourceResponseListener::class)
+            $resourceResponseMock = $this->getMock(ResourceResponseListener::class)
         );
 
-        $this->eventManager->expects($this->at(1))
-                           ->method('attachAggregate')
-                           ->with($this->isInstanceOf(ResourceResponseListener::class));
+        $resourceResponseMock
+            ->expects($this->at(0))
+            ->method('attach')
+            ->with($this->isInstanceOf(get_class($this->eventManager)));
 
         // --------------------------------------------------------------------------------
         // Test the HTTP method override listener is registered
@@ -94,12 +96,13 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
         $this->serviceLocator->setService(
             HttpMethodOverrideListener::class,
-            $this->getMock(HttpMethodOverrideListener::class)
+            $httpMethodOverrideMock = $this->getMock(HttpMethodOverrideListener::class)
         );
 
-        $this->eventManager->expects($this->at(2))
-                           ->method('attachAggregate')
-                           ->with($this->isInstanceOf(HttpMethodOverrideListener::class));
+        $httpMethodOverrideMock
+            ->expects($this->at(0))
+            ->method('attach')
+            ->with($this->isInstanceOf(get_class($this->eventManager)));
 
         $module = new Module();
         $module->onBootstrap($event);

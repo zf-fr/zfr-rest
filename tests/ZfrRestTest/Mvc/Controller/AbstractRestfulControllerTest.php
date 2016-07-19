@@ -23,7 +23,8 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Controller\PluginManager;
 use Zend\Mvc\MvcEvent;
-use Zend\Mvc\Router\Http\RouteMatch;
+use Zend\Router\RouteMatch;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\RequestInterface;
 use ZfrRest\Exception\RuntimeException;
 use ZfrRest\Http\Exception;
@@ -59,7 +60,7 @@ class AbstractRestfulControllerTest extends PHPUnit_Framework_TestCase
         $this->mvcEvent = new MvcEvent();
 
         $this->simpleController = new SimpleController();
-        $this->simpleController->setPluginManager(new PluginManager());
+        $this->simpleController->setPluginManager(new PluginManager(new ServiceManager()));
         $this->simpleController->setEvent($this->mvcEvent);
     }
 
