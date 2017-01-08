@@ -35,6 +35,7 @@ use ZfrRest\Http\Exception\Client\MethodNotAllowedException;
  * @author  Michaël Gallego <mic.gallego@gmail.com>
  * @licence MIT
  *
+ * @method array computeAlteredInputs($inputFilterName, object $object)
  * @method array validateIncomingData($inputFilterName, array $validationGroup = [])
  * @method object hydrateObject($hydratorName, $object, array $values)
  */
